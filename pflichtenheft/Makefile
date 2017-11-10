@@ -1,16 +1,12 @@
 NAME=pflichtenheft
 
-default: $(NAME).pdf
+default: build/$(NAME).pdf
 
-all: $(NAME).pdf
+all: build/$(NAME).pdf
 
 build/%.pdf: %.tex *.sty
 	mkdir -p build
 	latexmk -pdf -g -f -auxdir=build -outdir=build $<
-
-%.pdf: build/%.pdf
-	mv $< $@ # atomic!
-	cp $@ $<
 
 .PHONY: show clean distclean
 
