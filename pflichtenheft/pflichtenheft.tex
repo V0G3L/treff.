@@ -1,8 +1,8 @@
 \documentclass[parskip=full,11pt,twoside]{scrartcl}
 \usepackage[utf8]{inputenc}
 
-\title{ATURL: Actually Tiny URLs}
-\author{Kaylee Frye, Derrial Book}
+\title{GO-App}
+\author{Lukas Dippon, Jens Kienle, Matthias Noll, Fabian Röpke, Tim Schmidt, Simon Vögele}
 
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
@@ -40,16 +40,13 @@
 
 \section{Einleitung}
 
-Das Universum braucht einen besseren URL Shortener.
-
-URL Shortening erzeugt kurze URLs,
-die nur Weiterleitungen sind zu sehr viel längeren URLs.
-Das ist nützlich, weil Kurz-URLs besser zu merken sind
-und leichter mündlich weiterzugeben.
-Ebenfalls nützlich sind sie,
-wenn URLs im Text auftauchen (bspw. IRC).
-
-Eine URL besteht aus mehreren Komponenten:
+Studenten und Mitarbeiter des KIT treffen sich gerne zum gemeinsamen Essen oder Lernen.
+Dazu ist an einem bestimmten Tag immer notwendig zu wissen, ob bereits ein Treffen vereinbart wurde.
+Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
+Unsere App soll es angemeldeten Benutzern ermöglichen sich in Gruppen zu organisieren.
+In den Gruppen kann der Zeit- und Treffpunkt durch die Benutzer bestimmt werden.
+Nach der Festlegung des Treffens, soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
+Dabei soll es aber nicht möglich sein die Standorte bestimmten Nutzern zuzuordnen.
 
 \begin{center}
 \urlpart{http}{protocol}%
@@ -92,6 +89,7 @@ des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
 \criterium{Gruppen}{crt:login}
 Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
 können sie Positionsdaten austauschen und Treffpunkte festlegen.
+Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
 \criterium{1 zu 1 Verbindung}
 Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
