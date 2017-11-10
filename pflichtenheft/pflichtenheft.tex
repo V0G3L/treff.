@@ -13,7 +13,7 @@
 \refoot{\today}
 \pagestyle{scrheadings}
 
-\usepackage[sfdefault,light]{roboto}
+%\usepackage[sfdefault,light]{roboto}
 \usepackage[T1]{fontenc}
 \usepackage[german]{babel}
 \usepackage[yyyymmdd]{datetime} % must be after babel
@@ -81,33 +81,40 @@ dass der Dienst unter dem Hostnamen \texttt{atu.rl} angeboten wird.
 
 \subsection{Muss}
 
-\criterium{Beschränkte Länge}{crt:length}
+\criterium{Vereinfachte Treffpunkte}{crt:length}
+Durch das Freigeben von Positionsdaten können andere Nutzer den
+Standort bestimmen.
 
-Der Pfad von Kurz-URLs ist exakt 3 ASCII Buchstaben oder Ziffern lang.
-Das beschränkt die Anzahl der möglichen URLs auf knapp 200.000 Kurz-URLs.
+\criterium{Datenschutz}{crt:fast}
+Die Positionsdaten werden nur mit Bestätigung
+des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
 
-\criterium{Schnelle Weiterleitung Kurz- zu Lang-URL}{crt:fast}
+\criterium{Gruppen}{crt:login}
+Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
+können sie Positionsdaten austauschen und Treffpunkte festlegen.
 
-\criterium{Authentifizieren mit E-Mail oder Facebook}{crt:login}
+\criterium{1 zu 1 Verbindung}
+Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
 
-\criterium{Rechtlichte Vorgaben werden eingehalten}{crt:tmg}
-
-Der Dienst befolgt alle in Deutschland geltenden Richtlinien,
-insbesondere das Telemediengesetz.
+\criterium{Account}{crt:tmg}
+Ein persönlicher Account ermöglicht es allen Nutzern,
+Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
 
-\criteriumOptional{Authentifizieren mit Github}{crt:github}
+\criteriumOptional{Abstimmungen}
+Innerhalb von Gruppen können die Nutzer z.B. über nächste Treffpunkte abstimmen
+
+\criteriumOptional{Detailliertere Innenraumkarten}{crt:github}
+Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
 \criteriumOptional{Seite mit Betreiberinfo}{crt:about}
-
 Der Dienst bietet eine Seite \enquote{Über Uns},
 mit Informationen zum Betreiber.
 
 \subsection{Abgrenzung}
 
 \criteriumNot{Keine Wahl Kurz-URL}{crt:no-choice}
-
 Ein Nutzer hat keine Möglichkeit die Auswahl einer Kurz-URL zu beeinflussen.
 
 \pagebreak
