@@ -94,16 +94,51 @@ Ein Nutzer hat keine Möglichkeit die Auswahl einer Kurz-URL zu beeinflussen.
 \pagebreak
 %%%%%%%%%%%%%%
 \section{Produkteinsatz}
+Das Produkt dient zur Erleichterung des Zusammenfindens und der
+Treffpunktvereinbarung in geschlossenen Gruppen von Freunden, Kollegen oder
+Familienmitgliedern.
 
-Das Produkt soll mit minimalen Administrationskenntnissen zu betreiben sein.
+\subsection{Anwendungsbereiche}
+\begin{itemize}
+    \item Private Treffen in der Freizeit oder während der Arbeit
+    \item Zusammenfindung auf größeren Veranstaltungen
+\end{itemize}
 
-Besucher des Diensts sollen diesen ohne Schulung oder andere Information benutzen können.
+\subsection{Zielgruppen}
+\begin{itemize}
+    \item Freundesgruppen
+    \item Arbeitskollegen
+\end{itemize}
 
+\subsection{Betriebsbedingungen}
+\begin{itemize}
+    % TODO: Unschön formuliert
+    \item Mobiler Einsatz in Umgebungen mit GPS-Empfang
+\end{itemize}
+
+%%%%%%%%%%%%%%
 \section{Produktumgebung}
+Das Produkt beinhaltet ein Client-Server-Modell.
+Der Server dient lediglich als Vermittler zwischen Klienten.
+Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
+\subsection{Software}
+\begin{itemize}
+    \item Client: Android 4.1 (\enquote{Jelly Bean}, API-Level 16) oder
+        höher.
+    \item Server: Apache Tomcat 8
+\end{itemize}
 
-Das Programm soll als Servlet in einem Apache Tomcat betrieben werden.
-
-Es stehen mindestens 2 AMD64 Kerne mit insgesamt 2GB shared RAM zur Verfügung.
+\subsection{Hardware}
+% TODO: Mindestanforderungen an Hardware-Performance
+\begin{itemize}
+    \item Client: Android-fähiges mobiles Endgerät mit
+        \begin{itemize}
+            \item GPS-Empfänger
+            \item Netzwerkkarte mit WLAN-Modul oder Mobilfunkeinheit
+        \end{itemize}
+    \item Server: Beliebiger Servercomputer, der Apache Tomcat 8 unterstützt
+        und eine Internetanbindung besitzt
+\end{itemize}
 
 %%%%%%%%%%%
 \section{Funktionale Anforderungen}
