@@ -31,7 +31,7 @@
 \usepackage{csquotes}
 
 \usepackage{amsmath} % for $\text{}$
-\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}_{\text{#2}}$}
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
 
 \usepackage{pflichtenheft}
 
@@ -43,33 +43,9 @@
 Studenten und Mitarbeiter des KIT treffen sich gerne zum gemeinsamen Essen oder Lernen.
 Dazu ist an einem bestimmten Tag immer notwendig zu wissen, ob bereits ein Treffen vereinbart wurde.
 Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
-Unsere App soll es angemeldeten Benutzern ermöglichen sich in Gruppen zu organisieren.
-In den Gruppen kann der Zeit- und Treffpunkt durch die Benutzer bestimmt werden.
-Nach der Festlegung des Treffens, soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
-Dabei soll es aber nicht möglich sein die Standorte bestimmten Nutzern zuzuordnen.
-
-\begin{center}
-\urlpart{http}{protocol}%
-\texttt{://}%
-\urlpart{web.io}{host}%
-\texttt{/}%
-\urlpart{index}{path}%
-\texttt{?}%
-\urlpart{argument=somevalue}{parameter}%
-\texttt{\#}%
-\urlpart{theAnchor}{fragment}
-\end{center}
-
-Für Kurz-URLs ist der path (engl.\ Pfad) relevant.
-Das Protokoll ist HTTP oder HTTPS, abhängig vom Besucher.
-Die Wahl des host-Namens ist nicht Teil der Softwareentwicklung,
-sondern des Betreibers.
-Parameter und Fragment werden nicht genutzt,
-da es mindestens einen zusätzlichen Buchstaben braucht
-und damit die URL verlängert.
-
-Im weiteren Text nehmen wir an,
-dass der Dienst unter dem Hostnamen \texttt{atu.rl} angeboten wird.
+Unsere App soll es angemeldeten Benutzern ermöglichen, sich in Gruppen zu organisieren.
+In den Gruppen kann der Zeit- und Treffpunkt bestimmt werden.
+Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder temporär und anonym anzeigen, um das Treffen zu vereinfachen.
 
 \pagebreak
 \section{Kriterien}
@@ -132,45 +108,74 @@ Es stehen mindestens 2 AMD64 Kerne mit insgesamt 2GB shared RAM zur Verfügung.
 %%%%%%%%%%%
 \section{Funktionale Anforderungen}
 
-\functionality{Schnelle Weiterleitung}{fnc:o1}
-\fulfills{crt:fast}
+\functionality{Homepage der App unterteilt in Tabs für die unterschiedlichen Funktionen}{fnc:ui}\label{FA1}
+- Liste aller Gruppen, in denen man Mitglied ist (\ref{FA4})
+- Liste aller Events, an welchen man teilnimmt (\ref{FA11})
+- Einstellungen(\ref{FA3})
 
-Um zu einer Kurz- die Lang-URLs zu finden,
-benutzt der Dienst einen $O(1)$ Mechanismus.
-Es wird sichergestellt,
-dass mit einer zunehmenden Anzahl von Kurz-URLs im System
-das Finden nicht länger dauert.
+\functionality{Login in einen appspezifischen Account}{fnc:login}\label{FA2}
+\fullfills{crt:acc}
+Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen
 
-\functionality{Login-Möglichkeit auf Homepage}{fnc:login}
-\fulfills{crt:login}
-\fulfills{crt:github}
+\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}\label{FA3}
+\fullfills{crt:acc}
+ERROR 404 "Beschreibung" not found
 
-Auf der Homepage \texttt{http://atu.rl/} sieht ein Besucher
-einen \enquote{Login via Facebook} Knopf.
-Weitere Knöpfe wie \enquote{Login via Github} sind möglich.
-Siehe \cref{fig:homepage}.
+\functionality{Gründen von Gruppen}{fnc:groupfounding}\label{FA4}
+\fullfills{crt:groups}
+Über einen Reiter im Hauptmenü können Gruppen erstellt werden. Ihre Funktionen werden in \ref{FA5} bis \ref{FA10} beschrieben.
 
-\functionality{Auf jeder Seite ist ein Link \enquote{Impressum}}{fnc:impressum-link}
-\fulfills{crt:tmg}
+\functionality{Gruppenmenü}{fnc:groupmenu}\label{FA5}
+\fullfills{crt:groups}
+Jede Gruppe besitzt ein eigenes Menü über welches ihre Funktionen angesteuert werden können:
+- Umgebungskarte (\ref{FA8})
+- Anfrage von GPS-Standorten (\ref{FA9})
+- Erstellen eines Events (\ref{FA11} und \ref{FA12})
+- Einladen von Mitgliedern (\ref{FA6})
+- Liste aller Mitglieder (\ref{FA7})
 
-Entsprechend Telemediengesetz (TMG) §1
-müssen gewisse Informationen über einen Betreiber jederzeit verfügbar sein.
-Die inzwischen etablierte Vorgehensweise ist auf allen~(!) Seiten
-einen Link mit dem Text \enquote{Impressum} anzubieten.
-Dieser Link für auf eine Seite mit entsprechender Erklärung.
+\functionality{Einladen von Mitgliedern}{fnc:invitations}\label{FA6}
+\fullfills{crt:groups}
+Es können Einladungen an Nutzer versandt. Diese können von den eingeladenen Nutzern akzeptiert oder abgelehnt werden.
 
-\functionality{Auf jeder Seite ist ein Link \enquote{Datenschutz}}{fnc:datenschutz-link}
-\fulfills{crt:tmg}
+\functionality{Liste der Gruppenmitglieder}{fnc:memberlist}\label{FA7}
+\fullfills{crt:groups}
+Es werden alle Mitglieder aufgelistet. Durch das Anklicken eines Mitgliedes kann wahlweise das zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
 
-Entsprechend Telemediengesetz (TMG) §13
-muss der Betreiber den Nutzer Speicherung und Verarbeitung seiner personenbezogenen Daten unterrichten.
-Die inzwischen etablierte Vorgehensweise ist auf allen (!) Seiten
-einen Link mit dem Text \enquote{Datenschutz} anzubieten.
-Dieser Link für auf eine Seite mit entsprechender Erklärung.
+\functionality{Umgebungskarte}{fnc:map}\label{FA8}
+\fullfills{crt:groups}
+\fullfills{crt:easy}
+Jede Gruppe verfügt über eine Umgebungskarte mit eigenem Standort.
 
-\functionality{Daten werden persistent gespeichert}{fnc:persistence}
+\functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}\label{FA9}
+\fullfills{crt:groups}
+\fullfills{crt:easy}
+Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up gebeten werden ihren Standort für einen fest definierten Zeitraum freizugeben
 
-Ein geordneter Neustart des Diensts führt nicht zu Datenverlust.
+\functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}\label{FA10}
+\fullfills{crt:easy}
+\fullfills{crt:safe}
+Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \ref{FA8} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei als blaue Dreiecke, mit Spitze nach unten, dargestellt. Das Symbol für Gruppierungen dagegen besteht aus drei solchen Dreiecken, die sich teilweise überlappen. Das Gruppierungssymbol wird außerdem durch eine kleine Zahl begleitet, die die Größe der Gruppierung beschreibt.
+
+\functionality{Events}{fnc:events}\label{FA11}
+Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\ref{FA15}) aufgelistet und als roter Punkt mit Uhrzeit auf der Karte (\ref{FA8}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
+
+\functionality{Abstimmungen}{fnc:vote}\label{FA12}
+\fullfills{crt:vote}
+Das Event(\ref{FA11}) lässt sich durch eine Abstimmung vereinbaren. Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit. Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
+
+\functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}\label{FA13}
+\fullfills{crt:vote}
+\fullfills{crt:easy}
+Während einer Abstimmung werden alle möglichen Orte auf der Karte (\ref{FA8}) als orangene Punkte angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
+
+\functionality{Standortteilung für einzelne Personen}{fnc:1to1}\label{FA14}
+\fullfills{crt:1to1}
+\fullfills{crt:easy}
+Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen. Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell und ohne den Umweg über die Gruppengründung möglich sein.
+
+\functionality{Eventliste}{fnc:eventlist}\label{FA15}
+Alle vereinbarten Treffen werden nach Zeitpunkt sortiert angezeigt. Das Auswählen eines Treffens zeigt die aktuelle Umgebungskarte(\ref{FA8}) der entsprechenden Gruppe an.
 
 %%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
