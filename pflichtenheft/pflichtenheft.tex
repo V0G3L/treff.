@@ -78,32 +78,32 @@ dass der Dienst unter dem Hostnamen \texttt{atu.rl} angeboten wird.
 
 \subsection{Muss}
 
-\criterium{Vereinfachte Treffpunkte}{crt:length}
+\criterium{Vereinfachte Treffpunkte}{crt:easy}
 Durch das Freigeben von Positionsdaten können andere Nutzer den
 Standort bestimmen.
 
-\criterium{Datenschutz}{crt:fast}
+\criterium{Datenschutz}{crt:safe}
 Die Positionsdaten werden nur mit Bestätigung
 des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
 
-\criterium{Gruppen}{crt:login}
+\criterium{Gruppen}{crt:groups}
 Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
 können sie Positionsdaten austauschen und Treffpunkte festlegen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterium{1 zu 1 Verbindung}
+\criterium{1 zu 1 Verbindung}{crt:1to1}
 Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
 
-\criterium{Account}{crt:tmg}
+\criterium{Account}{crt:acc}
 Ein persönlicher Account ermöglicht es allen Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
 
-\criteriumOptional{Abstimmungen}
+\criteriumOptional{Abstimmungen}{crt:vote}
 Innerhalb von Gruppen können die Nutzer z.B. über nächste Treffpunkte abstimmen
 
-\criteriumOptional{Detailliertere Innenraumkarten}{crt:github}
+\criteriumOptional{Detailliertere Innenraumkarten}{crt:indoor}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
 \criteriumOptional{Seite mit Betreiberinfo}{crt:about}
@@ -236,26 +236,28 @@ Wie das genau implementiert wird, ist nicht Teil dieses Projekts.
 % made via https://gomockingbird.com/projects/mnf0cwf/4gXVnC
 
 \begin{figure}[hb]
-\fbox{\includegraphics[width=\textwidth]{image/login.png}}
-\caption{\label{fig:homepage}
-Homepage mit Login-Funktion
-}
+	\fbox{\includegraphics[height=80mm]{Screenshots/Menu.png}}
+	\caption{\label{fig:menu}
+		Menü mit der Möglichkeit auf Gruppen, Kontakte und Einstellungen zuzugreifen.
+		 \testlink{tst:create}.
+	}
 \end{figure}
 
 \begin{figure}[hb]
-\fbox{\includegraphics[width=\textwidth]{image/form.png}}
-\caption{\label{fig:form}
-Formular zur Generierung einer Kurz-URL.
-Getestet beispielsweise in \testlink{tst:create}.
-}
+		\fbox{\includegraphics[height=80mm]{Screenshots/Karte.png}}
+		\caption{\label{fig:map}
+			Auf der Karte kann die Position der anderen Gruppenmitglieder eingesehen werden.
+			Orte mit mehreren Mitgliedern erscheinen größer. 
+			\testlink{tst:create}.
+		}
 \end{figure}
 
 \begin{figure}[hb]
-\fbox{\includegraphics[width=\textwidth]{image/generated.png}}
-\caption{\label{fig:generated}
-Anzeige der generierten Kurz-URL.
-Das Textfeld mit der Lang-URL kann nicht geändert werden.
-}
+		\fbox{\includegraphics[height=80mm]{Screenshots/Gruppen.png}}
+		\caption{\label{fig:groups}
+			Hier können Gruppen verwaltet und angesehen, sowie neue hinzugefügt werden.
+			\testlink{tst:create}.
+		}
 \end{figure}
 
 \section{Glossar}
