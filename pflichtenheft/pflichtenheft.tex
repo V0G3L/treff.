@@ -149,19 +149,19 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 - Einstellungen(\ref{FA3})
 
 \functionality{Login in einen appspezifischen Account}{fnc:login}\label{FA2}
-\fullfills{crt:acc}
+\fulfills{crt:acc}
 Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen
 
 \functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}\label{FA3}
-\fullfills{crt:acc}
+\fulfills{crt:acc}
 ERROR 404 "Beschreibung" not found
 
 \functionality{Gründen von Gruppen}{fnc:groupfounding}\label{FA4}
-\fullfills{crt:groups}
+\fulfills{crt:groups}
 Über einen Reiter im Hauptmenü können Gruppen erstellt werden. Ihre Funktionen werden in \ref{FA5} bis \ref{FA10} beschrieben.
 
 \functionality{Gruppenmenü}{fnc:groupmenu}\label{FA5}
-\fullfills{crt:groups}
+\fulfills{crt:groups}
 Jede Gruppe besitzt ein eigenes Menü über welches ihre Funktionen angesteuert werden können:
 - Umgebungskarte (\ref{FA8})
 - Anfrage von GPS-Standorten (\ref{FA9})
@@ -170,43 +170,43 @@ Jede Gruppe besitzt ein eigenes Menü über welches ihre Funktionen angesteuert 
 - Liste aller Mitglieder (\ref{FA7})
 
 \functionality{Einladen von Mitgliedern}{fnc:invitations}\label{FA6}
-\fullfills{crt:groups}
+\fulfills{crt:groups}
 Es können Einladungen an Nutzer versandt. Diese können von den eingeladenen Nutzern akzeptiert oder abgelehnt werden.
 
 \functionality{Liste der Gruppenmitglieder}{fnc:memberlist}\label{FA7}
-\fullfills{crt:groups}
+\fulfills{crt:groups}
 Es werden alle Mitglieder aufgelistet. Durch das Anklicken eines Mitgliedes kann wahlweise das zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
 
 \functionality{Umgebungskarte}{fnc:map}\label{FA8}
-\fullfills{crt:groups}
-\fullfills{crt:easy}
+\fulfills{crt:groups}
+\fulfills{crt:easy}
 Jede Gruppe verfügt über eine Umgebungskarte mit eigenem Standort.
 
 \functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}\label{FA9}
-\fullfills{crt:groups}
-\fullfills{crt:easy}
+\fulfills{crt:groups}
+\fulfills{crt:easy}
 Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up gebeten werden ihren Standort für einen fest definierten Zeitraum freizugeben
 
 \functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}\label{FA10}
-\fullfills{crt:easy}
-\fullfills{crt:safe}
+\fulfills{crt:easy}
+\fulfills{crt:safe}
 Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \ref{FA8} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei als blaue Dreiecke, mit Spitze nach unten, dargestellt. Das Symbol für Gruppierungen dagegen besteht aus drei solchen Dreiecken, die sich teilweise überlappen. Das Gruppierungssymbol wird außerdem durch eine kleine Zahl begleitet, die die Größe der Gruppierung beschreibt.
 
 \functionality{Events}{fnc:events}\label{FA11}
 Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\ref{FA15}) aufgelistet und als roter Punkt mit Uhrzeit auf der Karte (\ref{FA8}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
 
 \functionality{Abstimmungen}{fnc:vote}\label{FA12}
-\fullfills{crt:vote}
+\fulfills{crt:vote}
 Das Event(\ref{FA11}) lässt sich durch eine Abstimmung vereinbaren. Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit. Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
 
 \functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}\label{FA13}
-\fullfills{crt:vote}
-\fullfills{crt:easy}
+\fulfills{crt:vote}
+\fulfills{crt:easy}
 Während einer Abstimmung werden alle möglichen Orte auf der Karte (\ref{FA8}) als orangene Punkte angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
 
 \functionality{Standortteilung für einzelne Personen}{fnc:1to1}\label{FA14}
-\fullfills{crt:1to1}
-\fullfills{crt:easy}
+\fulfills{crt:1to1}
+\fulfills{crt:easy}
 Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen. Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell und ohne den Umweg über die Gruppengründung möglich sein.
 
 \functionality{Eventliste}{fnc:eventlist}\label{FA15}
