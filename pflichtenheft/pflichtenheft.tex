@@ -190,10 +190,10 @@ Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up geb
 \functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}\label{FA10}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \ref{FA8} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei als blaue Dreiecke, mit Spitze nach unten, dargestellt. Das Symbol für Gruppierungen dagegen besteht aus drei solchen Dreiecken, die sich teilweise überlappen. Das Gruppierungssymbol wird außerdem durch eine kleine Zahl begleitet, die die Größe der Gruppierung beschreibt.
+Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \ref{FA8} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
 
 \functionality{Events}{fnc:events}\label{FA11}
-Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\ref{FA15}) aufgelistet und als roter Punkt mit Uhrzeit auf der Karte (\ref{FA8}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
+Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\ref{FA15}) aufgelistet und mit Uhrzeit auf der Karte (\ref{FA8}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
 
 \functionality{Abstimmungen}{fnc:vote}\label{FA12}
 \fulfills{crt:vote}
@@ -202,7 +202,7 @@ Das Event(\ref{FA11}) lässt sich durch eine Abstimmung vereinbaren. Diese ist z
 \functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}\label{FA13}
 \fulfills{crt:vote}
 \fulfills{crt:easy}
-Während einer Abstimmung werden alle möglichen Orte auf der Karte (\ref{FA8}) als orangene Punkte angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
+Während einer Abstimmung werden alle möglichen Orte auf der Karte (\ref{FA8}) als solche angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
 
 \functionality{Standortteilung für einzelne Personen}{fnc:1to1}\label{FA14}
 \fulfills{crt:1to1}
@@ -287,7 +287,7 @@ Wie das genau implementiert wird, ist nicht Teil dieses Projekts.
 		\fbox{\includegraphics[height=80mm]{screenshots/karte.png}}
 		\caption{\label{fig:map}
 			Auf der Karte kann die Position der anderen Gruppenmitglieder eingesehen werden.
-			Orte mit mehreren Mitgliedern erscheinen größer. 
+			Orte mit mehreren Mitgliedern erscheinen größer.
 			\testlink{tst:create}.
 		}
 \end{figure}
