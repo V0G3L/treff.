@@ -234,38 +234,24 @@ Wie das genau implementiert wird, ist nicht Teil dieses Projekts.
 %%%%%%%%%%%
 \section{Tests}
 
-\test{Kurz-URL Erstellen}{tst:create}
+\test{Gruppe Erstellen}{tst:grpcreate}
 \tests{fnc:login}
 
-\teststep{Besucher \enquote{Zoe Washburne} hat einen Browser geöffnet.}
-{Zoe navigiert auf die Homepage \texttt{http://atu.rl/}.}
-{Die Homepage wird angezeigt wie in \cref{fig:homepage}.}
+\teststep{Nutzer \enquote{Ned Stark} ist eingeloggt.}
+{Ned tippt auf den Tab  \enquote{Gruppen}.}
+{Er bekommt die Liste aller Gruppen angezeigt in denen er Mitglied ist.}
 
-\teststep{Zoe hat einen Facebook-Account.}%
-{Zoe drückt den \enquote{Login via Facebook} Knopf.}%
-{Zoe wird eingeloggt und auf die Erstellseite wie in \cref{fig:form} weitergeleitet.}
+\teststep{Ned möchte eine Gruppe mit Leuten aus dem Fußball-Training erstellen.}%
+{Er tippt auf den "+"-Button (Neue Gruppe erstellen).}%
+{Er bekommt eine Liste all seiner Kontakte, die er in <Arbeitstitel> geadded hat, angezeigt.}
 
-\teststep{}
-{Zoe befüllt das Feld \enquote{URL} mit \texttt{sehrlangedomain.com/undganzlangeURL.html} und drückt auf \enquote{Kurz-URL erstellen}.}%
-{Ihr wird eine Kurz-URL angezeigt wie z.B.\ \texttt{atu.rl/abc}
- wie in \cref{fig:generated}.
- Statt \enquote{abc}, dürfen beliebige andere Buchstaben und Zahl angezeigt werden, allerdings exakt drei.}
+\teststep{Seine Freunde Robert B. und Edmund T. spielen ebenfalls Fußball.}%
+{Er tippt die beiden Namen an.}
+{<AT> schlägt ihm vor die Gruppe zu erstellen.}
 
-\teststep{}
-{Zoe navigiert auf die eben generierte Kurz-URL, z.B.\ \texttt{http://atu.rl/abc}.}
-{Sie wird zu \texttt{sehrlangedomain.com/undganzlang  eURL.html} weitergeleitet.}
-
-\test{Betreiberinfos lesen}{tst:tmg}
-\tests{fnc:impressum-link}
-\tests{fnc:datenschutz-link}
-
-\teststep{Besucher \enquote{Jayne Cobb} ist auf der Homepage}
-{Er folgt dem Link mit dem Text \enquote{Datenschutz}}
-{Ein Text mit allen Datenschutzinformationen wird ihm angezeigt.}
-
-\teststep{}
-{Jayne folgt dem Link mit dem Text \enquote{Impressum}}
-{Ein Text mit Informationen des Betreibers wird ihm angezeigt.}
+\teststep{Ned hat keine weiteren Freunde.}
+{Er tippt auf Gruppe erstellen}
+{Der Homescreen der Gruppe wird angezeigt}
 
 %%%%%%%%%%%%%
 \pagebreak
