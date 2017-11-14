@@ -70,7 +70,7 @@ Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
 können sie Positionsdaten austauschen und Treffpunkte festlegen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterium{1 zu 1 Verbindung}{crt:1to1}{40}
+\criterium{1 zu 1 Verbindung}{crt:1to1}{40} %sollte in Kann
 Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
 
 \criterium{Account}{crt:acc}{50}
@@ -95,11 +95,11 @@ Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 \criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{10}
 Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen, nicht den Kontakt zu Fremden ermöglichen.
 
-\criteriumNot{Nicht global}{crt:}{10}
+\criteriumNot{Nicht global}{crt:local}{10}
 Die Anwendung fokussiert sich auf das Gebiet rund um den Campus Süd des KIT.
 Außerhalb dessen können manche Funktionen nur begrenzt zur Verfügung stehen.
 
-\criteriumNot{Beidseitiges Einverständnis}{crt:}{10}
+\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{10}
 Die Anwendung ermöglicht nicht das Positionieren von Personen, die ihre Position nicht ausdrücklich
 zugänglich machen. Beispielsweise können insbesondere Eltern nicht ihre Kinder ständig mit dieser App orten.
 
@@ -154,126 +154,93 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 
 %%%%%%%%%%%
 \section{Funktionale Anforderungen}
+\subsection{Muss}
 
-\functionality{Startmenü der App}{fnc:ui}{10}
-unterteilt in 3 Tabs für die unterschiedlichen Funktionen
-\begin{itemize}
-    \item Liste aller Gruppen, in denen man Mitglied ist (\functionalitylink{fnc:groupfounding})
-    \item Liste aller Events, an welchen man teilnimmt (\functionalitylink{fnc:eventlist})
-    \item Liste aller Kontakte (\functionalitylink{fnc:1to1})
-\end{itemize}
-
-\functionality{Login in einen appspezifischen Account}{fnc:login}{20}
+\functionality{Login in einen appspezifischen Account}{fnc:login}{10}
 \fulfills{crt:acc}
 Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen.
 
-\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{30}
+\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{20}
 \fulfills{crt:acc}
-Platzhalter % TODO: Beschreibung (siehe Bild mit Dragmenü)
+Platzhalter % TODO: Beschreibung
 
-\functionality{Gründen von Gruppen}{fnc:groupfounding}{40}
+\functionality{Gründen von Gruppen}{fnc:groupfounding}{30}
 \fulfills{crt:groups}
-Über einen Button am Listenende der Gruppenliste im Hauptmenü(\functionalitylink{fnc:ui}) können neue Gruppen
-erstellt werden. Ihre Funktionen werden in \functionalitylink{fnc:groupmenu} bis \functionalitylink{fnc:votes}
-beschrieben.
+Es können Gruppen erstellt und organisiert werden.
 
-\functionality{Gruppenmenü}{fnc:groupmenu}{50}
+\functionality{Liste der Gruppenmitglieder}{fnc:memberlist}{40}
 \fulfills{crt:groups}
-Jede Gruppe besitzt ein eigenes, in zwei Tabs eingeteiltes, Menü:
-\begin{itemize}
-		\item Chat(\functionalitylink{fnc:chat})
-		\item Eventliste(\functionalitylink{fnc:groupevents})
-\end{itemize}
-Hier können ihre Funktionen angesteuert werden.
+Hier werden alle Mitglieder aufgelistet.
+Es ist möglich das zugehörige Profil zu besuchen und Mitglieder aus der Gruppe zu entfernen oder einzuladen.
+Einladungen können sowohl angenommen, als auch abgelehnt werden.
 
-\functionality{Gruppenoptionen}{fnc:groupoptions}{60}
+\functionality{Events}{fnc:events}{50}
 \fulfills{crt:groups}
-Durch das Anklicken des Gruppennamen, öffnen sich die Gruppenoptionen. Hier können:
-\begin{itemize}
-		\item Mitglieder als Liste direkt eingesehen(\functionalitylink{fnc:memberlist})
-		\item Mitglieder eingeladen oder entfernt(\functionalitylink{fnc:invitations})
-		\item der Gruppenchat stumm geschalten %Anforderung fehlt
-		\item Standortanfragen stumm geschalten %Anforderung fehlt
-\end{itemize}
-werden
+Gruppenmitglieder können ein neues Event, bestehend aus Ort und Zeit, definieren.
+Das Event wird mit Uhrzeit in den Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
+Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App gebeten,
+ihren Standort für die entsprechende Umgebungskarte(\functionalitylink{fnc:map}) temporär freizugeben.
 
-\functionality{Liste der Gruppenmitglieder}{fnc:memberlist}{70}
-\fulfills{crt:groups}
-Es werden alle Mitglieder aufgelistet. Durch das Anklicken eines Mitgliedes kann wahlweise das
-zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
+\functionality{Umgebungskarte}{fnc:map}{60}
+\fulfills{crt:easy}
+\fulfills{crt:safe}
+Jedes Event eine Umgebungskarte, auf welcher der eigene Standort,
+der Treffpunkt und alle freigegebenen Standorte der Mitglieder markiert sind (\functionalitylink{fnc:locations}).
 
-\functionality{Einladen von Mitgliedern}{fnc:invitations}{80}
-\fulfills{crt:groups}
-Am Ende der Liste der Gruppenmitglieder(\functionalitylink{fnc:memberlist}) befindet sich ein Button,
-um weitere Personen in die Gruppe einzuladen. Diese können von den eingeladenen Nutzern akzeptiert
-oder abgelehnt werden.
-
-\functionality{Eventliste}{fnc:groupevents}{90}
+\functionality{Gruppenevents}{fnc:groupevents}{70}
 \fulfills{crt:groups}
 \fulfills{crt:easy}
-Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe
-(\functionalitylink{fnc:groupmenu})(\functionalitylink{fnc:events}).
-Durch das Anklicken eines Events, öffnet sich eine Umgebungskarte, auf welcher der eigene Standort,
-der Treffpunkt und alle freigegebene Standorte der Mitglieder markiert sind (\functionalitylink{fnc:locations}).
+Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe(\functionalitylink{fnc:events}).
 
-\functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}{100}
+\functionality{Eventliste}{fnc:eventlist}{80}
+\fulfills{crt:groups}
+Hier werden alle Events aller Gruppen nach Zeitpunkt sortiert angezeigt.
+Es lassen sich die Umgebungskarten(\functionalitylink{fnc:map}) der Events einsehen.
+
+\functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}{90}
 \fulfills{crt:groups}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-%% wie ist diese Funktion zu erreichen?
-Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up gebeten werden, ihren Standort
-für einen fest definierten Zeitraum freizugeben. Eine Standortanfrage erstellt ein temporäres Event ohne
-spezifizierten Ort.
+Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder gebeten werden,
+ihren Standort für einen fest definierten Zeitraum freizugeben.
+Eine Standortanfrage erstellt ein temporäres Event ohne spezifizierten Ort.
 
-\functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{110}
+\functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{100}
 \fulfills{crt:groups}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen
-auf der entsprechenden Karte(\functionalitylink{fnc:groupevents}) markiert. Diese Gruppierungen bestehen
-aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei unterscheidbar
-von Gruppierungen symbolisiert.
+Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind,
+werden erfasst und als Gruppierungen aus geographisch nah beieinanderliegenden Gruppenmitgliedern.
+Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
 
-\functionality{Events}{fnc:events}{120}
+\subsection{Kann}
+
+\functionality{Gruppenchat}{fnc:chat}{110}
 \fulfills{crt:groups}
-Gruppenmitglieder können über einen Button in der Eventliste(\functionalitylink{fnc:groupevents}) ein neues Event,
-bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in den
-Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
-Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App durch ein Pop-Up gebeten,
-ihren Standort für die entsprechende Umgebungskarte(\functionalitylink{fnc:groupevents}) temporär freizugeben.
+Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten versandt und
+Abstimmungen(\functionalitylink{fnc:vote}) erstellt werden können.
 
-\functionality{Gruppenchat}{fnc:chat}{130}
-\fulfills{crt:groups}
-Jede Gruppe verfügt über einen Chat (\functionalitylink{fnc:groupmenu}), in dem simple Nachrichten versandt
-und Abstimmungen(\functionalitylink{fnc:vote}) erstellt werden können.
-
-\functionality{Abstimmungen}{fnc:vote}{140}
+\functionality{Abstimmungen}{fnc:vote}{120}
 \fulfills{crt:groups}
 \fulfills{crt:vote}
-Inerhalb des Gruppenchats(\functionalitylink{fnc:chat}) lassen sich Abstimmung erstellen. Diese werden bei
-der Initialisierung vom Ersteller zeitlich begrenzt. Nach Erstellen der Abstimmung, wird diese als Event in den
+Es lassen sich Abstimmung erstellen.
+Diese werden bei der Initialisierung vom Ersteller zeitlich begrenzt.
+Nach Erstellen der Abstimmung, wird diese als Event in den
 Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
-Inerhalb der Abstimmung lassen sich nun beliebig viele Treff- und Zeitpunkte hinzufügen,
-sowie Stimmen abgeben und verändern. Alle, zur Wahl stehenden, Orte werden dabei als solche auf der zugehörigen
-Karte (\functionalitylink{fnc:groupevents}) markiert. Nach Ablauf des Zeitlimits wird jeweils der Ort und die
-Zeit mit den meisten Stimmen zum Zeit- bzw. Treffpunkt des Events und alle anderen Daten werden verworfen.
-Hierbei wird bei einem Event ohne Ort, kein Ort auf der zugehörigen
-Karte (\functionalitylink{fnc:groupevents}) markiert. Bei einem Event ohne final festgelegten Zeitpunkt
-dagegen wird der aktuelle Zeitpunkt temporär oder ggf. final als Zeitpunkt des Events definiert.
+Inerhalb der Abstimmung lassen sich nun beliebig viele Treff- und Zeitpunkte hinzufügen, sowie Stimmen abgeben und verändern.
+Alle, zur Wahl stehenden, Orte werden dabei als solche auf der zugehörigen Karte(\functionalitylink{fnc:map}) markiert.
+Nach Ablauf des Zeitlimits wird jeweils der Ort und die Zeit mit den meisten Stimmen
+zum Zeit- bzw. Treffpunkt des Events und alle anderen Daten werden verworfen.
+Hierbei wird bei einem Event ohne Ort, kein Ort auf der zugehörigen Karte(\functionalitylink{fnc:groupevents}) markiert.
+Bei einem Event ohne final festgelegten Zeitpunkt dagegen wird der aktuelle Zeitpunkt
+temporär oder ggf. final als Zeitpunkt des Events definiert.
 
-\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{150}
+\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{130}
 \fulfills{crt:1to1}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen.
-Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell
-und ohne den Umweg über die Gruppengründung möglich sein.
-
-\functionality{Eventliste}{fnc:eventlist}{160}
-\fulfills{crt:groups}
-In der Eventliste im Hauptmenü(\functionalitylink{fnc:ui}) werden alle Events aller Gruppen nach
-Zeitpunkt sortiert angezeigt. Das Auswählen eines Events zeigt die entsprechende
-Umgebungskarte(\functionalitylink{fnc:groupevents}) an.
+Es soll auch für Einzelpersonen möglich sein, ihren Standort zu teilen.
+Dies soll intern als Zweiergruppe implementiert sein, aber in der App ohne den Umweg über die Gruppengründung möglich sein.
 
 %%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
