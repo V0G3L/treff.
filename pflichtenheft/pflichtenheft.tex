@@ -54,41 +54,41 @@ Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder t
 
 \subsection{Muss}
 
-\criterium{Vereinfachte Treffpunkte}{crt:easy}
+\criterium{Vereinfachte Treffpunkte}{crt:easy}{10}
 Durch das Freigeben von Positionsdaten können andere Nutzer den
 Standort bestimmen.
 
-\criterium{Datenschutz}{crt:safe}
+\criterium{Datenschutz}{crt:safe}{20}
 Die Positionsdaten werden nur mit Bestätigung
 des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
 
-\criterium{Gruppen}{crt:groups}
+\criterium{Gruppen}{crt:groups}{30}
 Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
 können sie Positionsdaten austauschen und Treffpunkte festlegen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterium{1 zu 1 Verbindung}{crt:1to1}
+\criterium{1 zu 1 Verbindung}{crt:1to1}{40}
 Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
 
-\criterium{Account}{crt:acc}
+\criterium{Account}{crt:acc}{50}
 Ein persönlicher Account ermöglicht es allen Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
 
-\criteriumOptional{Abstimmungen}{crt:vote}
+\criteriumOptional{Abstimmungen}{crt:vote}{10}
 Innerhalb von Gruppen können die Nutzer z.B. über nächste Treffpunkte abstimmen
 
-\criteriumOptional{Detailliertere Innenraumkarten}{crt:indoor}
+\criteriumOptional{Detailliertere Innenraumkarten}{crt:indoor}{20}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
-\criteriumOptional{Seite mit Betreiberinfo}{crt:about}
+\criteriumOptional{Seite mit Betreiberinfo}{crt:about}{30}
 Der Dienst bietet eine Seite \enquote{Über Uns},
 mit Informationen zum Betreiber.
 
 \subsection{Abgrenzung}
 
-\criteriumNot{Keine Wahl Kurz-URL}{crt:no-choice}
+\criteriumNot{Keine Wahl Kurz-URL}{crt:no-choice}{10}
 Ein Nutzer hat keine Möglichkeit die Auswahl einer Kurz-URL zu beeinflussen.
 
 \pagebreak
@@ -143,88 +143,88 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 %%%%%%%%%%%
 \section{Funktionale Anforderungen}
 
-\functionality{Homepage der App unterteilt in Tabs für die unterschiedlichen Funktionen}{fnc:ui}\label{FA1}
-- Liste aller Gruppen, in denen man Mitglied ist (\ref{FA4})
-- Liste aller Events, an welchen man teilnimmt (\ref{FA11})
-- Einstellungen(\ref{FA3})
+\functionality{Homepage der App unterteilt in Tabs für die unterschiedlichen Funktionen}{fnc:ui}{10}
+- Liste aller Gruppen, in denen man Mitglied ist (\functionalitylink{fnc:groupfounding})
+- Liste aller Events, an welchen man teilnimmt (\functionalitylink{fnc:events})
+- Einstellungen(\functionalitylink{fnc:options})
 
-\functionality{Login in einen appspezifischen Account}{fnc:login}\label{FA2}
+\functionality{Login in einen appspezifischen Account}{fnc:login}{20}
 \fulfills{crt:acc}
 Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen
 
-\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}\label{FA3}
+\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{30}
 \fulfills{crt:acc}
 ERROR 404 "Beschreibung" not found
 
-\functionality{Gründen von Gruppen}{fnc:groupfounding}\label{FA4}
+\functionality{Gründen von Gruppen}{fnc:groupfounding}{40}
 \fulfills{crt:groups}
-Über einen Reiter im Hauptmenü können Gruppen erstellt werden. Ihre Funktionen werden in \ref{FA5} bis \ref{FA10} beschrieben.
+Über einen Reiter im Hauptmenü können Gruppen erstellt werden. Ihre Funktionen werden in \functionalitylink{fnc:groupmenu} bis \functionalitylink{fnc:locations} beschrieben.
 
-\functionality{Gruppenmenü}{fnc:groupmenu}\label{FA5}
+\functionality{Gruppenmenü}{fnc:groupmenu}{50}
 \fulfills{crt:groups}
 Jede Gruppe besitzt ein eigenes Menü über welches ihre Funktionen angesteuert werden können:
-- Umgebungskarte (\ref{FA8})
-- Anfrage von GPS-Standorten (\ref{FA9})
-- Erstellen eines Events (\ref{FA11} und \ref{FA12})
-- Einladen von Mitgliedern (\ref{FA6})
-- Liste aller Mitglieder (\ref{FA7})
+- Umgebungskarte (\functionalitylink{fnc:map})
+- Anfrage von GPS-Standorten (\functionalitylink{fnc:locationrequest})
+- Erstellen eines Events (\functionalitylink{fnc:events} und \functionalitylink{fnc:vote})
+- Einladen von Mitgliedern (\functionalitylink{fnc:invitations})
+- Liste aller Mitglieder (\functionalitylink{fnc:memberlist})
 
-\functionality{Einladen von Mitgliedern}{fnc:invitations}\label{FA6}
+\functionality{Einladen von Mitgliedern}{fnc:invitations}{60}
 \fulfills{crt:groups}
 Es können Einladungen an Nutzer versandt. Diese können von den eingeladenen Nutzern akzeptiert oder abgelehnt werden.
 
-\functionality{Liste der Gruppenmitglieder}{fnc:memberlist}\label{FA7}
+\functionality{Liste der Gruppenmitglieder}{fnc:memberlist}{70}
 \fulfills{crt:groups}
 Es werden alle Mitglieder aufgelistet. Durch das Anklicken eines Mitgliedes kann wahlweise das zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
 
-\functionality{Umgebungskarte}{fnc:map}\label{FA8}
+\functionality{Umgebungskarte}{fnc:map}{80}
 \fulfills{crt:groups}
 \fulfills{crt:easy}
 Jede Gruppe verfügt über eine Umgebungskarte mit eigenem Standort.
 
-\functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}\label{FA9}
+\functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}{90}
 \fulfills{crt:groups}
 \fulfills{crt:easy}
 Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up gebeten werden ihren Standort für einen fest definierten Zeitraum freizugeben
 
-\functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}\label{FA10}
+\functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{100}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \ref{FA8} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
+Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \functionalitylink{fnc:map} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
 
-\functionality{Events}{fnc:events}\label{FA11}
-Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\ref{FA15}) aufgelistet und mit Uhrzeit auf der Karte (\ref{FA8}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
+\functionality{Events}{fnc:events}{110}
+Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\functionalitylink{fnc:eventlist}) aufgelistet und mit Uhrzeit auf der Karte (\functionalitylink{fnc:map}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
 
-\functionality{Abstimmungen}{fnc:vote}\label{FA12}
+\functionality{Abstimmungen}{fnc:vote}{120}
 \fulfills{crt:vote}
-Das Event(\ref{FA11}) lässt sich durch eine Abstimmung vereinbaren. Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit. Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
+Das Event(\functionalitylink{fnc:events}) lässt sich durch eine Abstimmung vereinbaren. Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit. Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
 
-\functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}\label{FA13}
+\functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}{130}
 \fulfills{crt:vote}
 \fulfills{crt:easy}
-Während einer Abstimmung werden alle möglichen Orte auf der Karte (\ref{FA8}) als solche angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
+Während einer Abstimmung werden alle möglichen Orte auf der Karte (\functionalitylink{fnc:map}) als solche angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
 
-\functionality{Standortteilung für einzelne Personen}{fnc:1to1}\label{FA14}
+\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{140}
 \fulfills{crt:1to1}
 \fulfills{crt:easy}
 Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen. Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell und ohne den Umweg über die Gruppengründung möglich sein.
 
-\functionality{Eventliste}{fnc:eventlist}\label{FA15}
-Alle vereinbarten Treffen werden nach Zeitpunkt sortiert angezeigt. Das Auswählen eines Treffens zeigt die aktuelle Umgebungskarte(\ref{FA8}) der entsprechenden Gruppe an.
+\functionality{Eventliste}{fnc:eventlist}{150}
+Alle vereinbarten Treffen werden nach Zeitpunkt sortiert angezeigt. Das Auswählen eines Treffens zeigt die aktuelle Umgebungskarte(\functionalitylink{fnc:map}) der entsprechenden Gruppe an.
 
 %%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
 
-\nonFunctionality{Modernes Design}{nfc:design}
+\nonFunctionality{Modernes Design}{nfc:design}{10}
 
 Das Design soll modern und seriös wirken.
 
-\nonFunctionality{Persistenz}{nfc:persistence}
+\nonFunctionality{Persistenz}{nfc:persistence}{20}
 
 Sollten in Zukunft Erweiterungen oder Updates notwendig werden,
 müssen die Daten (Kurz-URLs, E-Mailaddressen) erhalten bleiben.
 
-\nonFunctionality{Erweiterbarkeit}{nfc:extensibility}
+\nonFunctionality{Erweiterbarkeit}{nfc:extensibility}{30}
 
 Das Produkt muss dahingehend erweiterbar sein,
 das die Liste der E-Mail-URL Abbildung von authentifizierten Nutzern
@@ -234,7 +234,7 @@ Wie das genau implementiert wird, ist nicht Teil dieses Projekts.
 %%%%%%%%%%%
 \section{Tests}
 
-\test{Gruppe Erstellen}{tst:grpcreate}
+\test{Gruppe Erstellen}{tst:grpcreate}{10}
 \tests{fnc:login}
 
 \teststep{Nutzer \enquote{Ned Stark} ist eingeloggt.}
