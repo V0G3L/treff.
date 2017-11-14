@@ -1,16 +1,16 @@
 NAME=pflichtenheft
 
-default: build/$(NAME).pdf
+.PHONY: show clean distclean dev
 
-all: build/$(NAME).pdf
+default dev all: distclean build/$(NAME).pdf
+
+dev: CONT_FLAG = -pvc
 
 build/%.pdf: %.tex *.sty
 	mkdir -p build
-	latexmk -pdf -g -f -auxdir=build -outdir=build $<
+	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 
-.PHONY: show clean distclean
-
-show: $(NAME).pdf
+show: build/$(NAME).pdf
 	xdg-open $<
 
 clean:
@@ -18,4 +18,4 @@ clean:
 	rm -rf build
 
 distclean: clean
-	rm -f $(NAME).pdf
+	rm -f build/$(NAME).pdf
