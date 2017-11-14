@@ -89,8 +89,19 @@ Der Dienst bietet eine Seite \enquote{Über Uns},
 mit Informationen zum Betreiber.
 
 \subsection{Abgrenzung}
-\criteriumNot{Keine Wahl Kurz-URL}{crt:no-choice}{10}
-Ein Nutzer hat keine Möglichkeit die Auswahl einer Kurz-URL zu beeinflussen.
+\criteriumNot{Kein Social Network}{crt:socialNetwork}{10}
+Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit Anderen zu teilen.
+
+\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{10}
+Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen, nicht den Kontakt zu Fremden ermöglichen.
+
+\criteriumNot{Nicht global}{crt:}{10}
+Die Anwendung fokussiert sich auf das Gebiet rund um den Campus Süd des KIT.
+Außerhalb dessen können manche Funktionen nur begrenzt zur Verfügung stehen.
+
+\criteriumNot{Beidseitiges Einverständnis}{crt:}{10}
+Die Anwendung ermöglicht nicht das Positionieren von Personen, die ihre Position nicht ausdrücklich
+zugänglich machen. Beispielsweise können insbesondere Eltern nicht ihre Kinder ständig mit dieser App orten.
 
 \pagebreak
 %%%%%%%%%%%%%%
@@ -267,21 +278,40 @@ Umgebungskarte(\functionalitylink{fnc:groupevents}) an.
 %%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
 
-\nonFunctionality{Modernes Design}{nfc:design}{10}
+\nonFunctionality{Einfache Bedienung}{nfc:handling}{10}
+Damit die App sich gegen die gängigen Instant Messenger durchsetzen kann, muss sie intuitiv und einfach bedienbar sein.
 
-Das Design soll modern und seriös wirken.
+\nonFunctionality{Ressourcennutzung}{nfc:persistence}{20}
+Um Akkulaufzeit und mobiles Datenvolumen zu Sparen, findet die Kommunikation mit dem Server nur nach festen Zeitintervallen statt.
 
-\nonFunctionality{Persistenz}{nfc:persistence}{20}
+\nonFunctionality{Mobile Nutzung}{nfc:mobile usage}{30}
+Die Anwendung muss auch bei geringen Verbindungsgeschwindigkeiten, wie sie bei mobilem Netz auftreten können, einwandfrei funktionieren.
 
-Sollten in Zukunft Erweiterungen oder Updates notwendig werden,
-müssen die Daten (Kurz-URLs, E-Mailaddressen) erhalten bleiben.
+\nonFunctionality{Nutzeraufkommen}{nfc:extensibility}{40}
+Es müssen mindestens x Nutzer die Anwendung gleichzeitig verwenden können.  %TODO: Zahl der Nutzer festlegen
 
-\nonFunctionality{Erweiterbarkeit}{nfc:extensibility}{30}
+\nonFunctionality{Schneller Start}{nfc:launch}{50}
+Das Starten der Anwendung darf nicht länger als x dauern.   %TODO: Startzeit festlegen
 
-Das Produkt muss dahingehend erweiterbar sein,
-das die Liste der E-Mail-URL Abbildung von authentifizierten Nutzern
-abgerufen werden kann.
-Wie das genau implementiert wird, ist nicht Teil dieses Projekts.
+\nonFunctionality{Verlässlichkeit der Anzeige}{nfc:reliability}{60}
+Es sollen nur Standorte angezeigt werden, die eine Genauigkeit von 20m oder besser aufweisen.
+
+\nonFunctionality{Datenschutz}{nfc:privacy}{70}
+Der Umgang mit Nutzerdaten entpricht den national geltenden Datenschutzgesetzen.
+
+\nonFunctionality{Datenspeicherung}{nfc:data storage}{80}
+Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese für andere Nutzer einsehbar sein sollen.
+
+\nonFunctionality{Löschen von Konten}{nfc:deletion}{90}
+Nutzerkonten und alle dazugehörigen Daten sollen vollständig gelöscht werden können.
+
+\nonFunctionality{Unabhängigkeit}{nfc:independency}{100}
+Die Registrierung soll ohne Zwang von zusätlichen Konten, wie z.B bei Google oder Facebook möglich sein.
+
+\nonFunctionality{Kompatibilität}{nfc:compatibility}{110}
+Die Anwendung muss alle Andriod Versionen, ab einschließlich Android Version 5, unterstützen.
+
+
 
 %%%%%%%%%%%
 \section{Tests}
