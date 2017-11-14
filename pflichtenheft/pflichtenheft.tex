@@ -1,8 +1,25 @@
-\documentclass[parskip=full,11pt,twoside]{scrartcl}
+\documentclass[parskip=full,11pt]{scrartcl}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[german]{babel}
+\usepackage[useregional]{datetime2}
+\usepackage{hyperref}
+\usepackage[nameinlink]{cleveref}
+\usepackage[section]{placeins}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{amsmath} % for $\text{}$
+\usepackage{pflichtenheft}
 
-\title{GO-App}
-\author{Lukas Dippon, Jens Kienle, Matthias Noll, Fabian Röpke, Tim Schmidt, Simon Vögele}
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
+
+\crefname{figure}{Abb}{Abb}
+
+\hypersetup{
+	pdftitle={Pflichtenheft},
+	bookmarks=true,
+}
 
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
@@ -13,33 +30,18 @@
 \refoot{\today}
 \pagestyle{scrheadings}
 
-%\usepackage[sfdefault,light]{roboto}
-\usepackage[T1]{fontenc}
-\usepackage[german]{babel}
-\usepackage[yyyymmdd]{datetime} % must be after babel
-\renewcommand{\dateseparator}{-} % ISO8601 date format
-\usepackage{hyperref}
-\usepackage[nameinlink]{cleveref}
-\crefname{figure}{Abb}{Abb}
-\usepackage[section]{placeins}
-\usepackage{xcolor}
-\usepackage{graphicx}
-\hypersetup{
-	pdftitle={Pflichtenheft},
-	bookmarks=true,
-}
-\usepackage{csquotes}
-
-\usepackage{amsmath} % for $\text{}$
-\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
-
-\usepackage{pflichtenheft}
+\title{GO-App}
+\author{Lukas Dippon
+        \and Jens Kienle
+        \and Matthias Noll
+        \and Fabian Röpke
+        \and Tim Schmidt
+        \and Simon Vögele}
 
 \begin{document}
 \maketitle
 
 \section{Einleitung}
-
 Studenten und Mitarbeiter des KIT treffen sich gerne zum gemeinsamen Essen oder Lernen.
 Dazu ist an einem bestimmten Tag immer notwendig zu wissen, ob bereits ein Treffen vereinbart wurde.
 Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
@@ -144,13 +146,15 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \section{Funktionale Anforderungen}
 
 \functionality{Homepage der App unterteilt in Tabs für die unterschiedlichen Funktionen}{fnc:ui}{10}
-- Liste aller Gruppen, in denen man Mitglied ist (\functionalitylink{fnc:groupfounding})
-- Liste aller Events, an welchen man teilnimmt (\functionalitylink{fnc:events})
-- Einstellungen(\functionalitylink{fnc:options})
+\begin{itemize}
+    \item Liste aller Gruppen, in denen man Mitglied ist (\functionalitylink{fnc:groupfounding})
+    \item Liste aller Events, an welchen man teilnimmt (\functionalitylink{fnc:events})
+    \item Einstellungen(\functionalitylink{fnc:options})
+\end{itemize}
 
 \functionality{Login in einen appspezifischen Account}{fnc:login}{20}
 \fulfills{crt:acc}
-Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen
+Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen.
 
 \functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{30}
 \fulfills{crt:acc}
@@ -158,24 +162,29 @@ ERROR 404 "Beschreibung" not found
 
 \functionality{Gründen von Gruppen}{fnc:groupfounding}{40}
 \fulfills{crt:groups}
-Über einen Reiter im Hauptmenü können Gruppen erstellt werden. Ihre Funktionen werden in \functionalitylink{fnc:groupmenu} bis \functionalitylink{fnc:locations} beschrieben.
+Über einen Reiter im Hauptmenü können Gruppen erstellt werden.
+Ihre Funktionen werden in \functionalitylink{fnc:groupmenu} bis \functionalitylink{fnc:locations} beschrieben.
 
 \functionality{Gruppenmenü}{fnc:groupmenu}{50}
 \fulfills{crt:groups}
 Jede Gruppe besitzt ein eigenes Menü über welches ihre Funktionen angesteuert werden können:
-- Umgebungskarte (\functionalitylink{fnc:map})
-- Anfrage von GPS-Standorten (\functionalitylink{fnc:locationrequest})
-- Erstellen eines Events (\functionalitylink{fnc:events} und \functionalitylink{fnc:vote})
-- Einladen von Mitgliedern (\functionalitylink{fnc:invitations})
-- Liste aller Mitglieder (\functionalitylink{fnc:memberlist})
+\begin{itemize}
+    \item Umgebungskarte (\functionalitylink{fnc:map})
+    \item Anfrage von GPS-Standorten (\functionalitylink{fnc:locationrequest})
+    \item Erstellen eines Events (\functionalitylink{fnc:events} und \functionalitylink{fnc:vote})
+    \item Einladen von Mitgliedern (\functionalitylink{fnc:invitations})
+    \item Liste aller Mitglieder (\functionalitylink{fnc:memberlist})
+\end{itemize}
 
 \functionality{Einladen von Mitgliedern}{fnc:invitations}{60}
 \fulfills{crt:groups}
-Es können Einladungen an Nutzer versandt. Diese können von den eingeladenen Nutzern akzeptiert oder abgelehnt werden.
+Es können Einladungen an Nutzer versandt.
+Diese können von den eingeladenen Nutzern akzeptiert oder abgelehnt werden.
 
 \functionality{Liste der Gruppenmitglieder}{fnc:memberlist}{70}
 \fulfills{crt:groups}
-Es werden alle Mitglieder aufgelistet. Durch das Anklicken eines Mitgliedes kann wahlweise das zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
+Es werden alle Mitglieder aufgelistet.
+Durch das Anklicken eines Mitgliedes kann wahlweise das zugehörige Profil besucht oder das Mitglied aus der Gruppe entfernt werden.
 
 \functionality{Umgebungskarte}{fnc:map}{80}
 \fulfills{crt:groups}
@@ -190,27 +199,37 @@ Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder über ein Pop-Up geb
 \functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{100}
 \fulfills{crt:easy}
 \fulfills{crt:safe}
-Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \functionalitylink{fnc:map} beschriebenen Gruppenkarte markiert. Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern. Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
+Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind, werden erfasst und als Gruppierungen auf der in \functionalitylink{fnc:map} beschriebenen Gruppenkarte markiert.
+Diese Gruppierungen bestehen aus geographisch nah beieinanderliegenden Gruppenmitgliedern.
+Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
 
 \functionality{Events}{fnc:events}{110}
-Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren. Das Event wird mit Uhrzeit in der Eventliste(\functionalitylink{fnc:eventlist}) aufgelistet und mit Uhrzeit auf der Karte (\functionalitylink{fnc:map}) markiert. Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
+Gruppenmitglieder können ein Event, bestehend aus Ort und einen Zeit, definieren.
+Das Event wird mit Uhrzeit in der Eventliste(\functionalitylink{fnc:eventlist}) aufgelistet und mit Uhrzeit auf der Karte (\functionalitylink{fnc:map}) markiert.
+Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App über ein Pop-Up gebeten, ihren Standort temporär freizugeben.
 
 \functionality{Abstimmungen}{fnc:vote}{120}
 \fulfills{crt:vote}
-Das Event(\functionalitylink{fnc:events}) lässt sich durch eine Abstimmung vereinbaren. Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit. Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
+Das Event(\functionalitylink{fnc:events}) lässt sich durch eine Abstimmung vereinbaren.
+Diese ist zeitlich begrenzt durch eine vom Ersteller festgelegte Zeit.
+Hierbei können inerhalb der Zeitgrenze beliebig oft von den Gruppenmitgliedern Orte und Zeitpunkte hinzugefügt werden, die eigene Stimme verändert, oder die Zeitgrenze verlängert werden.
 
 \functionality{Anzeigen von Treffpunkten}{fnc:meetingpoints}{130}
 \fulfills{crt:vote}
 \fulfills{crt:easy}
-Während einer Abstimmung werden alle möglichen Orte auf der Karte (\functionalitylink{fnc:map}) als solche angezeigt. Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen. Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
+Während einer Abstimmung werden alle möglichen Orte auf der Karte (\functionalitylink{fnc:map}) als solche angezeigt.
+Durch das Anklicken des Ortes in der Abstimmung lassen sich die Markierungen auf der Karte erreichen.
+Nach Vollendung der Abstimmung wird der Ort mit den meisten Stimmen als finaler Treffpunkt festgelegt, während alle anderen Orte von der Karte gelöscht werden.
 
 \functionality{Standortteilung für einzelne Personen}{fnc:1to1}{140}
 \fulfills{crt:1to1}
 \fulfills{crt:easy}
-Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen. Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell und ohne den Umweg über die Gruppengründung möglich sein.
+Es soll auch für Einzelpersonen möglich sein ihren Standort zu teilen.
+Dies soll intern als Zweiergruppe implementiert sein, aber in der App als extra Reiter schnell und ohne den Umweg über die Gruppengründung möglich sein.
 
 \functionality{Eventliste}{fnc:eventlist}{150}
-Alle vereinbarten Treffen werden nach Zeitpunkt sortiert angezeigt. Das Auswählen eines Treffens zeigt die aktuelle Umgebungskarte(\functionalitylink{fnc:map}) der entsprechenden Gruppe an.
+Alle vereinbarten Treffen werden nach Zeitpunkt sortiert angezeigt.
+Das Auswählen eines Treffens zeigt die aktuelle Umgebungskarte(\functionalitylink{fnc:map}) der entsprechenden Gruppe an.
 
 %%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
