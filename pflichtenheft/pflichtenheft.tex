@@ -52,56 +52,72 @@ In den Gruppen kann der Zeit- und Treffpunkt bestimmt werden.
 Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder temporär und anonym anzeigen, um das Treffen zu vereinfachen.
 
 \pagebreak
+%%%%%%%%%%%%%%
 \section{Kriterien}
 % Diese Section sollte kurz und knapp "für Manager" sein
 % und auf eine Seite passen.
 
 \subsection{Muss}
-\criterium{Vereinfachte Treffpunkte}{crt:easy}{10}
-Durch das Freigeben von Positionsdaten können andere Nutzer den
-Standort bestimmen.
-
-\criterium{Datenschutz}{crt:safe}{20}
-Die Positionsdaten werden nur mit Bestätigung
-des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
-
-\criterium{Gruppen}{crt:groups}{30}
-Mehrere Nutzer können sich in Gruppen zusammenschließen. In diesen
-können sie Positionsdaten austauschen und Treffpunkte festlegen.
+\criterium{Gruppen}{crt:groups}{10}
+Mehrere Nutzer können sich in Gruppen zusammenschließen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterium{1 zu 1 Verbindung}{crt:1to1}{40} %sollte in Kann
-Die Position kann auf Wunsch auch mit nur mit einem anderen Nutzer geteilt werden
+\criterium{Festlegbare Treffpunkte}{crt:meetingpoints}{20}
+Innerhalb von Gruppen können Treffpunkte festgelegt werden,
+die den Mitgliedern auf der Karte angezeigt werden.
 
-\criterium{Account}{crt:acc}{50}
-Ein persönlicher Account ermöglicht es allen Nutzern,
+\criterium{Gegenseitige Ortung}{crt:positions}{30}
+Nutzer sind in der Lage, ihre aktuelle Position mit anderen Gruppenmitgliedern
+über mehrere Minuten bis Stunden zu teilen.
+Diese wird dann allen Gruppenmitgliedern auf der Karte angezeigt und laufend
+aktualisiert.
+
+\criterium{1 zu 1 Verbindung}{crt:1to1}{40}
+Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
+soll möglich und besonders einfach sein.
+% TODO: „Besonders einfach“ zu schwammig?
+
+\criterium{Datenschutz}{crt:privacy}{50}
+Die Positionsdaten werden nur mit zeitnaher Bestätigung
+des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
+
+\criterium{Nutzerkonten}{crt:account}{60}
+Ein persönliches Nutzerkonto ermöglicht es Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
 \criteriumOptional{Abstimmungen}{crt:vote}{10}
-Innerhalb von Gruppen können die Nutzer z.B. über nächste Treffpunkte abstimmen
+Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
 \criteriumOptional{Detailliertere Innenraumkarten}{crt:indoor}{20}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
-\criteriumOptional{Seite mit Betreiberinfo}{crt:about}{30}
-Der Dienst bietet eine Seite \enquote{Über Uns},
-mit Informationen zum Betreiber.
+\criteriumOptional{Eigene Server}{crt:ownServer}{30}
+Es ist dem Nutzer möglich, einen eigenen Server einzurichten und diesen statt
+des standardmäßig zur Verfügung stehenden Servers zu verwenden.
+Zwichen verschiedenen Servern findet keine Kommunikation statt.
+Insbesondere werden Nutzerkonten nur serverweit gespeichert.
+Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
+gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
+
+\criteriumOptional{Server-Wechsel}{crt:switchServer}{40}
+Um \criteriumlink{crt:ownServer} ausnutzen zu können, ist es dem Nutzer
+möglich, ohne erhöhte Kenntnisse den verwendeten Server zu wechseln.
 
 \subsection{Abgrenzung}
 \criteriumNot{Kein Social Network}{crt:socialNetwork}{10}
-Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit Anderen zu teilen.
+Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
+anderen zu teilen.
 
-\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{10}
-Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen, nicht den Kontakt zu Fremden ermöglichen.
+\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{20}
+Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen,
+nicht den Kontakt zu Fremden ermöglichen.
 
-\criteriumNot{Nicht global}{crt:local}{10}
-Die Anwendung fokussiert sich auf das Gebiet rund um den Campus Süd des KIT.
-Außerhalb dessen können manche Funktionen nur begrenzt zur Verfügung stehen.
-
-\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{10}
-Die Anwendung ermöglicht nicht das Positionieren von Personen, die ihre Position nicht ausdrücklich
-zugänglich machen. Beispielsweise können insbesondere Eltern nicht ihre Kinder ständig mit dieser App orten.
+\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{30}
+Die Anwendung ermöglicht nicht das Positionieren von Personen,
+die ihre Position nicht ausdrücklich zugänglich machen.
+Beispielsweise können insbesondere Eltern nicht ihre Kinder ständig mit dieser
+App orten.
 
 \pagebreak
 %%%%%%%%%%%%%%
@@ -157,11 +173,11 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \subsection{Muss}
 
 \functionality{Login in einen appspezifischen Account}{fnc:login}{10}
-\fulfills{crt:acc}
+\fulfills{crt:account}
 Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen.
 
 \functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{20}
-\fulfills{crt:acc}
+\fulfills{crt:account}
 Platzhalter % TODO: Beschreibung
 
 \functionality{Gründen von Gruppen}{fnc:groupfounding}{30}
@@ -189,7 +205,7 @@ der Treffpunkt und alle freigegebenen Standorte der Mitglieder markiert sind (\f
 
 \functionality{Gruppenevents}{fnc:groupevents}{70}
 \fulfills{crt:groups}
-\fulfills{crt:easy}
+\fulfills{crt:meetingpoints}
 Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe(\functionalitylink{fnc:events}).
 
 \functionality{Eventliste}{fnc:eventlist}{80}
@@ -198,17 +214,17 @@ Hier werden alle Events aller Gruppen nach Zeitpunkt sortiert angezeigt.
 Es lassen sich die Umgebungskarten(\functionalitylink{fnc:map}) der Events einsehen.
 
 \functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}{90}
+\fulfills{crt:meetingpoints}
 \fulfills{crt:groups}
-\fulfills{crt:easy}
-\fulfills{crt:safe}
+\fulfills{crt:privacy}
 Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder gebeten werden,
 ihren Standort für einen fest definierten Zeitraum freizugeben.
 Eine Standortanfrage erstellt ein temporäres Event ohne spezifizierten Ort.
 
 \functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{100}
 \fulfills{crt:groups}
-\fulfills{crt:easy}
-\fulfills{crt:safe}
+\fulfills{crt:meetingpoints}
+\fulfills{crt:privacy}
 Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind,
 werden erfasst und als Gruppierungen aus geographisch nah beieinanderliegenden Gruppenmitgliedern.
 Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
@@ -237,8 +253,8 @@ temporär oder ggf. final als Zeitpunkt des Events definiert.
 
 \functionality{Standortteilung für einzelne Personen}{fnc:1to1}{130}
 \fulfills{crt:1to1}
-\fulfills{crt:easy}
-\fulfills{crt:safe}
+\fulfills{crt:meetingpoints}
+\fulfills{crt:privacy}
 Es soll auch für Einzelpersonen möglich sein, ihren Standort zu teilen.
 Dies soll intern als Zweiergruppe implementiert sein, aber in der App ohne den Umweg über die Gruppengründung möglich sein.
 
