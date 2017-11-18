@@ -172,17 +172,21 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
         und eine Internetanbindung besitzt
 \end{itemize}
 
-%%%%%%%%%%%
+    %%%%%%%%%%%
+
 \section{Funktionale Anforderungen}
+
 \subsection{Muss}
 
 \functionality{Login in einen appspezifischen Account}{fnc:login}{10}
 \fulfills{crt:account}
-Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem einloggen.
+Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem 
+einloggen.
 
 \functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{20}
 \fulfills{crt:account}
-Platzhalter % TODO: Beschreibung
+Der Nutzer soll seine Personenbezogenen Daten einsehen und bearbeiten können.
+Desweiteren soll er auch seine Privatsphäreeinstelungen bearbeiten können.
 
 \functionality{Gründen von Gruppen}{fnc:groupfounding}{30}
 \fulfills{crt:groups}
@@ -195,15 +199,14 @@ Es ist möglich das zugehörige Profil zu besuchen und Mitglieder aus der Gruppe
 Einladungen können sowohl angenommen, als auch abgelehnt werden.
 
 \functionality{Events}{fnc:events}{50}
-\fulfills{crt:groups}
+\fulfills{crt:meetingpoints}
 Gruppenmitglieder können ein neues Event, bestehend aus Ort und Zeit, definieren.
 Das Event wird mit Uhrzeit in den Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
 Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App gebeten,
 ihren Standort für die entsprechende Umgebungskarte(\functionalitylink{fnc:map}) temporär freizugeben.
 
 \functionality{Umgebungskarte}{fnc:map}{60}
-\fulfills{crt:easy}
-\fulfills{crt:safe}
+\fulfills{crt:location}
 Jedes Event eine Umgebungskarte, auf welcher der eigene Standort,
 der Treffpunkt und alle freigegebenen Standorte der Mitglieder markiert sind (\functionalitylink{fnc:locations}).
 
@@ -214,12 +217,14 @@ Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe(\fun
 
 \functionality{Eventliste}{fnc:eventlist}{80}
 \fulfills{crt:groups}
+\fullfils{crt:meetingpoints}
 Hier werden alle Events aller Gruppen nach Zeitpunkt sortiert angezeigt.
 Es lassen sich die Umgebungskarten(\functionalitylink{fnc:map}) der Events einsehen.
 
+
 \functionality{Anfrage von GPS-Standorten}{fnc:locationrequest}{90}
 \fulfills{crt:meetingpoints}
-\fulfills{crt:groups}
+\fulfills{crt:positions}
 \fulfills{crt:privacy}
 Erstellen einer GPS-Anfrage, bei der alle Gruppenmitglieder gebeten werden,
 ihren Standort für einen fest definierten Zeitraum freizugeben.
@@ -227,7 +232,7 @@ Eine Standortanfrage erstellt ein temporäres Event ohne spezifizierten Ort.
 
 \functionality{Anzeigen von anonymen GPS-Standorten}{fnc:locations}{100}
 \fulfills{crt:groups}
-\fulfills{crt:meetingpoints}
+\fulfills{crt:positions}
 \fulfills{crt:privacy}
 Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind,
 werden erfasst und als Gruppierungen aus geographisch nah beieinanderliegenden Gruppenmitgliedern.
@@ -241,7 +246,6 @@ Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten versandt und
 Abstimmungen(\functionalitylink{fnc:vote}) erstellt werden können.
 
 \functionality{Abstimmungen}{fnc:vote}{120}
-\fulfills{crt:groups}
 \fulfills{crt:vote}
 Es lassen sich Abstimmung erstellen.
 Diese werden bei der Initialisierung vom Ersteller zeitlich begrenzt.
@@ -257,12 +261,13 @@ temporär oder ggf. final als Zeitpunkt des Events definiert.
 
 \functionality{Standortteilung für einzelne Personen}{fnc:1to1}{130}
 \fulfills{crt:1to1}
-\fulfills{crt:meetingpoints}
+\fulfills{crt:location}
 \fulfills{crt:privacy}
 Es soll auch für Einzelpersonen möglich sein, ihren Standort zu teilen.
 Dies soll intern als Zweiergruppe implementiert sein, aber in der App ohne den Umweg über die Gruppengründung möglich sein.
+    
+%%%%%%%%%%
 
-%%%%%%%%%%%
 \section{Nicht-Funktionale Anforderungen}
 
 \nonFunctionality{Einfache Bedienung}{nfc:handling}{10}
