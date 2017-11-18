@@ -76,19 +76,19 @@ Nutzer sind in der Lage, ihre aktuelle Position mit anderen Gruppenmitgliedern
 Diese wird dann allen Gruppenmitgliedern auf der Karte angezeigt und laufend
 aktualisiert.
 
-\criterium{Datenschutz}{crt:privacy}{60}
+\criterium{Datenschutz}{crt:privacy}{50}
 Die Positionsdaten werden nur mit zeitnaher Bestätigung
 des Nutzers gesendet und serverseitig nicht längerfristig gespeichert.
 
-\criterium{Nutzerkonten}{crt:account}{70}
+\criterium{Nutzerkonten}{crt:account}{60}
 Ein persönliches Nutzerkonto ermöglicht es Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
-\criteriumOptional{Abstimmungen}{crt:vote}{10}
+\criteriumOptional{Abstimmungen}{crt:vote}{70}
 Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
-\criterium{1 zu 1 Verbindung}{crt:1to1}{50}
+\criteriumOptional{1 zu 1 Verbindung}{crt:1to1}{10}
 Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
 soll möglich und besonders einfach sein.
 % TODO: „Besonders einfach“ zu schwammig?
@@ -97,27 +97,22 @@ soll möglich und besonders einfach sein.
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
 \criteriumOptional{Eigene Server}{crt:ownServer}{30}
-Es ist dem Nutzer möglich, einen eigenen Server einzurichten und diesen statt
-des standardmäßig zur Verfügung stehenden Servers zu verwenden.
-Zwichen verschiedenen Servern findet keine Kommunikation statt.
-Insbesondere werden Nutzerkonten nur serverweit gespeichert.
-Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
-gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
+Es ist dem Nutzer möglich, einen eigenen Server zu erstellen und zu verwalten.
 
 \criteriumOptional{Server-Wechsel}{crt:switchServer}{40}
 Um \criteriumlink{crt:ownServer} ausnutzen zu können, ist es dem Nutzer
 möglich, ohne erhöhte Kenntnisse den verwendeten Server zu wechseln.
 
 \subsection{Abgrenzung}
-\criteriumNot{Kein Social Network}{crt:socialNetwork}{10}
+\criteriumNot{Kein Social Network}{crt:socialNetwork}{50}
 Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 anderen zu teilen.
 
-\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{20}
+\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{60}
 Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen,
 nicht den Kontakt zu Fremden ermöglichen.
 
-\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{30}
+\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{70}
 Die Anwendung ermöglicht nicht das Positionieren von Personen,
 die ihre Position nicht ausdrücklich zugänglich machen.
 Beispielsweise können insbesondere Eltern nicht ihre Kinder ständig mit dieser
@@ -180,13 +175,15 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 
 \functionality{Login in einen appspezifischen Account}{fnc:login}{10}
 \fulfills{crt:account}
-Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem 
+Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem
 einloggen.
 
 \functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{20}
 \fulfills{crt:account}
-Der Nutzer soll seine Personenbezogenen Daten einsehen und bearbeiten können.
-Desweiteren soll er auch seine Privatsphäreeinstelungen bearbeiten können.
+%TODO zu schwammig formuliert
+Der Nutzer soll seine personenbezogenen Daten,
+sowie App- und Privatsphäreeinstellungen einsehen und bearbeiten können.
+
 
 \functionality{Gründen von Gruppen}{fnc:groupfounding}{30}
 \fulfills{crt:groups}
@@ -240,12 +237,12 @@ Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
 
 \subsection{Kann}
 
-\functionality{Gruppenchat}{fnc:chat}{110}
+\functionality{Gruppenchat}{fnc:chat}{10}
 \fulfills{crt:groups}
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten versandt und
 Abstimmungen(\functionalitylink{fnc:vote}) erstellt werden können.
 
-\functionality{Abstimmungen}{fnc:vote}{120}
+\functionality{Abstimmungen}{fnc:vote}{20}
 \fulfills{crt:vote}
 Es lassen sich Abstimmung erstellen.
 Diese werden bei der Initialisierung vom Ersteller zeitlich begrenzt.
@@ -259,13 +256,29 @@ Hierbei wird bei einem Event ohne Ort, kein Ort auf der zugehörigen Karte(\func
 Bei einem Event ohne final festgelegten Zeitpunkt dagegen wird der aktuelle Zeitpunkt
 temporär oder ggf. final als Zeitpunkt des Events definiert.
 
-\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{130}
+\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{30}
 \fulfills{crt:1to1}
 \fulfills{crt:location}
 \fulfills{crt:privacy}
 Es soll auch für Einzelpersonen möglich sein, ihren Standort zu teilen.
 Dies soll intern als Zweiergruppe implementiert sein, aber in der App ohne den Umweg über die Gruppengründung möglich sein.
-    
+
+\functionality{Eigene Server}{fnc:ownServer}{40}
+\fulfills{crt:ownServer}
+Eigene Server einrichten und diese(n) statt des standardmäßig zur Verfügung stehenden Servers verwenden.
+Zwichen verschiedenen Servern findet keine Kommunikation statt.
+Insbesondere werden Nutzerkonten nur serverweit gespeichert.
+Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung gestellt
+und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
+
+\functionality{Serverwechel}{fnc:switchServer}{50}
+\fulfills{crt:switchServer}
+Das wechseln des Servers soll innerhalb der App möglich sein.
+
+\functionality{Stummschalten}{fnc:mute}{60}
+Sowohl der Gruppenchat(\functionalitylink{fnc:chat}),
+als auch die Standortanfragen(\functionalitylink{fnc:locationrequest}) lassen sich unabhängig voneinander stumm schalten.
+
 %%%%%%%%%%
 
 \section{Nicht-Funktionale Anforderungen}
