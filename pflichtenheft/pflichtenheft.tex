@@ -178,7 +178,7 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 Der Benutzer muss sich vor der Nutzung der App einen Account erstellen und sich mit diesem
 einloggen.
 
-\functionality{Verwaltung von Einstellungen und Account- oder appbezogene Daten}{fnc:options}{20}
+\functionality{Verwaltung von Einstellungen und Account- oder appbezogenen Daten}{fnc:options}{20}
 \fulfills{crt:account}
 %TODO zu schwammig formuliert
 Der Nutzer soll seine personenbezogenen Daten,
@@ -198,9 +198,9 @@ Einladungen können sowohl angenommen, als auch abgelehnt werden.
 \functionality{Events}{fnc:events}{50}
 \fulfills{crt:meetingpoints}
 Gruppenmitglieder können ein neues Event, bestehend aus Ort und Zeit, definieren.
-Das Event wird mit Uhrzeit in den Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
+Das Event wird mit Uhrzeit in den Eventlisten (\functionalitylink{fnc:eventlist}, \functionalitylink{fnc:groupevents}) aufgelistet.
 Die Mitglieder werden eine kurze Zeit vor dem Event automatisch von der App gebeten,
-ihren Standort für die entsprechende Umgebungskarte(\functionalitylink{fnc:map}) temporär freizugeben.
+ihren Standort für die entsprechende Umgebungskarte (\functionalitylink{fnc:map}) temporär freizugeben.
 
 \functionality{Umgebungskarte}{fnc:map}{60}
 \fulfills{crt:location}
@@ -210,7 +210,7 @@ der Treffpunkt und alle freigegebenen Standorte der Mitglieder markiert sind (\f
 \functionality{Gruppenevents}{fnc:groupevents}{70}
 \fulfills{crt:groups}
 \fulfills{crt:meetingpoints}
-Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe(\functionalitylink{fnc:events}).
+Jede Gruppe verfügt über eine Liste mit allen geplanten Events der Gruppe (\functionalitylink{fnc:events}).
 
 \functionality{Eventliste}{fnc:eventlist}{80}
 \fulfills{crt:groups}
@@ -231,53 +231,57 @@ Eine Standortanfrage erstellt ein temporäres Event ohne spezifizierten Ort.
 \fulfills{crt:groups}
 \fulfills{crt:positions}
 \fulfills{crt:privacy}
-Alle GPS-Standorte der Grupenmitglieder, die aktuell freigestellt sind,
-werden erfasst und als Gruppierungen aus geographisch nah beieinanderliegenden Gruppenmitgliedern.
-Einzelpersonen werden dabei unterscheidbar von Gruppierungen symbolisiert.
+Alle aktuell freigestellten GPS-Standorte von Gruppenmitgliedern werden erfasst
+und geographisch nah beieinanderliegende Mitglieder werden als Gruppierungen
+zusammengefasst auf der Karte dargestellt.
+Isolierte Einzelpersonen werden unterscheidbar von Gruppierungen symbolisiert.
 
 \subsection{Kann}
 
 \functionality{Gruppenchat}{fnc:chat}{10}
 \fulfills{crt:groups}
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten versandt und
-Abstimmungen(\functionalitylink{fnc:vote}) erstellt werden können.
+Abstimmungen (\functionalitylink{fnc:vote}) erstellt werden können.
 
 \functionality{Abstimmungen}{fnc:vote}{20}
 \fulfills{crt:vote}
 Es lassen sich Abstimmung erstellen.
 Diese werden bei der Initialisierung vom Ersteller zeitlich begrenzt.
 Nach Erstellen der Abstimmung, wird diese als Event in den
-Eventlisten(\functionalitylink{fnc:eventlist})(\functionalitylink{fnc:groupevents}) aufgelistet.
-Inerhalb der Abstimmung lassen sich nun beliebig viele Treff- und Zeitpunkte hinzufügen, sowie Stimmen abgeben und verändern.
-Alle, zur Wahl stehenden, Orte werden dabei als solche auf der zugehörigen Karte(\functionalitylink{fnc:map}) markiert.
+Eventlisten (\functionalitylink{fnc:eventlist}, \functionalitylink{fnc:groupevents}) aufgelistet.
+Innerhalb der Abstimmung lassen sich nun beliebig viele Treff- und Zeitpunkte hinzufügen, sowie Stimmen abgeben und verändern.
+Alle zur Wahl stehenden Orte werden dabei als solche auf der zugehörigen Karte (\functionalitylink{fnc:map}) markiert.
 Nach Ablauf des Zeitlimits wird jeweils der Ort und die Zeit mit den meisten Stimmen
 zum Zeit- bzw. Treffpunkt des Events und alle anderen Daten werden verworfen.
-Hierbei wird bei einem Event ohne Ort, kein Ort auf der zugehörigen Karte(\functionalitylink{fnc:groupevents}) markiert.
+Hierbei wird bei einem Event ohne Ort, kein Ort auf der zugehörigen Karte (\functionalitylink{fnc:groupevents}) markiert.
 Bei einem Event ohne final festgelegten Zeitpunkt dagegen wird der aktuelle Zeitpunkt
 temporär oder ggf. final als Zeitpunkt des Events definiert.
 
-\functionality{Standortteilung für einzelne Personen}{fnc:1to1}{30}
+\functionality{Standortteilung für zwei einzelne Personen}{fnc:1to1}{30}
 \fulfills{crt:1to1}
 \fulfills{crt:location}
-\fulfills{crt:privacy}
-Es soll auch für Einzelpersonen möglich sein, ihren Standort zu teilen.
-Dies soll intern als Zweiergruppe implementiert sein, aber in der App ohne den Umweg über die Gruppengründung möglich sein.
+Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
+zu teilen. Dies soll in wenigeren Schritten möglich sein, als manuell eine
+Gruppe aus zwei Leuten zu erstellen.
 
 \functionality{Eigene Server}{fnc:ownServer}{40}
 \fulfills{crt:ownServer}
-Eigene Server einrichten und diese(n) statt des standardmäßig zur Verfügung stehenden Servers verwenden.
-Zwichen verschiedenen Servern findet keine Kommunikation statt.
+Es soll möglich sein, einen eigenen Server einrichten und diesen statt des
+standardmäßig zur Verfügung stehenden Servers zu verwenden.
+Zwischen verschiedenen Servern findet keine Kommunikation statt.
 Insbesondere werden Nutzerkonten nur serverweit gespeichert.
-Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung gestellt
-und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
+Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
+gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
 
 \functionality{Serverwechel}{fnc:switchServer}{50}
 \fulfills{crt:switchServer}
-Das wechseln des Servers soll innerhalb der App möglich sein.
+Das Wechseln des Servers soll innerhalb der App und noch vor dem Login in ein
+Benutzerkonto möglich sein.
 
 \functionality{Stummschalten}{fnc:mute}{60}
-Sowohl der Gruppenchat(\functionalitylink{fnc:chat}),
-als auch die Standortanfragen(\functionalitylink{fnc:locationrequest}) lassen sich unabhängig voneinander stumm schalten.
+Sowohl der Gruppenchat (\functionalitylink{fnc:chat}),
+als auch die Standortanfragen (\functionalitylink{fnc:locationrequest}) lassen
+sich unabhängig voneinander stumm schalten.
 
 %%%%%%%%%%
 
@@ -311,7 +315,7 @@ Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese f�
 Nutzerkonten und alle dazugehörigen Daten sollen vollständig gelöscht werden können.
 
 \nonFunctionality{Unabhängigkeit}{nfc:independency}{100}
-Die Registrierung soll ohne Zwang von zusätlichen Konten, wie z.B bei Google oder Facebook möglich sein.
+Die Registrierung soll ohne Zwang von zusätzlichen Konten, wie z.B bei Google oder Facebook möglich sein.
 
 \nonFunctionality{Kompatibilität}{nfc:compatibility}{110}
 Die Anwendung muss alle Andriod Versionen, ab einschließlich Android Version 5, unterstützen.
