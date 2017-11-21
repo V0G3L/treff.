@@ -3,16 +3,19 @@
 \RequirePackage{expl3}
 \RequirePackage{rdfref-user,rdfref-query}
 
+\parindent 0pt
+
+\ExplSyntaxOn
 % cross references for criterion satisfication and functionality tests
 \newcommand\satisfies[1]{%
-    \AddTripleEx{#1}{pfl:is-satisfied}{yeah}
-    \AddProperty{pfl:satisfier}{#1}
+    \AddTripleEx{#1}{pfl:is-satisfied}{yeah}%
+    \AddProperty{pfl:satisfier}{#1}%
 }
 \newcommand\tests[1]{%
-    \satisfies{fnc-#1}
+    \satisfies{fnc-#1}%
 }
 \newcommand\fulfills[1]{%
-    \satisfies{crt-#1}
+    \satisfies{crt-#1}%
 }
 
 % normal cross referencing
@@ -46,7 +49,7 @@
 
 % make sure renewcommand on temporary variable works
 \newcommand\curTest{%
-    NO TEST SPECIFIED - THIS SHOULD NOT APPEAR IN FINAL DOCUMENT%
+    NO~TEST~SPECIFIED~-~THIS~SHOULD~NOT~APPEAR~IN~FINAL~DOCUMENT%
 }
 
 \newcounter{testStep}
@@ -64,7 +67,6 @@
 %       \bool_set_true:N \l_needs_satisfaction
 %   This value will automatically be reverted to false after using this
 %   function.
-\ExplSyntaxOn
 \bool_new:N \l_needs_satisfaction
 \bool_set_false:N \l_needs_satisfaction
 \newcommand\pflitem[5]{
@@ -74,10 +76,10 @@
     \AddPropertyEx{pfl:id}{#3}
     \bool_if:NT \l_needs_satisfaction {
         \IfProperty{#2}{pfl:is-satisfied}{%
-            \\ #4 \Bind{?f}{pfl:satisfier}{#2}{~\pflLink{\GetVal{?f}}}
+            \\ #4 \Bind{?f}{pfl:satisfier}{#2}{~\pflLink{\GetVal{?f}}}%
         }{{\color{red}{#5}}}
     }
-    \bool_set_false:N \l_needs_satisfaction
+    \bool_set_false:N \l_needs_satisfaction%
 }
 
 % Creates a required criterion
@@ -114,18 +116,18 @@
             {\prefixCriterionDemarc #3}
             {}
             {}
-    \par
+    \\
 }
 
 % Creates a required functionality
-\newcommand\functionality[3]{
-    \bool_set_true:N \l_needs_satisfaction
-    \pflitem{#1}
-            {fnc-#2}
-            {\prefixFunctional #3}
-            {Getestet~durch:}
-            {NICHT~GETESTET}
-    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
+\newcommand\functionality[3]{%
+    \bool_set_true:N \l_needs_satisfaction%
+    \pflitem{#1}%
+            {fnc-#2}%
+            {\prefixFunctional #3}%
+            {Getestet~durch:}%
+            {NICHT~GETESTET}%
+    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}}}%
     \par
 }
 
@@ -147,7 +149,7 @@
             {\prefixNonFunctional #3}
             {}
             {}
-    \par
+    \\
 }
 
 % Creates a test

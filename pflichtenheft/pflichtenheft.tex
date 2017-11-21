@@ -11,9 +11,11 @@
 \usepackage{csquotes}
 \usepackage{amsmath} % for $\text{}$
 \usepackage{pflichtenheft}
+\usepackage{enumitem}
+\setlist{nosep}
 
 \newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
-
+\raggedbottom
 \crefname{figure}{Abb}{Abb}
 
 \hypersetup{
@@ -51,8 +53,8 @@ Unsere App soll es angemeldeten Benutzern ermöglichen, sich in Gruppen zu organ
 In den Gruppen kann der Zeit- und Treffpunkt bestimmt werden.
 Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
 
-\pagebreak
 %%%%%%%%%%%%%%
+\pagebreak
 \section{Kriterien}
 % Diese Section sollte kurz und knapp "für Manager" sein
 % und auf eine Seite passen.
@@ -92,7 +94,6 @@ Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 \criterionOpt{1 zu 1 Verbindung}{1to1}{20}
 Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
 soll möglich und besonders einfach sein.
-% TODO: „Besonders einfach“ zu schwammig?
 
 \criterionOpt{Detailliertere Innenraumkarten}{indoor}{30}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
@@ -129,8 +130,8 @@ Die Anwendung ermöglicht nicht das Orten von Personen,
 die ihre Position nicht ausdrücklich zugänglich machen.
 Beispielsweise können Eltern mit dieser App nicht ständig ihre Kinder orten.
 
-\pagebreak
 %%%%%%%%%%%%%%
+\pagebreak
 \section{Produkteinsatz}
 Das Produkt dient zur Erleichterung des Zusammenfindens und der
 Treffpunktvereinbarung in geschlossenen Gruppen von Freunden, Kollegen oder
@@ -155,6 +156,7 @@ Familienmitgliedern.
 \end{itemize}
 
 %%%%%%%%%%%%%%
+\pagebreak
 \section{Produktumgebung}
 Das Produkt beinhaltet ein Client-Server-Modell.
 Der Server dient lediglich als Vermittler zwischen Klienten.
@@ -179,35 +181,36 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \end{itemize}
 
 %%%%%%%%%%%
+\pagebreak
 \section{Funktionale Anforderungen}
 
 \subsection{Muss}
 
 \functionality{Benutzerkonten}{account}{10}
-\fulfills{account}
+\fulfills{account}%
 Der Benutzer wird beim Starten der Anwendung aufgefordert, sich ein
 Benutzerkonto zu erstellen oder sich mit einem bereits vorhandenen anzumelden.
 
-\functionality{Gründen von Gruppen}{groupfounding}{30}
-\fulfills{groups}
+\functionality{Gründen von Gruppen}{groupfounding}{20}
+\fulfills{groups}%
 Nutzer können Gruppen erstellen und diese verwalten, indem sie andere Nutzer
 hinzufügen oder entfernen.
 
-\functionality{Umgebungskarte}{map}{60}
-\fulfills{location}
+\functionality{Umgebungskarte}{map}{30}
+\fulfills{location}%
 Der Nutzer kann eine Karte aufrufen, auf dem seine eigene Position angezeigt
 wird.
 
 \functionality{Erstellung von Verabredungen innerhalb von Gruppen}
-    {meetingpoints}{70}
-\fulfills{meetingpoints}
+    {meetingpoints}{40}
+\fulfills{meetingpoints}%
 Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus einer
 Zeit und einem Treffpunkt, erstellen, der allen Gruppenmitgliedern auf der
 Umgebungskarte (\fncLink{map}) angezeigt wird.
 
 \functionality{Übertragung der eigenen Position an die Gruppe}
-    {positions}{90}
-\fulfills{positions}
+    {positions}{50}
+\fulfills{positions}%
 Der Nutzer kann seine aktuelle Position an die Gruppenmitglieder übertragen.
 Übertragene Positionen werden allen Gruppenmitgliedern auf der Umgebungskarte
 (\fncLink{map}) angezeigt.
@@ -216,8 +219,8 @@ für die Dauer der Verabredung freizugeben.
 Es ist ebenfalls möglich, andere Gruppenmitglieder zum Übertragen ihrer
 Position aufzufordern.
 
-\functionality{Verwaltung von Kontodaten}{options}{20}
-\fulfills{account}
+\functionality{Verwaltung von Kontodaten}{options}{60}
+\fulfills{account}%
 Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 \begin{itemize}
     \item Mit dem Konto verbundenes Passwort ändern
@@ -225,16 +228,16 @@ Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
     \item Konto löschen
 \end{itemize}
 
-\functionality{Verabredungsliste}{eventlist}{80}
-\fulfills{groups}
-\fulfills{meetingpoints}
+\functionality{Verabredungsliste}{eventlist}{70}
+\fulfills{groups}%
+\fulfills{meetingpoints}%
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
 des Nutzers nach Zeitpunkt sortiert angezeigt werden.
 
 \subsection{Kann}
 
 \functionalityOpt{Abstimmungen}{vote}{10}
-\fulfills{vote}
+\fulfills{vote}%
 Der Nutzer kann innerhalb von Gruppen Abstimmungen erstellen.
 Diese werden zeitlich begrenzt.
 Der Abstimmung lassen sich beliebig viele Treff- und Zeitpunkte hinzufügen,
@@ -246,18 +249,18 @@ Treff- und Zeitpunkt mit den meisten Stimmen, erstellt.
 Alle anderen Treff- und Zeitpunkte werden verworfen.
 
 \functionalityOpt{Gruppenchat}{chat}{20}
-\fulfills{chat}
+\fulfills{chat}%
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten an alle
 Gruppenmitglieder versandt werden können.
 
 \functionalityOpt{Detaillierte Innenraumkarten}{indoor}{30}
-\fulfills{indoor}
+\fulfills{indoor}%
 Für Innenräume, in denen eine hohe Nutzerdichte erwartet wird, werden
 detaillierte Innenraumkarten in die Umgebungskarte integriert. Die Menge an
 Innenraumkarten kann mit weiteren späteren Versionen noch erweitert werden.
 
 \functionalityOpt{Eigene Server}{ownServer}{40}
-\fulfills{ownServer}
+\fulfills{ownServer}%
 Es soll möglich sein, einen eigenen Server einrichten und diesen statt des
 standardmäßig zur Verfügung stehenden Servers zu verwenden.
 Zwischen verschiedenen Servern findet keine Kommunikation statt.
@@ -266,12 +269,12 @@ Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
 gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
 
 \functionalityOpt{Serverwechel}{switchServer}{50}
-\fulfills{switchServer}
+\fulfills{switchServer}%
 Das Wechseln des Servers soll innerhalb der App und noch vor dem Login in ein
 Benutzerkonto möglich sein.
 
 \functionalityOpt{Stummschalten}{mute}{60}
-\fulfills{groups}
+\fulfills{groups}%
 Sowohl der Gruppenchat (\fncLink{chat}), als auch die
 Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 (\fncLink{positions}) lassen sich unabhängig voneinander
@@ -279,13 +282,13 @@ Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 Nutzer unterdrücken.
 
 \functionalityOpt{Zeitplan für Positionsübertragung}{timetable}{70}
-\fulfills{timetable}
+\fulfills{timetable}%
 Der Nutzer kann einzelnen Gruppen einen persönlichen wöchentlichen Zeitplan
 zuteilen, in dem er festlegt, zu welchen Zeiten er automatisch seine Position
 in der Gruppe freigibt.
 
-\functionalityOpt{Passwortzurücksetzung}{passwordReset}{60}
-\fulfills{passwordReset}
+\functionalityOpt{Passwortzurücksetzung}{passwordReset}{80}
+\fulfills{passwordReset}%
 Hat ein Nutzer sein Passwort vergessen, kann er eine E-Mail an seine zuvor
 mit dem Konto verbundene E-Mail-Adresse senden lassen.
 In dieser E-Mail sind Zugangsdaten, mit denen er sich temporär auch ohne das
@@ -293,11 +296,11 @@ Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
 
 %%%%%%%%%%
-
+\pagebreak
 \section{Nicht-Funktionale Anforderungen}
 
 \nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}{10}
-\fulfills{1to1}
+\fulfills{1to1}%
 Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
 zu teilen. Dies soll in wenigeren Schritten möglich sein, als manuell eine
 Gruppe aus zwei Leuten zu erstellen.
@@ -320,7 +323,7 @@ Es müssen mindestens 1000 Nutzer die Anwendung in Verbindung mit dem gleichen
 Server gleichzeitig verwenden können.
 
 \nonFunctionality{Datenschutz}{privacy}{60}
-\fulfills{privacy}
+\fulfills{privacy}%
 Der Umgang mit Nutzerdaten entpricht den national geltenden
 Datenschutzgesetzen.
 
@@ -329,6 +332,7 @@ Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese
 für andere Nutzer einsehbar sein sollen.
 
 %%%%%%%%%%%
+\pagebreak
 \section{Tests}
 
 \test{Gruppe Erstellen}{grpcreate}{10}
@@ -416,7 +420,7 @@ für andere Nutzer einsehbar sein sollen.
 \section{Glossar}
 
 \textbf{Nutzer}:
-Ein eingeloggter Verwendet der App.
+Ein eingeloggter Verwender der App.
 
 \textbf{Gruppe}:
 Mehrere Nutzer, welche untereinander Positionsdaten austauschen können.
