@@ -58,73 +58,73 @@ Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder a
 % und auf eine Seite passen.
 
 \subsection{Muss}
-\criterium{Gruppen}{crt:groups}{10}
+\criterion{Gruppen}{groups}{10}
 Mehrere Nutzer können sich in Gruppen zusammenschließen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterium{Eigene Position auf Umgebungskarten}{crt:location}{20}
+\criterion{Eigene Position auf Umgebungskarten}{location}{20}
 Der Nutzer ist in der Lage, seine aktuelle Position auf einer Karte der nahen
 Umgebung einzusehen.
 
-\criterium{Festlegbare Treffpunkte}{crt:meetingpoints}{30}
+\criterion{Festlegbare Treffpunkte}{meetingpoints}{30}
 Innerhalb von Gruppen können Treffpunkte festgelegt werden,
 die den Mitgliedern auf der Karte angezeigt werden.
 
-\criterium{Gegenseitige Ortung}{crt:positions}{40}
+\criterion{Gegenseitige Ortung}{positions}{40}
 Nutzer sind in der Lage, ihre aktuelle Position mit anderen Gruppenmitgliedern
 über einen festlegbaren Zeitraum zu teilen.
 Diese wird dann allen Gruppenmitgliedern auf der Karte angezeigt und laufend
 aktualisiert.
 
-\criterium{Datenschutz}{crt:privacy}{50}
+\criterion{Datenschutz}{privacy}{50}
 Die Positionsdaten des Nutzers werden nur während des festgelegten Zeitraumes
-(\criteriumlink{crt:positions}) gesendet und serverseitig nicht
+(\critLink{positions}) gesendet und serverseitig nicht
 längerfristig gespeichert.
 
-\criterium{Nutzerkonten}{crt:account}{60}
+\criterion{Nutzerkonten}{account}{60}
 Ein persönliches Nutzerkonto ermöglicht es Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kann}
-\criteriumOptional{Abstimmungen}{crt:vote}{10}
+\criterionOpt{Abstimmungen}{vote}{10}
 Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
-\criteriumOptional{1 zu 1 Verbindung}{crt:1to1}{20}
+\criterionOpt{1 zu 1 Verbindung}{1to1}{20}
 Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
 soll möglich und besonders einfach sein.
 % TODO: „Besonders einfach“ zu schwammig?
 
-\criteriumOptional{Detailliertere Innenraumkarten}{crt:indoor}{30}
+\criterionOpt{Detailliertere Innenraumkarten}{indoor}{30}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
-\criteriumOptional{Gruppenchat}{crt:chat}{40}
+\criterionOpt{Gruppenchat}{chat}{40}
 Innerhalb der Gruppen können simple Textnachrichten versendet werden.
 
-\criteriumOptional{Eigene Server}{crt:ownServer}{50}
+\criterionOpt{Eigene Server}{ownServer}{50}
 Es ist dem Nutzer möglich, einen eigenen Server zu erstellen und zu verwalten.
 
-\criteriumOptional{Server-Wechsel}{crt:switchServer}{60}
-Um \criteriumlink{crt:ownServer} ausnutzen zu können, ist es dem Nutzer
+\criterionOpt{Server-Wechsel}{switchServer}{60}
+Um \critLink{ownServer} ausnutzen zu können, ist es dem Nutzer
 möglich, den verwendeten Server zu wechseln.
 
-\criteriumOptional{Zeitplan für Positionsübertragung}{crt:timetable}{70}
+\criterionOpt{Zeitplan für Positionsübertragung}{timetable}{70}
 Der Nutzer kann zu bestimmten Zeiten seine Position automatisch an bestimmte
 Gruppen übertragen lassen.
 
-\criteriumOptional{Passwortzurücksetzung}{crt:passwordReset}{80}
+\criterionOpt{Passwortzurücksetzung}{passwordReset}{80}
 Der Nutzer kann sein Passwort zurücksetzen lassen, wenn er sich über eine zuvor
 festgelegte E-Mail-Adresse authentifizieren kann.
 
 \subsection{Abgrenzung}
-\criteriumNot{Kein Social Network}{crt:socialNetwork}{10}
+\criterionDemarc{Kein Social Network}{socialNetwork}{10}
 Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 anderen zu teilen.
 
-\criteriumNot{Kontakt nur zu Freunden}{crt:friendsOnly}{20}
+\criterionDemarc{Kontakt nur zu Freunden}{friendsOnly}{20}
 Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen,
 nicht den Kontakt zu Fremden ermöglichen.
 
-\criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{30}
+\criterionDemarc{Beidseitiges Einverständnis}{consensual}{30}
 Die Anwendung ermöglicht nicht das Orten von Personen,
 die ihre Position nicht ausdrücklich zugänglich machen.
 Beispielsweise können Eltern mit dieser App nicht ständig ihre Kinder orten.
@@ -183,41 +183,41 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 
 \subsection{Muss}
 
-\functionality{Benutzerkonten}{fnc:account}{10}
-\fulfills{crt:account}
+\functionality{Benutzerkonten}{account}{10}
+\fulfills{account}
 Der Benutzer wird beim Starten der Anwendung aufgefordert, sich ein
 Benutzerkonto zu erstellen oder sich mit einem bereits vorhandenen anzumelden.
 
-\functionality{Gründen von Gruppen}{fnc:groupfounding}{30}
-\fulfills{crt:groups}
+\functionality{Gründen von Gruppen}{groupfounding}{30}
+\fulfills{groups}
 Nutzer können Gruppen erstellen und diese verwalten, indem sie andere Nutzer
 hinzufügen oder entfernen.
 
-\functionality{Umgebungskarte}{fnc:map}{60}
-\fulfills{crt:location}
+\functionality{Umgebungskarte}{map}{60}
+\fulfills{location}
 Der Nutzer kann eine Karte aufrufen, auf dem seine eigene Position angezeigt
 wird.
 
 \functionality{Erstellung von Verabredungen innerhalb von Gruppen}
-    {fnc:meetingpoints}{70}
-\fulfills{crt:meetingpoints}
+    {meetingpoints}{70}
+\fulfills{meetingpoints}
 Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus einer
 Zeit und einem Treffpunkt, erstellen, der allen Gruppenmitgliedern auf der
-Umgebungskarte (\functionalitylink{fnc:map}) angezeigt wird.
+Umgebungskarte (\fncLink{map}) angezeigt wird.
 
 \functionality{Übertragung der eigenen Position an die Gruppe}
-    {fnc:positions}{90}
-\fulfills{crt:positions}
+    {positions}{90}
+\fulfills{positions}
 Der Nutzer kann seine aktuelle Position an die Gruppenmitglieder übertragen.
 Übertragene Positionen werden allen Gruppenmitgliedern auf der Umgebungskarte
-(\functionalitylink{fnc:map}) angezeigt.
+(\fncLink{map}) angezeigt.
 Steht eine Verabredung an, wird der Nutzer automatisch gebeten, seine Position
 für die Dauer der Verabredung freizugeben.
 Es ist ebenfalls möglich, andere Gruppenmitglieder zum Übertragen ihrer
 Position aufzufordern.
 
-\functionality{Verwaltung von Kontodaten}{fnc:options}{20}
-\fulfills{crt:account}
+\functionality{Verwaltung von Kontodaten}{options}{20}
+\fulfills{account}
 Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 \begin{itemize}
     \item Mit dem Konto verbundenes Passwort ändern
@@ -225,39 +225,39 @@ Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
     \item Konto löschen
 \end{itemize}
 
-\functionality{Verabredungsliste}{fnc:eventlist}{80}
-\fulfills{crt:groups}
-\fulfills{crt:meetingpoints}
+\functionality{Verabredungsliste}{eventlist}{80}
+\fulfills{groups}
+\fulfills{meetingpoints}
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
 des Nutzers nach Zeitpunkt sortiert angezeigt werden.
 
 \subsection{Kann}
 
-\functionality{Abstimmungen}{fnc:vote}{10}
-\fulfills{crt:vote}
+\functionalityOpt{Abstimmungen}{vote}{10}
+\fulfills{vote}
 Der Nutzer kann innerhalb von Gruppen Abstimmungen erstellen.
 Diese werden zeitlich begrenzt.
 Der Abstimmung lassen sich beliebig viele Treff- und Zeitpunkte hinzufügen,
 sowie Stimmen abgeben und verändern.
 Alle zur Wahl stehenden Treffpunkte werden dabei als solche auf der
-Umgebungskarte (\functionalitylink{fnc:map}) markiert.
+Umgebungskarte (\fncLink{map}) markiert.
 Nach Ablauf des Zeitlimits wird jeweils eine Verabredung, bestehend aus dem
 Treff- und Zeitpunkt mit den meisten Stimmen, erstellt.
 Alle anderen Treff- und Zeitpunkte werden verworfen.
 
-\functionality{Gruppenchat}{fnc:chat}{20}
-\fulfills{crt:chat}
+\functionalityOpt{Gruppenchat}{chat}{20}
+\fulfills{chat}
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten an alle
 Gruppenmitglieder versandt werden können.
 
-\functionality{Detaillierte Innenraumkarten}{fnc:indoor}{30}
-\fulfills{crt:indoor}
+\functionalityOpt{Detaillierte Innenraumkarten}{indoor}{30}
+\fulfills{indoor}
 Für Innenräume, in denen eine hohe Nutzerdichte erwartet wird, werden
 detaillierte Innenraumkarten in die Umgebungskarte integriert. Die Menge an
 Innenraumkarten kann mit weiteren späteren Versionen noch erweitert werden.
 
-\functionality{Eigene Server}{fnc:ownServer}{40}
-\fulfills{crt:ownServer}
+\functionalityOpt{Eigene Server}{ownServer}{40}
+\fulfills{ownServer}
 Es soll möglich sein, einen eigenen Server einrichten und diesen statt des
 standardmäßig zur Verfügung stehenden Servers zu verwenden.
 Zwischen verschiedenen Servern findet keine Kommunikation statt.
@@ -265,27 +265,27 @@ Insbesondere werden Nutzerkonten nur serverweit gespeichert.
 Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
 gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
 
-\functionality{Serverwechel}{fnc:switchServer}{50}
-\fulfills{crt:switchServer}
+\functionalityOpt{Serverwechel}{switchServer}{50}
+\fulfills{switchServer}
 Das Wechseln des Servers soll innerhalb der App und noch vor dem Login in ein
 Benutzerkonto möglich sein.
 
-\functionality{Stummschalten}{fnc:mute}{60}
-\fulfills{crt:groups}
-Sowohl der Gruppenchat (\functionalitylink{fnc:chat}), als auch die
-Abstimmungen (\functionalitylink{fnc:vote}) und Übertragungsanfragen
-(\functionalitylink{fnc:positions}) lassen sich unabhängig voneinander
+\functionalityOpt{Stummschalten}{mute}{60}
+\fulfills{groups}
+Sowohl der Gruppenchat (\fncLink{chat}), als auch die
+Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
+(\fncLink{positions}) lassen sich unabhängig voneinander
 \enquote{stumm schalten}, d.h. es lassen sich jegliche Benachrichtungen für den
 Nutzer unterdrücken.
 
-\functionality{Zeitplan für Positionsübertragung}{fnc:timetable}{70}
-\fulfills{crt:timetable}
+\functionalityOpt{Zeitplan für Positionsübertragung}{timetable}{70}
+\fulfills{timetable}
 Der Nutzer kann einzelnen Gruppen einen persönlichen wöchentlichen Zeitplan
 zuteilen, in dem er festlegt, zu welchen Zeiten er automatisch seine Position
 in der Gruppe freigibt.
 
-\functionality{Passwortzurücksetzung}{fnc:passwordReset}{60}
-\fulfills{crt:passwordReset}
+\functionalityOpt{Passwortzurücksetzung}{passwordReset}{60}
+\fulfills{passwordReset}
 Hat ein Nutzer sein Passwort vergessen, kann er eine E-Mail an seine zuvor
 mit dem Konto verbundene E-Mail-Adresse senden lassen.
 In dieser E-Mail sind Zugangsdaten, mit denen er sich temporär auch ohne das
@@ -296,57 +296,57 @@ Dabei wird das vorherige Passwort nicht preisgegeben.
 
 \section{Nicht-Funktionale Anforderungen}
 
-\nonFunctionality{Standortteilung für zwei einzelne Personen}{nfc:1to1}{10}
-\fulfills{crt:1to1}
+\nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}{10}
+\fulfills{1to1}
 Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
 zu teilen. Dies soll in wenigeren Schritten möglich sein, als manuell eine
 Gruppe aus zwei Leuten zu erstellen.
 
-\nonFunctionality{Einfache Bedienung}{nfc:handling}{20}
+\nonFunctionality{Einfache Bedienung}{handling}{20}
 Damit die App sich gegen die gängigen Instant Messenger durchsetzen kann, muss
 sie intuitiv und einfach bedienbar sein. Um dies zu erreichen, erfüllt die
 graphische Benutzeroberfläche die \enquote{Material Design}-Richtlinien.
 
-\nonFunctionality{Ressourcennutzung}{nfc:resourceUsage}{30}
+\nonFunctionality{Ressourcennutzung}{resourceUsage}{30}
 Um Akkulaufzeit und mobiles Datenvolumen zu sparen, findet die Aktualisierung
 von Positionsdaten maximal einmal pro Sekunde statt.
 
-\nonFunctionality{Mobile Nutzung}{nfc:connectionLoss}{40}
+\nonFunctionality{Mobile Nutzung}{connectionLoss}{40}
 Verbindungsabbrüche, wie sie im mobilen Netz öfter auftreten, führen nicht zu
 Fehlfunktionen.
 
-\nonFunctionality{Nutzeraufkommen}{nfc:userLoad}{50}
+\nonFunctionality{Nutzeraufkommen}{userLoad}{50}
 Es müssen mindestens 1000 Nutzer die Anwendung in Verbindung mit dem gleichen
 Server gleichzeitig verwenden können.
 
-\nonFunctionality{Datenschutz}{nfc:privacy}{60}
-\fulfills{crt:privacy}
+\nonFunctionality{Datenschutz}{privacy}{60}
+\fulfills{privacy}
 Der Umgang mit Nutzerdaten entpricht den national geltenden
 Datenschutzgesetzen.
 
-\nonFunctionality{Datenspeicherung}{nfc:data storage}{70}
+\nonFunctionality{Datenspeicherung}{data storage}{70}
 Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese
 für andere Nutzer einsehbar sein sollen.
 
 %%%%%%%%%%%
 \section{Tests}
 
-\test{Gruppe Erstellen}{tst:grpcreate}{10}
-\tests{fnc:account}
+\test{Gruppe Erstellen}{grpcreate}{10}
+\tests{account}
 
-\teststep{Nutzer \enquote{Ned Stark} ist eingeloggt.}
+\testStep{Nutzer \enquote{Ned Stark} ist eingeloggt.}
 {Ned tippt auf den Tab  \enquote{Gruppen}.}
 {Er bekommt die Liste aller Gruppen angezeigt in denen er Mitglied ist.}
 
-\teststep{Ned möchte eine Gruppe mit Leuten aus dem Fußball-Training erstellen.}
+\testStep{Ned möchte eine Gruppe mit Leuten aus dem Fußball-Training erstellen.}
 {Er tippt auf den \enquote{+}-Button (Neue Gruppe erstellen).}
 {Er bekommt eine Liste all seiner Kontakte, die er im Produkt hinzugefügt hat, angezeigt.}
 
-\teststep{Seine Freunde Robert B. und Edmund T. spielen ebenfalls Fußball.}
+\testStep{Seine Freunde Robert B. und Edmund T. spielen ebenfalls Fußball.}
 {Er tippt die beiden Namen an.}
 {Das Produkt schlägt ihm vor die Gruppe zu erstellen.}
 
-\teststep{Ned hat keine weiteren Freunde.}
+\testStep{Ned hat keine weiteren Freunde.}
 {Er tippt auf Gruppe erstellen}
 {Der Homescreen der Gruppe wird angezeigt.} % TODO: Homescreen?
 
@@ -360,7 +360,7 @@ für andere Nutzer einsehbar sein sollen.
 	\fbox{\includegraphics[height=80mm]{mockups/login.png}}
 	\caption{\label{fig:menu}
 		Login-Screen beim ersten Öffnen der App.
-		 \testlink{tst:grpcreate}.
+		 \testLink{grpcreate}.
 			%TODO: test case
 	}
 \end{figure}
@@ -369,7 +369,7 @@ für andere Nutzer einsehbar sein sollen.
 	\fbox{\includegraphics[height=80mm]{mockups/home_groups.png}}
 	\caption{\label{fig:groups}
 		Hier können Gruppen verwaltet und angesehen, sowie neue hinzugefügt werden.
-		\testlink{tst:grpcreate}.
+		\testLink{grpcreate}.
 			%TODO: test case
 	}
 \end{figure}
@@ -379,7 +379,7 @@ für andere Nutzer einsehbar sein sollen.
 		\caption{\label{fig:map}
 			Auf der Karte können die Positionen der anderen Gruppenmitglieder und bevorstehende 
 			Treffpunkte eingesehen werden. Nutzer erscheinen ggf. gruppiert.
-			\testlink{tst:grpcreate}.
+			\testLink{grpcreate}.
 			%TODO: test case
 		}
 \end{figure}
@@ -388,7 +388,7 @@ für andere Nutzer einsehbar sein sollen.
 		\fbox{\includegraphics[height=80mm]{mockups/group_events.png}}
 		\caption{\label{fig:map}
 			Innerhalb der Gruppe können Treffpunkte eingesehen und hinzugefügt werden.
-			\testlink{tst:grpcreate}.
+			\testLink{grpcreate}.
 			%TODO: test case
 		}
 \end{figure}
@@ -399,7 +399,7 @@ für andere Nutzer einsehbar sein sollen.
 			Gruppenmitglieder können eingesehen, entfernt und hinzugefügt werden.
 			Es gibt gruppenspezifische Einstellungsmöglichkeiten, sowie die Option,
 			die Gruppe zu verlassen.
-			\testlink{tst:grpcreate}.
+			\testLink{grpcreate}.
 			%TODO: test case
 		}
 \end{figure}
@@ -408,7 +408,7 @@ für andere Nutzer einsehbar sein sollen.
 		\fbox{\includegraphics[height=80mm]{mockups/home_groups_sidenav.png}}
 		\caption{\label{fig:map}
 			Vom Startbildschirm aus können diverse Einstellungen erreicht werden.
-			\testlink{tst:grpcreate}.
+			\testLink{grpcreate}.
 			%TODO: test case
 		}
 \end{figure}

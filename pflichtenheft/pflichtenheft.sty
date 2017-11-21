@@ -1,102 +1,178 @@
 \ProvidesPackage{pflichtenheft}
 \RequirePackage{xcolor}
+\RequirePackage{expl3}
 \RequirePackage{rdfref-user,rdfref-query}
 
-% cross referencing
+% cross references for criterion satisfication and functionality tests
+\newcommand\satisfies[1]{%
+    \AddTripleEx{#1}{pfl:is-satisfied}{yeah}
+    \AddProperty{pfl:satisfier}{#1}
+}
 \newcommand\tests[1]{%
-  \AddTripleEx{#1}{pfl:is-tested}{yeah}
-  \AddProperty{pfl:tests}{#1}}
+    \satisfies{fnc-#1}
+}
 \newcommand\fulfills[1]{%
-  \AddTripleEx{#1}{pfl:is-fulfilled}{yeah}
-  \AddProperty{pfl:fulfills}{#1}}
-\newcommand\testlink[1]{\hyperref[#1]%
-  {\GetProperty{#1}{pfl:tstid}}}
-\newcommand\functionalitylink[1]{\hyperref[#1]%
-  {\GetProperty{#1}{pfl:fncid}}}
-\newcommand\criteriumlink[1]{\hyperref[#1]%
-  {\GetProperty{#1}{pfl:crtid}}}
-\newcommand\marginid[1]{\marginpar{\centering\textbf{#1}}}
+    \satisfies{crt-#1}
+}
 
-\newcommand\PrefixMussKriterium{M}
-\newcommand\PrefixKannKriterium{K}
-\newcommand\PrefixAbgrenzungsKriterium{A}
-\newcommand\PrefixFunktional{F}
-\newcommand\PrefixNichtFunktional{N}
-\newcommand\PrefixTest{T}
+% normal cross referencing
+\newcommand\pflLink[1]{%
+    \hyperref[#1]{\GetProperty{#1}{pfl:id}}%
+}
+\newcommand\critLink[1]{%
+    \pflLink{crt-#1}%
+}
+\newcommand\fncLink[1]{%
+    \pflLink{fnc-#1}%
+}
+\newcommand\nfcLink[1]{%
+    \pflLink{nfc-#1}%
+}
+\newcommand\testLink[1]{%
+    \pflLink{tst-#1}%
+}
+
+\newcommand\marginid[1]{%
+    \marginpar{\centering\textbf{#1}}%
+}
+
+\newcommand\prefixCriterion{M}
+\newcommand\prefixCriterionOptional{K}
+\newcommand\prefixCriterionDemarc{A}
+\newcommand\prefixFunctional{F}
+\newcommand\prefixFunctionalOpt{FK}
+\newcommand\prefixNonFunctional{N}
+\newcommand\prefixTest{T}
 
 % make sure renewcommand on temporary variable works
-\newcommand\id{NO ID SPECIFIED - THIS SHOULD NOT APPEAR IN FINAL DOCUMENT}
-\newcommand\curTest{NO TEST SPECIFIED - THIS SHOULD NOT APPEAR IN FINAL DOCUMENT}
+\newcommand\curTest{%
+    NO TEST SPECIFIED - THIS SHOULD NOT APPEAR IN FINAL DOCUMENT%
+}
 
-\newcounter{teststep}
+\newcounter{testStep}
 
-% document macros
-\newcommand\criterium[3]{
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixMussKriterium #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:crtname}{#1}
-  \AddPropertyEx{pfl:crtid}{\id}
-  \IfProperty{#2}{pfl:is-fulfilled}{%
-    \\ Implementiert durch: \Bind{?f}{pfl:fulfills}{#2}{ \functionalitylink{\GetVal{?f}} }
-  }{{\color{red}{NICHT IMPLEMENTIERT}}}
-  \par}
+% Creates a new Pflichtenheft-item (functional requirement, criterion etc.)
+% Args:
+%   1: Display Name
+%   2: Alphanumeric id (used for references, not displayed)
+%   3: Displayed ID (should consist of type-dependent prefix and number)
+%   4: Prefix of 'satisfied-by' list
+%   5: Warning message if not satisfied
+%
+%   To enable the use the 'satisfied-by' list, set \l_needs_satisfaction to
+%   true using
+%       \bool_set_true:N \l_needs_satisfaction
+%   This value will automatically be reverted to false after using this
+%   function.
+\ExplSyntaxOn
+\bool_new:N \l_needs_satisfaction
+\bool_set_false:N \l_needs_satisfaction
+\newcommand\pflitem[5]{
+    \par\textbf{#1}\rdflabel{#2}
+    \marginid{#3}
+    \AddPropertyEx{pfl:name}{#1}
+    \AddPropertyEx{pfl:id}{#3}
+    \bool_if:NT \l_needs_satisfaction {
+        \IfProperty{#2}{pfl:is-satisfied}{%
+            \\ #4 \Bind{?f}{pfl:satisfier}{#2}{~\pflLink{\GetVal{?f}}}
+        }{{\color{red}{#5}}}
+    }
+    \bool_set_false:N \l_needs_satisfaction
+}
 
-\newcommand\criteriumOptional[3]{
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixKannKriterium #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:crtname}{#1}
-  \AddPropertyEx{pfl:crtid}{\id}
-  \IfProperty{#2}{pfl:is-fulfilled}{%
-    \\ Implementiert durch: \Bind{?f}{pfl:fulfills}{#2}{ \functionalitylink{\GetVal{?f}} }
-  }{{\color{red} keine entsprechende Anforderung}}
-  \par}
+% Creates a required criterion
+% Args:
+%   1: Display Name
+%   2: Alphanumeric ID (will be prefixed with 'crt:' by this function)
+%   3: Displayed ID (should be a number, will be appended to prefix specified
+%                   above)
+\newcommand\criterion[3]{
+    \bool_set_true:N \l_needs_satisfaction
+    \pflitem{#1}
+            {crt-#2}
+            {\prefixCriterion #3}
+            {Implementiert~durch:}
+            {NICHT~IMPLEMENTIERT}
+    \par
+}
 
-\newcommand\criteriumNot[3]{
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixAbgrenzungsKriterium #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:crtname}{#1}
-  \AddPropertyEx{pfl:crtid}{\id}
-  \par}
+% Creates an optional criterion
+\newcommand\criterionOpt[3]{
+    \bool_set_true:N \l_needs_satisfaction
+    \pflitem{#1}
+            {crt-#2}
+            {\prefixCriterionOptional #3}
+            {Implementiert~durch:}
+            {keine~entsprechende~Anforderung}
+    \par
+}
 
+% Creates a criterion for demarcation
+\newcommand\criterionDemarc[3]{
+    \pflitem{#1}
+            {crt-#2}
+            {\prefixCriterionDemarc #3}
+            {}
+            {}
+    \par
+}
+
+% Creates a required functionality
 \newcommand\functionality[3]{
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixFunktional #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:fncname}{#1}
-  \AddPropertyEx{pfl:fncid}{\id}
-  \IfProperty{#2}{pfl:is-tested}{%
-    \\ Getestet durch: \Bind{?t}{pfl:tests}{#2}{ \testlink{\GetVal{?t}} }
-  }{{\color{red}{NICHT GETESTET}}\\}
-  Implementiert: \Bind{#2}{pfl:fulfills}{?c}{ \criteriumlink{\GetVal{?c}} }
-  \par}
+    \bool_set_true:N \l_needs_satisfaction
+    \pflitem{#1}
+            {fnc-#2}
+            {\prefixFunctional #3}
+            {Getestet~durch:}
+            {NICHT~GETESTET}
+    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
+    \par
+}
 
+% Creates an optional functionality
+\newcommand\functionalityOpt[3]{
+    \pflitem{#1}
+            {fnc-#2}
+            {\prefixFunctionalOpt #3}
+            {}
+            {}
+    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
+    \par
+}
+
+% Creates a non-functionality
 \newcommand\nonFunctionality[3]{
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixNichtFunktional #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:fncname}{#1}
-  \AddPropertyEx{pfl:fncid}{\id}
-  \par}
+    \pflitem{#1}
+            {nfc-#2}
+            {\prefixNonFunctional #3}
+            {}
+            {}
+    \par
+}
 
+% Creates a test
 \newcommand\test[3]{
-  \renewcommand\curTest{#3}
-  \setcounter{teststep}{0}
-  \par\textbf{#1}\rdflabel{#2}
-  \renewcommand\id{\PrefixTest #3}
-  \marginid{\id}
-  \AddPropertyEx{pfl:tstname}{#1}
-  \AddPropertyEx{pfl:tstid}{\id}
-  \\ Testet: \Bind{#2}{pfl:tests}{?f}{ \functionalitylink{\GetVal{?f}} }
-  \par}
+    \pflitem{#1}
+            {tst-#2}
+            {\prefixTest #3}
+            {}
+            {}
+    \\ Testet:~\Bind{tst-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
+    \par
+    \renewcommand\curTest{#3}
+    \setcounter{testStep}{0}
+}
 
-\newcommand\teststep[3]{\stepcounter{teststep}
-{\PrefixTest\curTest.\arabic{teststep}}
-\begin{minipage}[t]{0.8\textwidth}\raggedright
-\textbf{Stand:} #1\par
-\textbf{Aktion:} #2\par
-\textbf{Reaktion:} #3\par
-\end{minipage}
-\par}
+% Creates a testStep, must be used after \test
+\newcommand\testStep[3]{
+    \stepcounter{testStep}
+    \prefixTest\curTest.\arabic{testStep}~
+    \begin{minipage}[t]{0.8\textwidth}\raggedright
+    \textbf{Stand:}~#1\par
+    \textbf{Aktion:}~#2\par
+    \textbf{Reaktion:}~#3\par
+    \end{minipage}
+    \par
+}
+
+\ExplSyntaxOff
