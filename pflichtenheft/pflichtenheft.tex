@@ -335,24 +335,82 @@ für andere Nutzer einsehbar sein sollen.
 \pagebreak
 \section{Tests}
 
-\test{Gruppe Erstellen}{grpcreate}{10}
+\test{Account erstellen}{firstlogin}{10}
 \tests{account}
+\testStep{Alice hat sich die Go-App soeben herunter geladen.}
+{Sie öffnet die App zum ersten Mal.}
+{Ihr wird ein Formular angezeigt, in dem sie einen gewünschten Nutzernamen
+und ein Passwort eingeben kann.}
 
-\testStep{Nutzer \enquote{Ned Stark} ist eingeloggt.}
-{Ned tippt auf den Tab  \enquote{Gruppen}.}
+\testStep{Alice hat \enquote{alice123} als Nutzernamen und ein geheimes Passwort eingegeben.}
+{Sie bestätigt ihre Angaben.}
+{Alice befindet sich nun im Hauptmenu der App, von wo aus sie Zugriff auf alle Funktionen hat.}
+
+\test{Gruppe Erstellen}{grpcreate}{20}
+\tests{groupfounding}
+
+\testStep{Nutzer Bob ist eingeloggt.}
+{Bob tippt auf den Tab  \enquote{Gruppen}.}
 {Er bekommt die Liste aller Gruppen angezeigt in denen er Mitglied ist.}
 
-\testStep{Ned möchte eine Gruppe mit Leuten aus dem Fußball-Training erstellen.}
-{Er tippt auf den \enquote{+}-Button (Neue Gruppe erstellen).}
-{Er bekommt eine Liste all seiner Kontakte, die er im Produkt hinzugefügt hat, angezeigt.}
+\testStep{Bob möchte eine Gruppe mit Leuten aus dem Fußball-Training erstellen.}
+{Er tippt auf den \enquote{Neue Gruppe erstellen}-Button.}
+{Er bekommt eine Liste all seiner Kontakte, die er in der App hinzugefügt hat, angezeigt.}
 
-\testStep{Seine Freunde Robert B. und Edmund T. spielen ebenfalls Fußball.}
+\testStep{Seine Freunde Charlie und Dave spielen ebenfalls Fußball.}
 {Er tippt die beiden Namen an.}
-{Das Produkt schlägt ihm vor die Gruppe zu erstellen.}
+{Die App schlägt ihm vor die Gruppe zu erstellen.}
 
 \testStep{Ned hat keine weiteren Freunde.}
 {Er tippt auf Gruppe erstellen}
 {Der Homescreen der Gruppe wird angezeigt.} % TODO: Homescreen?
+
+\test{Karte anzeigen}{map}{30}
+\tests{map}
+\testStep{Alice ist eingeloggt und befindet sich auf der Startseite.}
+{Sie tippt auf die Schaltfläche für die Umgebungskarte.}
+{Auf einer Landkarte wird ihr sowohl die eigene Position, als auch die von
+eventuellen Verabredungen in ihrer Nähe angezeigt.
+Falls es andere Mitglieder in ihren Gruppen gibt, die momentan
+ihre Position teilen ist diese ebenfalls auf der Karte sichtbar.}
+
+
+\test{Verabredung erstellen}{event}{40}
+\tests{meetingpoints}
+\testStep{Bob möchte sich mit seinen Freunden zum Mittagessen treffen
+und hat die App geöffnet.}
+{Er wählt die Gruppe aus, in der viele seiner Freunde und Kommilitonen mitglied sind.}
+{Er bekommt alle anstehenden Verabredungen dieser Gruppe angezeigt.}
+
+\testStep{Bob sieht, dass noch keine Verabredung zum Mittagessen vorhanden ist.}
+{Er tippt auf die Schaltfläche \enquote{Neue Verabredung}.}
+{Die App zeigt ihm ein Formular, in dem er Name, Zeit und Ort der Verabredung eingeben kann.}
+
+\testStep{Bob hat als Namen \enquote{Mittagessen}, 12:50 Uhr als Uhrzeit angegeben und auf
+einer Karte die Mensa als Treffpunkt markiert.}
+{Er bestätigt seine Angaben mit \enquote{Verabredung erstellen}.}
+{Ein Dialog um anzugeben, wann die anderen Mitglieder benachrichtigt werden sollen, erscheint.}
+
+\testStep{Bob entscheidet sich für \enquote{20 min vor Verabredung}.}
+{Wieder bestätigt er seine Angaben.}
+{Auf einer Umgebungskarte wird nun die eben erstellte Verabredung markiert.
+Alle anderen Gruppenmitglieder erhalten eine Benachrichtigung,
+dass eine neue Verabredung hinzugefügt wurde.}
+
+\testStep{Es ist nun 12:30 Uhr, eine weitere Benachrichtigung wurde an alle Gruppenmitglieder
+gesendet mit einer Aufforderung jetzt ihren Standort zu teilen.}
+{Bob und seine Freunde Ted, Victor und Grace stimmen zu, dass ihr Standort geteilt wird.}
+{Auf der Karte ist nun neben der Markierung für die Verabredung auch ein Marker für
+jeden der Freunde zu sehen.}
+
+
+\test{Terminplanung}{eventlist}{50}
+\tests{eventlist}
+\testStep{Oscar ist in der App eingeloggt und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
+{Er navigiert von der Startseite auf die Verabredungsliste.}
+{Die App zeigt ihm eine Liste aller zukünftigen Verabredungen.
+Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
+und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
 
 %%%%%%%%%%%%%
 \pagebreak
