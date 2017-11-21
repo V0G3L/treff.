@@ -127,7 +127,7 @@ nicht den Kontakt zu Fremden ermöglichen.
 \criteriumNot{Beidseitiges Einverständnis}{crt:consensual}{30}
 Die Anwendung ermöglicht nicht das Orten von Personen,
 die ihre Position nicht ausdrücklich zugänglich machen.
-Beispielsweise können Eltern nicht ihre Kinder ständig mit dieser App orten.
+Beispielsweise können Eltern mit dieser App nicht ständig ihre Kinder orten.
 
 \pagebreak
 %%%%%%%%%%%%%%
@@ -355,13 +355,12 @@ für andere Nutzer einsehbar sein sollen.
 
 \section{Seitenentwürfe}
 
-% made via https://gomockingbird.com/projects/mnf0cwf/4gXVnC
-
 \begin{figure}[hb]
 	\fbox{\includegraphics[height=80mm]{mockups/login.png}}
 	\caption{\label{fig:menu}
 		Login-Screen beim ersten Öffnen der App.
 		 \testlink{tst:grpcreate}.
+			%TODO: test case
 	}
 \end{figure}
 
@@ -370,31 +369,67 @@ für andere Nutzer einsehbar sein sollen.
 	\caption{\label{fig:groups}
 		Hier können Gruppen verwaltet und angesehen, sowie neue hinzugefügt werden.
 		\testlink{tst:grpcreate}.
+			%TODO: test case
 	}
 \end{figure}
 
 \begin{figure}[hb]
-		\fbox{\includegraphics[height=80mm]{mockups/event_map.png}}
+		\fbox{\includegraphics[height=80mm]{mockups/group_map.png}}
 		\caption{\label{fig:map}
-			Auf der Karte kann die Position der anderen Gruppenmitglieder eingesehen werden.
-			Orte mit mehreren Mitgliedern erscheinen größer.
+			Auf der Karte können die Positionen der anderen Gruppenmitglieder und bevorstehende 
+			Treffpunkte eingesehen werden. Nutzer erscheinen ggf. gruppiert.
 			\testlink{tst:grpcreate}.
+			%TODO: test case
+		}
+\end{figure}
+
+\begin{figure}[hb]
+		\fbox{\includegraphics[height=80mm]{mockups/group_events.png}}
+		\caption{\label{fig:map}
+			Innerhalb der Gruppe können Treffpunkte eingesehen und hinzugefügt werden.
+			\testlink{tst:grpcreate}.
+			%TODO: test case
+		}
+\end{figure}
+
+\begin{figure}[hb]
+		\fbox{\includegraphics[height=80mm]{mockups/group_members.png}}
+		\caption{\label{fig:map}
+			Gruppenmitglieder können eingesehen, entfernt und hinzugefügt werden.
+			Es gibt gruppenspezifische Einstellungsmöglichkeiten, sowie die Option,
+			die Gruppe zu verlassen.
+			\testlink{tst:grpcreate}.
+			%TODO: test case
+		}
+\end{figure}
+
+\begin{figure}[hb]
+		\fbox{\includegraphics[height=80mm]{mockups/home_groups_sidenav.png}}
+		\caption{\label{fig:map}
+			Vom Startbildschirm aus können diverse Einstellungen erreicht werden.
+			\testlink{tst:grpcreate}.
+			%TODO: test case
 		}
 \end{figure}
 
 \section{Glossar}
 
-\textbf{Besucher}:
-Eine Person, welche den Dienst nutzt.
-Kann eingeloggt sein oder nicht.
-
 \textbf{Nutzer}:
-Ein eingeloggter Besucher.
+Ein eingeloggter Verwendet der App.
 
 \textbf{Gruppe}:
 Mehrere Nutzer, welche untereinander Positionsdaten austauschen können.
 
 \textbf{Chat}:
 Möglichkeit für Mitglieder einer Gruppe, Textnachrichten auszutauschen.
+
+\textbf{Treffpunkt}:
+Ein festgelegter Ort und Zeitpunkt.
+
+\textbf{Karte}:
+Zeigt neben den kontextabhängigen Informationen der App auch Straßen, Gebäude und Terrain an.
+
+\textbf{GPS}:
+Global Positioning System, ein globales Satellitensystem zur Positionsbestimmung.
 
 \end{document}
