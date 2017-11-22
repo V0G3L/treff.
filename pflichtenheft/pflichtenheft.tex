@@ -207,6 +207,9 @@ wird.
 Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus einer
 Zeit und einem Treffpunkt, erstellen, der allen Gruppenmitgliedern auf der
 Umgebungskarte (\fncLink{map}) angezeigt wird.
+Außerdem legt er einen Zeitpunkt vor dem Treffen fest,
+zu dem die Teilnehmer gebeten werden sollen,
+ihren Standort freizugeben (\fncLink{positions}).
 
 \functionality{Übertragung der eigenen Position an die Gruppe}
     {positions}{50}
@@ -219,16 +222,23 @@ für die Dauer der Verabredung freizugeben.
 Es ist ebenfalls möglich, andere Gruppenmitglieder zum Übertragen ihrer
 Position aufzufordern.
 
-\functionality{Verwaltung von Kontodaten}{options}{60}
+\functionality{Standortanfrage}{request}{60}
+\fulfills{positions}%
+Der Nutzer kann in einer Gruppe eine Standortanfrage mit spezifizierter Zeit senden.
+Die Mitglieder der Gruppe werden dann von der App gebeten,
+ihren Standort für den gewünschten Zeitraum freizugeben.
+
+\functionality{Verwaltung von Kontodaten}{options}{70}
 \fulfills{account}%
 Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 \begin{itemize}
+		\item Nutzername ändern
     \item Mit dem Konto verbundenes Passwort ändern
     \item Mit dem Konto verbundene E-Mail-Adresse ändern
     \item Konto löschen
 \end{itemize}
 
-\functionality{Verabredungsliste}{eventlist}{70}
+\functionality{Verabredungsliste}{eventlist}{80}
 \fulfills{groups}%
 \fulfills{meetingpoints}%
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
@@ -244,7 +254,7 @@ Der Abstimmung lassen sich beliebig viele Treff- und Zeitpunkte hinzufügen,
 sowie Stimmen abgeben und verändern.
 Alle zur Wahl stehenden Treffpunkte werden dabei als solche auf der
 Umgebungskarte (\fncLink{map}) markiert.
-Nach Ablauf des Zeitlimits wird jeweils eine Verabredung, bestehend aus dem
+Nach Ablauf des Zeitlimits wird eine Verabredung, bestehend aus jeweils dem
 Treff- und Zeitpunkt mit den meisten Stimmen, erstellt.
 Alle anderen Treff- und Zeitpunkte werden verworfen.
 
@@ -253,27 +263,33 @@ Alle anderen Treff- und Zeitpunkte werden verworfen.
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten an alle
 Gruppenmitglieder versandt werden können.
 
-\functionalityOpt{Detaillierte Innenraumkarten}{indoor}{30}
+\functionalityOpt{Gruppenrollen und -rechte}{admin}{30}
+Innerhalb einer Gruppe können unterschiedliche Rollen
+mit spezifischen Rechten definiert und an Mitglieder verteilt werden.
+Dies soll es den Nutzern ermöglichen,
+eine klare Hierarchie in der Gruppe aufzubauen.
+
+\functionalityOpt{Detaillierte Innenraumkarten}{indoor}{40}
 \fulfills{indoor}%
 Für Innenräume, in denen eine hohe Nutzerdichte erwartet wird, werden
 detaillierte Innenraumkarten in die Umgebungskarte integriert. Die Menge an
-Innenraumkarten kann mit weiteren späteren Versionen noch erweitert werden.
+Innenraumkarten kann mit weiteren, späteren Versionen noch erweitert werden.
 
-\functionalityOpt{Eigene Server}{ownServer}{40}
+\functionalityOpt{Eigene Server}{ownServer}{50}
 \fulfills{ownServer}%
-Es soll möglich sein, einen eigenen Server einrichten und diesen statt des
+Es soll möglich sein, einen eigenen Server einzurichten und diesen statt des
 standardmäßig zur Verfügung stehenden Servers zu verwenden.
 Zwischen verschiedenen Servern findet keine Kommunikation statt.
 Insbesondere werden Nutzerkonten nur serverweit gespeichert.
 Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
 gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
 
-\functionalityOpt{Serverwechel}{switchServer}{50}
+\functionalityOpt{Serverwechel}{switchServer}{60}
 \fulfills{switchServer}%
 Das Wechseln des Servers soll innerhalb der App und noch vor dem Login in ein
 Benutzerkonto möglich sein.
 
-\functionalityOpt{Stummschalten}{mute}{60}
+\functionalityOpt{Stummschalten}{mute}{70}
 \fulfills{groups}%
 Sowohl der Gruppenchat (\fncLink{chat}), als auch die
 Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
@@ -281,19 +297,24 @@ Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 \enquote{stumm schalten}, d.h. es lassen sich jegliche Benachrichtungen für den
 Nutzer unterdrücken.
 
-\functionalityOpt{Zeitplan für Positionsübertragung}{timetable}{70}
+\functionalityOpt{Zeitplan für Positionsübertragung}{timetable}{80}
 \fulfills{timetable}%
 Der Nutzer kann einzelnen Gruppen einen persönlichen wöchentlichen Zeitplan
 zuteilen, in dem er festlegt, zu welchen Zeiten er automatisch seine Position
 in der Gruppe freigibt.
 
-\functionalityOpt{Passwortzurücksetzung}{passwordReset}{80}
+\functionalityOpt{Passwortzurücksetzung}{passwordReset}{90}
 \fulfills{passwordReset}%
 Hat ein Nutzer sein Passwort vergessen, kann er eine E-Mail an seine zuvor
 mit dem Konto verbundene E-Mail-Adresse senden lassen.
 In dieser E-Mail sind Zugangsdaten, mit denen er sich temporär auch ohne das
 Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
+
+\functionalityOpt{Sprachen}{languages}{100}
+Es werden andere Sprachen angeboten.
+Die Sprache der App wird automatisch der Systemsprache angepasst.
+Die Menge an Sprachen kann mit weiteren, späteren Versionen noch erweitert werden.
 
 %%%%%%%%%%
 \pagebreak
@@ -302,7 +323,7 @@ Dabei wird das vorherige Passwort nicht preisgegeben.
 \nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}{10}
 \fulfills{1to1}%
 Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
-zu teilen. Dies soll in wenigeren Schritten möglich sein, als manuell eine
+zu teilen. Dies soll in weniger Schritten möglich sein, als manuell eine
 Gruppe aus zwei Leuten zu erstellen.
 
 \nonFunctionality{Einfache Bedienung}{handling}{20}
@@ -361,7 +382,7 @@ und ein Passwort eingeben kann.}
 {Er tippt die beiden Namen an.}
 {Die App schlägt ihm vor die Gruppe zu erstellen.}
 
-\testStep{Ned hat keine weiteren Freunde.}
+\testStep{Bob hat keine weiteren Freunde.}
 {Er tippt auf Gruppe erstellen}
 {Der Homescreen der Gruppe wird angezeigt.} % TODO: Homescreen?
 
@@ -369,7 +390,7 @@ und ein Passwort eingeben kann.}
 \tests{map}
 \testStep{Alice ist eingeloggt und befindet sich auf der Startseite.}
 {Sie tippt auf die Schaltfläche für die Umgebungskarte.}
-{Auf einer Landkarte wird ihr sowohl die eigene Position, als auch die von
+{Auf einer Landkarte wird ihr sowohl die eigene Position, als auch die von ihren
 eventuellen Verabredungen in ihrer Nähe angezeigt.
 Falls es andere Mitglieder in ihren Gruppen gibt, die momentan
 ihre Position teilen ist diese ebenfalls auf der Karte sichtbar.}
@@ -379,7 +400,7 @@ ihre Position teilen ist diese ebenfalls auf der Karte sichtbar.}
 \tests{meetingpoints}
 \testStep{Bob möchte sich mit seinen Freunden zum Mittagessen treffen
 und hat die App geöffnet.}
-{Er wählt die Gruppe aus, in der viele seiner Freunde und Kommilitonen mitglied sind.}
+{Er wählt die Gruppe aus, in der viele seiner Freunde und Kommilitonen Mitglied sind.}
 {Er bekommt alle anstehenden Verabredungen dieser Gruppe angezeigt.}
 
 \testStep{Bob sieht, dass noch keine Verabredung zum Mittagessen vorhanden ist.}
@@ -439,7 +460,7 @@ und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19
 \begin{figure}[hb]
 		\fbox{\includegraphics[height=80mm]{mockups/group_map.png}}
 		\caption{\label{fig:map}
-			Auf der Karte können die Positionen der anderen Gruppenmitglieder und bevorstehende 
+			Auf der Karte können die Positionen der anderen Gruppenmitglieder und bevorstehende
 			Treffpunkte eingesehen werden. Nutzer erscheinen ggf. gruppiert.
 			\testLink{grpcreate}.
 			%TODO: test case
@@ -486,7 +507,7 @@ Mehrere Nutzer, welche untereinander Positionsdaten austauschen können.
 \textbf{Chat}:
 Möglichkeit für Mitglieder einer Gruppe, Textnachrichten auszutauschen.
 
-\textbf{Treffpunkt}:
+\textbf{Verabredung}:
 Ein festgelegter Ort und Zeitpunkt.
 
 \textbf{Karte}:
