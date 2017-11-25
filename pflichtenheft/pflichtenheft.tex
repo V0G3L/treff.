@@ -59,7 +59,7 @@ Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder a
 % Diese Section sollte kurz und knapp "für Manager" sein
 % und auf eine Seite passen.
 
-\subsection{Muss}
+\subsection{Pflichtkriterien}
 \criterion{Gruppen}{groups}{10}
 Mehrere Nutzer können sich in Gruppen zusammenschließen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
@@ -87,7 +87,7 @@ längerfristig gespeichert.
 Ein persönliches Nutzerkonto ermöglicht es Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
-\subsection{Kann}
+\subsection{Kürkriterien}
 \criterionOpt{Abstimmungen}{vote}{10}
 Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
@@ -116,7 +116,7 @@ Gruppen übertragen lassen.
 Der Nutzer kann sein Passwort zurücksetzen lassen, wenn er sich über eine zuvor
 festgelegte E-Mail-Adresse authentifizieren kann.
 
-\subsection{Abgrenzung}
+\subsection{Abgrenzungskriterien}
 \criterionDemarc{Kein Social Network}{socialNetwork}{10}
 Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 anderen zu teilen.
@@ -184,7 +184,7 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \pagebreak
 \section{Funktionale Anforderungen}
 
-\subsection{Muss}
+\subsection{Pflichtanforderungen}
 
 \functionality{Benutzerkonten}{account}{10}
 \fulfills{account}%
@@ -243,7 +243,7 @@ Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
 des Nutzers nach Zeitpunkt sortiert angezeigt werden.
 
-\subsection{Kann}
+\subsection{Küranforderungen}
 
 \functionalityOpt{Abstimmungen}{vote}{10}
 \fulfills{vote}%
@@ -364,7 +364,7 @@ und ein Passwort eingeben kann.}
 
 \testStep{Alice hat \enquote{alice123} als Nutzernamen und ein geheimes Passwort eingegeben.}
 {Sie bestätigt ihre Angaben.}
-{Alice befindet sich nun im Hauptmenu der App, von wo aus sie Zugriff auf alle Funktionen hat.}
+{Alice befindet sich nun im Hauptmenü der App, von wo aus sie Zugriff auf alle Funktionen hat.}
 
 \test{Gruppe Erstellen}{grpcreate}{20}
 \tests{groupfounding}
