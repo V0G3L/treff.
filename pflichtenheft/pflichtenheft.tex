@@ -59,7 +59,7 @@ Sobald diese festgelegt wurden, soll die App die GPS-Standorte der Mitglieder an
 
 %%%%%%%%%%%%%%
 \pagebreak
-\section{Kriterien}i
+\section{Kriterien}
 % Diese Section sollte kurz und knapp "für Manager" sein
 % und auf eine Seite passen.
 
@@ -659,7 +659,7 @@ auf Englisch zu stellen, um sich mehr an die Sprache zu gewöhnen.}
 {Da ihre Systemsprache nun Englisch ist, werden ihr auch in der App alle Bezeichnungen
 nun ins Englische übersetzt angezeigt.}
 
-\test{Eigene Server}{ownServer}{140}
+\test{Eigene Server}{ownServer}
 \tests{ownServer}
 \testStep{Charlie vertraut uns nicht das wir seine Daten schützen, deswegen will er seinen eigenen Server aufsetzen.}
 {Er tut dies und gibt seinen Freunden die Adresse seines Servers.}
@@ -667,11 +667,34 @@ nun ins Englische übersetzt angezeigt.}
 Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Server für sie zur Verfügung wie unser normaler Server}
 
 
-\test{Serverwechsel}{switchServer}{150}
+\test{Serverwechsel}{switchServer}
 \tests{switchServer}
 \testStep{Dave öffnet die App und will, da ein Freund von ihm einen eigenen Server hostet, nicht den Standartserver benutzen.}
 {Er wählt auf dem Loginscreen die Serverauswahl aus und gibt die Adresse des Servers seines Freundes ein.}
 {Seine App verbindet sich nun mit dem Server seines Freundes und Dave kann diesen Server nutzen.}
+
+\test{Passwordzurücksetzung}{passwordReset}
+\tests{passwordReset}
+\testStep{Nicholas hat die App geöffnet und wird zum Login aufgefordert.
+Allerdings hat Nicholas sein Passwort vergessen.}
+{Nicholas gibt seinen Benutzernamen ein und drückt auf den
+\enquote{Passwort vergessen}-Knopf.}
+{Die App schickt eine E-Mail an die mit dem Benutzernamen assoziierte
+E-Mail-Adresse und weißt Nicholas darauf hin.
+Die App fordert ihn außerdem auf, die in der E-Mail enthaltenen temporären
+Zugangsdaten einzugeben.}
+
+\testStep{Nicholas hat eine E-Mail von der App erhalten.}
+{Nicholas entnimmt der E-Mail die temporären Zugangsdaten.}
+{Die App fordert Nicholas auf, ein neues Passwort einzugeben.}
+
+\testStep{Nicholas ist temporär authentifiziert und wurde aufgefordert, sein
+neues Passwort einzugeben.}
+{Nicholas gibt sein neues Passwort ein.}
+{Das mit dem vorher angegebenen Benutzernamen assoziierte Konto erhält das von
+Nicholas nun angegebene Passwort.
+Das alte Passwort und die temporären Zugangsdaten werden gelöscht.
+Diese sind nun nicht mehr gültig.}
 
 %%%%%%%%%%%%%
 \pagebreak
