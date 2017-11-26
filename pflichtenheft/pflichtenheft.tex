@@ -309,6 +309,9 @@ Gruppenmitglieder versandt werden können.
 \functionalityOpt{Gruppenrollen und -rechte}{admin}
 Innerhalb einer Gruppe können unterschiedliche Rollen
 mit spezifischen Rechten definiert und an Mitglieder verteilt werden.
+\footnote{Die Implementierung dieser Anforderung kann zur Verfälschung von
+Testergebnissen führen, wenn Gruppenmitglieder nicht die nötigen Rechte haben
+um bestimmte Aktionen auszuführen.}
 
 \functionalityOpt{Detaillierte Innenraumkarten}{indoor}
 \fulfills{indoor}%
@@ -335,8 +338,11 @@ Benutzerkonto möglich sein.
 Sowohl der Gruppenchat (\fncLink{chat}), als auch die
 Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 (\fncLink{positions}) lassen sich unabhängig voneinander
-\enquote{stumm schalten}, d.h. es lassen sich jegliche Benachrichtungen für den
+\enquote{stummschalten}, d.h. es lassen sich jegliche Benachrichtigungen für den
 Nutzer unterdrücken.
+\footnote{Die Implementierung dieser Anforderung beeinflusst alle Tests, in denen
+	Gruppenmitglieder über Aktivitäten benachrichtigt werden insofern, dass diese Benachrichtigungen
+	manche Mitglieder nicht erreichen, wenn diese die Gruppe stummgeschaltet haben.}
 Es lassen sich auch konkrete andere Nutzer stummschalten, so dass das
 Hinzufügen zu den Kontakten durch diese verhindert wird.
 
@@ -390,7 +396,7 @@ Server gleichzeitig verwenden können.
 
 \nonFunctionality{Datenschutz}{privacy}
 \fulfills{privacy}%
-Der Umgang mit Nutzerdaten entpricht den deutschen Datenschutzgesetzen.
+Der Umgang mit Nutzerdaten entspricht den deutschen Datenschutzgesetzen.
 
 \nonFunctionality{Datenspeicherung}{data storage}
 Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese
@@ -484,11 +490,7 @@ und ein Passwort eingeben kann.}
 {Er bekommt eine Liste all seiner Kontakte, die er in der App hinzugefügt hat, angezeigt.}
 
 \testStep{Seine Freunde Charlie und Dave spielen ebenfalls Fußball.}
-{Er tippt die beiden Namen an.}
-{Die App schlägt ihm vor die Gruppe zu erstellen.}
-
-\testStep{Bob hat keine weiteren Freunde.}
-{Er tippt auf Gruppe erstellen}
+{Er tippt die beiden Namen an. Und schließt die Gruppenerstellung ab.}
 {Das Übersichtsmenü der Gruppe wird angezeigt.}
 
 \test{Karte anzeigen}{map}
@@ -647,9 +649,6 @@ Benachrichtigungen, die nur seine Freunde in Karlsruhe betreffen, gestört werde
 {Er wählt deshalb seine Freundesgruppe aus und stellt Chat, Abstimmungen und Anfragen auf stumm.}
 {Er wird von nun an nicht mehr über Aktivitäten in dieser Gruppe benachrichtigt,
 bis er diese Einstellung wieder ändert.}
-Anmerkung: Die Implementierung dieser Anforderung beeinflusst alle Tests, in denen
-Gruppenmitglieder über Aktivitäten benachrichtigt werden insofern, dass diese Benachrichtigungen
-manche Mitglieder nicht erreichen, wenn diese die Gruppe stumm geschaltet haben.
 
 \test{Sprache}{language}
 \tests{languages}
