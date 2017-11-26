@@ -358,6 +358,8 @@ für andere Nutzer einsehbar sein sollen.
 %%%%%%%%%%%
 \pagebreak
 \section{Tests}
+\subsection{Funktionale Anforderungen}
+\subsection{Muss}
 
 \test{Account erstellen}{firstlogin}{10}
 \tests{account}
@@ -369,6 +371,10 @@ und ein Passwort eingeben kann.}
 \testStep{Alice hat \enquote{alice123} als Nutzernamen und ein geheimes Passwort eingegeben.}
 {Sie bestätigt ihre Angaben.}
 {Alice befindet sich nun im Hauptmenü der App, von wo aus sie Zugriff auf alle Funktionen hat.}
+<<<<<<< HEAD
+=======
+
+>>>>>>> Added a lot more tests
 
 \test{Gruppe Erstellen}{grpcreate}{20}
 \tests{groupfounding}
@@ -436,6 +442,7 @@ jeden der Freunde zu sehen.}
 Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
 und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
 
+<<<<<<< HEAD
 \test{Standortanfrage}{request}{60}
 \tests{request}
 \testStep{Bob ist in der App eingeloggt und möchte eine Standortanfrage an die Mitglieder seiner Lerngruppe senden.}
@@ -457,6 +464,79 @@ und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19
 \testStep{Eine Stunde ist vergangen.}
 {Keine Eingaben werden getätigt.}
 {Der Standort von Alice ist auf der Karte nicht mehr ensehbar}
+=======
+
+\test{Positionsanfrage}{posshare}{60}
+\tests{request}
+\testStep{In der Gruppe \enquote{Lerngruppe} befinden sich die vier Freunde Alice, Bob, Frank und Ted.}
+{Bob hat fordert die Gruppe auf, ihre Standorte jetzt	 zu teilen.}
+{Alle Gruppenmitglieder bekommen eine Benachrichtigung, dass sie gebeten wurden, ihren Standort
+mit der Gruppe zu teilen.}
+
+\testStep{Alle haben die Benachrichtigung erhalten.}
+{Alice möchte sich mit Bob treffen und stimmt deshalb zum dass ihre Position gesendet wird.
+Ted hat momentan Besuch und kann sich deshalb nicht mit den Anderen treffen und lehnt die
+Anfrage ab. Frank schläft noch und hat die Anfrage nicht bemerkt, beantwortet sie also auch nicht.}
+{Weil nur Alice Bobs Anfrage bestätigt hat werden nun auf Wunsch bei allen Gruppenmitgliedern
+die Positionen von Alice und Bob auf der Umgebungskarte vermerkt. Frank und Ted sind nicht zu sehen.}
+
+
+\test{Kontoverwaltung}{account}{70}
+\tests{account}
+\testStep{Craig ist um die Sicherheit seiner Daten im Internet besorgt.
+	Er möchte deshalb sein Passwort regelmäßig ändern.}
+{Craig navigiert zu den Kontoeinstellungen und wählt \enquote{Passwort ändern}.}
+{Es wird ein Formular in das Craig sein altes und sein gewünschtes neues Passwort eintragen kann.}
+
+\testStep{Craig hat alle nötigen Angaben gemacht.}
+{Er bestätigt seine Angaben.}
+{Craig erhält eine E-Mail als Bestätigung, dass sein Passwort geändert wurde.}
+Anmerkung: Mit dem gleichen Ablauf kann der Nutzer auch seinen Nutzernamen oder seine
+E-Mail-Adresse ändern oder seinen Account löschen.
+
+
+\subsection{Kür-Anforderungen}
+\test{Abstimmung}{poll}{80}
+\tests{vote}
+\testStep{Bob möchte mit seinen Freunden Abends in eine Bar gehen.
+Alle diese Freunde sind bereits Mitglied in der Gruppe \enquote{Lerngruppe}.}
+{Bob navigiert auf die Gruppe und wählt \enquote{Neue Abstimmung}.}
+{In einem Formular kann Bob einen Namen eingeben und Wahlmöglichkeiten hinzufügen,
+	sowie eine Uhrzeit wählen.}
+
+\testStep{Bob nennt die Abstimmung \enquote{Barabend}, wählt als Uhrzeit 19 Uhr und 
+fügt \enquote{Enchiladas} und \enquote{Ox} als Optionen hinzu. Er bestimmt eine Abstimmzeit von einer Stunde.}
+{Bob bestätigt seine Angaben.}
+{Eine neue Abstimmung wird erstellt und alle Gruppenmitglieder werden darüber benachrichtigt.
+Die möglichen Treffpunkte werden bei allen Mitgliedern auf der Umgebungskarte angezeigt.}
+
+\testStep{Bob hat bereits für Ox abgestimmt, weil er dann nicht so weit laufen muss.}
+{Alice wurde über die Abstimmung benachrichtigt, möchte aber heute nicht viel Geld ausgeben.
+Sie fügt deshalb \enquote{Z10} als Option zu der Abstimmung hinzu.}
+{Die Abstimmung wird um eine Option erweitert und 
+wieder alle Mitglieder über die Veränderung benachrichtigt.}
+
+\testStep{Alle Mitglieder werden über die Veränderung benachrichtigt und Einige stimmen ab.}
+{Obwohl Bob zuvor schon eine Stimme für Ox abgegeben hat, wählt er jetzt zusätzlich Z10.}
+{Nach einer Stunde ist die Abstimmung zu Ende und das Ergebnis steht fest.
+Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erstellt mit der 
+eingestellten Uhrzeit und dem Treffpunkt, welcher die meisten Stimmen bekommen hatte.}
+
+
+\test{Gruppenchat}{chat}{90}
+\tests{chat}
+\testStep{Alice hat eine Verabredung für heute Abend erstellt weil sie sich mit ihren Freunden
+treffen will. Ted hat allerdings keine Zeit und möchte Missverständnisse vermeiden, sodass
+die Anderen nicht aus Versehen auf ihn warten.}
+{Er öffnet die Gruppe und wählt die Chat Funktion aus. Er schreibt \enquote{Ich kann heute Abend leider nicht, braucht nicht Zu warten.} und schickt die Nachricht ab.}
+{Die anderen Gruppenmitglieder werden benachrichtigt, dass sie eine neue Nachricht haben.}
+
+\testStep{Alice hat Ted schon eine Weile nicht mehr gesehen und findet Teds Fehlen schade.}
+{Sie navigiert ebenfalls auf den Chat und antwortet \enquote{Schade, hoffentlich dann beim
+nächsten Mal}.}
+{Wieder bekommen die Anderen eine Benachrichtigung.}
+
+>>>>>>> Added a lot more tests
 
 %%%%%%%%%%%%%
 \pagebreak
