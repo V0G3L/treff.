@@ -18,8 +18,9 @@
 \raggedbottom
 \crefname{figure}{Abb}{Abb}
 
+\newcommand\producttitle{treff.}
 \hypersetup{
-	pdftitle={Pflichtenheft},
+	pdftitle={Pflichtenheft: \producttitle},
 	bookmarks=true,
 }
 
@@ -32,8 +33,6 @@
 \refoot{\today}
 \pagestyle{scrheadings}
 
-\newcommand\producttitle{GO-App}
-
 \title{Pflichtenheft: \producttitle}
 \author{Lukas Dippon
         \and Jens Kienle
@@ -44,9 +43,9 @@
 
 \begin{document}
 \maketitle
-%\thispagestyle{empty} % removed page number from title
+\thispagestyle{empty} % removed page number from title
 
-\section{Einleitung}
+\section*{} % No section number on intro, also removes it from TOC
 Studenten und Mitarbeiter des KIT treffen sich gerne zum gemeinsamen Essen oder Lernen.
 Dazu ist an einem bestimmten Tag immer notwendig zu wissen, ob bereits ein Treffen vereinbart wurde.
 Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
@@ -269,8 +268,6 @@ Gruppenmitglieder versandt werden können.
 \functionalityOpt{Gruppenrollen und -rechte}{admin}{30}
 Innerhalb einer Gruppe können unterschiedliche Rollen
 mit spezifischen Rechten definiert und an Mitglieder verteilt werden.
-Dies soll es den Nutzern ermöglichen,
-eine klare Hierarchie in der Gruppe aufzubauen.
 
 \functionalityOpt{Detaillierte Innenraumkarten}{indoor}{40}
 \fulfills{indoor}%
@@ -315,9 +312,11 @@ Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
 
 \functionalityOpt{Sprachen}{languages}{100}
-Es werden andere Sprachen angeboten.
-Die Sprache der App wird automatisch der Systemsprache angepasst.
-Die Menge an Sprachen kann mit weiteren, späteren Versionen noch erweitert werden.
+Es werden als Sprachen Deutsch und Englisch angeboten.
+Die Menge an Sprachen kann mit weiteren, späteren Versionen noch erweitert
+werden.
+Die Sprache der App wird automatisch der Systemsprache angepasst, sofern diese
+unterstützt wird.
 
 %%%%%%%%%%
 \pagebreak
@@ -389,7 +388,7 @@ und ein Passwort eingeben kann.}
 
 \testStep{Bob hat keine weiteren Freunde.}
 {Er tippt auf Gruppe erstellen}
-{Der Homescreen der Gruppe wird angezeigt.} % TODO: Homescreen?
+{Das Übersichtsmenü der Gruppe wird angezeigt.}
 
 \test{Karte anzeigen}{map}{30}
 \tests{map}
