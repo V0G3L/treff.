@@ -2,6 +2,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{expl3}
 \RequirePackage{rdfref-user,rdfref-query}
+\RequirePackage{caption}
 
 \parindent 0pt
 
@@ -33,6 +34,9 @@
 }
 \newcommand\testLink[1]{%
     \pflLink{tst-#1}%
+}
+\newcommand\guiFigureLink[1]{%
+    \pflLink{fig-gui-#1}%
 }
 
 \newcommand\marginid[1]{%
@@ -175,6 +179,17 @@
     \textbf{Reaktion:}~#3\par
     \end{minipage}
     \par
+}
+
+% GUI figures
+\newcommand\guiFigure[4]{%
+    \rdflabel{fig-gui-#2}%
+    \AddPropertyEx{pfl:id}{AB#3}
+    \begin{figure}[hb]%
+        \fbox{\includegraphics[height=80mm]{#1}}%
+        \captionsetup{labelformat=empty}
+        \caption{\textbf{AB#3:}~#4}%
+    \end{figure}%
 }
 
 \ExplSyntaxOff
