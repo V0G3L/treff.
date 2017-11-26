@@ -84,8 +84,8 @@ aktualisiert.
 
 \criterion{Datenschutz}{privacy}
 Die Positionsdaten des Nutzers werden nur während des festgelegten Zeitraumes
-(\critLink{positions}) gesendet und serverseitig nicht
-längerfristig gespeichert.
+(\critLink{positions}) gesendet und serverseitig nicht darüber hinaus
+gespeichert.
 
 \criterion{Nutzerkonten}{account}
 Ein persönliches Nutzerkonto ermöglicht es Nutzern,
@@ -116,6 +116,7 @@ möglich, den verwendeten Server zu wechseln.
 Der Nutzer kann zu bestimmten Zeiten seine Position automatisch an bestimmte
 Gruppen übertragen lassen.
 
+\pagebreak
 \criterionOpt{Passwortzurücksetzung}{passwordReset}
 Der Nutzer kann sein Passwort zurücksetzen lassen, wenn er sich über eine zuvor
 festgelegte E-Mail-Adresse authentifizieren kann.
@@ -171,9 +172,9 @@ Aufgrund von Stau auf der Autobahn verspätet er sich.
 Als pflichtbewusster Autofahrer bedient er sein Handy nicht während der Fahrt.
 Stattdessen hat er bereits vor Antritt der Fahrt seinen Standort freigegeben.
 Dies erkennt auch der Gastgeber auf der Karte von treff. So kann er den Kochvorgang dann entsprechend anpassen.
-
+\\
 \item[Abendprogramm (nutzt auch Kürkriterien)]
-Studenten treffen sich auch Abseits des Studiums gerne, um den Abend gemeinsam zu verbringen.
+Studenten treffen sich auch abseits des Studiums gerne, um den Abend gemeinsam zu verbringen.
 Die Nutzung der Anwendung kann dabei folgendermaßen aussehen:
 
 Nachdem sich die Gruppe entschieden hat, am Abend etwas zu unternehmen,
@@ -287,14 +288,16 @@ Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
 des Nutzers nach Zeitpunkt sortiert angezeigt werden.
 
+
+\pagebreak
 \subsection{Küranforderungen}
 
 \functionalityOpt{Abstimmungen}{vote}
 \fulfills{vote}%
 Der Nutzer kann innerhalb von Gruppen Abstimmungen erstellen.
 Diese werden zeitlich begrenzt.
-Der Abstimmung lassen sich beliebig viele Treff- und Zeitpunkte hinzufügen,
-sowie Stimmen abgeben und verändern.
+Der Abstimmung lassen sich beliebig viele Treff- und Zeitpunkte hinzufügen.
+Nutzer können ihre Stimmen abgeben und verändern.
 Alle zur Wahl stehenden Treffpunkte werden dabei als solche auf der
 Umgebungskarte (\fncLink{map}) markiert.
 Nach Ablauf des Zeitlimits wird eine Verabredung, bestehend aus jeweils dem
@@ -317,7 +320,7 @@ um bestimmte Aktionen auszuführen.}
 \fulfills{indoor}%
 Für Innenräume, in denen eine hohe Nutzerdichte erwartet wird, werden
 detaillierte Innenraumkarten in die Umgebungskarte integriert. Die Menge an
-Innenraumkarten kann mit weiteren, späteren Versionen noch erweitert werden.
+Innenraumkarten kann mit späteren Versionen noch erweitert werden.
 
 \functionalityOpt{Eigene Server}{ownServer}
 \fulfills{ownServer}%
@@ -339,11 +342,11 @@ Sowohl der Gruppenchat (\fncLink{chat}), als auch die
 Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 (\fncLink{positions}) lassen sich unabhängig voneinander
 \enquote{stummschalten}, d.h. es lassen sich jegliche Benachrichtigungen für den
-Nutzer unterdrücken.
+Nutzer unterdrücken%
 \footnote{Die Implementierung dieser Anforderung beeinflusst alle Tests, in denen
 	Gruppenmitglieder über Aktivitäten benachrichtigt werden insofern, dass diese Benachrichtigungen
-	manche Mitglieder nicht erreichen, wenn diese die Gruppe stummgeschaltet haben.}
-Es lassen sich auch konkrete andere Nutzer stummschalten, so dass das
+manche Mitglieder nicht erreichen, wenn diese die Gruppe stummgeschaltet haben.}.
+Es lassen sich auch konkrete andere Nutzer stummschalten, sodass das
 Hinzufügen zu den Kontakten durch diese verhindert wird.
 
 \functionalityOpt{Zeitplan für Positionsübertragung}{timetable}
@@ -360,9 +363,10 @@ Diese Mail enthält Zugangsdaten, mit denen er sich temporär auch ohne das
 Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
 
+\pagebreak
 \functionalityOpt{Sprachen}{languages}
 Es werden als Sprachen Deutsch und Englisch angeboten.
-Die Menge an Sprachen kann mit weiteren, späteren Versionen noch erweitert
+Die Menge an Sprachen kann mit späteren Versionen noch erweitert
 werden.
 Die Sprache der App wird automatisch der Systemsprache angepasst, sofern diese
 unterstützt wird.
@@ -480,9 +484,9 @@ und ein Passwort eingeben kann.}
 
 \test{Kontakte hinzufügen}{contacts}
 \tests{contacts}
-\testStep{Claudio möchte seinen Freund Otto als Kontakt hinzufügen}
-{Dazu drückt er in der Kontaktliste den Hinzufügen-Knopf und gibt Ottos Benutzernamen ein}
-{Sowohl Claudio als auch Otto haben nun den jeweils anderen in ihrer Kontaktliste}
+\testStep{Claudio möchte seinen Freund Otto als Kontakt hinzufügen.}
+{Dazu drückt er in der Kontaktliste den Hinzufügen-Knopf und gibt Ottos Benutzernamen ein.}
+{Sowohl Claudio als auch Otto haben nun den jeweils anderen in ihrer Kontaktliste.}
 
 \test{Gruppe Erstellen}{grpcreate}
 \tests{groupfounding}
@@ -506,7 +510,7 @@ und ein Passwort eingeben kann.}
 {Auf einer Landkarte wird ihr sowohl die eigene Position, als auch die von ihren
 eventuellen Verabredungen in ihrer Nähe angezeigt.
 Falls es andere Mitglieder in ihren Gruppen gibt, die momentan
-ihre Position teilen ist diese ebenfalls auf der Karte sichtbar.}
+ihre Position teilen, ist diese ebenfalls auf der Karte sichtbar.}
 
 
 \test{Verabredung erstellen}{event}
@@ -541,11 +545,11 @@ jeden der Freunde zu sehen.}
 \test{Übertragung der eigenen Position an die Gruppe}{positions}
 \tests{positions}
 \testStep{Bob ist in der App angemeldet und möchte seinen Standort mit einer Gruppe teilen.}
-{Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben}
+{Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben.}
 {Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Freigabe spezifizieren kann.}
 
 \testStep{Bob möchte seine Position für eine halbe Stunde teilen.}
-{Bob gibt die 30 Minuten ein und teilt seinen Standort}
+{Bob gibt die 30 Minuten ein und teilt seinen Standort.}
 {Bob's Standort ist für alle Mitglieder der Gruppe für 30 Minuten sichtbar.}
 
 
@@ -595,7 +599,7 @@ E-Mail-Adresse ändern oder seinen Account löschen.
 Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
 und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
 
-
+\pagebreak
 \subsection{Küranforderungen}
 \test{Abstimmung}{poll}
 \tests{vote}
@@ -623,7 +627,7 @@ wieder alle Mitglieder über die Veränderung benachrichtigt.}
 Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erstellt mit der
 eingestellten Uhrzeit und dem Treffpunkt, welcher die meisten Stimmen bekommen hatte.}
 
-
+\pagebreak
 \test{Gruppenchat}{chat}
 \tests{chat}
 \testStep{Alice hat eine Verabredung für heute Abend erstellt weil sie sich mit ihren Freunden
@@ -656,6 +660,7 @@ Benachrichtigungen, die nur seine Freunde in Karlsruhe betreffen, gestört werde
 {Er wird von nun an nicht mehr über Aktivitäten in dieser Gruppe benachrichtigt,
 bis er diese Einstellung wieder ändert.}
 
+\pagebreak
 \test{Gruppenrollen und -rechte}{admin}
 \tests{admin}
 \testStep{Alice hat eine Gruppe gegründet und Bob hinzugefügt. Bob möchte wiederum
@@ -787,9 +792,8 @@ Diese zeigt auch alle Kontakte, die zur Zeit ihren Standort freigeben.
 Hat der Nutzer nun eine Gruppe angeklickt, so kann er die Veranstaltungen dieser Gruppe einsehen oder eine neue erstellen.
 Sie werden auf einer Karte angezeigt, zusammen mit allen Gruppenmitgliedern, die gerade ihren Standort teilen.
 
-\pagebreak
 \subsection{Symbole auf Karten}
-\guiFigure{images/gui-mockups/home_events.png}
+\guiFigure{images/gui-mockups/map_markers.png}
 {mapMarkers}
 {Symbole auf Karten}
 {1}
@@ -872,6 +876,7 @@ Positionsbestimmung.
 \textbf{Material Design}:
 Von Google entwickelte Richtlinien für die Entwicklung von graphischen
 Benutzeroberflächen.
+Siehe \url{https://material.io/guidelines/}
 
 \textbf{Verabredung}:
 Ein festgelegter Ort und Zeitpunkt.
