@@ -142,25 +142,26 @@
     \IfProperty{fnc-#2}{pfl:satisfier}{%
         \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}%
         {~\pflLink{\GetVal{?c}}}%
-        \par
+        \\\\
     }%
-    \\
+    \par
 }
 
 % Creates an optional functionality
 \newcommand\functionalityOpt[2]{
     \stepcounter{functionalityOpt}
+    \bool_set_true:N \l_needs_satisfaction%
     \pflitem{#1}
             {fnc-#2}
             {\prefixFunctionalOpt \arabic{functionalityOpt}0}
-            {}
-            {}
+            {Getestet~durch:}%
+            {NICHT~GETESTET}%
     \IfProperty{fnc-#2}{pfl:satisfier}{%
         \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}%
         {~\pflLink{\GetVal{?c}}}%
-        \par
+        \\\\
     }%
-    \\
+    \par
 }
 
 % Creates a non-functionality
