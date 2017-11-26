@@ -459,13 +459,15 @@ gesendet mit einer Aufforderung jetzt ihren Standort zu teilen.}
 jeden der Freunde zu sehen.}
 
 
-\test{Terminplanung}{eventlist}{50}
-\tests{eventlist}
-\testStep{Oscar ist in der App eingeloggt und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
-{Er navigiert von der Startseite auf die Verabredungsliste.}
-{Die App zeigt ihm eine Liste aller zukünftigen Verabredungen.
-Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
-und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
+\test{Übertragung der eigenen Position an die Gruppe}{positions}{50}
+\tests{positions}
+\testStep{Bob ist in der App eingeloggt und möchte seinen Standort für 30 Minuten mit einer Gruppe teilen.}
+{Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben}
+{Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Freigabe spezifizieren kann.}
+
+\testStep{}
+{Bob gibt die 30 Minuten ein und teilt seinen Standort}
+{Bob's Standort ist für alle Mitglieder der Gruppe für 30 Minuten sichtbar.}
 
 
 \test{Standortanfrage}{request}{60}
@@ -491,8 +493,8 @@ und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19
 {Der Standort von Alice ist auf der Karte nicht mehr einsehbar}
 
 
-\test{Kontoverwaltung}{account}{70}
-\tests{account}
+\test{Kontoverwaltung}{options}{70}
+\tests{options}
 \testStep{Craig ist um die Sicherheit seiner Daten im Internet besorgt.
 	Er möchte deshalb sein Passwort regelmäßig ändern.}
 {Craig navigiert zu den Kontoeinstellungen und wählt \enquote{Passwort ändern}.}
@@ -505,8 +507,18 @@ Anmerkung: Mit dem gleichen Ablauf kann der Nutzer auch seinen Nutzernamen oder 
 E-Mail-Adresse ändern oder seinen Account löschen.
 
 
+
+\test{Terminplanung}{eventlist}{80}
+\tests{eventlist}
+\testStep{Oscar ist in der App eingeloggt und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
+{Er navigiert von der Startseite auf die Verabredungsliste.}
+{Die App zeigt ihm eine Liste aller zukünftigen Verabredungen.
+Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
+und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
+
+
 \subsection{Kür-Anforderungen}
-\test{Abstimmung}{poll}{80}
+\test{Abstimmung}{poll}{90}
 \tests{vote}
 \testStep{Bob möchte mit seinen Freunden Abends in eine Bar gehen.
 Alle diese Freunde sind bereits Mitglied in der Gruppe \enquote{Lerngruppe}.}
@@ -533,7 +545,7 @@ Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erste
 eingestellten Uhrzeit und dem Treffpunkt, welcher die meisten Stimmen bekommen hatte.}
 
 
-\test{Gruppenchat}{chat}{90}
+\test{Gruppenchat}{chat}{100}
 \tests{chat}
 \testStep{Alice hat eine Verabredung für heute Abend erstellt weil sie sich mit ihren Freunden
 treffen will. Ted hat allerdings keine Zeit und möchte Missverständnisse vermeiden, sodass
