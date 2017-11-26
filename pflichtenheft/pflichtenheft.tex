@@ -34,7 +34,7 @@
 \pagestyle{scrheadings}
 
 \title{\includegraphics[width = 80mm]{images/logo_crop.png}}
-\subtitle{Pflichtenheft}
+\subtitle{\huge Pflichtenheft}
 \author{Lukas Dippon
         \and Jens Kienle
         \and Matthias Noll
@@ -673,6 +673,7 @@ Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Se
 {Er wählt auf dem Loginscreen die Serverauswahl aus und gibt die Adresse des Servers seines Freundes ein.}
 {Seine App verbindet sich nun mit dem Server seines Freundes und Dave kann diesen Server nutzen.}
 
+
 \test{Passwordzurücksetzung}{passwordReset}
 \tests{passwordReset}
 \testStep{Nicholas hat die App geöffnet und wird zum Login aufgefordert.
@@ -695,6 +696,14 @@ neues Passwort einzugeben.}
 Nicholas nun angegebene Passwort.
 Das alte Passwort und die temporären Zugangsdaten werden gelöscht.
 Diese sind nun nicht mehr gültig.}
+
+
+\test{Kontakte hinzufügen}{contacts}{160}
+\tests{contacts}
+\testStep{Claudio möchte seinen Freund Otto als Kontakt hinzufügen}
+{Dazu drückt er in der Kontaktliste den Hinzufügen-Knopf und gibt Ottos Benutzernamen ein}
+{Sowohl Claudio als auch Otto haben nun den jeweils anderen in ihrer Kontaktliste}
+
 
 %%%%%%%%%%%%%
 \pagebreak
