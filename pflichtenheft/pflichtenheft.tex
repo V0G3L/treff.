@@ -312,7 +312,7 @@ standardmäßig zur Verfügung stehenden Servers zu verwenden.
 Zwischen verschiedenen Servern findet keine Kommunikation statt.
 Insbesondere werden Nutzerkonten nur serverweit gespeichert.
 Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
-gestellt und die benötigten Systemadministrationskenntnisse vorausgesetzt.
+gestellt und die benötigten Systemadministrationskenntnisse vorrausgesetzt.
 
 \functionalityOpt{Serverwechel}{switchServer}
 \fulfills{switchServer}%
@@ -388,82 +388,61 @@ für andere Nutzer einsehbar sein sollen.
 \pagebreak
 \section{Produktdaten}
 \subsection{Nutzer}
-\productDatum{Nutzer ID}{userID}{10}
-Eindeutige Zahl, die den Nutzer identifiziert
-
-\productDatum{username}{username}{20}
+\productDatum{Benutzername}{username}{10}
 Der gewählte Benutzername
 
-\productDatum{E-Mail-Adresse}{email}{30}
+\productDatum{E-Mail-Adresse}{email}{20}
 Die hinterlegte E-Mail-Adresse
 
-\productDatum{Passwort}{password}{40}
-Das gewählte Passwort
+\productDatum{Passwort}{password}{30}
+Das gewählte Passwort in einer Form, die bei eventuellen Fremdzugriffen sicherheitsunkritisch ist
 
-\productDatum{Kontakte}{friends}{50}
-Liste der IDs aller hinzugefügten Kontakte
+\productDatum{Kontakte}{friends}{40}
+Alle hinzugefügten Kontakte
 
-\productDatum{Gruppen}{groups}{60}
-Liste der IDs aller Gruppen, in denen der Nutzer Mitglied ist
+\productDatum{Gruppen}{groups}{50}
+Alle Gruppen, in denen der Nutzer Mitglied ist
 
 \subsection{Gruppe}
-\productDatum{Gruppen ID}{groupID}{70}
-Eindeutige Zahl, die die Gruppe identifiziert
-
-\productDatum{Name}{groupName}{80}
+\productDatum{Name}{groupName}{60}
 Name der Gruppe
 
-\productDatum{Mitglieder}{memberList}{90}
-Liste der IDs aller Mitglieder
+\productDatum{Mitglieder}{memberList}{70}
+Liste aller Mitglieder
 
-\productDatum{Verabredungen}{eventList}{100}
-Liste der IDs aller Verabredungen der Gruppe
+\productDatum{Verabredungen}{eventList}{80}
+Liste aller Verabredungen der Gruppe
 
-\productDatum{Positionen}{positions}{110}
+\productDatum{Positionen}{positions}{90}
 Aktuelle Positionen aller Mitglieder
 
 %TODO: wunsch
-\productDatum{Rechte}{permissions}{120}
+\productDatum{Rechte}{permissions}{100}
 Jedem Mitglied ist eine bestimmte Rolle zugeteilt
 
 %TODO: wunsch
-\productDatum{Chat}{chatlog}{130}
-Liste aller Nachrichten der Gruppe, jeweils bestehend aus: Nutzer ID des Verfassers, Uhrzeit und Inhalt
+\productDatum{Chat}{chatlog}{110}
+Liste aller Nachrichten der Gruppe, jeweils bestehend aus: Verfasser, Uhrzeit und Inhalt
 
 %TODO: wunsch
-\productDatum{Abstimmungen}{polls}{140}
-Liste aller Abstimmungen der Gruppe, jeweils bestehend aus Nutzer ID des Erstellers, Erstellzeitpunkt, Endzeitpunkt, den Auswahlmöglichkeiten und weiteren Optionen. Zu jeder Auswahlmöglichkeit wird eine Liste aller Nutzer IDs erstellt, die für diese abgestimmt haben.
+\productDatum{Abstimmungen}{polls}{120}
+Liste aller Abstimmungen der Gruppe, jeweils bestehend aus Ersteller, Erstellzeitpunkt, Endzeitpunkt, den Auswahlmöglichkeiten und weiteren Optionen. Zu jeder Auswahlmöglichkeit existiert eine Liste aller Nutzer, die für diese abgestimmt haben.
 
 \subsection{Verabredung}
-\productDatum{Verabredungs ID}{eventID}{150}
-Eindeutige Zahl, die die Verabredung identifiziert
-
-\productDatum{Name}{eventName}{160}
+\productDatum{Name}{eventName}{130}
 Name der Verabredung
 
-\productDatum{Ersteller}{creator}{170}
-ID des Nutzers, der die Verabredung erstellt hat
+\productDatum{Ersteller}{creator}{140}
+Nutzer, der die Verabredung erstellt hat
 
-\productDatum{Treffpunkt}{eventPlace}{180}
+\productDatum{Treffpunkt}{eventPlace}{150}
 Ort, an dem die Verabredung stattfinden soll
 
-\productDatum{Zeitpunkt}{eventTime}{190}
+\productDatum{Zeitpunkt}{eventTime}{160}
 Zeitpunkt, an dem die Verabredung stattfinden soll
 
-\productDatum{Teilnehmer}{participants}{200}
-Liste der IDs aller Teilnehmer
-
-\subsection{Client}
-\productDatum{Eingeloggter Nutzer}{loggedInUser}{210}
-ID des aktuell angemeldeten Nutzers
-
-\subsection{Server}
-\productDatum{Nutzerliste}{userList}{220}
-Liste aller IDs der angemeldeten Nutzer
-
-\productDatum{Gruppenliste}{groupList}{230}
-Liste aller IDs der gegründeten Gruppen
-
+\productDatum{Teilnehmer}{participants}{170}
+Liste aller Teilnehmer
 
 %%%%%%%%%%%
 \pagebreak
@@ -607,7 +586,7 @@ Alle diese Freunde sind bereits Mitglied in der Gruppe \enquote{Lerngruppe}.}
 {In einem Formular kann Bob einen Namen eingeben und Wahlmöglichkeiten hinzufügen,
 	sowie eine Uhrzeit wählen.}
 
-\testStep{Bob nennt die Abstimmung \enquote{Barabend}, wählt als Uhrzeit 19 Uhr und
+\testStep{Bob nennt die Abstimmung \enquote{Barabend}, wählt als Uhrzeit 19 Uhr und 
 fügt \enquote{Enchiladas} und \enquote{Ox} als Optionen hinzu. Er bestimmt eine Abstimmzeit von einer Stunde.}
 {Bob bestätigt seine Angaben.}
 {Eine neue Abstimmung wird erstellt und alle Gruppenmitglieder werden darüber benachrichtigt.
@@ -616,13 +595,13 @@ Die möglichen Treffpunkte werden bei allen Mitgliedern auf der Umgebungskarte a
 \testStep{Bob hat bereits für Ox abgestimmt, weil er dann nicht so weit laufen muss.}
 {Alice wurde über die Abstimmung benachrichtigt, möchte aber heute nicht viel Geld ausgeben.
 Sie fügt deshalb \enquote{Z10} als Option zu der Abstimmung hinzu.}
-{Die Abstimmung wird um eine Option erweitert und
+{Die Abstimmung wird um eine Option erweitert und 
 wieder alle Mitglieder über die Veränderung benachrichtigt.}
 
 \testStep{Alle Mitglieder werden über die Veränderung benachrichtigt und Einige stimmen ab.}
 {Obwohl Bob zuvor schon eine Stimme für Ox abgegeben hat, wählt er jetzt zusätzlich Z10.}
 {Nach einer Stunde ist die Abstimmung zu Ende und das Ergebnis steht fest.
-Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erstellt mit der
+Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erstellt mit der 
 eingestellten Uhrzeit und dem Treffpunkt, welcher die meisten Stimmen bekommen hatte.}
 
 
@@ -638,7 +617,6 @@ die Anderen nicht aus Versehen auf ihn warten.}
 {Sie navigiert ebenfalls auf den Chat und antwortet \enquote{Schade, hoffentlich dann beim
 nächsten Mal}.}
 {Wieder bekommen die Anderen eine Benachrichtigung.}
-
 
 \test{Innenraumkarten}{indoor}
 \tests{indoor}
@@ -670,19 +648,6 @@ auf Englisch zu stellen, um sich mehr an die Sprache zu gewöhnen.}
 {Da ihre Systemsprache nun Englisch ist, werden ihr auch in der App alle Bezeichnungen
 nun ins Englische übersetzt angezeigt.}
 
-\test{Eigene Server}{ownServer}{140}
-\tests{ownServer}
-\testStep{Charlie vertraut uns nicht das wir seine Daten schützen, deswegen will er seinen eigenen Server aufsetzen.}
-{Er tut dies und gibt seinen Freunden die Adresse seines Servers.}
-{Seinen Freunden ist es nun möglich in der App auszuwählen das sie einen anderen Server auswählen wollen und hier die Adresse von
-Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Server für sie zur Verfügung wie unser normaler Server}
-
-
-\test{Serverwechsel}{switchServer}{150}
-\tests{switchServer}
-\testStep{Dave öffnet die App und will, da ein Freund von ihm einen eigenen Server hostet, nicht den Standartserver benutzen.}
-{Er wählt auf dem Loginscreen die Serverauswahl aus und gibt die Adresse des Servers seines Freundes ein.}
-{Seine App verbindet sich nun mit dem Server seines Freundes und Dave kann diesen Server nutzen.}
 
 %%%%%%%%%%%%%
 \pagebreak
