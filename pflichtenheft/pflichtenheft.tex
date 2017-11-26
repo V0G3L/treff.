@@ -94,15 +94,15 @@ Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 \criterionOpt{Abstimmungen}{vote}
 Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
-\criterionOpt{1 zu 1 Verbindung}{1to1}
-Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
-soll möglich und besonders einfach sein.
-
 \criterionOpt{Detailliertere Innenraumkarten}{indoor}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
 \criterionOpt{Gruppenchat}{chat}
 Innerhalb der Gruppen können simple Textnachrichten versendet werden.
+
+\criterionOpt{1 zu 1 Verbindung}{1to1}
+Der Positionsaustausch und Chat zwischen zwei einzelnen Nutzern außerhalb von
+Gruppen soll möglich und besonders einfach sein.
 
 \criterionOpt{Eigene Server}{ownServer}
 Es ist dem Nutzer möglich, einen eigenen Server zu erstellen und zu verwalten.
@@ -352,11 +352,11 @@ unterstützt wird.
 \pagebreak
 \section{Nicht-Funktionale Anforderungen}
 
-\nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}
+\nonFunctionality{Kommunikation zwischen zwei einzelnen Personen}{1to1}
 \fulfills{1to1}%
 Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
-zu teilen. Dies soll in weniger Schritten möglich sein, als manuell eine
-Gruppe aus zwei Leuten zu erstellen.
+zu teilen oder zu chatten. Dies soll in weniger Schritten möglich sein, als
+manuell eine Gruppe aus zwei Leuten zu erstellen.
 
 \nonFunctionality{Einfache Bedienung}{handling}
 Damit die App sich gegen die gängigen Instant Messenger durchsetzen kann, muss
@@ -377,8 +377,7 @@ Server gleichzeitig verwenden können.
 
 \nonFunctionality{Datenschutz}{privacy}
 \fulfills{privacy}%
-Der Umgang mit Nutzerdaten entpricht den national geltenden
-Datenschutzgesetzen.
+Der Umgang mit Nutzerdaten entpricht den deutschen Datenschutzgesetzen.
 
 \nonFunctionality{Datenspeicherung}{data storage}
 Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese
