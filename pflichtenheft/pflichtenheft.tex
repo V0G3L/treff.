@@ -386,6 +386,87 @@ für andere Nutzer einsehbar sein sollen.
 
 %%%%%%%%%%%
 \pagebreak
+\section{Produktdaten}
+\subsection{Nutzer}
+\productDatum{Nutzer ID}{userID}{10}
+Eindeutige Zahl, die den Nutzer identifiziert
+
+\productDatum{username}{username}{20}
+Der gewählte Benutzername
+
+\productDatum{E-Mail-Adresse}{email}{30}
+Die hinterlegte E-Mail-Adresse
+
+\productDatum{Passwort}{password}{40}
+Das gewählte Passwort
+
+\productDatum{Kontakte}{friends}{50}
+Liste der IDs aller hinzugefügten Kontakte
+
+\productDatum{Gruppen}{groups}{60}
+Liste der IDs aller Gruppen, in denen der Nutzer Mitglied ist
+
+\subsection{Gruppe}
+\productDatum{Gruppen ID}{groupID}{70}
+Eindeutige Zahl, die die Gruppe identifiziert
+
+\productDatum{Name}{groupName}{80}
+Name der Gruppe
+
+\productDatum{Mitglieder}{memberList}{90}
+Liste der IDs aller Mitglieder
+
+\productDatum{Verabredungen}{eventList}{100}
+Liste der IDs aller Verabredungen der Gruppe
+
+\productDatum{Positionen}{positions}{110}
+Aktuelle Positionen aller Mitglieder
+
+%TODO: wunsch
+\productDatum{Rechte}{permissions}{120}
+Jedem Mitglied ist eine bestimmte Rolle zugeteilt
+
+%TODO: wunsch
+\productDatum{Chat}{chatlog}{130}
+Liste aller Nachrichten der Gruppe, jeweils bestehend aus: Nutzer ID des Verfassers, Uhrzeit und Inhalt
+
+%TODO: wunsch
+\productDatum{Abstimmungen}{polls}{140}
+Liste aller Abstimmungen der Gruppe, jeweils bestehend aus Nutzer ID des Erstellers, Erstellzeitpunkt, Endzeitpunkt, den Auswahlmöglichkeiten und weiteren Optionen. Zu jeder Auswahlmöglichkeit wird eine Liste aller Nutzer IDs erstellt, die für diese abgestimmt haben.
+
+\subsection{Verabredung}
+\productDatum{Verabredungs ID}{eventID}{150}
+Eindeutige Zahl, die die Verabredung identifiziert
+
+\productDatum{Name}{eventName}{160}
+Name der Verabredung
+
+\productDatum{Ersteller}{creator}{170}
+ID des Nutzers, der die Verabredung erstellt hat
+
+\productDatum{Treffpunkt}{eventPlace}{180}
+Ort, an dem die Verabredung stattfinden soll
+
+\productDatum{Zeitpunkt}{eventTime}{190}
+Zeitpunkt, an dem die Verabredung stattfinden soll
+
+\productDatum{Teilnehmer}{participants}{200}
+Liste der IDs aller Teilnehmer
+
+\subsection{Client}
+\productDatum{Eingeloggter Nutzer}{loggedInUser}{210}
+ID des aktuell angemeldeten Nutzers
+
+\subsection{Server}
+\productDatum{Nutzerliste}{userList}{220}
+Liste aller IDs der angemeldeten Nutzer
+
+\productDatum{Gruppenliste}{groupList}{230}
+Liste aller IDs der gegründeten Gruppen
+
+
+%%%%%%%%%%%
+\pagebreak
 \section{Tests}
 \subsection{Funktionale Anforderungen}
 \subsection{Muss}

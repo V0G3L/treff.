@@ -49,6 +49,7 @@
 \newcommand\prefixFunctional{F}
 \newcommand\prefixFunctionalOpt{FK}
 \newcommand\prefixNonFunctional{N}
+\newcommand\prefixProductDatum{PD}
 \newcommand\prefixTest{T}
 
 % make sure renewcommand on temporary variable works
@@ -159,6 +160,16 @@
     \pflitem{#1}
             {nfc-#2}
             {\prefixNonFunctional #3}
+            {}
+            {}
+    \\
+}
+
+% Creates a product datum
+\newcommand\productDatum[3]{
+    \pflitem{#1}
+            {pd-#2}
+            {\prefixProductDatum #3}
             {}
             {}
     \\
