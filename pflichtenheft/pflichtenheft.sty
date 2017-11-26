@@ -52,12 +52,15 @@
 \newcommand\prefixProductDatum{PD}
 \newcommand\prefixTest{T}
 
-% make sure renewcommand on temporary variable works
-\newcommand\curTest{%
-    NO~TEST~SPECIFIED~-~THIS~SHOULD~NOT~APPEAR~IN~FINAL~DOCUMENT%
-}
-
-\newcounter{testStep}
+\newcounter{criterion}
+\newcounter{criterionOpt}
+\newcounter{criterionDemarc}
+\newcounter{functionality}
+\newcounter{functionalityOpt}
+\newcounter{nonFunctionality}
+\newcounter{test}
+\newcounter{testStep}[test]
+\newcounter{guiFigure}
 
 % Creates a new Pflichtenheft-item (functional requirement, criterion etc.)
 % Args:
@@ -93,43 +96,47 @@
 %   2: Alphanumeric ID (will be prefixed with 'crt:' by this function)
 %   3: Displayed ID (should be a number, will be appended to prefix specified
 %                   above)
-\newcommand\criterion[3]{
+\newcommand\criterion[2]{
+    \stepcounter{criterion}
     \bool_set_true:N \l_needs_satisfaction
     \pflitem{#1}
             {crt-#2}
-            {\prefixCriterion #3}
+            {\prefixCriterion \arabic{criterion}0}
             {Implementiert~durch:}
             {NICHT~IMPLEMENTIERT}
     \par
 }
 
 % Creates an optional criterion
-\newcommand\criterionOpt[3]{
+\newcommand\criterionOpt[2]{
+    \stepcounter{criterionOpt}
     \bool_set_true:N \l_needs_satisfaction
     \pflitem{#1}
             {crt-#2}
-            {\prefixCriterionOptional #3}
+            {\prefixCriterionOptional \arabic{criterionOpt}0}
             {Implementiert~durch:}
             {keine~entsprechende~Anforderung}
     \par
 }
 
 % Creates a criterion for demarcation
-\newcommand\criterionDemarc[3]{
+\newcommand\criterionDemarc[2]{
+    \stepcounter{criterionDemarc}
     \pflitem{#1}
             {crt-#2}
-            {\prefixCriterionDemarc #3}
+            {\prefixCriterionDemarc \arabic{criterionDemarc}0}
             {}
             {}
     \\
 }
 
 % Creates a required functionality
-\newcommand\functionality[3]{%
+\newcommand\functionality[2]{%
+    \stepcounter{functionality}
     \bool_set_true:N \l_needs_satisfaction%
     \pflitem{#1}%
             {fnc-#2}%
-            {\prefixFunctional #3}%
+            {\prefixFunctional \arabic{functionality}0}%
             {Getestet~durch:}%
             {NICHT~GETESTET}%
     \IfProperty{fnc-#2}{pfl:satisfier}{%
@@ -141,10 +148,11 @@
 }
 
 % Creates an optional functionality
-\newcommand\functionalityOpt[3]{
+\newcommand\functionalityOpt[2]{
+    \stepcounter{functionalityOpt}
     \pflitem{#1}
             {fnc-#2}
-            {\prefixFunctionalOpt #3}
+            {\prefixFunctionalOpt \arabic{functionalityOpt}0}
             {}
             {}
     \IfProperty{fnc-#2}{pfl:satisfier}{%
@@ -156,10 +164,11 @@
 }
 
 % Creates a non-functionality
-\newcommand\nonFunctionality[3]{
+\newcommand\nonFunctionality[2]{
+    \stepcounter{nonFunctionality}
     \pflitem{#1}
             {nfc-#2}
-            {\prefixNonFunctional #3}
+            {\prefixNonFunctional \arabic{nonFunctionality}0}
             {}
             {}
     \\
@@ -176,22 +185,21 @@
 }
 
 % Creates a test
-\newcommand\test[3]{
+\newcommand\test[2]{
+    \stepcounter{test}
     \pflitem{#1}
             {tst-#2}
-            {\prefixTest #3}
+            {\prefixTest \arabic{test}0}
             {}
             {}
     \\ Testet:~\Bind{tst-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
     \par
-    \renewcommand\curTest{#3}
-    \setcounter{testStep}{0}
 }
 
 % Creates a testStep, must be used after \test
 \newcommand\testStep[3]{
     \stepcounter{testStep}
-    \prefixTest\curTest.\arabic{testStep}~
+    \prefixTest\arabic{test}0.\arabic{testStep}~
     \begin{minipage}[t]{0.8\textwidth}\raggedright
     \textbf{Stand:}~#1\par
     \textbf{Aktion:}~#2\par
@@ -201,16 +209,17 @@
 }
 
 % GUI figures
-\newcommand\guiFigure[5]{%
+\newcommand\guiFigure[4]{%
+    \stepcounter{guiFigure}
     \rdflabel{fig-gui-#2}%
-    \AddPropertyEx{pfl:id}{AB#3}
-    \begin{minipage}{#5\textwidth}
+    \AddPropertyEx{pfl:id}{AB \arabic{guiFigure}}
+    \begin{minipage}{#4\textwidth}
         \setlength{\fboxsep}{0pt}% space between border and image
         \setlength{\fboxrule}{1pt}% width of border
         \fbox{\includegraphics[width = 45mm]{#1}}
         \captionsetup{labelformat=empty}
         \centering
-        \captionof{figure}{\textbf{AB#3:}~#4}
+        \captionof{figure}{\textbf{AB\arabic{guiFigure}:}~#3}
     \end{minipage}
 }
 

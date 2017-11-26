@@ -6,15 +6,14 @@ Pflichtenheft template
 
 **Criteria:**
 ```
-\criterion{name}{hidden_id}{numeric_id}
-\criterionOpt{name}{hidden_id}{numeric_id}
-\criterionDemarc{name}{hidden_id}{numeric_id}
+\criterion{name}{hidden_id}
+\criterionOpt{name}{hidden_id}
+\criterionDemarc{name}{hidden_id}
 Starts a new required/optional/demarcation criterion.
 
 name        = Displayed name
 hidden_id   = Alphanumeric ID used for referencing via \fulfills and \critLink
             Must be unique over all criteria
-numeric_id  = Numeric ID displayed with prefix on the right
 
 \critLink{criterion_hidden_id}
 Creates a clickable reference to the specified criterion, displaying its
@@ -25,16 +24,15 @@ fulfill (`\fulfills`) them or display a red warning text should there be none.
 
 **Functional and non-functional requirements:**
 ```
-\functionality{name}{hidden_id}{numeric_id}
-\functionalityOpt{name}{hidden_id}{numeric_id}
-\nonFunctionality{name}{hidden_id}{numeric_id}
+\functionality{name}{hidden_id}
+\functionalityOpt{name}{hidden_id}
+\nonFunctionality{name}{hidden_id}
 Starts a new required/optional functional or non-functional requirement.
 
 name        = Displayed name
 hidden_id   = Alphanumeric ID used for referencing via \tests and \fncLink
               Must be unique over all functional and non-functional
               requirements
-numeric_id  = Numeric ID displayed with prefix on the right
 
 \fulfills{criterion_hidden_id}
 Notes that the current requirement implements criterion specified by the first
@@ -51,13 +49,12 @@ them or display a red warning text should there be none.
 
 **Tests:**
 ```
-\test{name}{hidden_id}{numeric_id}
+\test{name}{hidden_id}
 Starts a new test.
 
 name        = Displayed name
 hidden_id   = Alphanumeric ID used for referencing via \testlink
               Must be unique over all tests
-numeric_id  = Numeric ID displayed with prefix on the right
 
 \testStep{state}{action}{reaction}
 Adds a step to the current test.

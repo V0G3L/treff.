@@ -63,72 +63,72 @@ Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder a
 % und auf eine Seite passen.
 
 \subsection{Pflichtkriterien}
-\criterion{Gruppen}{groups}{10}
+\criterion{Gruppen}{groups}
 Mehrere Nutzer können sich in Gruppen zusammenschließen.
 Ein Nutzer kann in beliebig vielen Gruppen Mitglied sein.
 
-\criterion{Eigene Position auf Umgebungskarten}{location}{20}
+\criterion{Eigene Position auf Umgebungskarten}{location}
 Der Nutzer ist in der Lage, seine aktuelle Position auf einer Karte der nahen
 Umgebung einzusehen.
 
-\criterion{Festlegbare Treffpunkte}{meetingpoints}{30}
+\criterion{Festlegbare Treffpunkte}{meetingpoints}
 Innerhalb von Gruppen können Treffpunkte festgelegt werden,
 die den Mitgliedern auf der Karte angezeigt werden.
 
-\criterion{Gegenseitige Ortung}{positions}{40}
+\criterion{Gegenseitige Ortung}{positions}
 Nutzer sind in der Lage, ihre aktuelle Position mit anderen Gruppenmitgliedern
 über einen festlegbaren Zeitraum zu teilen.
 Diese wird dann allen Gruppenmitgliedern auf der Karte angezeigt und laufend
 aktualisiert.
 
-\criterion{Datenschutz}{privacy}{50}
+\criterion{Datenschutz}{privacy}
 Die Positionsdaten des Nutzers werden nur während des festgelegten Zeitraumes
 (\critLink{positions}) gesendet und serverseitig nicht
 längerfristig gespeichert.
 
-\criterion{Nutzerkonten}{account}{60}
+\criterion{Nutzerkonten}{account}
 Ein persönliches Nutzerkonto ermöglicht es Nutzern,
 Gruppenzugehörigkeiten und Datenschutzoptionen zu speichern.
 
 \subsection{Kürkriterien}
-\criterionOpt{Abstimmungen}{vote}{10}
+\criterionOpt{Abstimmungen}{vote}
 Innerhalb von Gruppen können die Nutzer über nächste Treffpunkte abstimmen.
 
-\criterionOpt{1 zu 1 Verbindung}{1to1}{20}
+\criterionOpt{1 zu 1 Verbindung}{1to1}
 Der Positionsaustausch zwischen zwei einzelnen Nutzern außerhalb von Gruppen
 soll möglich und besonders einfach sein.
 
-\criterionOpt{Detailliertere Innenraumkarten}{indoor}{30}
+\criterionOpt{Detailliertere Innenraumkarten}{indoor}
 Innenräume mit hoher Nutzerdichte bekommen detaillierte Innenraumkarten.
 
-\criterionOpt{Gruppenchat}{chat}{40}
+\criterionOpt{Gruppenchat}{chat}
 Innerhalb der Gruppen können simple Textnachrichten versendet werden.
 
-\criterionOpt{Eigene Server}{ownServer}{50}
+\criterionOpt{Eigene Server}{ownServer}
 Es ist dem Nutzer möglich, einen eigenen Server zu erstellen und zu verwalten.
 
-\criterionOpt{Server-Wechsel}{switchServer}{60}
+\criterionOpt{Server-Wechsel}{switchServer}
 Um \critLink{ownServer} ausnutzen zu können, ist es dem Nutzer
 möglich, den verwendeten Server zu wechseln.
 
-\criterionOpt{Zeitplan für Positionsübertragung}{timetable}{70}
+\criterionOpt{Zeitplan für Positionsübertragung}{timetable}
 Der Nutzer kann zu bestimmten Zeiten seine Position automatisch an bestimmte
 Gruppen übertragen lassen.
 
-\criterionOpt{Passwortzurücksetzung}{passwordReset}{80}
+\criterionOpt{Passwortzurücksetzung}{passwordReset}
 Der Nutzer kann sein Passwort zurücksetzen lassen, wenn er sich über eine zuvor
 festgelegte E-Mail-Adresse authentifizieren kann.
 
 \subsection{Abgrenzungskriterien}
-\criterionDemarc{Kein Social Network}{socialNetwork}{10}
+\criterionDemarc{Kein Social Network}{socialNetwork}
 Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 anderen zu teilen.
 
-\criterionDemarc{Kontakt nur zu Freunden}{friendsOnly}{20}
+\criterionDemarc{Kontakt nur zu Freunden}{friendsOnly}
 Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen,
 nicht den Kontakt zu Fremden ermöglichen.
 
-\criterionDemarc{Beidseitiges Einverständnis}{consensual}{30}
+\criterionDemarc{Beidseitiges Einverständnis}{consensual}
 Die Anwendung ermöglicht nicht das Orten von Personen,
 die ihre Position nicht ausdrücklich zugänglich machen.
 Beispielsweise können Eltern mit dieser App nicht ständig ihre Kinder orten.
@@ -219,23 +219,23 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 
 \subsection{Pflichtanforderungen}
 
-\functionality{Benutzerkonten}{account}{10}
+\functionality{Benutzerkonten}{account}
 \fulfills{account}%
 Der Benutzer wird beim Starten der Anwendung aufgefordert, sich ein
 Benutzerkonto zu erstellen oder sich mit einem bereits vorhandenen anzumelden.
 
-\functionality{Gründen von Gruppen}{groupfounding}{20}
+\functionality{Gründen von Gruppen}{groupfounding}
 \fulfills{groups}%
 Nutzer können Gruppen erstellen und diese verwalten, indem sie andere Nutzer
 hinzufügen oder entfernen.
 
-\functionality{Umgebungskarte}{map}{30}
+\functionality{Umgebungskarte}{map}
 \fulfills{location}%
 Der Nutzer kann eine Karte aufrufen, auf dem seine eigene Position angezeigt
 wird.
 
 \functionality{Erstellung von Verabredungen innerhalb von Gruppen}
-    {meetingpoints}{40}
+    {meetingpoints}
 \fulfills{meetingpoints}%
 Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus einer
 Zeit und einem Treffpunkt, erstellen, der allen Gruppenmitgliedern auf der
@@ -245,7 +245,7 @@ zu dem die Teilnehmer gebeten werden sollen,
 ihren Standort freizugeben (\fncLink{positions}).
 
 \functionality{Übertragung der eigenen Position an die Gruppe}
-    {positions}{50}
+    {positions}
 \fulfills{positions}%
 Der Nutzer kann seine aktuelle Position an die Gruppenmitglieder übertragen.
 Übertragene Positionen werden allen Gruppenmitgliedern auf der Umgebungskarte
@@ -253,14 +253,14 @@ Der Nutzer kann seine aktuelle Position an die Gruppenmitglieder übertragen.
 Steht eine Verabredung an, wird der Nutzer automatisch gebeten, seine Position
 für die Dauer der Verabredung freizugeben.
 
-\functionality{Standortanfrage}{request}{60}
+\functionality{Standortanfrage}{request}
 \fulfills{positions}%
 Der Nutzer kann in einer Gruppe eine Standortanfrage mit spezifiziertem
 Zeitraum senden.
 Die Mitglieder der Gruppe werden dann von der App gebeten,
 ihren Standort für den gewünschten Zeitraum freizugeben.
 
-\functionality{Verwaltung von Kontodaten}{options}{70}
+\functionality{Verwaltung von Kontodaten}{options}
 \fulfills{account}%
 Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
 \begin{itemize}
@@ -270,7 +270,7 @@ Der Nutzer soll folgende Änderungen an seinem Konto vornehmen können:
     \item Konto löschen
 \end{itemize}
 
-\functionality{Verabredungsliste}{eventlist}{80}
+\functionality{Verabredungsliste}{eventlist}
 \fulfills{groups}%
 \fulfills{meetingpoints}%
 Der Nutzer kann eine Liste aufrufen, in der alle Verabredungen aller Gruppen
@@ -278,7 +278,7 @@ des Nutzers nach Zeitpunkt sortiert angezeigt werden.
 
 \subsection{Küranforderungen}
 
-\functionalityOpt{Abstimmungen}{vote}{10}
+\functionalityOpt{Abstimmungen}{vote}
 \fulfills{vote}%
 Der Nutzer kann innerhalb von Gruppen Abstimmungen erstellen.
 Diese werden zeitlich begrenzt.
@@ -290,22 +290,22 @@ Nach Ablauf des Zeitlimits wird eine Verabredung, bestehend aus jeweils dem
 Treff- und Zeitpunkt mit den meisten Stimmen, erstellt.
 Alle anderen Treff- und Zeitpunkte werden verworfen.
 
-\functionalityOpt{Gruppenchat}{chat}{20}
+\functionalityOpt{Gruppenchat}{chat}
 \fulfills{chat}%
 Jede Gruppe verfügt über einen Chat, in dem simple Nachrichten an alle
 Gruppenmitglieder versandt werden können.
 
-\functionalityOpt{Gruppenrollen und -rechte}{admin}{30}
+\functionalityOpt{Gruppenrollen und -rechte}{admin}
 Innerhalb einer Gruppe können unterschiedliche Rollen
 mit spezifischen Rechten definiert und an Mitglieder verteilt werden.
 
-\functionalityOpt{Detaillierte Innenraumkarten}{indoor}{40}
+\functionalityOpt{Detaillierte Innenraumkarten}{indoor}
 \fulfills{indoor}%
 Für Innenräume, in denen eine hohe Nutzerdichte erwartet wird, werden
 detaillierte Innenraumkarten in die Umgebungskarte integriert. Die Menge an
 Innenraumkarten kann mit weiteren, späteren Versionen noch erweitert werden.
 
-\functionalityOpt{Eigene Server}{ownServer}{50}
+\functionalityOpt{Eigene Server}{ownServer}
 \fulfills{ownServer}%
 Es soll möglich sein, einen eigenen Server einzurichten und diesen statt des
 standardmäßig zur Verfügung stehenden Servers zu verwenden.
@@ -314,12 +314,12 @@ Insbesondere werden Nutzerkonten nur serverweit gespeichert.
 Für die Einrichtung eines eigenen Servers wird keine Hardware zur Verfügung
 gestellt und die benötigten Systemadministrationskenntnisse vorausgesetzt.
 
-\functionalityOpt{Serverwechel}{switchServer}{60}
+\functionalityOpt{Serverwechel}{switchServer}
 \fulfills{switchServer}%
 Das Wechseln des Servers soll innerhalb der App und noch vor dem Login in ein
 Benutzerkonto möglich sein.
 
-\functionalityOpt{Stummschalten}{mute}{70}
+\functionalityOpt{Stummschalten}{mute}
 \fulfills{groups}%
 Sowohl der Gruppenchat (\fncLink{chat}), als auch die
 Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
@@ -327,13 +327,13 @@ Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 \enquote{stumm schalten}, d.h. es lassen sich jegliche Benachrichtungen für den
 Nutzer unterdrücken.
 
-\functionalityOpt{Zeitplan für Positionsübertragung}{timetable}{80}
+\functionalityOpt{Zeitplan für Positionsübertragung}{timetable}
 \fulfills{timetable}%
 Der Nutzer kann einzelnen Gruppen einen persönlichen wöchentlichen Zeitplan
 zuteilen, in dem er festlegt, zu welchen Zeiten er automatisch seine Position
 in der Gruppe freigibt.
 
-\functionalityOpt{Passwortzurücksetzung}{passwordReset}{90}
+\functionalityOpt{Passwortzurücksetzung}{passwordReset}
 \fulfills{passwordReset}%
 Hat ein Nutzer sein Passwort vergessen, kann er eine E-Mail an seine zuvor
 mit dem Konto verbundene E-Mail-Adresse senden lassen.
@@ -341,7 +341,7 @@ In dieser E-Mail sind Zugangsdaten, mit denen er sich temporär auch ohne das
 Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
 
-\functionalityOpt{Sprachen}{languages}{100}
+\functionalityOpt{Sprachen}{languages}
 Es werden als Sprachen Deutsch und Englisch angeboten.
 Die Menge an Sprachen kann mit weiteren, späteren Versionen noch erweitert
 werden.
@@ -352,35 +352,35 @@ unterstützt wird.
 \pagebreak
 \section{Nicht-Funktionale Anforderungen}
 
-\nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}{10}
+\nonFunctionality{Standortteilung für zwei einzelne Personen}{1to1}
 \fulfills{1to1}%
 Es soll für zwei Einzelpersonen noch einfacher sein, ihren Standort miteinander
 zu teilen. Dies soll in weniger Schritten möglich sein, als manuell eine
 Gruppe aus zwei Leuten zu erstellen.
 
-\nonFunctionality{Einfache Bedienung}{handling}{20}
+\nonFunctionality{Einfache Bedienung}{handling}
 Damit die App sich gegen die gängigen Instant Messenger durchsetzen kann, muss
 sie intuitiv und einfach bedienbar sein. Um dies zu erreichen, erfüllt die
 graphische Benutzeroberfläche die \enquote{Material Design}-Richtlinien.
 
-\nonFunctionality{Ressourcennutzung}{resourceUsage}{30}
+\nonFunctionality{Ressourcennutzung}{resourceUsage}
 Um Akkulaufzeit und mobiles Datenvolumen zu sparen, findet die Aktualisierung
 von Positionsdaten maximal einmal pro Sekunde statt.
 
-\nonFunctionality{Mobile Nutzung}{connectionLoss}{40}
+\nonFunctionality{Mobile Nutzung}{connectionLoss}
 Verbindungsabbrüche, wie sie im mobilen Netz öfter auftreten, führen nicht zu
 Fehlfunktionen.
 
-\nonFunctionality{Nutzeraufkommen}{userLoad}{50}
+\nonFunctionality{Nutzeraufkommen}{userLoad}
 Es müssen mindestens 1000 Nutzer die Anwendung in Verbindung mit dem gleichen
 Server gleichzeitig verwenden können.
 
-\nonFunctionality{Datenschutz}{privacy}{60}
+\nonFunctionality{Datenschutz}{privacy}
 \fulfills{privacy}%
 Der Umgang mit Nutzerdaten entpricht den national geltenden
 Datenschutzgesetzen.
 
-\nonFunctionality{Datenspeicherung}{data storage}{70}
+\nonFunctionality{Datenspeicherung}{data storage}
 Daten über Standorte werden serverseitig nur so lange gespeichert, wie diese
 für andere Nutzer einsehbar sein sollen.
 
@@ -471,7 +471,7 @@ Liste aller IDs der gegründeten Gruppen
 \subsection{Funktionale Anforderungen}
 \subsection{Muss}
 
-\test{Account erstellen}{firstlogin}{10}
+\test{Account erstellen}{firstlogin}
 \tests{account}
 \testStep{Alice hat sich die Go-App soeben herunter geladen.}
 {Sie öffnet die App zum ersten Mal.}
@@ -482,7 +482,7 @@ und ein Passwort eingeben kann.}
 {Sie bestätigt ihre Angaben.}
 {Alice befindet sich nun im Hauptmenü der App, von wo aus sie Zugriff auf alle Funktionen hat.}
 
-\test{Gruppe Erstellen}{grpcreate}{20}
+\test{Gruppe Erstellen}{grpcreate}
 \tests{groupfounding}
 
 \testStep{Nutzer Bob ist eingeloggt.}
@@ -501,7 +501,7 @@ und ein Passwort eingeben kann.}
 {Er tippt auf Gruppe erstellen}
 {Das Übersichtsmenü der Gruppe wird angezeigt.}
 
-\test{Karte anzeigen}{map}{30}
+\test{Karte anzeigen}{map}
 \tests{map}
 \testStep{Alice ist eingeloggt und befindet sich auf der Startseite.}
 {Sie tippt auf die Schaltfläche für die Umgebungskarte.}
@@ -511,7 +511,7 @@ Falls es andere Mitglieder in ihren Gruppen gibt, die momentan
 ihre Position teilen ist diese ebenfalls auf der Karte sichtbar.}
 
 
-\test{Verabredung erstellen}{event}{40}
+\test{Verabredung erstellen}{event}
 \tests{meetingpoints}
 \testStep{Bob möchte sich mit seinen Freunden zum Mittagessen treffen
 und hat die App geöffnet.}
@@ -540,7 +540,7 @@ gesendet mit einer Aufforderung jetzt ihren Standort zu teilen.}
 jeden der Freunde zu sehen.}
 
 
-\test{Übertragung der eigenen Position an die Gruppe}{positions}{50}
+\test{Übertragung der eigenen Position an die Gruppe}{positions}
 \tests{positions}
 \testStep{Bob ist in der App eingeloggt und möchte seinen Standort für 30 Minuten mit einer Gruppe teilen.}
 {Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben}
@@ -551,7 +551,7 @@ jeden der Freunde zu sehen.}
 {Bob's Standort ist für alle Mitglieder der Gruppe für 30 Minuten sichtbar.}
 
 
-\test{Standortanfrage}{request}{60}
+\test{Standortanfrage}{request}
 \tests{request}
 \testStep{Bob ist in der App eingeloggt und möchte eine Standortanfrage an die Mitglieder seiner Lerngruppe senden.}
 {Er navigiert von der Startseite auf die Gruppenliste, wählt seine Lerngruppe aus und wählt aus, eine Standortanfrage zu senden.}
@@ -574,7 +574,7 @@ jeden der Freunde zu sehen.}
 {Der Standort von Alice ist auf der Karte nicht mehr einsehbar}
 
 
-\test{Kontoverwaltung}{options}{70}
+\test{Kontoverwaltung}{options}
 \tests{options}
 \testStep{Craig ist um die Sicherheit seiner Daten im Internet besorgt.
 	Er möchte deshalb sein Passwort regelmäßig ändern.}
@@ -589,7 +589,7 @@ E-Mail-Adresse ändern oder seinen Account löschen.
 
 
 
-\test{Terminplanung}{eventlist}{80}
+\test{Terminplanung}{eventlist}
 \tests{eventlist}
 \testStep{Oscar ist in der App eingeloggt und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
 {Er navigiert von der Startseite auf die Verabredungsliste.}
@@ -599,7 +599,7 @@ und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19
 
 
 \subsection{Kür-Anforderungen}
-\test{Abstimmung}{poll}{90}
+\test{Abstimmung}{poll}{
 \tests{vote}
 \testStep{Bob möchte mit seinen Freunden Abends in eine Bar gehen.
 Alle diese Freunde sind bereits Mitglied in der Gruppe \enquote{Lerngruppe}.}
@@ -626,7 +626,7 @@ Die Abstimmung wird automatisch gelöscht und stattdessen eine Verabredung erste
 eingestellten Uhrzeit und dem Treffpunkt, welcher die meisten Stimmen bekommen hatte.}
 
 
-\test{Gruppenchat}{chat}{100}
+\test{Gruppenchat}{chat}
 \tests{chat}
 \testStep{Alice hat eine Verabredung für heute Abend erstellt weil sie sich mit ihren Freunden
 treffen will. Ted hat allerdings keine Zeit und möchte Missverständnisse vermeiden, sodass
@@ -640,7 +640,7 @@ nächsten Mal}.}
 {Wieder bekommen die Anderen eine Benachrichtigung.}
 
 
-\test{Innenraumkarten}{indoor}{110}
+\test{Innenraumkarten}{indoor}
 \tests{indoor}
 \testStep{In einem neuen Update wurden Innenraumkarten für häufig besuchte
 	Orte auf dem Campus des KIT hinzugefügt, wie der Mensa und dem Audimax.
@@ -651,7 +651,7 @@ Ausschnitt der Umgebungskarte.}
 des Speisesaals ihre Freunde sitzen.}
 
 
-\test{Stummschalten}{mute}{120}
+\test{Stummschalten}{mute}
 \tests{mute}
 \testStep{Bob macht für eine Woche Urlaub und möchte währenddessen nicht von
 Benachrichtigungen, die nur seine Freunde in Karlsruhe betreffen, gestört werden.}
@@ -662,7 +662,7 @@ Anmerkung: Die Implementierung dieser Anforderung beeinflusst alle Tests, in den
 Gruppenmitglieder über Aktivitäten benachrichtigt werden insofern, dass diese Benachrichtigungen
 manche Mitglieder nicht erreichen, wenn diese die Gruppe stumm geschaltet haben.
 
-\test{Sprache}{language}{130}
+\test{Sprache}{language}
 \tests{languages}
 \testStep{Alice besucht einen Englisch-Sprachkurs und ihr wurde empfohlen, auch ihr Handy
 auf Englisch zu stellen, um sich mehr an die Sprache zu gewöhnen.}
@@ -693,12 +693,10 @@ Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Se
 \subsection{Einloggen und Registrieren}
 \guiFigure{mockups/login.png}
 {login}
-{1}
 {Einloggen}
 {0.5}
 \guiFigure{mockups/register.png}
 {register}
-{2}
 {Registrieren}
 {0.5}
 
@@ -708,12 +706,10 @@ Durch einen Klick auf Einloggen oder Registrieren gelangt er in den Hauptbildsch
 \subsection{Gruppen und Kontakte}
 \guiFigure{mockups/home_groups.png}
 {groups}
-{3}
 {Gruppen}
 {0.5}
 \guiFigure{mockups/home_friends.png}
 {friends}
-{4}
 {Kontakte}
 {0.5}
 
@@ -722,12 +718,10 @@ Auf dem Hauptbildschirm kann der Nutzer alle seine Gruppen und Kontakte einsehen
 \subsection{Verabredungen und Allgemeine Umgebungskarte}
 \guiFigure{mockups/home_events.png}
 {events}
-{5}
 {Verabredungen}
 {0.5}
 \guiFigure{mockups/home_map.png}
 {map}
-{6}
 {Allgemeine Umgebungskarte}
 {0.5}
 
@@ -737,12 +731,10 @@ Diese zeigt auch alle Kontakte, die zur Zeit ihren Standort freigeben.
 \subsection{Verabredungsliste einer Gruppe und Gruppenkarte}
 \guiFigure{mockups/group_events.png}
 {groupEvents}
-{7}
 {Verabredungsliste einer Gruppe}
 {0.5}
 \guiFigure{mockups/group_map.png}
 {groupMap}
-{8}
 {Gruppenkarte}
 {0.5}
 
@@ -752,7 +744,6 @@ Sie werden auf einer Karte angezeigt, zusammen mit allen Gruppenmitgliedern, die
 \subsection{Symbole auf Karten}
 \guiFigure{mockups/home_events.png}
 {mapMarkers}
-{9}
 {Symbole auf Karten}
 {1}
 
@@ -763,12 +754,10 @@ Wenn eine Abstimmung über mehrere Orte läuft, werden diese als Ortsmarker mit 
 \subsection{Gruppenchat und Gruppenchat während dem Tippen}
 \guiFigure{mockups/group_chat_buttons.png}
 {chatButtons}
-{10}
 {Gruppenchat}
 {0.5}
 \guiFigure{mockups/group_chat.png}
 {chat}
-{11}
 {Gruppenchat während dem Tippen}
 {0.5}
 
@@ -777,12 +766,10 @@ Beim Klick auf eine Gruppe wird auch der Chatbildschirm\footnote[1]{Kürfunktion
 \subsection{Gruppenmitglieder und Kontextmenü eines Gruppenmitglieds}
 \guiFigure{mockups/group_members.png}
 {groupMembers}
-{12}
 {Gruppenmitglieder}
 {0.5}
 \guiFigure{mockups/group_members_context.png}
 {groupMembersContext}
-{13}
 {Kontextmenü eines Gruppenmitglieds}
 {0.5}
 
@@ -792,12 +779,10 @@ Beim Klick auf ein Gruppenmitglied erhält der Nutzer dieses aus der Gruppe entf
 \subsection{Verabredung  und Verabredungskarte}
 \guiFigure{mockups/event.png}
 {event}
-{14}
 {Verabredung}
 {0.5}
 \guiFigure{mockups/event_map.png}
 {eventMap}
-{15}
 {Verabredungskarte}
 {0.5}
 
@@ -806,7 +791,6 @@ Von Veranstaltungslisten gelangt der Nutzer auf die Seite der Veranstaltung oder
 \subsection{Seitenmenü}
 \guiFigure{mockups/home_groups_sidenav.png}
 {sidenav}
-{16}
 {Seitenmenü}
 {1}
 
