@@ -493,7 +493,11 @@ jeden der Freunde zu sehen.}
 {Der Standort von Alice ist auf der Karte nicht mehr einsehbar}
 
 
+<<<<<<< HEAD
 \test{Kontoverwaltung}{options}{70}
+=======
+\test{Kontoverwaltung}{account}{70}
+>>>>>>> Aaaand more tests... almost there!
 \tests{options}
 \testStep{Craig ist um die Sicherheit seiner Daten im Internet besorgt.
 	Er möchte deshalb sein Passwort regelmäßig ändern.}
@@ -557,6 +561,38 @@ die Anderen nicht aus Versehen auf ihn warten.}
 {Sie navigiert ebenfalls auf den Chat und antwortet \enquote{Schade, hoffentlich dann beim
 nächsten Mal}.}
 {Wieder bekommen die Anderen eine Benachrichtigung.}
+
+
+
+\test{Innenraumkarten}{indoor}{110}
+\tests{indoor}
+\testStep{In einem neuen Update wurden Innenraumkarten für häufig besuchte
+	Orte auf dem Campus des KIT hinzugefügt, wie der Mensa und dem Audimax.
+	Alice trifft sich mit ihren Freunden in der Mensa und hat dafür die Standortabfrage aktiviert.}
+{Um genau zu sehen, wo sich ihre Freunde befinden, vergrößert sie den entsprechenden
+Ausschnitt der Umgebungskarte.}
+{Ihr wird nun eine Innenraumkarte angezeigt, in der sie sehen kann in welchem Teil
+des Speisesaals ihre Freunde sitzen.}
+
+
+\test{Stummschalten}{mute}{130}
+\tests{mute}
+\testStep{Bob macht für eine Woche Urlaub und möchte währenddessen nicht von
+Benachrichtigungen, die nur seine Freunde in Karlsruhe betreffen, gestört werden.}
+{Er wählt deshalb seine Freundesgruppe aus und stellt Chat, Abstimmungen und Anfragen auf stumm.}
+{Er wird von nun an nicht mehr über Aktivitäten in dieser Gruppe benachrichtigt,
+bis er diese Einstellung wieder ändert.}
+Anmerkung: Die Implementierung dieser Anforderung beeinflusst alle Tests, in denen
+Gruppenmitglieder über Aktivitäten benachrichtigt werden insofern, dass diese Benachrichtigungen
+manche Mitglieder nicht erreichen, wenn diese die Gruppe stumm geschaltet haben.
+
+\test{Sprache}{language}{160}
+\tests{languages}
+\testStep{Alice besucht einen Englisch-Sprachkurs und ihr wurde empfohlen, auch ihr Handy
+auf Englisch zu stellen, um sich mehr an die Sprache zu gewöhnen.}
+{Sie benutzt weiterhin die \producttitle-App um sich mit ihren Freunden zu treffen.}
+{Da ihre Systemsprache nun Englisch ist, werden ihr auch in der App alle Bezeichnungen
+nun ins Englische übersetzt angezeigt.}
 
 
 %%%%%%%%%%%%%
