@@ -29,8 +29,8 @@
 
 % header & footer
 \usepackage{scrlayer-scrpage}
-\lofoot{\today}
-\refoot{\today}
+%\lofoot{\today}
+%\refoot{\today}
 \pagestyle{scrheadings}
 
 \title{\includegraphics[width = 80mm]{images/logo_crop.png}}
@@ -667,17 +667,24 @@ nun ins Englische übersetzt angezeigt.}
 
 \test{Eigene Server}{ownServer}
 \tests{ownServer}
-\testStep{Charlie vertraut uns nicht das wir seine Daten schützen, deswegen will er seinen eigenen Server aufsetzen.}
+\testStep{Charlie vertraut dem Betreiber des standardmäßig ausgewählten Servers
+nicht, seine Daten zu schützen.
+Deswegen will er seinen eigenen Server aufsetzen.}
 {Er tut dies und gibt seinen Freunden die Adresse seines Servers.}
-{Seinen Freunden ist es nun möglich in der App auszuwählen das sie einen anderen Server auswählen wollen und hier die Adresse von
-Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Server für sie zur Verfügung wie unser normaler Server}
+{Seinen Freunden ist es nun möglich in der App den Server zu wechseln, indem
+sie die Serverauswahl öffnen und die Adresse von Charlies Server eingeben.
+Anschließend funktioniert die App wie gewohnt. Kontakte und Gruppen auf anderen
+Servern werden allerdings nicht mehr angezeigt.}
 
 
 \test{Serverwechsel}{switchServer}
 \tests{switchServer}
-\testStep{Dave öffnet die App und will, da ein Freund von ihm einen eigenen Server hostet, nicht den Standartserver benutzen.}
-{Er wählt auf dem Loginscreen die Serverauswahl aus und gibt die Adresse des Servers seines Freundes ein.}
-{Seine App verbindet sich nun mit dem Server seines Freundes und Dave kann diesen Server nutzen.}
+\testStep{Dave öffnet die App und will, da ein Freund von ihm einen eigenen
+Server hostet, nicht den Standardserver benutzen.}
+{Er wählt auf dem Anmeldebildschirm die Serverauswahl aus und gibt die Adresse
+des Servers seines Freundes ein.}
+{Die App verbindet sich nun mit dem Server seines Freundes und Dave kann
+diesen Server wie gewohnt benutzen.}
 
 
 \test{Passwordzurücksetzung}{passwordReset}
