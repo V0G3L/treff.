@@ -194,7 +194,9 @@
     \rdflabel{fig-gui-#2}%
     \AddPropertyEx{pfl:id}{AB#3}
     \begin{minipage}{#5\textwidth}
-        \includegraphics[width = 45mm]{#1}
+        \setlength{\fboxsep}{0pt}% space between border and image
+        \setlength{\fboxrule}{1pt}% width of border
+        \fbox{\includegraphics[width = 45mm]{#1}}
         \captionsetup{labelformat=empty}
         \centering
         \captionof{figure}{\textbf{AB#3:}~#4}
