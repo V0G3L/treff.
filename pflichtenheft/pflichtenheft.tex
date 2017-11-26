@@ -52,7 +52,7 @@ Dazu ist es notwendig zu wissen, ob an einem bestimmten Tag bereits ein Treffen 
 Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
 Unsere App soll es angemeldeten Benutzern ermöglichen, sich in Gruppen zu organisieren.
 In den Gruppen kann der Zeit- und Treffpunkt bestimmt werden.
-Sobald diese festgelegt wurden soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
+Sobald diese festgelegt wurden, soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
 
 \pagebreak
 \tableofcontents
@@ -475,7 +475,7 @@ und ein Passwort eingeben kann.}
 \test{Gruppe Erstellen}{grpcreate}
 \tests{groupfounding}
 
-\testStep{Nutzer Bob ist eingeloggt und auf dem Hauptbildschirm.}
+\testStep{Nutzer Bob ist angemeldet und auf dem Hauptbildschirm.}
 {Bob tippt auf den Tab  \enquote{Gruppen}.}
 {Er bekommt die Liste aller Gruppen angezeigt, in denen er Mitglied ist.}
 
@@ -493,7 +493,7 @@ und ein Passwort eingeben kann.}
 
 \test{Karte anzeigen}{map}
 \tests{map}
-\testStep{Alice ist eingeloggt und befindet sich auf der Startseite.}
+\testStep{Alice ist angemeldet und befindet sich auf der Startseite.}
 {Sie tippt auf die Schaltfläche für die Umgebungskarte.}
 {Auf einer Landkarte wird ihr sowohl die eigene Position, als auch die von ihren
 eventuellen Verabredungen in ihrer Nähe angezeigt.
@@ -532,7 +532,7 @@ jeden der Freunde zu sehen.}
 
 \test{Übertragung der eigenen Position an die Gruppe}{positions}
 \tests{positions}
-\testStep{Bob ist in der App eingeloggt und möchte seinen Standort mit einer Gruppe teilen.}
+\testStep{Bob ist in der App angemeldet und möchte seinen Standort mit einer Gruppe teilen.}
 {Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben}
 {Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Freigabe spezifizieren kann.}
 
@@ -543,7 +543,7 @@ jeden der Freunde zu sehen.}
 
 \test{Standortanfrage}{request}
 \tests{request}
-\testStep{Bob ist in der App eingeloggt und möchte eine Standortanfrage an die Mitglieder seiner Lerngruppe senden.}
+\testStep{Bob ist in der App angemeldet und möchte eine Standortanfrage an die Mitglieder seiner Lerngruppe senden.}
 {Er navigiert von der Startseite auf die Gruppenliste, wählt seine Lerngruppe aus und wählt aus, eine Standortanfrage zu senden.}
 {Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Anfrage spezifizieren kann.}
 
@@ -581,7 +581,7 @@ E-Mail-Adresse ändern oder seinen Account löschen.
 
 \test{Terminplanung}{eventlist}
 \tests{eventlist}
-\testStep{Oscar ist in der App eingeloggt und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
+\testStep{Oscar ist in der App angemeldet und möchte sehen, wie sein Terminplan für die nächsten Tage aussieht.}
 {Er navigiert von der Startseite auf die Verabredungsliste.}
 {Die App zeigt ihm eine Liste aller zukünftigen Verabredungen.
 Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
@@ -679,18 +679,18 @@ Charlies Server eingeben um diesen zu benutzen. Anschließend stellt Charlies Se
 
 \section{Seitenentwürfe}
 
-\subsection{Einloggen und Registrieren}
+\subsection{Anmelden und Registrieren}
 \guiFigure{images/gui-mockups/login.png}
 {login}
-{Einloggen}
+{Anmelden}
 {0.5}
 \guiFigure{images/gui-mockups/register.png}
 {register}
 {Registrieren}
 {0.5}
 
-Beim ersten Öffnen der App oder nachdem sich ein Nutzer ausgeloggt hat, landet er auf diesem Bildschirm.
-Durch einen Klick auf Einloggen oder Registrieren gelangt er in den Hauptbildschirm.
+Beim ersten Öffnen der App oder nachdem sich ein Nutzer abgemeldet hat, landet er auf diesem Bildschirm.
+Durch einen Klick auf Anmelden oder Registrieren gelangt er in den Hauptbildschirm.
 
 \pagebreak
 \subsection{Gruppen und Kontakte}
@@ -799,7 +799,7 @@ Von Veranstaltungslisten gelangt der Nutzer auf die Seite der Veranstaltung oder
 {Seitenmenü}
 {1}
 
-Vom Hauptbildschirm aus erreicht der Nutzer die allgemeinen Einstellungen, Kontoeinstellungen, Informationen über das Produkt und kann sich ausloggen.
+Vom Hauptbildschirm aus erreicht der Nutzer die allgemeinen Einstellungen, Kontoeinstellungen, Informationen über das Produkt und kann sich abmelden.
 
 \pagebreak
 \section{Glossar}
