@@ -48,11 +48,11 @@
 
 \section*{} % No section number on intro, also removes it from TOC
 Studenten und Mitarbeiter des KIT treffen sich gerne zum gemeinsamen Essen oder Lernen.
-Dazu ist an einem bestimmten Tag immer notwendig zu wissen, ob bereits ein Treffen vereinbart wurde.
+Dazu ist es notwendig zu wissen, ob an einem bestimmten Tag bereits ein Treffen vereinbart wurde.
 Am Treffpunkt angekommen, möchte man wissen, an welchem Ort sich die Gruppe befindet, um nicht lange suchen zu müssen.
 Unsere App soll es angemeldeten Benutzern ermöglichen, sich in Gruppen zu organisieren.
 In den Gruppen kann der Zeit- und Treffpunkt bestimmt werden.
-Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
+Sobald diese festgelegt wurden soll die App die GPS-Standorte der Mitglieder anzeigen, um das Treffen zu vereinfachen.
 
 \pagebreak
 \tableofcontents
@@ -126,19 +126,19 @@ Die App bietet keine Plattform um Bilder oder andere persönliche Eindrücke mit
 anderen zu teilen.
 
 \criterionDemarc{Kontakt nur zu Freunden}{friendsOnly}
-Die App möchte die Kommunikation in bereits bestehenden Gruppen vereinfachen,
+Die App soll die Kommunikation in bereits bestehenden Gruppen vereinfachen,
 nicht den Kontakt zu Fremden ermöglichen.
 
 \criterionDemarc{Beidseitiges Einverständnis}{consensual}
-Die Anwendung ermöglicht nicht das Orten von Personen,
-die ihre Position nicht ausdrücklich zugänglich machen.
-Beispielsweise können Eltern mit dieser App nicht ständig ihre Kinder orten.
+Die Anwendung bietet keine Möglichkeit, Personen zu orten,
+die ihre Position nicht ausdrücklich zugänglich gemacht haben.
+Beispielsweise erlaubt es die App Eltern nicht, ständig ihre Kinder zu orten.
 
 %%%%%%%%%%%%%%
 \pagebreak
 \section{Produkteinsatz}
-Das Produkt dient zur Erleichterung des Zusammenfindens und der
-Treffpunktvereinbarung in geschlossenen Gruppen von Freunden, Kollegen oder
+Das Produkt dient zur Erleichterung der Treffpunktvereinbarung und des Zusammenfindens
+am Treffpunkt für geschlossene Gruppen von Freunden, Kollegen oder
 Familienmitgliedern.
 
 \subsection{Anwendungsbereiche}
@@ -165,7 +165,7 @@ Familienmitgliedern.
 An Weihnachten kann es oft schwer sein, ein Essen mit der ganzen Familie zu organisieren.
 Auch, wenn die Planung schon abgeschlossen ist, kann die App eine sinnvolle Hilfe darstellen:
 
-Die Verabredung "Weihnachtsessen" ist bereits erstellt und alle Mitglieder der Gruppe möchten daran teilnehmen.
+Die Verabredung \enquote{Weihnachtsessen} ist bereits erstellt und alle Mitglieder der Gruppe möchten daran teilnehmen.
 Nach und nach treffen alle beim Gastgeber ein. Allerdings schafft es Bob nicht, zur vereinbarten Uhrzeit zu erscheinen.
 Aufgrund von Stau auf der Autobahn verspätet er sich.
 Als pflichtbewusster Autofahrer bedient er sein Handy nicht während der Fahrt.
@@ -197,7 +197,7 @@ Der Server dient lediglich als Vermittler zwischen Klienten.
 Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \subsection{Software}
 \begin{itemize}
-    \item Client: Android 6 (\enquote{Marshmallow}, API-Level 23) oder
+    \item Klient: Android 6 (\enquote{Marshmallow}, API-Level 23) oder
         höher.
     \item Server: Apache Tomcat 8
 \end{itemize}
@@ -205,7 +205,7 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 \subsection{Hardware}
 % TODO: Mindestanforderungen an Hardware-Performance
 \begin{itemize}
-    \item Client: Android-fähiges mobiles Endgerät mit
+    \item Klient: Android-fähiges mobiles Endgerät mit
         \begin{itemize}
             \item GPS-Empfänger
             \item Netzwerkkarte mit WLAN-Modul oder Mobilfunkeinheit
@@ -241,17 +241,17 @@ hinzufügen oder entfernen.
 
 \functionality{Umgebungskarte}{map}
 \fulfills{location}%
-Der Nutzer kann eine Karte aufrufen, auf dem seine eigene Position angezeigt
+Der Nutzer kann eine Karte aufrufen, auf der seine eigene Position angezeigt
 wird.
 
 \functionality{Erstellung von Verabredungen innerhalb von Gruppen}
     {meetingpoints}
 \fulfills{meetingpoints}%
-Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus einer
-Zeit und einem Treffpunkt, erstellen, der allen Gruppenmitgliedern auf der
-Umgebungskarte (\fncLink{map}) angezeigt wird.
-Außerdem legt er einen Zeitpunkt vor dem Treffen fest,
-zu dem die Teilnehmer gebeten werden sollen,
+Der Nutzer kann innerhalb einer Gruppe eine Verabredung, bestehend aus
+Zeit und Treffpunkt, erstellen. Letzterer wird allen Gruppenmitgliedern auf der
+Umgebungskarte (\fncLink{map}) angezeigt.
+Außerdem legt er einen bestimmten Zeitpunkt vor dem Treffen fest,
+zu dem die Teilnehmer darum gebeten werden sollen,
 ihren Standort freizugeben (\fncLink{positions}).
 
 \functionality{Übertragung der eigenen Position an die Gruppe}
@@ -349,7 +349,7 @@ in der Gruppe freigibt.
 \fulfills{passwordReset}%
 Hat ein Nutzer sein Passwort vergessen, kann er eine E-Mail an seine zuvor
 mit dem Konto verbundene E-Mail-Adresse senden lassen.
-In dieser E-Mail sind Zugangsdaten, mit denen er sich temporär auch ohne das
+Diese Mail enthält Zugangsdaten, mit denen er sich temporär auch ohne das
 Passwort authentifizieren und das Passwort ändern kann.
 Dabei wird das vorherige Passwort nicht preisgegeben.
 
@@ -458,8 +458,7 @@ Liste aller Teilnehmer
 %%%%%%%%%%%
 \pagebreak
 \section{Tests}
-\subsection{Funktionale Anforderungen}
-\subsection{Muss}
+\subsection{Pflichtanforderungen}
 
 \test{Account erstellen}{firstlogin}
 \tests{account}
@@ -532,11 +531,11 @@ jeden der Freunde zu sehen.}
 
 \test{Übertragung der eigenen Position an die Gruppe}{positions}
 \tests{positions}
-\testStep{Bob ist in der App eingeloggt und möchte seinen Standort für 30 Minuten mit einer Gruppe teilen.}
+\testStep{Bob ist in der App eingeloggt und möchte seinen Standort mit einer Gruppe teilen.}
 {Er navigiert von der Startseite auf die Gruppenliste, öffnet die betreffende Gruppe und wählt aus, seinen Standort freizugeben}
 {Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Freigabe spezifizieren kann.}
 
-\testStep{}
+\testStep{Bob möchte seine Position für eine halbe Stunde teilen.}
 {Bob gibt die 30 Minuten ein und teilt seinen Standort}
 {Bob's Standort ist für alle Mitglieder der Gruppe für 30 Minuten sichtbar.}
 
@@ -588,8 +587,8 @@ Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
 und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
 
 
-\subsection{Kür-Anforderungen}
-\test{Abstimmung}{poll}{
+\subsection{Küranforderungen}
+\test{Abstimmung}{poll}
 \tests{vote}
 \testStep{Bob möchte mit seinen Freunden Abends in eine Bar gehen.
 Alle diese Freunde sind bereits Mitglied in der Gruppe \enquote{Lerngruppe}.}
