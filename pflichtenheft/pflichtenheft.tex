@@ -436,6 +436,28 @@ jeden der Freunde zu sehen.}
 Unter Anderem zum Beispiel ein Treffen mit seiner Lerngruppe heute um 14 Uhr
 und ein gemeinsames Abendessen mit seinen Freunden aus dem Training morgen um 19 Uhr.}
 
+\test{Standortanfrage}{request}{60}
+\tests{request}
+\testStep{Bob ist in der App eingeloggt und möchte eine Standortanfrage an die Mitglieder seiner Lerngruppe senden.}
+{Er navigiert von der Startseite auf die Gruppenliste, wählt seine Lerngruppe aus und wählt aus, eine Standortanfrage zu senden.}
+{Die App zeigt nun ein Formular, auf dem Bob den Zeitraum der Anfrage spezifizieren kann.}
+
+\testStep{Bob möchte die Standorte innerhalb der nächsten Stunde einsehen}
+{Er gibt den Zeitraum von einer Stunde ein und startet die Anfrage.}
+{Die App sendet eine Standortanfrage an alle Mitglieder der Lerngruppe.}
+
+\testStep{Alice hat die Anfrage erhalten und möchte ihren Standort freigeben.}
+{Sie wählt innerhalb der App aus, die Anfrage zu akzeptieren.}
+{Der Standort von Alice wird nun auf der Karte angezeigt.}
+
+\testStep{Ned hat die Anfrage erhalten und möchte seinen Standort nicht freigeben.}
+{Er wählt innerhalb der App aus, die Anfrage abzulehnen.}
+{Der Standort von Ned bleibt auf der Karte verborgen.}
+
+\testStep{Eine Stunde ist vergangen.}
+{Keine Eingaben werden getätigt.}
+{Der Standort von Alice ist auf der Karte nicht mehr ensehbar}
+
 %%%%%%%%%%%%%
 \pagebreak
 \appendix
