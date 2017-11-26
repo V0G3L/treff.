@@ -131,8 +131,12 @@
             {\prefixFunctional #3}%
             {Getestet~durch:}%
             {NICHT~GETESTET}%
-    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}}}%
-    \par
+    \IfProperty{fnc-#2}{pfl:satisfier}{%
+        \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}%
+        {~\pflLink{\GetVal{?c}}}%
+        \par
+    }%
+    \\
 }
 
 % Creates an optional functionality
@@ -142,8 +146,12 @@
             {\prefixFunctionalOpt #3}
             {}
             {}
-    \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}{~\pflLink{\GetVal{?c}} }
-    \par
+    \IfProperty{fnc-#2}{pfl:satisfier}{%
+        \\ Implementiert:~\Bind{fnc-#2}{pfl:satisfier}{?c}%
+        {~\pflLink{\GetVal{?c}}}%
+        \par
+    }%
+    \\
 }
 
 % Creates a non-functionality
