@@ -58,7 +58,7 @@ Nach der Festlegung des Treffens soll die App die GPS-Standorte der Mitglieder a
 
 %%%%%%%%%%%%%%
 \pagebreak
-\section{Kriterien}
+\section{Kriterien}i
 % Diese Section sollte kurz und knapp "für Manager" sein
 % und auf eine Seite passen.
 
@@ -221,8 +221,17 @@ Die Nutzer verwenden den Klienten auf ihrem mobilen Endgerät.
 
 \functionality{Benutzerkonten}{account}
 \fulfills{account}%
-Der Benutzer wird beim Starten der Anwendung aufgefordert, sich ein
+Der Nutzer wird beim Starten der Anwendung aufgefordert, sich ein
 Benutzerkonto zu erstellen oder sich mit einem bereits vorhandenen anzumelden.
+
+\functionality{Kontakte}{contacts}%
+\fulfills{groups}%
+\fulfills{account}%
+Nutzer können einander als Kontakte hinzufügen.
+Ein Nutzer kann einen anderen Nutzer als Kontakt hinzufügen,
+indem er dessen Benutzernamen angibt.
+Fügt ein Nutzer einen anderen hinzu,
+wird dessen Kontaktliste ebenfalls entsprechend aktualisiert.
 
 \functionality{Gründen von Gruppen}{groupfounding}
 \fulfills{groups}%
@@ -326,6 +335,8 @@ Abstimmungen (\fncLink{vote}) und Übertragungsanfragen
 (\fncLink{positions}) lassen sich unabhängig voneinander
 \enquote{stumm schalten}, d.h. es lassen sich jegliche Benachrichtungen für den
 Nutzer unterdrücken.
+Es lassen sich auch konkrete andere Nutzer stummschalten, so dass das
+Hinzufügen zu den Kontakten durch diese verhindert wird.
 
 \functionalityOpt{Zeitplan für Positionsübertragung}{timetable}
 \fulfills{timetable}%
