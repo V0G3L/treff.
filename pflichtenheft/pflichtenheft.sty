@@ -190,14 +190,15 @@
 }
 
 % GUI figures
-\newcommand\guiFigure[4]{%
+\newcommand\guiFigure[5]{%
     \rdflabel{fig-gui-#2}%
     \AddPropertyEx{pfl:id}{AB#3}
-    \begin{figure}[hb]%
-        \fbox{\includegraphics[height=80mm]{#1}}%
+    \begin{minipage}{#5\textwidth}
+        \includegraphics[width = 45mm]{#1}
         \captionsetup{labelformat=empty}
-        \caption{\textbf{AB#3:}~#4}%
-    \end{figure}%
+        \centering
+        \captionof{figure}{\textbf{AB#3:}~#4}
+    \end{minipage}
 }
 
 \ExplSyntaxOff
