@@ -46,17 +46,21 @@
 	\end{frame}
 
 	\begin{frame}[plain]
-	\guiFigure{images/gui-mockups/group_members.png}
-	{groupMembers}
-	{Gruppenmitglieder}
-	{0.5}%
-	\begin{minipage}{0.5\textwidth}
-		\begin{itemize}
-			\item Eine Liste aller Gruppenmitglieder und bla und blkasajsdhkajsdh
-			\item test
-			\item test
-		\end{itemize}
-	\end{minipage}
+		\begin{minipage}{0.5\textwidth}
+			\setlength{\fboxsep}{0pt}% space between border and image
+			\setlength{\fboxrule}{1pt}% width of border
+			\fbox{\includegraphics[width = 45mm]{images/gui-mockups/group_members.png}}
+			\captionsetup{labelformat=empty}
+			\centering
+			\captionof{figure}{\textbf{Test}}
+		\end{minipage}%
+		\begin{minipage}{0.5\textwidth}
+			\begin{itemize}
+				\item Eine Liste aller Gruppenmitglieder und bla und blkasajsdhkajsdh
+				\item test
+				\item test
+			\end{itemize}
+		\end{minipage}
 	
 	\end{frame}
 
