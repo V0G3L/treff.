@@ -13,6 +13,7 @@
 \usepackage{enumitem}
 \setlist{nosep}
 
+
 \newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
 \raggedbottom
 \crefname{figure}{Abb}{Abb}
@@ -91,14 +92,14 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\begin{frame}[plain]
-	\frametitle{2. Freunde und Gruppen}
+	\frametitle{2.Freunde und Gruppen}
 	\begin{minipage}{0.5\textwidth}
-		\setlength{\fboxsep}{0pt}% space between border and image
-		\setlength{\fboxrule}{1pt}% width of border
-		\fbox{\includegraphics[width = 45mm]{images/gui-mockups/home_friends.png}}
-		\captionsetup{labelformat=empty}
-		\centering
-		\captionof{figure}{Freunde}
+	\setlength{\fboxsep}{0pt}% space between border and image
+	\setlength{\fboxrule}{1pt}% width of border
+	\fbox{\includegraphics[width = 45mm]{images/gui-mockups/home_friends.png}}
+	\captionsetup{labelformat=empty}
+	\centering
+	\captionof{figure}{Freunde}
 	\end{minipage}%
 	\begin{minipage}{0.5\textwidth}
 		\begin{itemize}
@@ -169,21 +170,21 @@
 			\end{itemize}
 		\end{minipage}%
 	\end{frame}
-
-	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-	\begin{frame}
+	
+	
+	\begin{frame}[plain]
+	\frametitle{4. Verabredungen}
 		\begin{minipage}{0.5\textwidth}
 			\setlength{\fboxsep}{0pt}% space between border and image
 			\setlength{\fboxrule}{1pt}% width of border
-			\fbox{\includegraphics[width = 45mm]{images/gui-mockups/event.png}}
+			\fbox{\includegraphics[width = 45mm]{images/gui-mockups/group_events.png}}
 			\captionsetup{labelformat=empty}
 			\centering
 			\captionof{figure}{Liste aller Verabredungen einer Gruppe}
 		\end{minipage}%
 		\begin{minipage}{0.5\textwidth}
-			\textbf{Verabredungen}
 			\begin{itemize}
+				\setlength\itemsep{0.3em}
 				\item[--] Fester Zeitpunkt und Ort
 				\item[--] Für alle Mitglieder sichtbar
 				\item[--] Benachrichtigung vor Beginn
@@ -192,6 +193,7 @@
 	\end{frame}
 
 \begin{frame}[plain]
+\frametitle{4. Verabredungen}
 \begin{minipage}{0.5\textwidth}
 	\setlength{\fboxsep}{0pt}% space between border and image
 	\setlength{\fboxrule}{1pt}% width of border
@@ -201,13 +203,51 @@
 	\captionof{figure}{Umgebungskarte eines Gruppenmitglieds}
 \end{minipage}%
 \begin{minipage}{0.5\textwidth}
-	\textbf{Verabredungen}
 	\begin{itemize}
+		\setlength\itemsep{0.3em}
 		\item[--] Fester Zeitpunkt und Ort
 		\item[--] Für alle Mitglieder sichtbar
 		\item[--] Benachrichtigung vor Beginn
 	\end{itemize}
 \end{minipage}
+\end{frame}
+
+
+\begin{frame}[plain]
+\frametitle{6. Kürkriterien}
+\begin{minipage}{0.5\textwidth}
+	\setlength{\fboxsep}{0pt}% space between border and image
+	\setlength{\fboxrule}{1pt}% width of border
+	\fbox{\includegraphics[height = 80mm]{images/gui-mockups/group_chat.png}}
+	\captionsetup{labelformat=empty}
+	\centering
+	\captionof{figure}{Gruppenchat mit Abstimmung}
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+	\textbf{Chat}
+	\begin{itemize}
+		\setlength\itemsep{0.3em}
+		\item[--] Einfache Textnachrichten
+		\item[--] Benachrichtigung an alle Mitglieder
+	\end{itemize} 
+.\\ \textbf{Abstimmungen}
+\begin{itemize}
+	\setlength\itemsep{0.3em}
+	\item[--] Beliebig viele Orte und Zeitpunkte
+	\item[--] Beliebig viele Stimmen
+	\item[--] Fester Zeitrahmen
+\end{itemize}
+\end{minipage}
+\end{frame}
+
+\begin{frame}
+	\frametitle{6. Kürkriterien}
+	\begin{itemize}
+		\setlength\itemsep{0.3em}
+		\item[--] Innenraumkarten
+		\item[--] Serverwechsel
+		\item[--] Passwort zurücksetzen
+	\end{itemize}
 \end{frame}
 
 \end{document}
