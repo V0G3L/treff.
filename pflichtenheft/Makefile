@@ -1,8 +1,10 @@
-NAME=pflichtenheft
+NAME1=pflichtenheft
+NAME2=presentation
 
 .PHONY: show clean distclean dev
 
-default dev all: distclean build/$(NAME).pdf
+default dev all: distclean build/$(NAME1).pdf
+default dev all: distclean build/$(NAME2).pdf
 
 dev: CONT_FLAG = -pvc
 
@@ -10,7 +12,10 @@ build/%.pdf: %.tex *.sty
 	mkdir -p build
 	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 
-show: build/$(NAME).pdf
+show: build/$(NAME1).pdf
+	xdg-open $<
+
+show: build/$(NAME2).pdf
 	xdg-open $<
 
 clean:
@@ -18,4 +23,5 @@ clean:
 	rm -rf build
 
 distclean: clean
-	rm -f build/$(NAME).pdf
+	rm -f build/$(NAME1).pdf
+	rm -f build/$(NAME2).pdf
