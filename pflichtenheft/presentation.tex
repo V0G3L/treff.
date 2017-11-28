@@ -71,12 +71,16 @@
 
 	\begin{frame}[plain]
 	\frametitle{1. Konten}
-	\guiFigure{images/gui-mockups/register.png}
-	{groupMembers}
-	{Registrieren}
-	{0.5}%
 	\begin{minipage}{0.5\textwidth}
-		{Überlegungen}
+	\setlength{\fboxsep}{0pt}% space between border and image
+	\setlength{\fboxrule}{1pt}% width of border
+	\fbox{\includegraphics[width = 45mm]{images/gui-mockups/register.png}}
+	\captionsetup{labelformat=empty}
+	\centering
+	\captionof{figure}{Registrieren}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\textbf{Überlegungen}
 		\begin{itemize}
 			\item<2->[--] Google-Login?
 			\item<2->[--] Nutzernamen ändern?
@@ -85,22 +89,63 @@
 	\end{frame}
 
 	\begin{frame}[plain]
-	\frametitle{2.Freund und Gruppen}
-	\guiFigure{images/gui-mockups/home_friends.png}
-	{friends}
-	{Freunde}
-	{0.5}%
+	\frametitle{2.Freunde und Gruppen}
 	\begin{minipage}{0.5\textwidth}
-		\guiFigure{images/gui-mockups/home_groups.png}
-		{groups}
-		{Gruppen}
-		{0.5}%
+	\setlength{\fboxsep}{0pt}% space between border and image
+	\setlength{\fboxrule}{1pt}% width of border
+	\fbox{\includegraphics[width = 45mm]{images/gui-mockups/home_friends.png}}
+	\captionsetup{labelformat=empty}
+	\centering
+	\captionof{figure}{Freunde}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\setlength{\fboxsep}{0pt}% space between border and image
+		\setlength{\fboxrule}{1pt}% width of border
+		\fbox{\includegraphics[width = 45mm]{images/gui-mockups/home_groups.png}}
+		\captionsetup{labelformat=empty}
+		\centering
+		\captionof{figure}{Gruppen}
 	\end{minipage}
 	\end{frame}
 
 	
 	
+	\begin{frame}
+		\begin{minipage}{0.5\textwidth}
+			\setlength{\fboxsep}{0pt}% space between border and image
+			\setlength{\fboxrule}{1pt}% width of border
+			\fbox{\includegraphics[width = 45mm]{images/gui-mockups/event.png}}
+			\captionsetup{labelformat=empty}
+			\centering
+			\captionof{figure}{Liste aller Verabredungen einer Gruppe}
+		\end{minipage}%
+		\begin{minipage}{0.5\textwidth}
+			\textbf{Verabredungen}
+			\begin{itemize}
+				\item[--] Fester Zeitpunkt und Ort
+				\item[--] Für alle Mitglieder sichtbar
+				\item[--] Benachrichtigung vor Beginn
+			\end{itemize}
+		\end{minipage}
+	\end{frame}
 
-
+\begin{frame}[plain]
+\begin{minipage}{0.5\textwidth}
+	\setlength{\fboxsep}{0pt}% space between border and image
+	\setlength{\fboxrule}{1pt}% width of border
+	\fbox{\includegraphics[width = 45mm]{images/gui-mockups/event_map.png}}
+	\captionsetup{labelformat=empty}
+	\centering
+	\captionof{figure}{Umgebungskarte eines Gruppenmitglieds}
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+	\textbf{Verabredungen}
+	\begin{itemize}
+		\item[--] Fester Zeitpunkt und Ort
+		\item[--] Für alle Mitglieder sichtbar
+		\item[--] Benachrichtigung vor Beginn
+	\end{itemize}
+\end{minipage}
+\end{frame}
 
 \end{document}
