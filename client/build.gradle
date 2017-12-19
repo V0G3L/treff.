@@ -25,3 +25,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext{
+    COMPONENTS_VERSION = "1.0.0"
+}

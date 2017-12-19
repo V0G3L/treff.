@@ -22,4 +22,7 @@ build/
 *.mtc1
 *.out
 *.synctex.gz
+*.nav
+*.snm
 pflichtenheft.pdf
+presentation.pdf
