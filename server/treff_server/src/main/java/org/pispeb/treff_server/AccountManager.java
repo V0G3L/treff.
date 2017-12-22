@@ -1,7 +1,7 @@
 package org.pispeb.treff_server;
 
-import org.pispeb.treff_server.exceptions.DuplicateEmail;
-import org.pispeb.treff_server.exceptions.DuplicateUsername;
+import org.pispeb.treff_server.exceptions.DuplicateEmailException;
+import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
 /**
  * <p>An interface for an underlying account database. The user of this interface
@@ -64,11 +64,11 @@ public interface AccountManager {
      * @param email The email of the new account
      * @param password The password of the new account
      * @return An {@link Account} object representing the new account.
-     * @throws DuplicateUsername if the supplied username is already associated with
+     * @throws DuplicateUsernameException if the supplied username is already associated with
      * another account. No account will be created in this case.
-     * @throws DuplicateEmail if the supplied email address is already associated with
+     * @throws DuplicateEmailException if the supplied email address is already associated with
      * another account. No account will be created in this case.
      */
     Account createAccount(String username, String email, String password)
-            throws DuplicateEmail, DuplicateUsername;
+            throws DuplicateEmailException, DuplicateUsernameException;
 }

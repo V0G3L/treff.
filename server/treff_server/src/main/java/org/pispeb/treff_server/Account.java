@@ -1,7 +1,7 @@
 package org.pispeb.treff_server;
 
-import org.pispeb.treff_server.exceptions.DuplicateEmail;
-import org.pispeb.treff_server.exceptions.DuplicateUsername;
+import org.pispeb.treff_server.exceptions.DuplicateEmailException;
+import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
 /**
  * An object representing an account with an associated username, email address,
@@ -14,10 +14,10 @@ public interface Account {
 
     /** Sets the username of this account.
      * @param username The new username
-     * @throws DuplicateUsername if another account is already associated with
+     * @throws DuplicateUsernameException if another account is already associated with
      * the supplied username. The username of this account is unchanged in
      * this case. */
-    void setUsername(String username) throws DuplicateUsername;
+    void setUsername(String username) throws DuplicateUsernameException;
 
     /** Checks whether the supplied password matches the password of this account.
      * @param password The password to check
@@ -34,8 +34,8 @@ public interface Account {
 
     /** Sets the email address of this account.
      * @param email The new email address
-     * @throws DuplicateEmail if another account is already associated with the
+     * @throws DuplicateEmailException if another account is already associated with the
      * supplied email address. The email address of this account is unchanged in
      * this case. */
-    void setEmail(String email) throws DuplicateEmail;
+    void setEmail(String email) throws DuplicateEmailException;
 }
