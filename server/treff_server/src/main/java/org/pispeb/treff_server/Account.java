@@ -38,4 +38,12 @@ public interface Account {
      * supplied email address. The email address of this account is unchanged in
      * this case. */
     void setEmail(String email) throws DuplicateEmailException;
+
+    Position getLastPosition();
+
+    void updatePosition(Position position);
+
+    /** Deletes this account. TODO: specify further
+     */
+    void delete();
 }

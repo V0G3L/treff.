@@ -19,7 +19,7 @@ public interface AccountManager {
      * @return <code>true</code> if an account with that username exists,
      * <code>false</code> otherwise.
      */
-    Account hasAccountWithUsername(String username);
+    boolean hasAccountWithUsername(String username);
 
     /**
      * Checks whether an account with the given email exists.
@@ -27,7 +27,7 @@ public interface AccountManager {
      * @return <code>true</code> if an account with that email exists,
      * <code>false</code> otherwise.
      */
-    Account hasAccountWithEmail(String email);
+    boolean hasAccountWithEmail(String email);
 
     /**
      * Returns the account that is associated with the given username.

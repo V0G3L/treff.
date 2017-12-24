@@ -34,4 +34,9 @@ public class AccountDummySQL implements Account {
     public void setEmail(String email) throws DuplicateEmailException {
 
     }
+
+    @Override
+    public void delete() {
+
+    }
 }

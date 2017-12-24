@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.sql;
 
 import org.pispeb.treff_server.Account;
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
@@ -9,6 +10,7 @@ public class AccountSQL implements Account {
     private SQLDatabase sqlDatabase;
     private boolean valid;
     private int id;
+    private Position lastPosition;
 
     AccountSQL(int id) {
         this.id = id;
@@ -32,12 +34,17 @@ public class AccountSQL implements Account {
 
     @Override
     public boolean checkPassword(String password) {
+        // get salt from db
+        // hash supplied pw with salt
+        // compare with hash in db
         return false;
     }
 
     @Override
     public void setPassword(String password) {
-
+        // get salt from db
+        // hash supplied pw with salt
+        // store hash in db
     }
 
     @Override
@@ -47,6 +54,21 @@ public class AccountSQL implements Account {
 
     @Override
     public void setEmail(String email) throws DuplicateEmailException {
+
+    }
+
+    @Override
+    public Position getLastPosition() {
+        return null;
+    }
+
+    @Override
+    public void updatePosition(Position position) {
+        // not persistent
+    }
+
+    @Override
+    public void delete() {
 
     }
 }
