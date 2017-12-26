@@ -3,8 +3,10 @@ package org.pispeb.treff_server;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
+import java.util.Set;
+
 /**
- * <p>An interface for an underlying account database. The user of this interface
+ * <p>An interface for an underlying database. The user of this interface
  * can create accounts and supply a username or an email address to retrieve an
  * existing account, represented by an {@link Account} object.</p>
  * <p>The user can also request a dummy {@link Account} object with no actual
@@ -56,6 +58,7 @@ public interface AccountManager {
      * attacks.</p>
      * @return An dummy {@link Account} object
      */
+    // TODO: Overkill?
     Account getDummyAccount();
 
     /**

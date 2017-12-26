@@ -2,26 +2,29 @@ package org.pispeb.treff_server.sql;
 
 import org.pispeb.treff_server.Account;
 import org.pispeb.treff_server.AccountManager;
+import org.pispeb.treff_server.Group;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class AccountManagerSQL implements AccountManager {
+public class EntityManagerSQL implements AccountManager {
 
-    private static AccountManagerSQL instance;
+    private static EntityManagerSQL instance;
     // TODO: maybe multiple maps to check against username or email address?
     private Map<Integer, Account> loadedAccountsByID;
 
     // singleton
-    private AccountManagerSQL() {
+    private EntityManagerSQL() {
         this.loadedAccountsByID = new HashMap<>();
     }
 
-    public static synchronized AccountManagerSQL getInstance() {
+    public static synchronized EntityManagerSQL getInstance() {
         if (instance == null) {
-            instance = new AccountManagerSQL();
+            instance = new EntityManagerSQL();
         }
         return instance;
     }
@@ -61,6 +64,14 @@ public class AccountManagerSQL implements AccountManager {
     @Override
     public AccountSQL createAccount(String username, String email, String password)
             throws DuplicateEmailException, DuplicateUsernameException {
+        return null;
+    }
+
+    public Set<GroupSQL> getGroupsOfAccount(AccountSQL account) {
+        return null;
+    }
+
+    public List<EventSQL> getEventsOfGroup(GroupSQL group) {
         return null;
     }
 }

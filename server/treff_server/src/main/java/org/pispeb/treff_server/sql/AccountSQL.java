@@ -1,9 +1,12 @@
 package org.pispeb.treff_server.sql;
 
 import org.pispeb.treff_server.Account;
+import org.pispeb.treff_server.Group;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+
+import java.util.Set;
 
 public class AccountSQL implements Account {
 
@@ -54,6 +57,21 @@ public class AccountSQL implements Account {
 
     @Override
     public void setEmail(String email) throws DuplicateEmailException {
+
+    }
+
+    @Override
+    public Set<Group> getAllGroups() {
+        return null;
+    }
+
+    @Override
+    public void addToGroup(Group group) {
+
+    }
+
+    @Override
+    public void removeFromGroup(Group group) {
 
     }
 

@@ -3,6 +3,8 @@ package org.pispeb.treff_server;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
+import java.util.Set;
+
 /**
  * An object representing an account with an associated username, email address,
  * and password. An account may only be represented by a single {@link Account}
@@ -39,9 +41,15 @@ public interface Account {
      * this case. */
     void setEmail(String email) throws DuplicateEmailException;
 
+    Set<Group> getAllGroups();
+    void addToGroup(Group group);
+    void removeFromGroup(Group group);
+
     Position getLastPosition();
 
     void updatePosition(Position position);
+
+    // TODO: unload on inactivity. Or maybe not? Maybe not store data in objects at all?
 
     /** Deletes this account. TODO: specify further
      */

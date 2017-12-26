@@ -11,6 +11,7 @@ public interface Group {
     String getName();
 
     void addMember(Account member);
+    void removeMember(Account member);
     Set<Account> getAllMembers();
 
     void addEvent();
@@ -19,9 +20,14 @@ public interface Group {
     void addChatMessage(ChatMessage message);
     List<ChatMessage> getAllChatMessages(); // TODO: sorting by time
 
+    void addPoll(Poll poll);
+    List<Poll> getAllPolls();
+
     boolean checkPermissionOfMember(Account member, Permission permission)
             throws AccountNotInGroupException;
     void setPermissionOfMember(Account member, Permission permission, boolean value)
             throws AccountNotInGroupException;
+
+    // TODO: unload on inactivity
 
 }

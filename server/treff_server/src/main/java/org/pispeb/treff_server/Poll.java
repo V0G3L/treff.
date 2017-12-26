@@ -22,4 +22,16 @@ public interface Poll {
 
     boolean isMultiChoice();
     void setMultiChoice(boolean multiChoice);
+
+    /**
+     * Ends the poll, locking the voting and creating an {@link Event} based
+     * on the most popular option.
+     * @return The created Event
+     */
+    Event endPoll();
+
+    /**
+     * Cancels the poll. Like {@link #endPoll()} but doesn't create an {@link Event}.
+     */
+    void cancelPoll();
 }
