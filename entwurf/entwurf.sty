@@ -8,6 +8,52 @@
 
 \ExplSyntaxOn
 
+\newcounter{apiCommand}
 
+% Defines a new API-command
+% Params:
+%   1: op-value
+%   2: Description
+%   3: Arguments
+%   4: Return values
+%   5: Errorcodes
+\newcommand{\apiCommand}[5]{
+    \stepcounter{apiCommand}
+    Befehl~\arabic{apiCommand}:~\textbf{#1}
+    \\#2
+    \par Parameter:
+    \\#3
+    \par Rückgabewerte:
+    \\#4
+    \par Fehlercodes:
+    \\#5
+}
+
+% Defines an argument for an API-command
+% Params:
+%   1: op-value
+%   2: Description
+\newcommand{\apiArgument}[2]{
+    % TODO: don't center vertically
+    \begin{minipage}{0.25\textwidth}
+        \textbf{#1}
+    \end{minipage}
+    \begin{minipage}{0.75\textwidth}
+        #2
+    \end{minipage}\\
+}
+
+% Defines an error code for an API-command
+% Params:
+%   1: numerical error code
+%   2: Description
+\newcommand{\apiErrorCode}[2]{
+    \begin{minipage}{0.1\textwidth}
+        \textbf{#1}
+    \end{minipage}
+    \begin{minipage}{0.9\textwidth}
+        #2
+    \end{minipage}\\
+}
 
 \ExplSyntaxOff

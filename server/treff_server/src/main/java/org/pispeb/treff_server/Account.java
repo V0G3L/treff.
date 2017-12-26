@@ -3,7 +3,7 @@ package org.pispeb.treff_server;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
-import java.util.Set;
+import java.util.Map;
 
 /**
  * An object representing an account with an associated username, email address,
@@ -41,7 +41,12 @@ public interface Account {
      * this case. */
     void setEmail(String email) throws DuplicateEmailException;
 
-    Set<Group> getAllGroups();
+    /**
+     *
+     * @return ID -> Group mapping containing only groups that this account is a member
+     * of.
+     */
+    Map<Integer, Group> getAllGroups();
     void addToGroup(Group group);
     void removeFromGroup(Group group);
 
