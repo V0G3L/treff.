@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 
 import org.pispeb.treff_client.R;
 
-/**
- * Created by Lukas on 12/13/2017.
- */
 
 public class EventListFragment extends Fragment {
 

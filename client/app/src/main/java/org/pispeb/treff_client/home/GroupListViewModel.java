@@ -7,4 +7,5 @@ import android.arch.lifecycle.ViewModel;
  */
 
 public class GroupListViewModel extends ViewModel {
+
 }

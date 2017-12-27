@@ -1,20 +1,20 @@
 package org.pispeb.treff_client.home;
 
+import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityHomeBinding;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Main screen to host different tabs, access navigation drawer
@@ -22,7 +22,11 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
+
     private Toolbar toolbar;
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle drawerToggle;
+
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -32,18 +36,30 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
+        //set custom toolbar as action bar
+        toolbar = (Toolbar) binding.toolbarHome;
+        setSupportActionBar(toolbar);
+
+        //drawer view
+        drawer = binding.drawerLayout;
+        drawerToggle = setupDrawerToggle();
+        drawer.addDrawerListener(drawerToggle);
+
+        //actual tabs
         viewPager = binding.homeViewpager;
         setupViewPager(viewPager);
 
+        //tab titles
         tabLayout = binding.homeTabs;
         tabLayout.setupWithViewPager(viewPager);
 
 
-
-
-
     }
 
+    /**
+     * TODO doc
+     * @param viewPager
+     */
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new GroupListFragment(), getString(R.string.tabtext_groups));
@@ -53,32 +69,58 @@ public class HomeActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+    /**
+     * Creates a drawerToggle with the right context and accessibility strings
+     * @return the drawerToggle
+     */
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open,  R.string.drawer_close) {
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                invalidateOptionsMenu();
+            }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
+            }
+        };
     }
+
+    /**
+     * Called after the activity's onStart(), this method ensures that the drawerToggle's state is restored correctly
+     * @param savedInstanceState previous saved state
+     */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    /**
+     * Updates the drawerToggle if the activity's configuration changes
+     * @param newConfig
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        drawerToggle.onConfigurationChanged(newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Handling click events on the navigation drawer's {@link MenuItem}s
+     * @param item The menu item that was selected
+     * @return true if the item is handled in this activity, the superclass implementation otherwise
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
 }

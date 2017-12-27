@@ -18,10 +18,14 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-
+    <!-- home activity tab titles -->
     <string name="tabtext_events">Event</string>
     <string name="tabtext_map">Map</string>
     <string name="tabtext_friends">Friends</string>
     <string name="tabtext_groups">Groups</string>
+
+    <!-- navigation drawer open/close strings for accessibility -->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>

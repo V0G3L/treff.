@@ -8,15 +8,18 @@
 
 
         <!-- The main content view -->
-        <FrameLayout
+        <android.support.design.widget.CoordinatorLayout
             android:id="@+id/home_content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <include
+                    layout="@layout/toolbar_home"
+                    android:id="@+id/toolbar_home"/>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/home_tabs"
@@ -26,7 +29,8 @@
                     app:tabGravity="fill"
                     app:tabIndicatorColor="@color/white"
                     app:tabTextColor="@color/offwhite"
-                    app:tabSelectedTextColor="@color/white"/>
+                    app:tabSelectedTextColor="@color/white"
+                    android:elevation="4dp"/>
 
             </android.support.design.widget.AppBarLayout>
 
@@ -37,7 +41,7 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
-        </FrameLayout>
+        </android.support.design.widget.CoordinatorLayout>
 
 
                 <!-- The navigation drawer -->
