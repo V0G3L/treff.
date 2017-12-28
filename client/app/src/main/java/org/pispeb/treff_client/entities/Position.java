@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.components;
+package org.pispeb.treff_client.entities;
 
 import java.time.LocalDateTime;
 

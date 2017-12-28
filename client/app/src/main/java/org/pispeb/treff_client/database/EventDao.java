@@ -5,7 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import org.pispeb.treff_client.components.Event;
+import org.pispeb.treff_client.entities.Event;
 
 /**
  * Created by Lukas on 12/20/2017.

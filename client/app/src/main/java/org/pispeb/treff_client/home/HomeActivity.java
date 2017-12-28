@@ -1,29 +1,24 @@
 package org.pispeb.treff_client.home;
 
-import android.content.Context;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.views.MapView;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityHomeBinding;
+import org.pispeb.treff_client.ui_components.TabbedNavigationActivity;
 
 
 /**
  * Main screen to host different tabs, access navigation drawer
  */
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends TabbedNavigationActivity {
 
     private ActivityHomeBinding binding;
 
@@ -41,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
 
         //set custom toolbar as action bar
-        toolbar = (Toolbar) binding.toolbarHome;
+        toolbar = binding.toolbarHome;
         setSupportActionBar(toolbar);
 
         //drawer view

@@ -3,9 +3,9 @@ package org.pispeb.treff_client.database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Database;
 
-import org.pispeb.treff_client.components.Event;
-import org.pispeb.treff_client.components.User;
-import org.pispeb.treff_client.components.UserGroup;
+import org.pispeb.treff_client.entities.Event;
+import org.pispeb.treff_client.entities.User;
+import org.pispeb.treff_client.entities.UserGroup;
 
 /**
  * Created by Lukas on 12/20/2017.

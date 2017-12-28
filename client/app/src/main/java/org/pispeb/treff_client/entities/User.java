@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.components;
+package org.pispeb.treff_client.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

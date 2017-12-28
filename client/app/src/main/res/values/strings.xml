@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">treff-client</string>
+    <string name="app_name">treff.</string>
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to login -->
@@ -15,11 +15,8 @@
         completions."
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!-- home activity tab titles -->
-    <string name="tabtext_events">Event</string>
+    <string name="tabtext_events">Events</string>
     <string name="tabtext_map">Map</string>
     <string name="tabtext_friends">Friends</string>
     <string name="tabtext_groups">Groups</string>
