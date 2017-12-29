@@ -118,65 +118,69 @@ Eigenschaft mit dem Schlüssel \textbf{cmd}.
 Die Namen der im folgenden definierten Befehle sind exakt die Werte, die bei
 Kodierung als Nachricht den Wert der \textbf{cmd}-Eigenschaft bilden müssen.
 Diese Namen sind als simple Zeichenketten zu kodieren.
+\\Wird während der Ausführung des Befehls ein Fehler gefunden, möglicherweise durch
+übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüssel
+\textbf{error} zurückgegeben. Die Bedeutung der Fehlercodes wird ebenfalls im
+folgenden definiert.
 
 \subsection{Befehle}
-\newcommand{\apiToken}{
-    \apiArgument{token}{Authentifizierungtoken, welches beim Einloggen in das
-    Benutzerkonto vom Server zurückgegeben wurde}
-}
-\newcommand{\apiTokenInvalid}{
-    \apiErrorCode{010}{Authentifizierungtoken ungültig}
-}
+Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
+Parameter:\\
+\apiArgument{token/Authentifizierungtoken{,} welches beim Einloggen in das
+Benutzerkonto vom Server zurückgegeben wurde}
+\par\par Ist das übermittelte Token ungültig, wird der Befehl nicht
+ausgeführt und folgender Fehlercode zurückgegeben:\\
+\apiErrorCode{010/Authentifizierungtoken ungültig}
+
 \apiCommand{login}
 {Einloggen in ein Nutzerkonto}
-{\apiArgument{user}{Benutzername des Kontos}
-\apiArgument{pass}{Passwort des Kontos}}
-{\apiArgument{token}{Authentifizierungstoken, welches in weiteren Befehlen
-als Eingabe verlangt wird}}
-{\apiErrorCode{100}{Nutzername/Passwort-Kombination ungültig}}
+{user/Benutzername des Kontos,
+pass/Passwort des Kontos}
+{token/Authentifizierungstoken{,} welches in weiteren Befehlen
+als Eingabe verlangt wird}
+{100/Nutzername{/}Passwort-Kombination ungültig}
 
 \apiCommand{list-groups}
 {Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
-{\apiToken}
-{\apiArgument{groups}{Ein Array an oberflächlich beschriebenen Gruppen (siehe
-Kapitel \ref{sec:groupdesc})}}
-{\apiTokenInvalid}
+{---/Keine weiteren Parameter}
+{groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
+Kapitel \ref{sec:groupdesc})}
+{---/Keine weiteren Fehlercodes}
 
 \apiCommand{get-group-details}
-{Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
-{\apiToken
-\apiArgument{id}{Identifikationsnummer der Gruppe}}
-{Eine ausführliche Beschreibung der Gruppe, die zu der angegebenen
+{Abrufen von Details einer Gruppe, in denen das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Gruppe}
+{\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
-{\apiTokenInvalid
-\apiErrorCode{300}{Gruppen-Identifikationsnummer ungültig}}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe}
 
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 Gruppen können in zwei verschiedenen Weisen beschrieben werden:
 oberflächlich oder umfangreich.
 
 \subsubsection{Oberflächlich}
-\apiArgument{id}{Eindeutige Identifikationsnummer der Gruppe, mit der diese
-in weiteren Befehlen referenziert werden kann}
-\apiArgument{name}{Name der Gruppe}
-\apiArgument{icon-hash}{Hashwert des Gruppenportraits}
+\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese
+    in weiteren Befehlen referenziert werden kann,
+    name/Name der Gruppe,
+    icon-hash/Hashwert des Gruppenportraits}
 
 \subsubsection{Umfangreich}
-\apiArgument{members}{Array von Benutzerkonten, die Teil der Gruppe sind
+\apiArgument{members/Array von Benutzerkonten{,} die Teil der Gruppe sind
 (siehe \ref{sec:accountdesc})}
-\apiArgument{events}{Array von Verabredungen, die in der Gruppe erstellt worden
+\apiArgument{events/Array von Verabredungen{,} die in der Gruppe erstellt worden
 sind (siehe \ref{sec:eventdesc})}
-\apiArgument{polls}{Array von Abstimmungen, die in der Gruppe erstellt worden
+\apiArgument{polls/Array von Abstimmungen{,} die in der Gruppe erstellt worden
 sind (siehe \ref{sec:polldesc})}
 
 \subsection{Benutzerkontobeschreibung}\label{sec:accountdesc}
-\apiArgument{user}{Benutzername des Kontos}
-\apiArgument{icon-hash}{Hashwert des Benutzerkontoportraits}
+\apiArgument{user/Benutzername des Kontos}
+\apiArgument{icon-hash/Hashwert des Benutzerkontoportraits}
 
 \subsection{Verabredungsbeschreibung}\label{sec:eventdesc}
-\apiArgument{placeholder}{placeholder}
+\apiArgument{placeholder/placeholder}
 
 \subsection{Abstimmugsbeschreibung}\label{sec:polldesc}
-\apiArgument{placeholder}{placeholder}
+\apiArgument{placeholder/placeholder}
 
 \end{document}

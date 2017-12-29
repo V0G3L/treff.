@@ -3,10 +3,12 @@
 \RequirePackage{expl3}
 \RequirePackage{rdfref-user,rdfref-query}
 \RequirePackage{caption}
+\RequirePackage{tikz}
+\RequirePackage{calc}
 
 \parindent 0pt
 
-\ExplSyntaxOn
+%\ExplSyntaxOn
 
 \newcounter{apiCommand}
 
@@ -22,38 +24,42 @@
     Befehl~\arabic{apiCommand}:~\textbf{#1}
     \\#2
     \par Parameter:
-    \\#3
+    \\\apiArgument{#3}
     \par Rückgabewerte:
-    \\#4
+    \\\apiArgument{#4}
     \par Fehlercodes:
-    \\#5
+    \\\apiErrorCode{#5}
 }
 
 % Defines an argument for an API-command
 % Params:
-%   1: op-value
-%   2: Description
+%   1: op-value and description,
+%      seperated by forward slash (/)
 \newcommand{\apiArgument}[2]{
-    % TODO: don't center vertically
-    \begin{minipage}{0.25\textwidth}
-        \textbf{#1}
-    \end{minipage}
-    \begin{minipage}{0.75\textwidth}
-        #2
-    \end{minipage}\\
+    \apiTableEntry{#1}{0.2}{0.8}
 }
 
 % Defines an error code for an API-command
 % Params:
-%   1: numerical error code
-%   2: Description
-\newcommand{\apiErrorCode}[2]{
-    \begin{minipage}{0.1\textwidth}
-        \textbf{#1}
-    \end{minipage}
-    \begin{minipage}{0.9\textwidth}
-        #2
-    \end{minipage}\\
+%   1: numerical error code and description,
+%      seperated by forward slash (/)
+\newcommand{\apiErrorCode}[1]{
+    \apiTableEntry{#1}{0.1}{0.9}
 }
 
-\ExplSyntaxOff
+% Creates a table entry for use in API definitions
+% Params:
+%   1: values for both cells in row,
+%      seperated by forward slash (/)
+%   2: Width of first column
+%   3: Width of second column
+\newcommand{\apiTableEntry}[3]{
+    \foreach \code/\desc in {#1} {
+        \begin{tabular}[t]{ p{#2\textwidth} p{#3\textwidth} }
+            \textbf{\code} & \desc
+        \end{tabular}\\
+    }
+    \vspace{4pt}
+}
+
+%\ExplSyntaxOff

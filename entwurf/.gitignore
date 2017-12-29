@@ -1,4 +1,5 @@
 build/
+uml-source/*.png
 *.aux
 *.glo
 *.idx

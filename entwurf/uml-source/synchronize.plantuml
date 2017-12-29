@@ -1,0 +1,35 @@
+@startuml
+
+(*) --> "Client loggt sich in Benuzterkonto usr1 ein und erhält
+         Authentifizierungstoken vom Server" as login
+login --> "Client fordert oberflächliche Auflistung aller Gruppen an und
+           erhält diese vom Server" as getShallowGrp
+getShallowGrp --> "Client registriert das Gerät dev1 für Updates, die usr1
+                   betreffen" as regUpdate
+
+regUpdate --> if "Wurde dev1 bereits vorher für usr1 registriert?" then
+    -right->[Ja] "Server sendet Liste an Änderungen seit letzter
+         Änderungsübermittlung an Client" as sendUpdate
+else
+    -down->[Nein] "Server benachrichtigt Client, dass das Gerät das erste Mal
+         für dieses Benutzerkonto registriert wurde" as noUpdate
+endif
+
+sendUpdate -right-> "Client wendet Änderungen auf lokale Datensätze
+                an." as applyUpdates
+applyUpdates --> "Client generiert Prüfsummen für alle Verabredungen,
+                  Abstimmungen und Mitglieder basierend auf lokalem
+                  Datensatz" as genChecksum
+genChecksum --> "Client fordert für alle Verabredungen, Abstimmungen und
+Mitglieder, für die die eben generierte Prüfsumme nicht mit der Prüfsumme aus
+der oberflächlichen Beschreibung übereinstimmt, eine ausführliche Beschreibung
+an und erhält diese vom Server" as selectiveResync
+noUpdate --> "Client fordert für jede Gruppe eine ausführliche Auflistung
+              inklusive Verabredungs-, Abstimmungs- und
+              Mitgliedsbeschreibungen an und erhält diese vom
+              Server" as getDeepGrp
+
+selectiveResync --> "Client ist nun synchron mit dem Server" as isSynchronized
+getDeepGrp --> isSynchronized
+
+@enduml
