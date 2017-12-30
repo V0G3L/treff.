@@ -12,6 +12,10 @@
 \usepackage{amsmath} % for $\text{}$
 \usepackage{entwurf}
 \usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
 \setlist{nosep}
 
 \newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
@@ -109,6 +113,7 @@
 % Zusammenspiel von Client und Server
 % (Fließtext und Sequenzdiagram, ggf UML-Klassendiagram)
 % TODO: JSON verlinken / footnote
+% TODO: Alphabet und Escapes genau festlegen
 Client und Server kommunizieren mittels des JSON-Dateiformates.
 Die oberste Ebene jeder Nachricht bildet ein einzelnes JSON-Objekt.
 Parameter, Rückgabewerte und Fehlercodes werden als Eigenschaft dieses Objektes
@@ -118,8 +123,8 @@ Eigenschaft mit dem Schlüssel \textbf{cmd}.
 Die Namen der im folgenden definierten Befehle sind exakt die Werte, die bei
 Kodierung als Nachricht den Wert der \textbf{cmd}-Eigenschaft bilden müssen.
 Diese Namen sind als simple Zeichenketten zu kodieren.
-\\Wird während der Ausführung des Befehls ein Fehler gefunden, möglicherweise durch
-übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüssel
+\\Wird während der Ausführung des Befehls ein Fehler gefunden, möglicherweise
+durch übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüssel
 \textbf{error} zurückgegeben. Die Bedeutung der Fehlercodes wird ebenfalls im
 folgenden definiert.
 
@@ -156,31 +161,100 @@ Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
 Gruppe}
 
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
-Gruppen können in zwei verschiedenen Weisen beschrieben werden:
-oberflächlich oder umfangreich.
 
-\subsubsection{Oberflächlich}
-\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese
-    in weiteren Befehlen referenziert werden kann,
+\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+    weiteren Befehlen referenziert werden kann,
     name/Name der Gruppe,
-    icon-hash/Hashwert des Gruppenportraits}
-
-\subsubsection{Umfangreich}
-\apiArgument{members/Array von Benutzerkonten{,} die Teil der Gruppe sind
-(siehe \ref{sec:accountdesc})}
-\apiArgument{events/Array von Verabredungen{,} die in der Gruppe erstellt worden
-sind (siehe \ref{sec:eventdesc})}
-\apiArgument{polls/Array von Abstimmungen{,} die in der Gruppe erstellt worden
-sind (siehe \ref{sec:polldesc})}
+    icon-checksum/Hashwert des Gruppenportraits,
+    members/Array an Beschreibungen von Benutzerkonten{,} die Teil der Gruppe
+    sind (siehe \ref{sec:accountdesc}),
+    events/Array an oberflächlich beschriebenen Verabredungen{,} die in der
+    Gruppe erstellt worden sind (siehe \ref{sec:eventdesc}),
+    polls/Array an oberflächlich beschriebenen Abstimmungen{,} die in der
+    Gruppe erstellt worden sind (siehe \ref{sec:polldesc})
+}
 
 \subsection{Benutzerkontobeschreibung}\label{sec:accountdesc}
-\apiArgument{user/Benutzername des Kontos}
-\apiArgument{icon-hash/Hashwert des Benutzerkontoportraits}
+\apiArgument{user/Benutzername des Kontos, icon-hash/Hashwert des
+    Benutzerkontoportraits
+}
 
 \subsection{Verabredungsbeschreibung}\label{sec:eventdesc}
-\apiArgument{placeholder/placeholder}
 
-\subsection{Abstimmugsbeschreibung}\label{sec:polldesc}
-\apiArgument{placeholder/placeholder}
+\subsubsection{Oberflächlich}
+\apiArgument{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
+    diese in weiteren Befehlen referenziert werden kann,
+    checksum/Prüfsumme der ausführlichen Beschreibung (siehe
+    \ref{sec:checksum})
+}
+
+\subsubsection{Ausführlich}
+\apiArgument{title/Titel der Verabredung,
+    creator/Nutzername des Benutzerkontos{,} mit dem die Verabredung erstellt
+    wurde,
+    time-start/Startzeitpunkt,
+    time-end/Endzeitpunkt,
+    latitude/Breitengrad{,} auf dem die Verabredung stattfindet
+    (Gleitkommazahl),
+    longitude/Längengrad{,} auf dem die Verabredung stattfindet
+    (Gleitkommazahl),
+    participants/Array an Benutzernamen der Benutzerkonten{,} die an der
+    Verabredung teilnehmen
+}
+
+\subsection{Abstimmungsbeschreibung}\label{sec:polldesc}
+\apiArgument{/placeholder}
+
+\subsection{Prüfsummen für ausführliche Beschreibungen}
+\newcommand{\hashAlg}{MD5}
+Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächliche
+Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
+Beschreibung.
+Der Client ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
+mit denen des Servers übereinstimmen, ohne die Datensätze selbst anfordern zu
+müssen.
+\par Zur Berechnung der Prüfsummen wird der \hashAlg-Algorithmus verwendet.
+\par Da es mehrere unterschiedliche, aber äquivalente JSON-Darstellungen für
+eine ausführliche Beschreibungen gibt, müssen diese vor Eingabe an den
+\hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
+\par Dazu werden die Eigenschaften zuerst ihren Schlüsseln nach alphabetisch
+sortiert.
+Anschließend werden die Werte der Eigenschaften ohne Schlüssel konkateniert.
+Dabei werden die doppelten Anführungszeichen um Zeichenketten entfernt.
+Als Trennzeichen wird das Zeichen mit dem Zahlenwert 1 verwendet.
+Arrays werden zusätzlich noch mit einem Zeichen mit Zahlenwert 2 begonnen
+und mit einem Zeichen mit Zahlenwert 3 beendet.
+Als Trennzeichen zwischen Arrayelementen wird ein Zeichen mit Zahlenwert 4
+verwendet.
+Da alle vier Trennzeichen nur als Escape-Sequenzen, nicht aber direkt in einem
+JSON-Objekt vorkommen können ist diese Darstellung eindeutig.
+% TODO: Das auch tatsächlich sicherstellen
+\par Die beispielhafter Algorithmus für die Normalisierung ist im folgenden
+in Pseudocode angegeben:
+
+\begin{algorithm}[H]
+    \caption{Normalisierung einer ausführlichen Beschreibung}
+    \begin{algorithmic}[1]
+        \Function{normalizeExtDesc}{$J$ : JSON-Object of extensive description}
+            {: String}
+        \State $counter \gets 0$
+        \State $output \gets \epsilon$
+        \ForAll{$attribute \in \Call{J.sortedAlphabeticallyByKeys()}{}$}
+            \If{$counter > 0$}
+                \State $output \gets output+\Call{chr}{1}$
+            \EndIf
+            \State \Call{counter++}{}
+            \If{$\neg$\Call{isArray}{$attribute$}}
+                \State $output \gets output+attribute.value$
+            \Else
+                \State $output \gets output+\Call{chr}{2}$
+                \State $output \gets output+\Call{normalizeExtDesc}{attribute.value}$
+                \State $output \gets output+\Call{chr}{3}$
+            \EndIf
+        \EndFor
+        \State\Return $output$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \end{document}

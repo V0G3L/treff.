@@ -7,6 +7,7 @@ default dev all: distclean build/$(NAME).pdf
 dev: CONT_FLAG = -pvc
 
 build/%.pdf: %.tex *.sty
+	plantuml uml-source/*.plantuml
 	mkdir -p build
 	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 

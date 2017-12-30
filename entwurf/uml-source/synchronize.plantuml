@@ -29,7 +29,10 @@ noUpdate --> "Client fordert für jede Gruppe eine ausführliche Auflistung
               Mitgliedsbeschreibungen an und erhält diese vom
               Server" as getDeepGrp
 
-selectiveResync --> "Client ist nun synchron mit dem Server" as isSynchronized
+selectiveResync --> "Client ist nun synchron mit dem Server und dev1 ist
+                     für Aktualisierungen bzgl. usr1
+                     registriert" as isSynchronized
 getDeepGrp --> isSynchronized
+isSynchronized --> (*)
 
 @enduml

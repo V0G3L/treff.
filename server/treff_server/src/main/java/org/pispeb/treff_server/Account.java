@@ -3,6 +3,7 @@ package org.pispeb.treff_server;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -51,6 +52,7 @@ public interface Account {
     void removeFromGroup(Group group);
 
     Position getLastPosition();
+    Date getLastPositionTime();
 
     void updatePosition(Position position);
 
