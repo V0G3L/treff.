@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.entities;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Created by Lukas on 12/19/2017.
  */
-
+@Entity(tableName = "event")
 public class Event {
     @PrimaryKey(autoGenerate = true)
     private int id;
