@@ -5,12 +5,17 @@
 \RequirePackage{caption}
 \RequirePackage{tikz}
 \RequirePackage{calc}
+\RequirePackage[framemethod=tikz]{mdframed}
+\RequirePackage{etoolbox}
 
 \parindent 0pt
 
 %\ExplSyntaxOn
 
 \newcounter{apiCommand}
+\newtoggle{apiCmdBG}
+\toggletrue{apiCmdBG}
+\newcommand{\apiCmdClr}{gray!20}
 
 % Defines a new API-command
 % Params:
@@ -20,6 +25,13 @@
 %   4: Return values
 %   5: Errorcodes
 \newcommand{\apiCommand}[5]{
+    \iftoggle{apiCmdBG}{%
+        \renewcommand{\apiCmdClr}{gray!20}
+    }{%
+        \renewcommand{\apiCmdClr}{white}
+    }
+    \begin{mdframed}[hidealllines=true,backgroundcolor=\apiCmdClr]%
+    \vspace{8pt}
     \stepcounter{apiCommand}
     Befehl~\arabic{apiCommand}:~\textbf{#1}
     \\#2
@@ -29,6 +41,12 @@
     \\\apiArgument{#4}
     \par Fehlercodes:
     \\\apiErrorCode{#5}
+    \end{mdframed}
+    \iftoggle{apiCmdBG}{%
+        \togglefalse{apiCmdBG}
+    }{%
+        \toggletrue{apiCmdBG}
+    }
 }
 
 % Defines an argument for an API-command
@@ -36,7 +54,7 @@
 %   1: op-value and description,
 %      seperated by forward slash (/)
 \newcommand{\apiArgument}[2]{
-    \apiTableEntry{#1}{0.2}{0.8}
+    \apiTableEntry{#1}{0.2}{0.75}
 }
 
 % Defines an error code for an API-command
@@ -44,7 +62,7 @@
 %   1: numerical error code and description,
 %      seperated by forward slash (/)
 \newcommand{\apiErrorCode}[1]{
-    \apiTableEntry{#1}{0.1}{0.9}
+    \apiTableEntry{#1}{0.2}{0.75}
 }
 
 % Creates a table entry for use in API definitions

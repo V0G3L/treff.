@@ -15,6 +15,8 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{bera}
 
 \setlist{nosep}
 
@@ -30,6 +32,105 @@
 
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstdefinelanguage{norm}{
+    basicstyle=\normalfont\ttfamily,
+    escapeinside={(*}{*)},
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+    language=Python,
+    basicstyle=\normalfont\ttfamily,
+    otherkeywords={self},
+    keywordstyle=\ttb\color{deepblue},
+    emph={normalize},
+    emphstyle=\ttb\color{deepred},
+    stringstyle=\color{deepgreen},
+    frame=tb,
+    showstringspaces=false,
+    backgroundcolor=\color{background},
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    escapeinside={(*}{*)},
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
 
 % header & footer
 \usepackage{scrlayer-scrpage}
@@ -114,15 +215,15 @@
 % (Fließtext und Sequenzdiagram, ggf UML-Klassendiagram)
 % TODO: JSON verlinken / footnote
 % TODO: Alphabet und Escapes genau festlegen
-Client und Server kommunizieren mittels des JSON-Dateiformates.
+Client und Server kommunizieren mittels Nachrichten im JSON-Format.
 Die oberste Ebene jeder Nachricht bildet ein einzelnes JSON-Objekt.
-Parameter, Rückgabewerte und Fehlercodes werden als Eigenschaft dieses Objektes
-kodiert.
-Eine Anfrage eines Klienten an den Server beinhaltet immer mindestens eine
-Eigenschaft mit dem Schlüssel \textbf{cmd}.
+Parameter, Rückgabewerte und Fehlercodes werden als Eigenschaften dieses
+Objektes kodiert.
+Eine Anfrage beinhaltet immer mindestens eine Eigenschaft mit dem Schlüssel
+\textbf{cmd}.
 Die Namen der im folgenden definierten Befehle sind exakt die Werte, die bei
 Kodierung als Nachricht den Wert der \textbf{cmd}-Eigenschaft bilden müssen.
-Diese Namen sind als simple Zeichenketten zu kodieren.
+Diese Namen sind als Zeichenketten zu kodieren.
 \\Wird während der Ausführung des Befehls ein Fehler gefunden, möglicherweise
 durch übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüssel
 \textbf{error} zurückgegeben. Die Bedeutung der Fehlercodes wird ebenfalls im
@@ -175,21 +276,28 @@ Gruppe}
 }
 
 \subsection{Benutzerkontobeschreibung}\label{sec:accountdesc}
-\apiArgument{user/Benutzername des Kontos, icon-hash/Hashwert des
-    Benutzerkontoportraits
+\apiArgument{type/\enquote{account},
+    id/Eindeutige Identifikationsnummer des Benutzerkontos{,} mit der
+    dieses in weiteren Befehlen referenziert werden kann,
+    user/Benutzername des Kontos,
+    icon-checksum/Hashwert des Benutzerkontoportraits
 }
 
 \subsection{Verabredungsbeschreibung}\label{sec:eventdesc}
 
 \subsubsection{Oberflächlich}
-\apiArgument{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
+\apiArgument{type/\enquote{event},
+    id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
     diese in weiteren Befehlen referenziert werden kann,
     checksum/Prüfsumme der ausführlichen Beschreibung (siehe
     \ref{sec:checksum})
 }
 
 \subsubsection{Ausführlich}
-\apiArgument{title/Titel der Verabredung,
+\apiArgument{type/\enquote{event},
+    id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
+    diese in weiteren Befehlen referenziert werden kann,
+    title/Titel der Verabredung,
     creator/Nutzername des Benutzerkontos{,} mit dem die Verabredung erstellt
     wurde,
     time-start/Startzeitpunkt,
@@ -213,48 +321,103 @@ Beschreibung.
 Der Client ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
 mit denen des Servers übereinstimmen, ohne die Datensätze selbst anfordern zu
 müssen.
+
 \par Zur Berechnung der Prüfsummen wird der \hashAlg-Algorithmus verwendet.
+
 \par Da es mehrere unterschiedliche, aber äquivalente JSON-Darstellungen für
 eine ausführliche Beschreibungen gibt, müssen diese vor Eingabe an den
 \hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
-\par Dazu werden die Eigenschaften zuerst ihren Schlüsseln nach alphabetisch
-sortiert.
-Anschließend werden die Werte der Eigenschaften ohne Schlüssel konkateniert.
-Dabei werden die doppelten Anführungszeichen um Zeichenketten entfernt.
-Als Trennzeichen wird das Zeichen mit dem Zahlenwert 1 verwendet.
-Arrays werden zusätzlich noch mit einem Zeichen mit Zahlenwert 2 begonnen
-und mit einem Zeichen mit Zahlenwert 3 beendet.
-Als Trennzeichen zwischen Arrayelementen wird ein Zeichen mit Zahlenwert 4
-verwendet.
-Da alle vier Trennzeichen nur als Escape-Sequenzen, nicht aber direkt in einem
-JSON-Objekt vorkommen können ist diese Darstellung eindeutig.
-% TODO: Das auch tatsächlich sicherstellen
-\par Die beispielhafter Algorithmus für die Normalisierung ist im folgenden
-in Pseudocode angegeben:
 
-\begin{algorithm}[H]
-    \caption{Normalisierung einer ausführlichen Beschreibung}
-    \begin{algorithmic}[1]
-        \Function{normalizeExtDesc}{$J$ : JSON-Object of extensive description}
-            {: String}
-        \State $counter \gets 0$
-        \State $output \gets \epsilon$
-        \ForAll{$attribute \in \Call{J.sortedAlphabeticallyByKeys()}{}$}
-            \If{$counter > 0$}
-                \State $output \gets output+\Call{chr}{1}$
-            \EndIf
-            \State \Call{counter++}{}
-            \If{$\neg$\Call{isArray}{$attribute$}}
-                \State $output \gets output+attribute.value$
-            \Else
-                \State $output \gets output+\Call{chr}{2}$
-                \State $output \gets output+\Call{normalizeExtDesc}{attribute.value}$
-                \State $output \gets output+\Call{chr}{3}$
-            \EndIf
-        \EndFor
-        \State\Return $output$
-        \EndFunction
-    \end{algorithmic}
-\end{algorithm}
+\par \textit{Hinweis: Im Folgenden bezeichnen Numerale nicht etwa die ASCII-Symbole
+\enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern tatsächlich die
+nicht-druckbaren Zeichen mit den Werten 0 bis 9.}\\
+JSON-Objekte werden mit einer 1 begonnen und mit einer 3 beendet.
+Eigenschaften dieser JSON-Objekte werden mit einer 2 statt einem Komma
+getrennt.
+Die Eigenschaften werden gemäß der in den Beschreibungsspezifikationen
+aufgeführten Reihenfolgen sortiert.
+JSON-Arrays werden mit einer 4 begonnen und mit einer 6 beendet.
+Elemente dieser JSON-Arrays werden mit einer 5 statt mit einem Komma getrennt.
+In JSON-Arrays von Beschreibungen kommen lediglich Beschreibungen anderer
+Objekte vor. Diese werden aufsteigend nach ihren IDs sortiert.
+
+Alle JSON-Objekteigenschaften werden ohne Schlüssel, Doppelpunkte, geschwungene
+Klammern und zusätzliche Leerzeichen oder Zeilenumbrüche konkateniert.
+Alle JSON-Arrayelemente werden ohne eckige Klammern und zusätzliche
+Leerzeichen oder Zeilenumbrüche konkateniert.
+Die doppelten Anführungszeichen um Zeichenketten werden entfernt.
+Da alle sechs Trennzeichen nur als Escape-Sequenzen, nicht aber direkt im
+JSON-Format vorkommen können, ist diese Darstellung eindeutig.
+% TODO: Das auch tatsächlich sicherstellen
+
+\par Im folgenden beispielhaft eine Verabredung mit folgenden Details:
+\begin{itemize}
+    \item Besitzt die ID 12
+    \item Trägt den Titel \enquote{Beispielverabredung 1010}
+    \item Erstellt vom Benutzerkonto mit ID 200
+    \item Beginnt am 01. Januar 2018 um 00:00:00.000
+    \item Endet am 03. Januar 2018 um 18:30:00.000
+    \item Findet auf der Position 49.011978 N, 8.416377 E statt
+    \item Die Benutzerkonten mit den IDs 200, 3 und 43378 sind als Teilnehmer
+        eingetragen
+\end{itemize}
+
+Eine mögliche Kodierung der ausführlichen Beschreibung im JSON-Format kann wie
+folgt aussehen:
+\begin{lstlisting}[language=json,firstnumber=1]
+{   "type": "event",
+    "id": 2,
+    "title": "Beispielverabredung 1010",
+    "creator": 200,
+    "time-start": 1514761200000,
+    "time-end": 1515000600000,
+    "latitude": 49.011978,
+    "longitude": 8.416377,
+    "participants": [
+        {   "type": "account",
+            "id": 3,
+            "user": "w4rum",
+            "icon-checksum": "123abc"
+        },
+        {   "type": "account",
+            "id": 200,
+            "user": "notw4rum",
+            "icon-checksum": "blaa"
+        },
+        {   "type": "account",
+            "id": 43378,
+            "user": "absolutetlynotw4rum",
+            "icon-checksum": "foobar"
+        }
+    ]
+}
+\end{lstlisting}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
+
+Die normalisierte Darstellung dieser Verabredung sieht wie folgt aus.
+Die nicht-druckbaren Zeichen werden durch \circled{1}, \circled{2}, \circled{3}
+etc.  dargestellt.\\
+\textit{Hinweis: Die Zeilenumbrüche dienen nur der besseren Lesbarkeit und sind
+nicht in der normalisierten Darstellung enthalten.}
+
+\begin{lstlisting}[language=norm,firstnumber=1]
+(*\circled{1}*)"event"(*\circled{2}*)2(*\circled{2}%
+*)"Beispielverabredung 1010"(*\circled{2}*)200(*\circled{2}*)1514761200000
+(*\circled{2}*)1515000600000(*\circled{2}*)49.011978(*\circled{2}%
+*)8.416377(*\circled{2}*)(*\circled{4}*)(*\circled{1}*)"account"(*\circled{2}%
+*)3(*\circled{2}*)"w4rum"(*\circled{2}*)"123abc"
+(*\circled{3}*)(*\circled{5}*)(*\circled{1}*)"account"(*\circled{2}*)200(*%
+\circled{2}*)"notw4rum"(*\circled{2}*)"blaa"(*\circled{3}\circled{5}%
+\circled{1}*)"account"(*\circled{2}*)43378
+(*\circled{2}*)"absolutetlynotw4rum"(*\circled{2}*)"foobar"(*\circled{3}%
+\circled{6}\circled{3}*)
+\end{lstlisting}
+
+\par Ein beispielhafter Algorithmus für die Normalisierung ist im folgenden
+als Python-Implementierung angegeben:
+
+\pythonexternal{scripts/normalize.py}
 
 \end{document}
