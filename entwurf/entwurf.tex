@@ -159,14 +159,14 @@
 \pagebreak
 \section{Einleitung}
 
-\subsection{Client-Server}
+\subsection{Client-Server-Architektur}
 % auf client-server architektur eingehen
 % (Fließtext [kleiner Einleitungstext] und ggf kleines UML-Klassendiagram)
 
-\subsection{Funktion und externes Verhalten - Client}
+\subsection{Funktion - Client}
 % Funktion und Verhalten des Clients (Fließtext und UML-Diagramme)
 
-\subsection{Funktion und externes Verhalten - Server}
+\subsection{Funktion - Server}
 % Funktion und Verhalten des Servers (Fließtext und UML-Diagramme)
 
 %%%%%%%%%%%%%%%%%%%%
@@ -261,14 +261,205 @@ Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
 {300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
 Gruppe}
 
+\apiCommand{get-user-id}
+{Abrufen der Idenfikationsnummer eines anderen Benutzekontos durch Übergeben
+des Benutzernamens}
+{user/Benutzername des Benutzerkontos}
+{\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
+Benutzerkonto gehört (siehe \ref{sec:accountdesc})}
+{400/Nutzername ungültig}
+
+% TODO: Definiere „aktive Verabredung“
+\apiCommand{get-event-details}
+{Abrufen von Details einer aktiven Verabredung, die in einer Gruppe erstellt
+wurde, in der das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Verabredung,
+group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde}
+{\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
+Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
+{500/Verabredungs-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil
+der Gruppe,
+300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe}
+
+\apiCommand{get-poll-details}
+{Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
+wurde, in der das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Abstimmung,
+group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde}
+{\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
+Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig}
+
+\apiCommand{create-group}
+{Erstellen einer Gruppe}
+{name/Name der Gruppe,
+members/Array an Identifikationsnummern aller Benutzerkonten{,} die nach
+Erstellung der Gruppe dieser hinzugefügt werden sollen.
+Die Identifikationsnummer des eigenen Benutzerkontos muss nicht angegeben
+werden.
+Falls dennoch vorhanden{,} wird diese ignoriert.
+Das Array muss mindestens eine gültige Identifikationsnummer beinhalten{,} die
+nicht die eigene ist.}
+{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+weiteren Befehlen referenziert werden kann}
+{700/Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig,
+710/Kein Benutzerkonto eingeladen{,} das nicht das eigene ist}
+
+\apiCommand{create-event}
+{Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+werden soll,
+title/Titel der Verabredung,
+time-start/Startzeitpunkt (Angabe in Unixzeit%
+\footnote{Siehe \enquote{Unixzeit}, Version 172239469, Wikipedia,\\
+\url{https://de.wikipedia.org/w/index.php?title=Unixzeit&oldid=172239469}}),
+time-end/Endzeitpunkt (Angabe in Unixzeit),
+latitude/Breitengrad{,} auf dem die Verabredung stattfindet (Angabe als
+Dezimalgrad),
+longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
+Dezimalgrad)}
+{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in weiteren
+Befehlen referenziert werden kann}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+800/Startzeitpunkt liegt in der Vergangenheit,
+810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
+820/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
+Gruppe Verabredungen erstellen zu können}
+
+\apiCommand{create-poll}
+{Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+werden soll,
+question/Frage{,} über dessen Antwort abgestimmt wird,
+multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
+Optionen stimmen kann,
+options/Array an Beschreibungen von Abstimmungsoptionen{,} die nach der
+Erstellung der Abstimmung hinzugefügt werden sollen}
+{id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
+weiteren Befehlen referenziert werden kann,
+option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
+Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
+Abstimmungsoptionen.}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+900/Startzeitpunkt von einer der Optionen liegt in der Vergangenheit,
+910/Endzeitpunkt von einer der Optionen liegt nicht nach dem dazugehörigen
+Startzeitpunkt,
+920/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
+Gruppe Abstimmungen erstellen zu können}
+
+\apiCommand{add-poll-option}
+{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung{,} zu der die Abstimmungsoption
+hinzugefügt werden soll,
+latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
+time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
+{id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
+weiteren Befehlen referenziert werden kann}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig,
+800/Startzeitpunkt liegt in der Vergangenheit,
+810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
+1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
+editieren}
+
+\apiCommand{edit-group-name}
+{Editieren des Namens einer Gruppe, in der das Benutzerkonto Mitglied ist}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+name/Neuer name der Gruppe}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+1100/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um den Gruppennamen
+zu editieren}
+
+\apiCommand{add-group-members}
+{Hinzufügen eines oder mehrerer Benutzerkonten zu einer Gruppe, in der das
+Benutzerkonto Mitglied ist}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+members/Array an Identifikationsnummern aller Benutzerkonten{,} die der Gruppe
+hinzugefügt werden sollen.
+Es dürfen keine Identifikationsnummern von Benutzerkonten angegeben werden{,}
+die bereits Teil der Gruppe ist.
+Insbesondere darf nicht die Identifikationsnummer des eigenen Benutzerkontos
+angegeben werden.}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+700/Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig,
+1200/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Liste an
+Gruppenmitgliedern zu editieren,
+1210/Mindestens eine Identifikationsnummer gehört zu einem Benutzerkonto{,}
+welches bereits Teil der Gruppe ist}
+
+\apiCommand{remove-group-members}
+{Entfernen eines oder mehrerer Benutzerkonten von einer Gruppe, in der das
+Benutzerkonto Mitglied ist}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+members/Array an Identifikationsnummern aller Benutzerkonten{,} die aus der
+Gruppe entfernt werden sollen.
+Es dürfen keine Identifikationsnummern von Benutzerkonten angegeben werden{,}
+die nicht Teil der Gruppe ist.
+Es darf die Identifikationsnummer des eigenen Benutzerkontos angegeben werden.
+Dies führt wie erwartet dazu{,} dass das eigene Benutzerkonto den weiteren
+Zugriff auf die Gruppe verliert.
+Werden durch diesen Befehl alle Mitglieder einer Gruppe entfernt{,} wird die
+Gruppe gelöscht.}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+700/Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig,
+1200/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Liste an
+Gruppenmitgliedern zu editieren,
+1300/Mindestens eine Identifikationsnummer gehört zu einem Benutzerkonto{,}
+welches nicht Teil der Gruppe ist}
+
+\apiCommand{edit-event}
+{Editieren einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Verabredung,
+\dots/Alle Eigenschaften{,} mit Ausnahme des Teilnehmerarrays und der
+Identifikationsnummer{,} die überschrieben werden sollen.
+Die Schlüssel entsprechen denen einer ausführlichen Verabredungsbeschreibung.}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+800/Startzeitpunkt liegt in der Vergangenheit,
+810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
+1400/Verabredungs-Identifikationsnummer ungültig,
+1410/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Verabredung
+editieren zu können}
+
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 
+\subsubsection{Oberflächlich}
+\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+    weiteren Befehlen referenziert werden kann,
+    checksum/Prüfsumme der ausführlichen Beschreibung (siehe
+    \ref{sec:checksum})}
+
+\subsubsection{Ausführlich}
 \apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
     weiteren Befehlen referenziert werden kann,
     name/Name der Gruppe,
-    icon-checksum/Hashwert des Gruppenportraits,
-    members/Array an Beschreibungen von Benutzerkonten{,} die Teil der Gruppe
-    sind (siehe \ref{sec:accountdesc}),
+    members/Array an Identifikationsnummern aller Benutzerkonten{,} die
+    Mitglied der Gruppe sind,
     events/Array an oberflächlich beschriebenen Verabredungen{,} die in der
     Gruppe erstellt worden sind (siehe \ref{sec:eventdesc}),
     polls/Array an oberflächlich beschriebenen Abstimmungen{,} die in der
@@ -279,8 +470,7 @@ Gruppe}
 \apiArgument{type/\enquote{account},
     id/Eindeutige Identifikationsnummer des Benutzerkontos{,} mit der
     dieses in weiteren Befehlen referenziert werden kann,
-    user/Benutzername des Kontos,
-    icon-checksum/Hashwert des Benutzerkontoportraits
+    user/Benutzername des Kontos
 }
 
 \subsection{Verabredungsbeschreibung}\label{sec:eventdesc}
@@ -311,9 +501,29 @@ Gruppe}
 }
 
 \subsection{Abstimmungsbeschreibung}\label{sec:polldesc}
-\apiArgument{/placeholder}
+\apiArgument{
+    id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
+    weiteren Befehlen referenziert werden kann,
+    question/Frage{,} über dessen Antwort abgestimmt wird,
+    multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
+    Optionen stimmen kann,
+    options/Array an Beschreibungen von Abstimmungsoptionen{,} die Teil dieser
+    Abstimmung sind
+}
 
-\subsection{Prüfsummen für ausführliche Beschreibungen}
+\subsection{Abstimmungsoptionsbeschreibung}\label{sec:polloptiondesc}
+\apiArgument{
+    id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese
+    in weiteren Befehlen referenziert werden kann,
+    latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+    longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+    time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
+    time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit),
+    supporters/Array an Identifikationsnummern der Benutzerkonten{,} die
+    momentan für diese Options stimmen.
+}
+
+\subsection{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}
 Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächliche
 Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
@@ -328,9 +538,9 @@ müssen.
 eine ausführliche Beschreibungen gibt, müssen diese vor Eingabe an den
 \hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
 
-\par \textit{Hinweis: Im Folgenden bezeichnen Numerale nicht etwa die ASCII-Symbole
-\enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern tatsächlich die
-nicht-druckbaren Zeichen mit den Werten 0 bis 9.}\\
+\par \textit{Hinweis: In diesem Absatz bezeichnen Ziffern nicht etwa die
+ASCII-Ziffern \enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern die
+nicht darstellbaren Steuerzeichen mit den Werten 0 bis 9.}\\
 JSON-Objekte werden mit einer 1 begonnen und mit einer 3 beendet.
 Eigenschaften dieser JSON-Objekte werden mit einer 2 statt einem Komma
 getrennt.
@@ -350,6 +560,7 @@ Da alle sechs Trennzeichen nur als Escape-Sequenzen, nicht aber direkt im
 JSON-Format vorkommen können, ist diese Darstellung eindeutig.
 % TODO: Das auch tatsächlich sicherstellen
 
+% TODO: Update example
 \par Im folgenden beispielhaft eine Verabredung mit folgenden Details:
 \begin{itemize}
     \item Besitzt die ID 12
@@ -376,18 +587,15 @@ folgt aussehen:
     "participants": [
         {   "type": "account",
             "id": 3,
-            "user": "w4rum",
-            "icon-checksum": "123abc"
+            "user": "w4rum"
         },
         {   "type": "account",
             "id": 200,
-            "user": "notw4rum",
-            "icon-checksum": "blaa"
+            "user": "notw4rum"
         },
         {   "type": "account",
             "id": 43378,
-            "user": "absolutetlynotw4rum",
-            "icon-checksum": "foobar"
+            "user": "absolutelynotw4rum"
         }
     ]
 }
@@ -411,7 +619,7 @@ nicht in der normalisierten Darstellung enthalten.}
 (*\circled{3}*)(*\circled{5}*)(*\circled{1}*)"account"(*\circled{2}*)200(*%
 \circled{2}*)"notw4rum"(*\circled{2}*)"blaa"(*\circled{3}\circled{5}%
 \circled{1}*)"account"(*\circled{2}*)43378
-(*\circled{2}*)"absolutetlynotw4rum"(*\circled{2}*)"foobar"(*\circled{3}%
+(*\circled{2}*)"absolutelynotw4rum"(*\circled{2}*)"foobar"(*\circled{3}%
 \circled{6}\circled{3}*)
 \end{lstlisting}
 
