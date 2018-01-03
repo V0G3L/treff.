@@ -1,0 +1,68 @@
+@startuml
+
+title Client
+
+class AppCompatActivity
+class Fragment
+
+package ui_components <<Frame>> {
+  AppCompatActivity <|-- NavigationActivity
+  NavigationActivity <|-- TabbedNavigationActivity
+}
+
+package Recyclerview <<Frame>> {
+    class ViewHolder
+    class Adapter<ViewHolder>
+}
+
+package entities <<Frame>> {
+  class User
+  class Position
+  class UserGroup
+  class Event
+}
+
+package home <<Frame>> {
+  TabbedNavigationActivity <|-- HomeActivity
+  Fragment <|-- EventListFragment
+  Fragment <|-- FriendListFragment
+  Fragment <|-- GroupListFragment
+  Fragment <|-- MapFragment
+  Fragment <|-- NavigationDrawerFragment
+  class ViewPagerAdapter
+  class EventListViewModel
+  class FriendListViewModel
+  class GroupListViewModel
+}
+
+package database <<Frame>> {
+  class treffDatabase
+  class EventDao
+  class UserDao
+  class UserGroupDao
+}
+
+package group <<Frame>> {
+  AppCompatActivity <|-- GroupActivity
+  Fragment <|-- GroupSettingsFragment
+}
+
+package lists <<Frame>> {
+  Adapter <|-- EventListAdapter
+  ViewHolder <|-- EventListViewHolder
+  Adapter <|-- FriendListAdapter
+  ViewHolder <|-- FriendListViewHolder
+  Adapter <|-- GroupListAdapter
+  ViewHolder <|-- GroupListViewHolder
+}
+
+package login <<Frame>> {
+  AppCompatActivity <|-- LoginActivity
+  Fragment <|-- RegisterFragment
+}
+
+package settings <<Frame>> {
+  AppCompatActivity <|-- SettingsActivity
+}
+
+@enduml
