@@ -251,6 +251,18 @@ folgenden definiert.
 Gruppe}
 \apiErrorNew{username-invalid}{40}{Nutzername ungültig}
 \apiErrorNew{event-id-invalid}{50}{Verabredungs-Identifikationsnummer ungültig}
+\apiErrorNew{poll-id-invalid}{60}{Abstimmungs-Identifikationsnummer ungültig}
+\apiErrorNew{user-id-invalid}{70}{Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig}
+\apiErrorNew{no-user-invited}{80}{Kein Benutzerkonto eingeladen, das nicht das eigene ist}
+\apiErrorNew{time-end-in-past}{90}{Mindestens ein Endzeitpunkt liegt in der Vergangenheit}
+\apiErrorNew{time-end-start-conflict}{100}{Mindestens ein Endzeitpunkt liegt nicht
+nach dem dazugehörigen Startzeitpunkt}
+\apiErrorNew{no-permission-event-create}{110}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
+um in der angegebenen Gruppe Verabredungen erstellen zu können}
+\apiErrorNew{no-permission-poll-create}{120}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
+um in der angegebenen Gruppe Abstimmung erstellen zu können}
+\apiErrorNew{no-permission-poll-edit}{130}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
+um die Abstimmung zu editieren}
 
 Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
 Parameter:\\
@@ -301,7 +313,7 @@ wurde}
 Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
 {group-id-invalid,event-id-invalid}
 
-\apiCommand{get-poll-details}
+\apiCommandB{get-poll-details}
 {Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
 wurde, in der das Benutzerkonto Mitglied ist}
 {id/Identifikationsnummer der Abstimmung,
@@ -309,11 +321,9 @@ group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
 wurde}
 {\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe,
-600/Abstimmungs-Identifikationsnummer ungültig}
+{group-id-invalid,poll-id-invalid}
 
-\apiCommand{create-group}
+\apiCommandB{create-group}
 {Erstellen einer Gruppe}
 {name/Name der Gruppe,
 members/Array an Identifikationsnummern aller Benutzerkonten{,} die nach
@@ -325,10 +335,9 @@ Das Array muss mindestens eine gültige Identifikationsnummer beinhalten{,} die
 nicht die eigene ist.}
 {id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
-{700/Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig,
-710/Kein Benutzerkonto eingeladen{,} das nicht das eigene ist}
+{user-id-invalid,no-user-invited}
 
-\apiCommand{create-event}
+\apiCommandB{create-event}
 {Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
 ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
@@ -344,14 +353,9 @@ longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
 Dezimalgrad)}
 {id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in weiteren
 Befehlen referenziert werden kann}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe,
-800/Endzeitpunkt liegt in der Vergangenheit,
-810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
-820/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
-Gruppe Verabredungen erstellen zu können}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-event-create}
 
-\apiCommand{create-poll}
+\apiCommandB{create-poll}
 {Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
 ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
@@ -366,15 +370,9 @@ weiteren Befehlen referenziert werden kann,
 option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
 Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
 Abstimmungsoptionen.}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe,
-900/Endzeitpunkt von einer der Optionen liegt in der Vergangenheit,
-910/Endzeitpunkt von einer der Optionen liegt nicht nach dem dazugehörigen
-Startzeitpunkt,
-920/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
-Gruppe Abstimmungen erstellen zu können}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-create}
 
-\apiCommand{add-poll-option}
+\apiCommandB{add-poll-option}
 {Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto Mitglied
 ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
@@ -387,13 +385,7 @@ time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
 time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
 {id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe,
-600/Abstimmungs-Identifikationsnummer ungültig,
-800/Endzeitpunkt liegt in der Vergangenheit,
-810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
-1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
-editieren}
+{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-edit}
 
 \apiCommand{edit-group-name}
 {Editieren des Namens einer Gruppe, in der das Benutzerkonto Mitglied ist}
