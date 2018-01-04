@@ -18,4 +18,13 @@ public class User {
     private String email;
     @ColumnInfo
     private Position position;
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }
