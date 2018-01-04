@@ -1,23 +1,37 @@
 package org.pispeb.treff_client.entities;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.List;
-
-/**
- * Created by Lukas on 12/19/2017.
- */
 
 @Entity(tableName = "usergroup")
 public class UserGroup {
-    @PrimaryKey(autoGenerate = true)
-    private List<User> users;
-    @ColumnInfo
-    private List<Event> events;
-    @ColumnInfo
-    private String name;
-    @ColumnInfo
+    @PrimaryKey
     private int id;
+    private String name;
+    //TODO replace
+    //private List<Integer> userIDs;
+    //private List<Integer> eventIDs;
+
+    public UserGroup(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
 }

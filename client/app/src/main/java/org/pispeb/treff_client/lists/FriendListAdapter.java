@@ -10,9 +10,6 @@ import org.pispeb.treff_client.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lukas on 12/19/2017.
- */
 
 public class FriendListAdapter extends Adapter<FriendListViewHolder> {
 

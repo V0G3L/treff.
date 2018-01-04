@@ -7,15 +7,12 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.Event;
 
-/**
- * Created by Lukas on 12/20/2017.
- */
 
 @Dao
 public interface EventDao {
     @Insert
     void save(Event event);
 
-    @Query("SELECT * FROM user WHERE id = :userId")
+    @Query("SELECT * FROM event WHERE id = :eventId")
     LiveData<Event> load(int eventId);
 }

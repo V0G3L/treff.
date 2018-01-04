@@ -4,27 +4,43 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-/**
- * Created by Lukas on 12/19/2017.
- */
 
 @Entity(tableName = "user")
 public class User {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
-    @ColumnInfo
     private String username;
-    @ColumnInfo
-    private String email;
-    @ColumnInfo
-    private Position position;
+    //TODO replace
+    //private Position position;
 
-    public User(String username, String email) {
+    public User(int id, String username) {
+        this.id = id;
         this.username = username;
-        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsername() {
         return username;
     }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /*TODO fix
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+    */
 }

@@ -7,9 +7,6 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.User;
 
-/**
- * Created by Lukas on 12/20/2017.
- */
 
 @Dao
 public interface UserDao {

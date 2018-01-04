@@ -7,15 +7,12 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.UserGroup;
 
-/**
- * Created by Lukas on 12/20/2017.
- */
 
 @Dao
 public interface UserGroupDao {
     @Insert
     void save(UserGroup group);
 
-    @Query("SELECT * FROM  WHERE id = :groupId")
+    @Query("SELECT * FROM usergroup WHERE id = :groupId")
     LiveData<UserGroup> load(int groupId);
 }

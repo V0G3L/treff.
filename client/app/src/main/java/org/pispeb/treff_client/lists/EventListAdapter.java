@@ -3,9 +3,6 @@ package org.pispeb.treff_client.lists;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.ViewGroup;
 
-/**
- * Created by Lukas on 12/19/2017.
- */
 
 public class EventListAdapter extends Adapter<EventListViewHolder> {
 

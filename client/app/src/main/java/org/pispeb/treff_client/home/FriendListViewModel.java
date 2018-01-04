@@ -18,9 +18,9 @@ public class FriendListViewModel extends ViewModel {
     public FriendListViewModel() {
         data = new MutableLiveData<>();
         List<User> newData = new ArrayList<>();
-        newData.add(new User("Max Mustermann", "m.m@gmail.com"));
-        newData.add(new User("Erika Experiment", "e.e@gmail.com"));
-        newData.add(new User("Thorsten Test", "t.t@gmail.com"));
+        newData.add(new User(1, "Max Mustermann"));
+        newData.add(new User(2, "Erika Experiment"));
+        newData.add(new User(3, "Thorsten Test"));
         data.postValue(newData);
     }
 
@@ -31,7 +31,7 @@ public class FriendListViewModel extends ViewModel {
 
     public void onAddClick() {
         List<User> newData = data.getValue();
-        newData.add(new User("Norton Neu", "n.n@gmail.com"));
+        newData.add(new User(5, "Norton Neu"));
         data.postValue(newData);
     }
 }
