@@ -178,7 +178,10 @@ Diverse Daten wie beispielsweise GPS-Standort oder Chatnachrichten werden
 dabei als Parameter der Befehle an den Server übergeben.
 
 \subsection{Funktion - Server}
-% Funktion und Verhalten des Servers (Fließtext und UML-Diagramme)
+Der Server speichert die Daten der Nutzer in einer zentralen Datenbank,
+nimmt Befehle der Klienten entgegen und verändert gegebenenfalls die Datensätze.
+Bei Veränderung von Daten werden alle betroffenen Klienten darüber informiert,
+welche daraufhin ihre lokalen Datensätze aktualisieren können.
 
 %%%%%%%%%%%%%%%%%%%%
 \pagebreak
