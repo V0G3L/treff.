@@ -10,18 +10,6 @@ package ui_components <<Frame>> {
   NavigationActivity <|-- TabbedNavigationActivity
 }
 
-package Recyclerview <<Frame>> {
-    class ViewHolder
-    class Adapter<ViewHolder>
-}
-
-package entities <<Frame>> {
-  class User
-  class Position
-  class UserGroup
-  class Event
-}
-
 package home <<Frame>> {
   TabbedNavigationActivity <|-- HomeActivity
   Fragment <|-- EventListFragment
@@ -35,25 +23,10 @@ package home <<Frame>> {
   class GroupListViewModel
 }
 
-package database <<Frame>> {
-  class treffDatabase
-  class EventDao
-  class UserDao
-  class UserGroupDao
-}
 
 package group <<Frame>> {
   AppCompatActivity <|-- GroupActivity
   Fragment <|-- GroupSettingsFragment
-}
-
-package lists <<Frame>> {
-  Adapter <|-- EventListAdapter
-  ViewHolder <|-- EventListViewHolder
-  Adapter <|-- FriendListAdapter
-  ViewHolder <|-- FriendListViewHolder
-  Adapter <|-- GroupListAdapter
-  ViewHolder <|-- GroupListViewHolder
 }
 
 package login <<Frame>> {

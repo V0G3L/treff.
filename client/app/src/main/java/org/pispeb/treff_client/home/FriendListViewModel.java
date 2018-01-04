@@ -2,7 +2,6 @@ package org.pispeb.treff_client.home;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 import org.pispeb.treff_client.entities.User;
 

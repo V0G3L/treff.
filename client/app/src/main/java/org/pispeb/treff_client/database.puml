@@ -1,0 +1,30 @@
+@startuml
+
+class Activity1
+class Activity2
+class Activity3
+ViewModel1 <-down- Activity1
+ViewModel2 <-down- Activity2
+ViewModel3 <-down- Activity3
+Repository <-down- ViewModel1
+Repository <-down- ViewModel2
+Repository <-down- ViewModel3
+
+package model <<Frame>> {
+    class Room
+}
+
+package server <<Frame>> {
+
+}
+
+
+model <-down- Repository
+server <-down- Repository
+
+package SQL <<Database>> {
+}
+
+SQL <-down- Room
+
+@enduml

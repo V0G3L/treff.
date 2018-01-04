@@ -1,0 +1,68 @@
+@startuml
+
+class FriendListFragment {
+    +onCreateView(...)
+    +onItemClicked(position : int,\n            user : User)
+}
+class FriendListViewModel {
+    -data : MutableLiveData<List<User>>
+    +<<create>>()
+    +getData()
+    +onAddClick()
+}
+class "FriendListAdapter<FriendListViewHolder>" {
+    -data : List<User>
+    -listener : FriendClickedListener
+    +<<create>>(friendClickedListener:FriendClickedListener)
+    +onCreateViewHolder()
+    +onBindViewHolder()
+    +getItemCount()
+    +setData()
+}
+class FriendListViewHolder {
+    -binding : FriendItemBinding
+    -listener : FriendClickedListener
+    +<<create>>(binding : FriendItemBinding, \n          listener : FriendClickedListener)
+    +onClick(v : View)
+}
+
+package android.support.v4.app {
+    class Fragment {
+        +onCreateView(...)
+    }
+}
+
+package android.arch.lifecycle {
+    class ViewModel
+}
+interface FriendClickedListener {
+    +onItemClicked(position : int,\n            user : User)
+}
+
+package android.view.View {
+    interface OnClickListener {
+        +onClick(v : View)
+    }
+}
+package android.support.v7.widget.RecyclerView {
+    class "Adapter<ViewHolder>" {
+        +onCreateViewHolder()
+        +onBindViewHolder()
+        +getItemCount()
+        +setData()
+    }
+    class ViewHolder
+}
+
+FriendClickedListener <|.. FriendListFragment
+ViewModel <|-- FriendListViewModel
+FriendListFragment o-r- FriendListViewModel
+OnClickListener <|.. FriendListViewHolder
+ViewHolder <|-- FriendListViewHolder
+Fragment <|-- FriendListFragment
+"Adapter<ViewHolder>" <|-- "FriendListAdapter<FriendListViewHolder>"
+"FriendListAdapter<FriendListViewHolder>" o-- FriendClickedListener
+FriendListViewHolder o-- FriendClickedListener
+
+
+@enduml

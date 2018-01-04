@@ -1,37 +1,38 @@
 package org.pispeb.treff_client.lists;
 
-import android.arch.lifecycle.LiveData;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FriendItemBinding;
 import org.pispeb.treff_client.entities.User;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Lukas on 12/19/2017.
  */
 
-public class FriendListAdapter extends RecyclerView.Adapter<FriendListViewHolder> {
+public class FriendListAdapter extends Adapter<FriendListViewHolder> {
 
-    List<User> data;
+    private List<User> data;
+    private FriendClickedListener friendClickedListener;
 
-    public FriendListAdapter(List<User> data) {
-        this.data = data;
+    public FriendListAdapter(FriendClickedListener friendClickedListener) {
+        this.data = new ArrayList<>();
+        this.friendClickedListener = friendClickedListener;
     }
 
     @Override
     public FriendListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         FriendItemBinding binding = FriendItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-        return new FriendListViewHolder(binding.getRoot(), binding);
+        return new FriendListViewHolder(binding, friendClickedListener);
     }
 
     @Override
     public void onBindViewHolder(FriendListViewHolder holder, int position) {
-        holder.binding.setName(data.get(position).getUsername());
+        holder.binding.setUser(data.get(position));
     }
 
     @Override
@@ -42,5 +43,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListViewHolder
     public void setData(List<User> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+
+    public interface FriendClickedListener {
+        void onItemClicked(int position, User user);
     }
 }
