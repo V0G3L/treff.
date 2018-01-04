@@ -191,7 +191,7 @@ welche daraufhin ihre lokalen Datensätze aktualisieren können.
 % Aufteilung in GUI und Datenverarbeitung (Fließtext)
 % Ihre Funktionen
 Der Client, also die App selbst, besteht grundsätzlich auch zwei Teilen:
-der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung. 
+der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung.
 Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktionen der App zugreifen kann.
 %
 
@@ -251,49 +251,49 @@ folgenden definiert.
 
 \subsection{Befehle}\label{sec:commands}
 
-\apiErrorNew{token-invalid}{10}{Authentifizierungtoken ungültig}
-\apiErrorNew{cred-wrong}{20}{Nutzername/Passwort-Kombination ungültig}
-\apiErrorNew{group-id-invalid}{30}{Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe}
-\apiErrorNew{username-invalid}{40}{Nutzername ungültig}
-\apiErrorNew{event-id-invalid}{50}{Verabredungs-Identifikationsnummer ungültig}
-\apiErrorNew{poll-id-invalid}{60}{Abstimmungs-Identifikationsnummer ungültig}
-\apiErrorNew{user-id-invalid}{70}{Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig}
-\apiErrorNew{no-user-invited}{80}{Kein Benutzerkonto eingeladen, das nicht das eigene ist}
-\apiErrorNew{time-end-in-past}{90}{Mindestens ein Endzeitpunkt liegt in der Vergangenheit}
-\apiErrorNew{time-end-start-conflict}{100}{Mindestens ein Endzeitpunkt liegt nicht
-nach dem dazugehörigen Startzeitpunkt}
+\apiErrorNew{token-invalid}{010}{Authentifizierungtoken ungültig}
+\apiErrorNew{cred-wrong}{020}{Nutzername/Passwort-Kombination ungültig}
+
+\apiErrorNew{no-permission-group-edit}{100}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um die Gruppe zu editieren}
+\apiErrorNew{no-permission-members-edit}{101}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um die Liste an Gruppenmitgliedern zu editieren}
 \apiErrorNew{no-permission-event-create}{110}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
 um in der angegebenen Gruppe Verabredungen erstellen zu können}
+\apiErrorNew{no-permission-event-edit}{111}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um die Verabredung editieren zu können}
 \apiErrorNew{no-permission-poll-create}{120}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
 um in der angegebenen Gruppe Abstimmung erstellen zu können}
-\apiErrorNew{no-permission-poll-edit}{130}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
+\apiErrorNew{no-permission-poll-edit}{121}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
 um die Abstimmung zu editieren}
-\apiErrorNew{no-permission-group-edit}{140}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Gruppe zu editieren}
-\apiErrorNew{user-already-in-group}{150}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
-\apiErrorNew{user-not-in-group}{160}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
-\apiErrorNew{no-permission-members-edit}{170}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Liste an Gruppenmitgliedern zu editieren}
-\apiErrorNew{no-permission-event-edit}{180}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Verabredung editieren zu können}
-\apiErrorNew{no-permission-poll-edit}{190}{Das Benutzerkonto besitzt nicht die
-nötigen Rechte, um die Abstimmung zu editieren}
-% TODO: editieren vs. editieren zu können
-\apiErrorNew{being-blocked}{200}{Das eigenes Benutzerkonto wird vom angegeben
-Benutzerkonto blockiert}
-\apiErrorNew{not-in-contacts}{210}{Das angegebene Benutzerkonto ist nicht in
-der eigenen Kontaktliste}
-\apiErrorNew{blocking-already}{220}{Das eigene Benutzerkonto blockiert das
-angegebene Benutzerkonto}
-\apiErrorNew{not-blocking}{230}{Angegebenes Benutzerkonto wird nicht durch das
-eigene Benutzerkonto blockiert}
-\apiErrorNew{user-id-invalid}{240}{Benutzerkonto-Identifikationsnummer
-ungültig}
-\apiErrorNew{time-measured-future}{250}{Messzeitpunkt liegt zu weit in der
+
+\apiErrorNew{username-invalid}{200}{Nutzername ungültig}
+\apiErrorNew{user-id-invalid}{201}{Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig}
+\apiErrorNew{group-id-invalid}{210}{Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe}
+\apiErrorNew{event-id-invalid}{220}{Verabredungs-Identifikationsnummer ungültig}
+\apiErrorNew{poll-id-invalid}{230}{Abstimmungs-Identifikationsnummer ungültig}
+
+\apiErrorNew{time-end-in-past}{300}{Mindestens ein Endzeitpunkt liegt in der Vergangenheit}
+\apiErrorNew{time-end-start-conflict}{301}{Mindestens ein Endzeitpunkt liegt nicht
+nach dem dazugehörigen Startzeitpunkt}
+\apiErrorNew{time-measured-future}{310}{Messzeitpunkt liegt zu weit in der
 Zukunft}
+
+\apiErrorNew{no-user-invited}{400}{Kein Benutzerkonto eingeladen, das nicht das eigene ist}
+\apiErrorNew{user-already-in-group}{401}{Mindestens eine Identifikationsnummer
+gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
+\apiErrorNew{user-not-in-group}{402}{Mindestens eine Identifikationsnummer
+gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
+
+\apiErrorNew{not-in-contacts}{500}{Das angegebene Benutzerkonto ist nicht in
+der eigenen Kontaktliste}
+\apiErrorNew{being-blocked}{501}{Das eigenes Benutzerkonto wird vom angegeben
+Benutzerkonto blockiert}
+\apiErrorNew{blocking-already}{510}{Das eigene Benutzerkonto blockiert das
+angegebene Benutzerkonto}
+\apiErrorNew{not-blocking}{511}{Angegebenes Benutzerkonto wird nicht durch das
+eigene Benutzerkonto blockiert}
 
 Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
 Parameter:\\
