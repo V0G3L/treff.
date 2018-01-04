@@ -343,7 +343,7 @@ Dezimalgrad)}
 Befehlen referenziert werden kann}
 {300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
 Gruppe,
-800/Startzeitpunkt liegt in der Vergangenheit,
+800/Endzeitpunkt liegt in der Vergangenheit,
 810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
 820/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
 Gruppe Verabredungen erstellen zu können}
@@ -365,7 +365,7 @@ Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
 Abstimmungsoptionen.}
 {300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
 Gruppe,
-900/Startzeitpunkt von einer der Optionen liegt in der Vergangenheit,
+900/Endzeitpunkt von einer der Optionen liegt in der Vergangenheit,
 910/Endzeitpunkt von einer der Optionen liegt nicht nach dem dazugehörigen
 Startzeitpunkt,
 920/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um in der angegebenen
@@ -387,7 +387,7 @@ weiteren Befehlen referenziert werden kann}
 {300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
 Gruppe,
 600/Abstimmungs-Identifikationsnummer ungültig,
-800/Startzeitpunkt liegt in der Vergangenheit,
+800/Endzeitpunkt liegt in der Vergangenheit,
 810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
 1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
 editieren}
@@ -455,11 +455,141 @@ Die Schlüssel entsprechen denen einer ausführlichen Verabredungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
 Gruppe,
-800/Startzeitpunkt liegt in der Vergangenheit,
+800/Endzeitpunkt liegt in der Vergangenheit,
 810/Endzeitpunkt liegt nicht nach dem Startzeitpunkt,
 1400/Verabredungs-Identifikationsnummer ungültig,
 1410/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Verabredung
 editieren zu können}
+
+\apiCommand{remove-event}
+{Entfernen einer Verabredung aus einer Gruppe, in der das Benutzerkonto
+Mitglied ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Verabredung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+1400/Verabredungs-Identifikationsnummer ungültig,
+1410/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Verabredung
+editieren zu können}
+
+\apiCommand{remove-poll}
+{Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Abstimmung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig,
+1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
+editieren} % TODO: editieren vs. editieren zu können
+
+\apiCommand{edit-poll}
+{Editieren einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Abstimmung,
+\dots/Alle Eigenschaften{,} mit Ausnahme des Abstimmungsoptionsarrays und der
+Identifikationsnummer{,} die überschrieben werden sollen.
+Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig,
+1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
+editieren}
+
+\apiCommand{edit-poll-option}
+{Editieren einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
+Mitglied ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung,
+id/Identifikationsnummer der Abstimmungsoption,
+\dots/Alle Eigenschaften{,} mit Ausnahme des Wählerarrays und der
+Identifikationsnummer{,} die überschrieben werden sollen.
+Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig,
+1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
+editieren}
+
+\apiCommand{remove-poll-option}
+{Entfernen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
+Mitglied ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung,
+id/Identifikationsnummer der Abstimmungsoption}
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+600/Abstimmungs-Identifikationsnummer ungültig,
+1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
+editieren}
+
+\apiCommand{send-chat-message}
+{Senden einer Textnachricht an eine Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe
+message/Textnachricht} % TODO: Länge beschränken (vllt. auch Gruppengröße etc)
+{---/Leeres JSON-Objekt bei Erfolg}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe}
+
+\apiCommand{add-contact}
+{Hinzufügen eines anderen Benutzerkontos zur eigenen Kontaktliste.
+Fügt ebenfalls das eigene Benutzerkonto zur Kontaktliste des anderen
+Benutzerkontos hinzu.
+Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{2100/Benutzerkonto-Identifikationsnummer ungültig oder eigenes Benutzerkonto
+wird vom angegeben blockiert,
+2110/Das eigene Benutzerkonto blockiert das angegebene Benutzerkonto}
+
+\apiCommand{remove-contact}
+{Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
+Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{2200/Benutzerkonto-Identifikationsnummer ungültig,
+2210/Das angegebene Benutzerkonto ist nicht in der eigenen Kontaktliste}
+
+\apiCommand{block-account}
+{Blockiert das angegebene Benutzerkonto.
+Bis dies aufgehoben wird, können das eigene und das angegebene
+Benutzerkonto sich nicht gegenseitig zur ihrer Kontaktliste hinzufügen.
+Sind die beiden Benutzerkonten bereits Kontakte, werden diese vorher aus der
+Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{2200/Benutzerkonto-Identifikationsnummer ungültig,
+2110/Das eigene Benutzerkonto blockiert das angegebene Benutzerkonto}
+
+\apiCommand{unblock-account}
+{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene auf.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{2200/Benutzerkonto-Identifikationsnummer ungültig}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{update-position}
+{Aktualisiert die Position des Benutzerkontos.
+Der Messzeitpunkt darf aus Sicht der Servers maximal 30 Sekunden in der Zukunft
+liegen.}
+{latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+time-measured/Zeitpunkt{,} zu dem die Position gemessen wurde (Angabe in
+Unixzeit)}
+{---/Leeres JSON-Objekt bei Erfolg}
+{2500/Messzeitpunkt liegt zu weit in der Zukunft}
 
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 
@@ -516,7 +646,9 @@ editieren zu können}
 }
 
 \subsection{Abstimmungsbeschreibung}\label{sec:polldesc}
+% TODO: Split in oberflächlich und ausführlich
 \apiArgument{
+    type/\enquote{poll},
     id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
     weiteren Befehlen referenziert werden kann,
     question/Frage{,} über dessen Antwort abgestimmt wird,
@@ -528,6 +660,7 @@ editieren zu können}
 
 \subsection{Abstimmungsoptionsbeschreibung}\label{sec:polloptiondesc}
 \apiArgument{
+    type/\enquote{poll-option},
     id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese
     in weiteren Befehlen referenziert werden kann,
     latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
@@ -553,7 +686,7 @@ müssen.
 eine ausführliche Beschreibungen gibt, müssen diese vor Eingabe an den
 \hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
 
-\par \textit{Hinweis: In diesem Absatz bezeichnen Ziffern nicht etwa die
+\par \textit{Hinweis: In dem folgenden Absatz bezeichnen Ziffern nicht etwa die
 ASCII-Ziffern \enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern die
 nicht darstellbaren Steuerzeichen mit den Werten 0 bis 9.}\\
 JSON-Objekte werden mit einer 1 begonnen und mit einer 3 beendet.
@@ -572,8 +705,9 @@ Alle JSON-Arrayelemente werden ohne eckige Klammern und zusätzliche
 Leerzeichen oder Zeilenumbrüche konkateniert.
 Die doppelten Anführungszeichen um Zeichenketten werden entfernt.
 Da alle sechs Trennzeichen nur als Escape-Sequenzen, nicht aber direkt im
-JSON-Format vorkommen können, ist diese Darstellung eindeutig.
-% TODO: Das auch tatsächlich sicherstellen
+JSON-Format vorkommen können\footnote{Vgl. \enquote{RFC 7159}, Kapitel 7
+\enquote{Strings}, \url{https://tools.ietf.org/html/rfc7159}} ist diese
+Darstellung eindeutig.
 
 % TODO: Update example
 \par Im folgenden beispielhaft eine Verabredung mit folgenden Details:
@@ -620,8 +754,8 @@ folgt aussehen:
             \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
 
 Die normalisierte Darstellung dieser Verabredung sieht wie folgt aus.
-Die nicht-druckbaren Zeichen werden durch \circled{1}, \circled{2}, \circled{3}
-etc.  dargestellt.\\
+Die Steuerzeichen werden durch \circled{1}, \circled{2}, \circled{3} etc.
+dargestellt.\\
 \textit{Hinweis: Die Zeilenumbrüche dienen nur der besseren Lesbarkeit und sind
 nicht in der normalisierten Darstellung enthalten.}
 
