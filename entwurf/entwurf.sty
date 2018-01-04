@@ -65,7 +65,7 @@
 %   1: op-value and description,
 %      seperated by forward slash (/)
 \newcommand{\apiArgument}[2]{
-    \apiTableEntry{#1}{0.2}{0.75}
+    \apiTableEntry{#1}{0.22}{0.73}
 }
 
 % Defines an error code for an API-command
@@ -74,8 +74,8 @@
 %      seperated by forward slash (/)
 \newcommand{\apiErrorPrint}[1]{
     \foreach \errID in {#1} {
-        \begin{tabular}[t]{ p{0.2\textwidth} p{0.75\textwidth} }%
-            \textbf{\apiErrorRef{\errID}} &%
+        \begin{tabular}[t]{ p{0.22\textwidth} p{0.73\textwidth} }%
+            \hfill\textbf{\apiErrorRef{\errID}} &%
                 \GetProperty{api-error-object:\errID}{api-error-desc}
         \end{tabular}\\
     }%
@@ -94,10 +94,17 @@
     }%
 }
 
+\newcommand{\aETColSizeA}{0.15}
+\newcommand{\aETColSizeB}{0.8}
 \newcommand{\apiErrorTable}{
+    \begin{tabular}[t]{ p{\aETColSizeA\textwidth} p{\aETColSizeB\textwidth} }
+        \textbf{Fehlercode} & \textbf{Beschreibung} \\
+        \hline
+    \end{tabular}\\
     \Bind{?f}{api-error-defined}{yes}{%
-        \begin{tabular}[t]{ p{0.2\textwidth} p{0.75\textwidth} }
-            \textbf{\GetProperty{\GetVal{?f}}{api-error-code}} &%
+        \begin{tabular}[t]{ p{\aETColSizeA\textwidth}
+                p{\aETColSizeB\textwidth} }
+            \hfill\textbf{\GetProperty{\GetVal{?f}}{api-error-code}} &%
                 \GetProperty{\GetVal{?f}}{api-error-desc}
         \end{tabular}\\
     }%
@@ -112,7 +119,7 @@
 \newcommand{\apiTableEntry}[3]{
     \foreach \code/\desc in {#1} {
         \begin{tabular}[t]{ p{#2\textwidth} p{#3\textwidth} }
-            \textbf{\code} & \desc
+            \hfill\textbf{\code} & \desc
         \end{tabular}\\
     }
     \vspace{4pt}
