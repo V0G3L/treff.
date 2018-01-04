@@ -311,20 +311,6 @@ pass/Passwort des Kontos}
 als Eingabe verlangt wird}
 {cred-wrong}
 
-\apiCommand{list-groups}
-{Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
-{---/Keine weiteren Parameter}
-{groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
-Kapitel \ref{sec:groupdesc})}
-{}
-
-\apiCommand{get-group-details}
-{Abrufen von Details einer Gruppe, in denen das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Gruppe}
-{\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
-{group-id-invalid}
-
 \apiCommand{get-user-id}
 {Abrufen der Idenfikationsnummer eines anderen Benutzekontos durch Übergeben
 des Benutzernamens}
@@ -333,26 +319,38 @@ des Benutzernamens}
 Benutzernamen gehört (siehe \ref{sec:accountdesc})}
 {username-invalid}
 
-% TODO: Definiere „aktive Verabredung“
-\apiCommand{get-event-details}
-{Abrufen von Details einer aktiven Verabredung, die in einer Gruppe erstellt
-wurde, in der das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Verabredung,
-group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde}
-{\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
-{group-id-invalid,event-id-invalid}
+\apiCommand{add-contact}
+{Hinzufügen eines anderen Benutzerkontos zur eigenen Kontaktliste.
+Fügt ebenfalls das eigene Benutzerkonto zur Kontaktliste des anderen
+Benutzerkontos hinzu.
+Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{user-id-invalid,being-blocked,blocking-already}
 
-\apiCommand{get-poll-details}
-{Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
-wurde, in der das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Abstimmung,
-group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde}
-{\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
-{group-id-invalid,poll-id-invalid}
+\apiCommand{remove-contact}
+{Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
+Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{user-id-invalid,not-in-contacts}
+
+\apiCommand{block-account}
+{Blockiert das angegebene Benutzerkonto.
+Bis dies aufgehoben wird, können das eigene und das angegebene
+Benutzerkonto sich nicht gegenseitig zur ihrer Kontaktliste hinzufügen.
+Sind die beiden Benutzerkonten bereits Kontakte, werden diese vorher aus der
+Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{user-id-invalid,blocking-already}
+
+\apiCommand{unblock-account}
+{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene
+Benutzerkonto auf.}
+{id/Identifikationsnummer des anderen Benutzerkontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{user-id-invalid,not-blocking}
 
 \apiCommand{create-group}
 {Erstellen einer Gruppe}
@@ -367,56 +365,6 @@ nicht die eigene ist.}
 {id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
 {user-id-invalid,no-user-invited}
-
-\apiCommand{create-event}
-{Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-werden soll,
-title/Titel der Verabredung,
-time-start/Startzeitpunkt (Angabe in Unixzeit%
-\footnote{Siehe \enquote{Unixzeit}, Version 172239469, Wikipedia,\\
-\url{https://de.wikipedia.org/w/index.php?title=Unixzeit&oldid=172239469}}),
-time-end/Endzeitpunkt (Angabe in Unixzeit),
-latitude/Breitengrad{,} auf dem die Verabredung stattfindet (Angabe als
-Dezimalgrad),
-longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
-Dezimalgrad)}
-{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in weiteren
-Befehlen referenziert werden kann}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-event-create}
-
-\apiCommand{create-poll}
-{Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-werden soll,
-question/Frage{,} über dessen Antwort abgestimmt wird,
-multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
-Optionen stimmen kann,
-options/Array an Beschreibungen von Abstimmungsoptionen{,} die nach der
-Erstellung der Abstimmung hinzugefügt werden sollen}
-{id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
-weiteren Befehlen referenziert werden kann,
-option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
-Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
-Abstimmungsoptionen.}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-create}
-
-\apiCommand{add-poll-option}
-{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung{,} zu der die Abstimmungsoption
-hinzugefügt werden soll,
-latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
-time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
-{id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
-weiteren Befehlen referenziert werden kann}
-{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-edit}
 
 \apiCommand{edit-group-name}
 {Editieren des Namens einer Gruppe, in der das Benutzerkonto Mitglied ist}
@@ -455,6 +403,24 @@ Gruppe gelöscht.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,user-not-in-group}
 
+\apiCommand{create-event}
+{Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+werden soll,
+title/Titel der Verabredung,
+time-start/Startzeitpunkt (Angabe in Unixzeit%
+\footnote{Siehe \enquote{Unixzeit}, Version 172239469, Wikipedia,\\
+\url{https://de.wikipedia.org/w/index.php?title=Unixzeit&oldid=172239469}}),
+time-end/Endzeitpunkt (Angabe in Unixzeit),
+latitude/Breitengrad{,} auf dem die Verabredung stattfindet (Angabe als
+Dezimalgrad),
+longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
+Dezimalgrad)}
+{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in weiteren
+Befehlen referenziert werden kann}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-event-create}
+
 \apiCommand{edit-event}
 {Editieren einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
 ist}
@@ -477,14 +443,22 @@ id/Identifikationsnummer der Verabredung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,event-id-invalid,no-permission-event-edit}
 
-\apiCommand{remove-poll}
-{Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
+\apiCommand{create-poll}
+{Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
 ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Abstimmung}
-{---/Leeres JSON-Objekt bei Erfolg}
-{group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+werden soll,
+question/Frage{,} über dessen Antwort abgestimmt wird,
+multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
+Optionen stimmen kann,
+options/Array an Beschreibungen von Abstimmungsoptionen{,} die nach der
+Erstellung der Abstimmung hinzugefügt werden sollen}
+{id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
+weiteren Befehlen referenziert werden kann,
+option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
+Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
+Abstimmungsoptionen.}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-create}
 
 \apiCommand{edit-poll}
 {Editieren einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -497,6 +471,21 @@ Identifikationsnummer{,} die überschrieben werden sollen.
 Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+
+\apiCommand{add-poll-option}
+{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung{,} zu der die Abstimmungsoption
+hinzugefügt werden soll,
+latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
+time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
+time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
+{id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
+weiteren Befehlen referenziert werden kann}
+{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-edit}
 
 % TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
@@ -522,6 +511,15 @@ id/Identifikationsnummer der Abstimmungsoption}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 
+\apiCommand{remove-poll}
+{Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Abstimmung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+
 \apiCommand{send-chat-message}
 {Senden einer Textnachricht an eine Gruppe, in der das Benutzerkonto Mitglied
 ist}
@@ -530,38 +528,40 @@ message/Textnachricht} % TODO: Länge beschränken (vllt. auch Gruppengröße et
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid}
 
-\apiCommand{add-contact}
-{Hinzufügen eines anderen Benutzerkontos zur eigenen Kontaktliste.
-Fügt ebenfalls das eigene Benutzerkonto zur Kontaktliste des anderen
-Benutzerkontos hinzu.
-Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{user-id-invalid,being-blocked,blocking-already}
+\apiCommand{list-groups}
+{Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
+{---/Keine weiteren Parameter}
+{groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
+Kapitel \ref{sec:groupdesc})}
+{}
 
-\apiCommand{remove-contact}
-{Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
-Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{user-id-invalid,not-in-contacts}
+\apiCommand{get-group-details}
+{Abrufen von Details einer Gruppe, in denen das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Gruppe}
+{\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
+Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
+{group-id-invalid}
 
-\apiCommand{block-account}
-{Blockiert das angegebene Benutzerkonto.
-Bis dies aufgehoben wird, können das eigene und das angegebene
-Benutzerkonto sich nicht gegenseitig zur ihrer Kontaktliste hinzufügen.
-Sind die beiden Benutzerkonten bereits Kontakte, werden diese vorher aus der
-Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{user-id-invalid,blocking-already}
+% TODO: Definiere „aktive Verabredung“
+\apiCommand{get-event-details}
+{Abrufen von Details einer aktiven Verabredung, die in einer Gruppe erstellt
+wurde, in der das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Verabredung,
+group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde}
+{\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
+Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
+{group-id-invalid,event-id-invalid}
 
-\apiCommand{unblock-account}
-{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene
-Benutzerkonto auf.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{user-id-invalid,not-blocking}
+\apiCommand{get-poll-details}
+{Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
+wurde, in der das Benutzerkonto Mitglied ist}
+{id/Identifikationsnummer der Abstimmung,
+group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde}
+{\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
+Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
+{group-id-invalid,poll-id-invalid}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
@@ -574,6 +574,9 @@ time-measured/Zeitpunkt{,} zu dem die Position gemessen wurde (Angabe in
 Unixzeit)}
 {---/Leeres JSON-Objekt bei Erfolg}
 {time-measured-future}
+
+\subsection{Fehlercodes}\label{sec:errorcodes}
+\apiErrorTable
 
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 
