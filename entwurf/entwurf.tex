@@ -281,7 +281,7 @@ Gruppe}
 des Benutzernamens}
 {user/Benutzername des Benutzerkontos}
 {\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
-Benutzerkonto gehört (siehe \ref{sec:accountdesc})}
+Benutzernamen gehört (siehe \ref{sec:accountdesc})}
 {400/Nutzername ungültig}
 
 % TODO: Definiere „aktive Verabredung“
@@ -293,10 +293,9 @@ group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
 wurde}
 {\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
-{500/Verabredungs-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil
-der Gruppe,
-300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe}
+{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe,
+500/Verabredungs-Identifikationsnummer ungültig}
 
 \apiCommand{get-poll-details}
 {Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
@@ -428,7 +427,7 @@ Benutzerkonto Mitglied ist}
 members/Array an Identifikationsnummern aller Benutzerkonten{,} die aus der
 Gruppe entfernt werden sollen.
 Es dürfen keine Identifikationsnummern von Benutzerkonten angegeben werden{,}
-die nicht Teil der Gruppe ist.
+die nicht Teil der Gruppe sind.
 Es darf die Identifikationsnummer des eigenen Benutzerkontos angegeben werden.
 Dies führt wie erwartet dazu{,} dass das eigene Benutzerkonto den weiteren
 Zugriff auf die Gruppe verliert.
@@ -503,10 +502,11 @@ Gruppe,
 1000/Das Benutzerkonto besitzt nicht die nötigen Rechte{,} um die Abstimmung zu
 editieren}
 
+% TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
 {Editieren einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
 Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
 wurde,
 poll-id/Identifikationsnummer der Abstimmung,
 id/Identifikationsnummer der Abstimmungsoption,
@@ -523,7 +523,7 @@ editieren}
 \apiCommand{remove-poll-option}
 {Entfernen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
 Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
 wurde,
 poll-id/Identifikationsnummer der Abstimmung,
 id/Identifikationsnummer der Abstimmungsoption}
@@ -550,16 +550,16 @@ Benutzerkontos hinzu.
 Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
-{2100/Benutzerkonto-Identifikationsnummer ungültig oder eigenes Benutzerkonto
-wird vom angegeben blockiert,
-2110/Das eigene Benutzerkonto blockiert das angegebene Benutzerkonto}
+{2100/Benutzerkonto-Identifikationsnummer ungültig,
+2110/Das eigenes Benutzerkonto wird vom angegeben Benutzerkonto blockiert,
+2120/Das eigene Benutzerkonto blockiert das angegebene Benutzerkonto}
 
 \apiCommand{remove-contact}
 {Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
 Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
-{2200/Benutzerkonto-Identifikationsnummer ungültig,
+{2100/Benutzerkonto-Identifikationsnummer ungültig,
 2210/Das angegebene Benutzerkonto ist nicht in der eigenen Kontaktliste}
 
 \apiCommand{block-account}
@@ -570,14 +570,17 @@ Sind die beiden Benutzerkonten bereits Kontakte, werden diese vorher aus der
 Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
-{2200/Benutzerkonto-Identifikationsnummer ungültig,
+{2100/Benutzerkonto-Identifikationsnummer ungültig,
 2110/Das eigene Benutzerkonto blockiert das angegebene Benutzerkonto}
 
 \apiCommand{unblock-account}
-{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene auf.}
+{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene
+Benutzerkonto auf.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
-{2200/Benutzerkonto-Identifikationsnummer ungültig}
+{2100/Benutzerkonto-Identifikationsnummer ungültig,
+2400/Angegebes Benutzerkonto wird nicht durch das eigene Benutzerkonto
+blockiert}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
@@ -594,13 +597,17 @@ Unixzeit)}
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 
 \subsubsection{Oberflächlich}
-\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+\apiArgument{
+    type/\enquote{group},
+    id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
     weiteren Befehlen referenziert werden kann,
     checksum/Prüfsumme der ausführlichen Beschreibung (siehe
     \ref{sec:checksum})}
 
 \subsubsection{Ausführlich}
-\apiArgument{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+\apiArgument{
+    type/\enquote{group},
+    id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
     weiteren Befehlen referenziert werden kann,
     name/Name der Gruppe,
     members/Array an Identifikationsnummern aller Benutzerkonten{,} die
@@ -677,13 +684,13 @@ Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächlich
 Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
 Beschreibung.
 Der Client ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
-mit denen des Servers übereinstimmen, ohne die Datensätze selbst anfordern zu
+mit denen des Servers übereinstimmen, ohne die Datensätze erneut anfordern zu
 müssen.
 
 \par Zur Berechnung der Prüfsummen wird der \hashAlg-Algorithmus verwendet.
 
 \par Da es mehrere unterschiedliche, aber äquivalente JSON-Darstellungen für
-eine ausführliche Beschreibungen gibt, müssen diese vor Eingabe an den
+eine ausführliche Beschreibung gibt, müssen diese vor Eingabe an den
 \hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
 
 \par \textit{Hinweis: In dem folgenden Absatz bezeichnen Ziffern nicht etwa die
