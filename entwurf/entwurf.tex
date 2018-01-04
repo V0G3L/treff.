@@ -171,7 +171,11 @@ Außerdem ermöglicht dies Kompatibilität mit alternativen Implementierungen
 von sowohl Klienten als auch Servern.
 
 \subsection{Funktion - Client}
-% Funktion und Verhalten des Clients (Fließtext und UML-Diagramme)
+Der Klient speichert für den Nutzer relevante Daten in einer lokalen Datenbank ab.
+Diese können vom Nutzer eingesehen werden.
+Anfragen des Nutzers werden in Form von Befehlen an den Server weitergegeben (\ref{command}).
+Diverse Daten wie beispielsweise GPS-Standort oder Chatnachrichten werden
+dabei als Parameter der Befehle an den Server übergeben.
 
 \subsection{Funktion - Server}
 % Funktion und Verhalten des Servers (Fließtext und UML-Diagramme)
@@ -237,6 +241,7 @@ durch übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüsse
 folgenden definiert.
 
 \subsection{Befehle}
+\label{command}
 Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
 Parameter:\\
 \apiArgument{token/Authentifizierungtoken{,} welches beim Einloggen in das
