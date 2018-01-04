@@ -24,33 +24,8 @@
 %   3: Arguments
 %   4: Return values
 %   5: Errorcodes
-\newcommand{\apiCommand}[5]{
-    \iftoggle{apiCmdBG}{%
-        \renewcommand{\apiCmdClr}{gray!20}
-    }{%
-        \renewcommand{\apiCmdClr}{white}
-    }
-    \begin{mdframed}[hidealllines=true,backgroundcolor=\apiCmdClr]%
-    \vspace{8pt}
-    \stepcounter{apiCommand}
-    Befehl~\arabic{apiCommand}:~\textbf{#1}
-    \\#2
-    \par Parameter:
-    \\\apiArgument{#3}
-    \par Rückgabewerte:
-    \\\apiArgument{#4}
-    \par Fehlercodes:
-    \\\apiErrorCode{#5}
-    \end{mdframed}
-    \iftoggle{apiCmdBG}{%
-        \togglefalse{apiCmdBG}
-    }{%
-        \toggletrue{apiCmdBG}
-    }
-}
-
 \newtoggle{apiErrorPrint}
-\newcommand{\apiCommandB}[5]{
+\newcommand{\apiCommand}[5]{
     \iftoggle{apiCmdBG}{%
         \renewcommand{\apiCmdClr}{gray!20}
     }{%
@@ -104,9 +79,6 @@
                 \GetProperty{api-error-object:\errID}{api-error-desc}
         \end{tabular}\\
     }%
-}
-\newcommand{\apiErrorCode}[1]{
-    \apiTableEntry{#1}{0.2}{0.75}
 }
 
 \newcommand{\apiErrorNew}[3]{
