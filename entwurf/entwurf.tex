@@ -243,49 +243,55 @@ durch übermittelte Parameter bedingt, wird nur ein Fehlercode mit dem Schlüsse
 \textbf{error} zurückgegeben. Die Bedeutung der Fehlercodes wird ebenfalls im
 folgenden definiert.
 
-\subsection{Befehle}
-\label{command}
+\subsection{Befehle}\label{sec:commands}
+
+\apiErrorNew{token-invalid}{10}{Authentifizierungtoken ungültig}
+\apiErrorNew{cred-wrong}{20}{Nutzername/Passwort-Kombination ungültig}
+\apiErrorNew{group-id-invalid}{30}{Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
+Gruppe}
+\apiErrorNew{username-invalid}{40}{Nutzername ungültig}
+\apiErrorNew{event-id-invalid}{50}{Verabredungs-Identifikationsnummer ungültig}
+
 Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
 Parameter:\\
 \apiArgument{token/Authentifizierungtoken{,} welches beim Einloggen in das
 Benutzerkonto vom Server zurückgegeben wurde}
 \par\par Ist das übermittelte Token ungültig, wird der Befehl nicht
 ausgeführt und folgender Fehlercode zurückgegeben:\\
-\apiErrorCode{010/Authentifizierungtoken ungültig}
+\apiErrorPrint{token-invalid}
 
-\apiCommand{login}
+\apiCommandB{login}
 {Einloggen in ein Nutzerkonto}
 {user/Benutzername des Kontos,
 pass/Passwort des Kontos}
 {token/Authentifizierungstoken{,} welches in weiteren Befehlen
 als Eingabe verlangt wird}
-{100/Nutzername{/}Passwort-Kombination ungültig}
+{cred-wrong}
 
-\apiCommand{list-groups}
+\apiCommandB{list-groups}
 {Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
 {---/Keine weiteren Parameter}
 {groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
 Kapitel \ref{sec:groupdesc})}
-{---/Keine weiteren Fehlercodes}
+{}
 
-\apiCommand{get-group-details}
+\apiCommandB{get-group-details}
 {Abrufen von Details einer Gruppe, in denen das Benutzerkonto Mitglied ist}
 {id/Identifikationsnummer der Gruppe}
 {\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe}
+{group-id-invalid}
 
-\apiCommand{get-user-id}
+\apiCommandB{get-user-id}
 {Abrufen der Idenfikationsnummer eines anderen Benutzekontos durch Übergeben
 des Benutzernamens}
 {user/Benutzername des Benutzerkontos}
 {\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
 Benutzernamen gehört (siehe \ref{sec:accountdesc})}
-{400/Nutzername ungültig}
+{username-invalid}
 
 % TODO: Definiere „aktive Verabredung“
-\apiCommand{get-event-details}
+\apiCommandB{get-event-details}
 {Abrufen von Details einer aktiven Verabredung, die in einer Gruppe erstellt
 wurde, in der das Benutzerkonto Mitglied ist}
 {id/Identifikationsnummer der Verabredung,
@@ -293,9 +299,7 @@ group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
 wurde}
 {\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
-{300/Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe,
-500/Verabredungs-Identifikationsnummer ungültig}
+{group-id-invalid,event-id-invalid}
 
 \apiCommand{get-poll-details}
 {Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt

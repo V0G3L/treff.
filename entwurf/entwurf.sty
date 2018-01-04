@@ -49,6 +49,42 @@
     }
 }
 
+\newtoggle{apiErrorPrint}
+\newcommand{\apiCommandB}[5]{
+    \iftoggle{apiCmdBG}{%
+        \renewcommand{\apiCmdClr}{gray!20}
+    }{%
+        \renewcommand{\apiCmdClr}{white}
+    }
+    \begin{mdframed}[hidealllines=true,backgroundcolor=\apiCmdClr]%
+    \vspace{8pt}
+    \stepcounter{apiCommand}
+    Befehl~\arabic{apiCommand}:~\textbf{#1}
+    \\#2
+    \par Parameter:
+    \\\apiArgument{#3}
+    \par Rückgabewerte:
+    \\\apiArgument{#4}
+    \par Fehlercodes:
+    \togglefalse{apiErrorPrint}
+    \\\ifstrempty{#5}{%
+        \apiArgument{---/Keine weiteren Fehlercodes}A%
+        % some symbol here to work around some weird bug
+    }%
+    {%
+        \toggletrue{apiErrorPrint}%
+    }%
+    \iftoggle{apiErrorPrint}{%
+        \apiErrorPrint{#5}
+    }{}%
+    \end{mdframed}%
+    \iftoggle{apiCmdBG}{%
+        \togglefalse{apiCmdBG}%
+    }{%
+        \toggletrue{apiCmdBG}%
+    }%
+}
+
 % Defines an argument for an API-command
 % Params:
 %   1: op-value and description,
@@ -61,8 +97,38 @@
 % Params:
 %   1: numerical error code and description,
 %      seperated by forward slash (/)
+\newcommand{\apiErrorPrint}[1]{
+    \foreach \errID in {#1} {
+        \begin{tabular}[t]{ p{0.2\textwidth} p{0.75\textwidth} }%
+            \textbf{\apiErrorRef{\errID}} &%
+                \GetProperty{api-error-object:\errID}{api-error-desc}
+        \end{tabular}\\
+    }%
+}
 \newcommand{\apiErrorCode}[1]{
     \apiTableEntry{#1}{0.2}{0.75}
+}
+
+\newcommand{\apiErrorNew}[3]{
+    \rdflabel{api-error-object:#1}
+    \AddPropertyEx{api-error-defined}{yes}
+    \AddPropertyEx{api-error-code}{#2}
+    \AddPropertyEx{api-error-desc}{#3}
+}
+
+\newcommand{\apiErrorRef}[1]{%
+    \hyperref[api-error-object:#1]{%
+        \GetProperty{api-error-object:#1}{api-error-code}%
+    }%
+}
+
+\newcommand{\apiErrorTable}{
+    \Bind{?f}{api-error-defined}{yes}{%
+        \begin{tabular}[t]{ p{0.2\textwidth} p{0.75\textwidth} }
+            \textbf{\GetProperty{\GetVal{?f}}{api-error-code}} &%
+                \GetProperty{\GetVal{?f}}{api-error-desc}
+        \end{tabular}\\
+    }%
 }
 
 % Creates a table entry for use in API definitions
