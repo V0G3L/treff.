@@ -7,4 +7,11 @@ import android.arch.lifecycle.ViewModel;
  */
 
 public class MapViewModel extends ViewModel {
+
+
+    /**
+     * Method used by the GPSProvider to update the current Position
+     */
+
+    public void setCurrentPosition() {}
 }

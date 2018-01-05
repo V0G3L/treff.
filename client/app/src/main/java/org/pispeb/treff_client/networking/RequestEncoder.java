@@ -43,4 +43,6 @@ public class RequestEncoder {
     public boolean blockAccount(int userId) {
         return false;
     }
+
+    public boolean update_position(int lat, int lon, int time) { return false; }
 }
