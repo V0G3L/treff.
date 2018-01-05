@@ -10,7 +10,6 @@ public class UserGroup {
     private int groupID;
     private String name;
     //TODO replace
-    //private List<Integer> userIDs;
     //private List<Integer> eventIDs;
 
     public UserGroup(String name, int groupID) {
@@ -18,20 +17,20 @@ public class UserGroup {
         this.groupID = groupID;
     }
 
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getGroupID() {
         return groupID;
+    }
+
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
     }
 
 }
