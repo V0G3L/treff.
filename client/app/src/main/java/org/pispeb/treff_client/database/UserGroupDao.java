@@ -13,6 +13,6 @@ public interface UserGroupDao {
     @Insert
     void save(UserGroup group);
 
-    @Query("SELECT * FROM usergroup WHERE id = :groupId")
+    @Query("SELECT * FROM usergroup WHERE groupID = :groupId")
     LiveData<UserGroup> load(int groupId);
 }

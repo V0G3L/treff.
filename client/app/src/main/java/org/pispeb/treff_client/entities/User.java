@@ -8,22 +8,22 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "user")
 public class User {
     @PrimaryKey
-    private int id;
+    private int userID;
     private String username;
     //TODO replace
     //private Position position;
 
-    public User(int id, String username) {
-        this.id = id;
+    public User(int userID, String username) {
+        this.userID = userID;
         this.username = username;
     }
 
-    public int getId() {
-        return id;
+    public int getUserID() {
+        return userID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserID(int userID) {
+        this.userID = userID;
     }
 
     public String getUsername() {

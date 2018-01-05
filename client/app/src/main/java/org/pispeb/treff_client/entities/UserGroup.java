@@ -7,19 +7,19 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "usergroup")
 public class UserGroup {
     @PrimaryKey
-    private int id;
+    private int groupID;
     private String name;
     //TODO replace
     //private List<Integer> userIDs;
     //private List<Integer> eventIDs;
 
-    public UserGroup(String name, int id) {
+    public UserGroup(String name, int groupID) {
         this.name = name;
-        this.id = id;
+        this.groupID = groupID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
     }
 
     public void setName(String name) {
@@ -30,8 +30,8 @@ public class UserGroup {
         return name;
     }
 
-    public int getId() {
-        return id;
+    public int getGroupID() {
+        return groupID;
     }
 
 }

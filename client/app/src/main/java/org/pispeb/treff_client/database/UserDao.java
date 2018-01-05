@@ -13,6 +13,6 @@ public interface UserDao {
     @Insert
     void save(User user);
 
-    @Query("SELECT * FROM user WHERE id = :userId")
-    LiveData<User> load(int userId);
+    @Query("SELECT * FROM user WHERE userID = :userID")
+    LiveData<User> load(int userID);
 }
