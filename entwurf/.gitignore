@@ -22,6 +22,7 @@ uml-source/*.png
 *.mtc
 *.mtc1
 *.out
-*.synctex.gz*
+*.synctex.gz
+entwurf.synctex.gz(busy)'
 entwurf.pdf
 entwurf.synctex/
