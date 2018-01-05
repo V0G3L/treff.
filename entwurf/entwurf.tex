@@ -251,49 +251,52 @@ folgenden definiert.
 
 \subsection{Befehle}\label{sec:commands}
 
-\apiErrorNew{token-invalid}{010}{Authentifizierungtoken ungültig}
+\apiErrorNew{token-invalid}{010}{Authentifizierungstoken ungültig}
 \apiErrorNew{cred-wrong}{020}{Nutzername/Passwort-Kombination ungültig}
 
 \apiErrorNew{no-permission-group-edit}{100}{Das Benutzerkonto besitzt nicht
 die nötigen Rechte, um die Gruppe zu editieren}
 \apiErrorNew{no-permission-members-edit}{101}{Das Benutzerkonto besitzt nicht
 die nötigen Rechte, um die Liste an Gruppenmitgliedern zu editieren}
-\apiErrorNew{no-permission-event-create}{110}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
-um in der angegebenen Gruppe Verabredungen erstellen zu können}
+\apiErrorNew{no-permission-event-create}{110}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um in der angegebenen Gruppe Verabredungen zu erstellen}
 \apiErrorNew{no-permission-event-edit}{111}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Verabredung editieren zu können}
-\apiErrorNew{no-permission-poll-create}{120}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
-um in der angegebenen Gruppe Abstimmung erstellen zu können}
-\apiErrorNew{no-permission-poll-edit}{121}{Das Benutzerkonto besitzt nicht die nötigen Rechte,
-um die Abstimmung zu editieren}
+die nötigen Rechte, um die Verabredung zu editieren}
+\apiErrorNew{no-permission-poll-create}{120}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um in der angegebenen Gruppe Abstimmung zu erstellen}
+\apiErrorNew{no-permission-poll-edit}{121}{Das Benutzerkonto besitzt nicht
+die nötigen Rechte, um die Abstimmung zu editieren}
 
 \apiErrorNew{username-invalid}{200}{Nutzername ungültig}
-\apiErrorNew{user-id-invalid}{201}{Mindestens eine Benutzerkonto-Identifikationsnummer ist ungültig}
-\apiErrorNew{group-id-invalid}{210}{Gruppen-Identifikationsnummer ungültig oder Benutzerkonto nicht Teil der
-Gruppe}
+\apiErrorNew{user-id-invalid}{201}{Mindestens eine
+Benutzerkonto-Identifikationsnummer ungültig}
+\apiErrorNew{group-id-invalid}{210}{Gruppen-Identifikationsnummer ungültig
+oder Benutzerkonto nicht Teil der Gruppe}
 \apiErrorNew{event-id-invalid}{220}{Verabredungs-Identifikationsnummer ungültig}
 \apiErrorNew{poll-id-invalid}{230}{Abstimmungs-Identifikationsnummer ungültig}
 
-\apiErrorNew{time-end-in-past}{300}{Mindestens ein Endzeitpunkt liegt in der Vergangenheit}
-\apiErrorNew{time-end-start-conflict}{301}{Mindestens ein Endzeitpunkt liegt nicht
-nach dem dazugehörigen Startzeitpunkt}
+\apiErrorNew{time-end-in-past}{300}{Mindestens ein Endzeitpunkt liegt
+in der Vergangenheit}
+\apiErrorNew{time-end-start-conflict}{301}{Mindestens ein Endzeitpunkt liegt
+nicht nach dem dazugehörigen Startzeitpunkt}
 \apiErrorNew{time-measured-future}{310}{Messzeitpunkt liegt zu weit in der
 Zukunft}
 
-\apiErrorNew{no-user-invited}{400}{Kein Benutzerkonto eingeladen, das nicht das eigene ist}
+\apiErrorNew{no-user-invited}{400}{Kein Benutzerkonto eingeladen,
+das nicht das eigene ist}
 \apiErrorNew{user-already-in-group}{401}{Mindestens eine Identifikationsnummer
 gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
 \apiErrorNew{user-not-in-group}{402}{Mindestens eine Identifikationsnummer
 gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
 
-\apiErrorNew{not-in-contacts}{500}{Das angegebene Benutzerkonto ist nicht in
+\apiErrorNew{not-in-contacts}{500}{Benutzerkonto nicht in
 der eigenen Kontaktliste}
-\apiErrorNew{being-blocked}{501}{Das eigenes Benutzerkonto wird vom angegeben
+\apiErrorNew{being-blocked}{501}{Benutzerkonto wird vom angegeben
 Benutzerkonto blockiert}
-\apiErrorNew{blocking-already}{510}{Das eigene Benutzerkonto blockiert das
-angegebene Benutzerkonto}
-\apiErrorNew{not-blocking}{511}{Angegebenes Benutzerkonto wird nicht durch das
-eigene Benutzerkonto blockiert}
+\apiErrorNew{blocking-already}{510}{Benutzerkonto wird durch
+das eigene Benutzerkonto blockiert}
+\apiErrorNew{not-blocking}{511}{Benutzerkonto wird nicht durch
+das eigene Benutzerkonto blockiert}
 
 Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
 Parameter:\\
