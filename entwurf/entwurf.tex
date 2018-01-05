@@ -206,6 +206,82 @@ aufgeführt.
 Dieses Kapitel beschreibt den theoretischen Aufbau des in diesem Projekt
 relevanten Ausschnitts der realen Welt.
 
+\subsection{Account - account}
+%TODO account-ERD einfügen
+Ein Nutzer wird im System in Form eines Accounts repräsentiert.
+Dieser wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Jeder Account beinhaltet den Nutzernamen 'username' und die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
+Für den Account wird desweiteren der Hash seines Passworts und des Salts, sowie das verwendete Salt gespeichert.
+Außerdem wird durch die Werte 'lon' und 'lat' Längen- und Breitengrad der aktuellen Position des
+Nutzers und durch 'timemeasured' der letzte Messzeitpunkt dieser Position gespeichert.
+Ein Account beinhaltet eine beliebig große Menge von Accounts, den Kontakten/Freunden des Nutzers.
+Diese Menge darf leer sein, jedoch nicht den eigenen Account beinhalten.
+Ein Account beinhaltet eine weitere, beliebig große Menge von Accounts.
+Diese Menge stellt die vom Nutzer blockierten Accounts dar und darf leer sein,
+jedoch nicht den eigenen Account beinhalten. Ein Account kann Verabredungen erstellen und an solchen teilnehmen.
+Ein Account kann Abstimmungen innerhalb einer Gruppe erstellen und für deren Optionen abstimmen.
+Jeder Account besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der er mitglied ist.
+%TODO Warum haben wir was wie gemacht
+
+\subsection{Gruppenmitgliedschaft - groupmembership}
+%TODO groupmembership-ERD einfügen
+Eine Gruppenmitgliedschaft gehört zu exakt einem Account und zu exakt einer Gruppe.
+Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Außerdem beinhaltet sie boolsche Werte, die angeben,
+welche Rechte der zugehörige Account in der zugehörigen Gruppe hat.
+Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe der Gruppenmitgliedschaft und sind nur in dieser gültig.
+\begin{itemize}
+	\item 'permission-change-group-name' - das Recht, den Namen der Gruppe zu ändern.
+ 	\item 'permission-manage-members' - das Recht, Nutzer bzw deren Accounts in die Gruppe hinzuzufügen bzw Gruppenmitglieder zu entfernen.
+ 	\item 'permission-change-permissions' - das Recht, die Gruppenberechtigungen der Gruppenmitglieder zu bearbeiten.
+ 	\item 'permission-create-event' - das Recht, Verabredungen zu erstellen.
+ 	\item 'permission-edit-any-event' - das Recht, Verabredungen zu bearbeiten, welche man nicht selbst erstellt hat.
+ 	\item 'permission-create-poll' - das Recht, Abstimmungen zu erstellen.
+ 	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten, welche man nicht selbst erstellt hat.
+\end{itemize}
+%TODO Warum haben wir was wie gemacht
+Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine Dreiecksbeziehung zwischen Account,
+Gruppe und den Berechtigungen aufzulösen.
+
+\subsection{Gruppe - group}
+%TODO group-ERD einfügen
+Eine Gruppe ist eine Ansammlung von Nutzern.
+Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Eine Gruppe besitzt einen Namen 'name' und beinhaltet eine beliebig große Menge der Gruppenmitgliedschaften aller Nutzer,
+die Teil der Gruppe sind. Da eine Gruppe ohne Mitglieder nicht existieren kann, darf diese Menge nicht leer sein.
+Außerdem beinhaltet eine Gruppe eine beliebig große Menge an Verabredungen und eine beliebig große Menge von Abstimmungen.
+Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein können, dürfen beide Mengen leer sein.
+%TODO Warum haben wir was wie gemacht
+
+\subsection{Abstimmung - poll}
+%TODO poll-ERD einfügen
+Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird und einem Wahrheitswert der festlegt,
+ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu stimmen.
+Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung, aber mindestens eine.
+Desweiteren speichert die Abstimmung einen Account, ihren Ersteller.
+%ODO Warum haben wir was wie gemacht
+
+\subsection{Option einer Abstimmung - polloption}
+%TODO polloption-ERD einfügen
+Die Option einer Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Die Option speichert ihren Start- und Endzeitpunkt starttime und endtime,
+sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und Breitengrad.
+Weiterhin wird eine beliebige Menge von Accounts gespeichert die für diese Option gestimmt haben.
+%TODO Warum haben wir was wie gemacht
+
+\subsection{Verabredung - event}
+%TODO event-ERD einfügen
+Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Sie besteht aus einem Namen 'title', einem Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
+und Längen- sowie Breitengrad des Treffpuktes 'lon' und 'lat'. Sie speichert ihren Ersteller und die Gruppe,
+in der sie erstellt wurde. Eine Verabredung beinhaltet eine beliebig große Teilmenge von Mitgliedern der zugehörigen Gruppe.
+Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
+%TODO Warum haben wir was wie gemacht
+
+\subsection{Gesammtkonstrukt}
+%TODO komplettes ERD einfügen
+
 \section{Aufbau und internes Verhalten - Client}
 
 \subsection{Aufbau}
@@ -214,14 +290,11 @@ relevanten Ausschnitts der realen Welt.
 Der Client, also die App selbst, besteht grundsätzlich auch zwei Teilen:
 der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung.
 Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktionen der App zugreifen kann.
-%
 
 \subsection{Bestandteile der GUI}
 % Strukturierung der GUI durch Activities und deren Aufteilung in Fragments,
 %	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
-
-
 
 \subsection{Bestandteile Datenverarbeitung}
 % Aufteilung der Funktionalitäten auf seperate Klassen,
@@ -263,7 +336,7 @@ ConnectionHandler.
 %Klassendiagramm sql-package
 Die Klasse EntityManager ist für den Datenbankzugriff verantwortlich.
 Dazu werden die Anfragen vom RequestHandler entgegengenommen auf der Datenbank
-ausgeführt und die Ergebnisse zum Encodieren an den RequestHandler 
+ausgeführt und die Ergebnisse zum Encodieren an den RequestHandler
 zurückgegeben.
 
 \subsection{Bestandteile des Servers}
