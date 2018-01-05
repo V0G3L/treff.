@@ -8,6 +8,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
+/**
+ * Main class of the server handles network connection and gives requests to the database
+ */
 public class Server {
     private static int port;
     private static AccountManager aM;
@@ -39,6 +43,9 @@ public class Server {
 
     }
 
+    /**
+     * Class for handling single Connections
+     */
     static class ConnectionHandler extends Thread {
         private Socket socket;
 
@@ -47,9 +54,7 @@ public class Server {
         }
 
         /**
-         * Services this thread's client by first sending the
-         * client a welcome message then repeatedly reading strings
-         * and sending back the capitalized version of the string.
+         * Method that handles a Connection
          */
         public void run() {
             try {
@@ -57,23 +62,14 @@ public class Server {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             } catch (IOException e) {
-                log("Error handling client");
+                e.printStackTrace();
             } finally {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    log("Couldn't close a socket, what's going on?");
+                    e.printStackTrace();
                 }
-                log("Connection with client closed");
             }
-        }
-
-        /**
-         * Logs a simple message.  In this case we just write the
-         * message to the server applications standard output.
-         */
-        private void log(String message) {
-            System.out.println(message);
         }
 
     }
