@@ -1,5 +1,8 @@
 package org.pispeb.treff_client.networking;
 
+import android.app.Activity;
+import android.os.AsyncTask;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,7 +15,7 @@ import java.net.UnknownHostException;
  * Created by vogel on 1/5/18.
  */
 
-public class ConnectionHandler {
+public class ConnectionHandler{
     Socket socket;
     PrintWriter out;
     BufferedReader in;
@@ -32,8 +35,18 @@ public class ConnectionHandler {
     }
 
     public String sendRequest(String request){
-        //Send Request and give back the answer
-        //or if no answer comes send Error after Timeout
+        new Request().execute(request);
+
         return null;
+    }
+
+    class Request extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            
+            return null;
+        }
+
     }
 }
