@@ -178,13 +178,30 @@ Diverse Daten wie beispielsweise GPS-Standort oder Chatnachrichten werden
 dabei als Parameter der Befehle an den Server übergeben.
 
 \subsection{Funktion - Server}
-Der Server speichert die Daten der Nutzer in einer zentralen Datenbank,
-nimmt Befehle der Klienten entgegen und verändert gegebenenfalls die Datensätze.
+Der Server speichert die Daten der Nutzer in einer zentralen Datenbank, nimmt
+Befehle der Klienten entgegen und verändert gegebenenfalls die Datensätze.
 Bei Veränderung von Daten werden alle betroffenen Klienten darüber informiert,
 welche daraufhin ihre lokalen Datensätze aktualisieren können.
 
+\subsection{Sprache dieses Dokumentes}
+Während dieses Entwurfsdokument grundsätzlich in deutscher Sprache verfasst
+ist, besitzen die in der Implementierung erscheinenden Entitäten, Relationen,
+Klassen, Funktionen etc. englische Namen.
+Diese Namen sind ebenfalls in Diagrammen und Schnittstellenspezifikationen
+zu finden.
+Zur besseren Zuordnung sind die hier verwendeten Übersetzungen im Folgenden
+aufgeführt.
+
+\begin{tabular}[t]{ l l }
+    \textbf{Deutsch} & \textbf{Englisch}\\
+    \hline
+    Benutzerkonto & Account\\
+    Gruppe & Group\\
+\end{tabular}
+
 %%%%%%%%%%%%%%%%%%%%
 \pagebreak
+
 \section{Semantisches Datenmodell}
 Dieses Kapitel beschreibt den theoretischen Aufbau des in diesem Projekt
 relevanten Ausschnitts der realen Welt.
@@ -224,12 +241,12 @@ Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktion
 % Aufteilung der Funktionalitäten auf seperate Klassen;
 % Zusammenspiel dieser Klassen (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
-Der Server besteht aus drei Verschiedene Bestandteilen:
+Der Server besteht aus drei verschiedenen Bestandteilen:
 
 \subsubsection{Netzwerkkommunikation}
 %Klassendiagramm(Server, ConnectionHandler und Kontext)
 Die Klasse Server ist die Hauptklasse des Servers.
-Sie startet beim hochfahren des Servers die Datenbank und ist zuständig für
+Sie startet beim Hochfahren des Servers die Datenbank und ist zuständig für
 die Netzwerkkommunikation. Dazu wird für jede Verbindung die der Server mit
 Klienten hat ein ConnectionHandler erstellt. Diese geben die erhaltenen
 Anfragen an den RequestHandler weiter und senden am Ende die erhaltenen
