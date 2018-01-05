@@ -1,6 +1,6 @@
 package org.pispeb.treff_server.exceptions;
 
-import org.pispeb.treff_server.sql.interfaces.Account;
+import org.pispeb.treff_server.interfaces.Account;
 
 /**
  * Thrown to indicate that an {@link Account} object was

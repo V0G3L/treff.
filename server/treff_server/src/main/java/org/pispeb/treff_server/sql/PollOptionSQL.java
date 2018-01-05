@@ -1,6 +1,6 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.sql.interfaces.PollOption;
+import org.pispeb.treff_server.interfaces.PollOption;
 
 public class PollOptionSQL implements PollOption {
     @Override

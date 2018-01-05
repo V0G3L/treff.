@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.sql.interfaces;
+package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.sql.Permission;

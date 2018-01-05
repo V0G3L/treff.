@@ -2,8 +2,8 @@ package org.pispeb.treff_server.sql;
 
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
-import org.pispeb.treff_server.sql.interfaces.Account;
-import org.pispeb.treff_server.sql.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountManager;
 
 import java.util.HashMap;
 import java.util.List;

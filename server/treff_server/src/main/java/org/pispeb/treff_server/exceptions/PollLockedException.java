@@ -1,7 +1,7 @@
 package org.pispeb.treff_server.exceptions;
 
-import org.pispeb.treff_server.sql.interfaces.Poll;
-import org.pispeb.treff_server.sql.interfaces.PollOption;
+import org.pispeb.treff_server.interfaces.Poll;
+import org.pispeb.treff_server.interfaces.PollOption;
 
 /**
  * Thrown to indicate that a {@link PollOption} was to be added
