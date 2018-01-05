@@ -125,4 +125,20 @@
     \vspace{4pt}
 }
 
+% Includes an SVG using a figure, creates label 'fig:filename'
+% Params:
+%   1: Filename. Without extension or directories. File is expected
+%       to have the 'pdf_tex' extension and be located in 'build/images'
+%   2: Caption
+%   3: Width
+\newcommand{\svgFigure}[3]{
+    \begin{figure}
+        \centering
+        \def\svgwidth{#3}
+        \input{build/images/#1.pdf_tex}
+        \caption{#2}
+        \label{fig:#1}
+    \end{figure}
+}
+
 %\ExplSyntaxOff

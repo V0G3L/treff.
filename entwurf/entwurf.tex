@@ -216,7 +216,6 @@ Dieses Kapitel beschreibt den theoretischen Aufbau des in diesem Projekt
 relevanten Ausschnitts der realen Welt.
 
 \subsection{Benutzerkonto}
-%TODO account-ERD einfügen
 Ein Nutzer wird im System in Form eines Benutzerkontos repräsentiert.
 Dieses wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Jedes Benutzerkonto beinhaltet den Nutzernamen 'username' und die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
@@ -232,8 +231,9 @@ Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für de
 Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der es mitglied ist.
 %TODO Warum haben wir was wie gemacht
 
+\svgFigure{erd-account}{Benutzerkonto}{300pt}
+
 \subsection{Gruppenmitgliedschaft}
-%TODO groupmembership-ERD einfügen
 Eine Gruppenmitgliedschaft gehört zu exakt einem Benutzerkonto und zu exakt einer Gruppe.
 Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Außerdem beinhaltet sie boolsche Werte, die angeben,
@@ -249,12 +249,14 @@ Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe der Gruppenmit
  	\item 'permission-create-poll' - das Recht, Abstimmungen zu erstellen.
  	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten, welche man nicht selbst erstellt hat.
 \end{itemize}
+
 %TODO Warum haben wir was wie gemacht
 Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine Dreiecksbeziehung zwischen Benutzerkonto,
 Gruppe und den Berechtigungen aufzulösen.
 
+\svgFigure{erd-groupmembership}{Gruppenmitgliedschaft}{300pt}
+
 \subsection{Gruppe}
-%TODO group-ERD einfügen
 Eine Gruppe ist eine Ansammlung von Nutzern.
 Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Eine Gruppe besitzt einen Namen 'name' und beinhaltet eine beliebig große Menge der Gruppenmitgliedschaften aller Nutzer,
@@ -263,8 +265,9 @@ Außerdem beinhaltet eine Gruppe eine beliebig große Menge an Verabredungen und
 Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein können, dürfen beide Mengen leer sein.
 %TODO Warum haben wir was wie gemacht
 
+\svgFigure{erd-group}{Gruppe}{200pt}
+
 \subsection{Abstimmung}
-%TODO poll-ERD einfügen
 Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird
 und einem Wahrheitswert der festlegt,
@@ -272,10 +275,11 @@ ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu s
 Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung,
 jedoch mindestens eine.
 Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
-%ODO Warum haben wir was wie gemacht
+%TODO Warum haben wir was wie gemacht
+
+\svgFigure{erd-poll}{Abstimmung}{280pt}
 
 \subsection{Option einer Abstimmung}
-%TODO polloption-ERD einfügen
 Die Option einer Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Die Option speichert ihren Start- und Endzeitpunkt starttime und endtime,
 sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und Breitengrad.
@@ -283,8 +287,9 @@ Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten gespeic
 die für diese Option gestimmt haben.
 %TODO Warum haben wir was wie gemacht
 
+\svgFigure{erd-polloption}{Abstimmungsoption}{300pt}
+
 \subsection{Verabredung}
-%TODO event-ERD einfügen
 Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Sie besteht aus einem Namen 'title', einem Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
 und Längen- sowie Breitengrad des Treffpuktes 'lon' und 'lat'. Sie speichert ihren Ersteller und die Gruppe,
@@ -292,8 +297,16 @@ in der sie erstellt wurde. Eine Verabredung beinhaltet eine beliebig große Teil
 Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 %TODO Warum haben wir was wie gemacht
 
+\svgFigure{erd-event}{Verabredung}{350pt}
+
 \subsection{Gesammtkonstrukt}
-%TODO komplettes ERD einfügen
+\begin{figure}
+    \centering
+    \def\svgwidth{600pt}
+    \rotatebox{90}{\input{build/images/erd-complete.pdf_tex}}
+    \caption{Gesamtkonstrukt}
+    \label{fig:erd-complete}
+\end{figure}
 
 \section{Aufbau und internes Verhalten - Client}
 
