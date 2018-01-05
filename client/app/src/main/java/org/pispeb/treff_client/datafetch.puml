@@ -5,8 +5,8 @@ participant "vm : FriendListViewModel" as VM
 participant "repo : FriendRepository" as REP
 participant "userDao : UserDao" as DAO
 participant "FriendRepository" as FR
-participant ": RequestEncoder" as ENC
 participant ": treffDataBase" as DB
+participant ": RequestEncoder" as ENC
 
 -> FLF: onCreateView(...)
 activate FLF
@@ -22,7 +22,7 @@ REP ->> ENC: getContacts()
 activate ENC
 REP -> DAO: getFriends()
 activate DAO
-DAO -> DB: @Query("SELECT * FROM user WHERE isFriend = true")
+DAO -> DB: @Query("SELECT * FROM user WHERE isFriend = 1")
 activate DB
 DB --> DAO: : Cursor
 deactivate DB

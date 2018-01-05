@@ -30,6 +30,9 @@
 	bookmarks=true,
 }
 
+
+\graphicspath{ {images/} }
+
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
 
@@ -290,12 +293,94 @@ Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 Der Client, also die App selbst, besteht grundsätzlich auch zwei Teilen:
 der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung.
 Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktionen der App zugreifen kann.
+<<<<<<< HEAD
+=======
+Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln, um z.B. Datenverlust und
+inkonsistentes Verhalten zu verhindern, das sonst bei Aktionen wie dem Pausieren oder drehen der App
+vorkommen kann. 
+
+\subsubsection{MVVM}
+Um diese Entkopplung zu erreichen kommt die MVVM-Architektur (Model-View-ViewModel) zu Einsatz.
+Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
+\begin{itemize}
+	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments) behandeln Eingaben des Nutzers
+	und bestimmen das Aussehen der Benutzeroberfläche.
+	\item Das Model stellt eine Abstraktion der zugrunde liegenden Datenstruktur zur Verfügung.
+	In diesem Fall handelt es sich dabei um Repositories, welche sowohl auf eine lokale Datenbank
+	zugreifen können, als auch über einen Netzwerkadapter Updates vom Server anfordern können.
+	\item Die Verbindung zwischen der Model- und der View-Ebene stellen ViewModels dar.
+	Diese stellen der darüber liegenden View Verbindungen zu allen benötigten Daten zur Verfügung.
+	Wichtig ist dieser Schritt deshalb, weil ViewModels im Gegensatz zu View-Objekten auch
+	Configuration-changes überleben, die Daten also z.B. nach dem Drehen des Geräts weiterhin zur
+	Verfügung stehen und sofort wieder von der View verwendet werden können.
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width = \columnwidth / 3 * 2]{database.png}
+	\captionof{figure}{Bei dieser Darstellung sind View und ViewModel nicht als tatsächliche packages
+		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}
+	
+\end{center}
+
+\subsubsection{LiveData}
+Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist, bietet Android eine
+WrapperKlasse anems LiveData an, welche von View-Elementen \enquote{observed} werden kann.
+Wenn sich nun durch eine Änderung der Datenbank die anzuzeigenden Daten verändern, werden alle
+Observer (also die View) darüber benachrichtigt und können entsprechend angepasst werden.
+Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert werden und stellt sicher,
+dass diese bei Änderungen der Datenbank auch die nötigen onChange() Methoden aufrufen.
+
+\begin{center}
+	\includegraphics[width = \paperheight / 3 * 2, angle = -90]{datafetch.png}
+	\captionof{figure}{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf die Datenbank.
+	Im oberen Teil ist zu sehen, wie ein View-Objekt (in diesem Fall fragment) sich als Observer
+	eines LiveData Objekts eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
+	reagiert und das fragment benachrichtigt.}
+	
+\end{center}
+
+%
+>>>>>>> Working on client section, added images and puml source fo them
 
 \subsection{Bestandteile der GUI}
 % Strukturierung der GUI durch Activities und deren Aufteilung in Fragments,
 %	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
 
+<<<<<<< HEAD
+=======
+
+Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den wahrscheinlich wichtigsten Teil stellt die
+Home-Activity dar, auf dem der Nutzer in vier Tabs auf alle Gruppen, Events, Freunde
+und die Karte zugreifen kann. Details zu einer Gruppe sowie alle in dieser Gruppe geplanten Events
+können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity benötigt, die es dem
+Nutzer erlaubt, sich einzuloggen bzw. zu registrieren. Die letzte wichtige Komponente stellt die
+Settings-Activity dar, in welcher der Nutzer Accounteinstellungen vornehmen kann.
+
+\subsubsection{Home-Activity}
+Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer nach dem Login hier landet und
+auf alle weiteren Funktionen von hier aus zugreifen kann. Die unterschiedlichen Tabs mit Karte,
+Freundes-, Gruppen-, und Eventliste werden dabei als Fragments realisiert, welche von einem
+ViewPagerAdapter verwaltet werden. Bis auf das Mapfragment unterscheiden sich die Fragments selbst
+kaum untereinander, da alle anderen lediglich eine Liste darstellen müssen. Um dies zu bewerkstelligen
+kommt eine Recyclerview zum Einsatz, da sie flexibler und weniger ressourcenbelastend ist als zuvor
+übliche Listviews. Jede dieser Recyclerviews besteht im wesentlichen aus drei Teilen:
+\begin{itemize}
+	\item{ViewHolder} ist dafür verantwortlich, die Daten eines einzelnen Elements der Liste zu
+	behalten und die Verbindung zum Layout eines Listeneintrags herzustellen.
+	\item{Adapter} stellt die Verbindung zwischen der Menge an Daten, die angezeigt werden soll und den
+	ViewHoldern dar.
+	\item{Layoutmanager} bestimmt, wie die einzelnen Elemente der Liste zueinander angeordnet sein sollen
+	(Im Falle einer Liste also ein LinearLayoutManager).
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width = \columnwidth / 3 * 2]{lists2.png}
+\end{center}
+
+
+
+>>>>>>> Working on client section, added images and puml source fo them
 \subsection{Bestandteile Datenverarbeitung}
 % Aufteilung der Funktionalitäten auf seperate Klassen,
 % sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)

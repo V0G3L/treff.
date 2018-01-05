@@ -1,30 +1,57 @@
 @startuml
 
-class Activity1
-class Activity2
-class Activity3
-ViewModel1 <-down- Activity1
-ViewModel2 <-down- Activity2
-ViewModel3 <-down- Activity3
-Repository <-down- ViewModel1
-Repository <-down- ViewModel2
-Repository <-down- ViewModel3
+package View <<Rectangle>> {
+class FriendListFragment
+class MapFragment
+class EventListFragment
+}
+package ViewModel <<Rectangle>> {
+    class FriendListViewModel
+    class MapViewModel
+    class EventListViewModel
+}
+package repository {
+    class UserRepository
+    class EventRepository
+}
+FriendListViewModel <-down- FriendListFragment
+MapViewModel <-down- MapFragment
+EventListViewModel <-down- EventListFragment
+UserRepository <-down- FriendListViewModel
+UserRepository <-down- MapViewModel
+EventRepository <-down- MapViewModel
+EventRepository <-down- EventListViewModel
 
-package model <<Frame>> {
-    class Room
+package database {
+    class UserDao
+    class EventDao
+    class treffDataBase
 }
 
-package server <<Frame>> {
+treffDataBase <-down- UserDao
+treffDataBase <-down- EventDao
+
+package networking {
+    class RequestEncoder
+    class ConnectionHandler
+}
+
+
+package Server <<Cloud>> {
 
 }
 
 
-model <-down- Repository
-server <-down- Repository
+UserDao <-right- UserRepository
+RequestEncoder <-down- UserRepository
+EventDao <-down- EventRepository
+RequestEncoder <-left- EventRepository
+ConnectionHandler <-down- RequestEncoder
+Server <-down- ConnectionHandler
 
 package SQL <<Database>> {
 }
 
-SQL <-down- Room
+SQL <-down- treffDataBase
 
 @enduml
