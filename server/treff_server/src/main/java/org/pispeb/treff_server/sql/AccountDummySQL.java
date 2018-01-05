@@ -1,8 +1,8 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.Account;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.sql.interfaces.Account;
 
 public class AccountDummySQL implements Account {
     @Override

@@ -1,4 +1,4 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql.interfaces;
 
 import java.util.Date;
 

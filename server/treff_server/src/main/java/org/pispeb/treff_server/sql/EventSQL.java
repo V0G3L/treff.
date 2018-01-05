@@ -1,8 +1,7 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.Account;
-import org.pispeb.treff_server.Event;
-import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.sql.interfaces.Account;
+import org.pispeb.treff_server.sql.interfaces.Event;
 
 import java.util.Date;
 import java.util.Set;

@@ -1,9 +1,7 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql.interfaces;
 
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
-
-import java.util.Set;
 
 /**
  * <p>An interface for an underlying database. The user of this interface

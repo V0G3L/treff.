@@ -1,4 +1,4 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql;
 
 public class Position {
 

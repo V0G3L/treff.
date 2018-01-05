@@ -1,7 +1,8 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql.interfaces;
 
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.sql.Position;
 
 import java.util.Date;
 import java.util.Map;

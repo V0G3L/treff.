@@ -1,12 +1,7 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.Account;
-import org.pispeb.treff_server.ChatMessage;
-import org.pispeb.treff_server.Event;
-import org.pispeb.treff_server.Group;
-import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.Poll;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
+import org.pispeb.treff_server.sql.interfaces.*;
 
 import java.util.List;
 import java.util.Map;

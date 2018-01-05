@@ -1,10 +1,9 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.Account;
-import org.pispeb.treff_server.Group;
-import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.sql.interfaces.Account;
+import org.pispeb.treff_server.sql.interfaces.Group;
 
 import java.util.Set;
 

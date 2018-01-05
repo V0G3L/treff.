@@ -1,4 +1,6 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql.interfaces;
+
+import org.pispeb.treff_server.sql.Position;
 
 public interface PollOption {
 

@@ -1,9 +1,8 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.Event;
-import org.pispeb.treff_server.Poll;
-import org.pispeb.treff_server.PollOption;
-import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.sql.interfaces.Event;
+import org.pispeb.treff_server.sql.interfaces.Poll;
+import org.pispeb.treff_server.sql.interfaces.PollOption;
 
 import java.util.List;
 

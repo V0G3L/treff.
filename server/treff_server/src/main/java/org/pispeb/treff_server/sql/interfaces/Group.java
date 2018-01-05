@@ -1,6 +1,7 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.sql.interfaces;
 
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
+import org.pispeb.treff_server.sql.Permission;
 
 import java.util.List;
 import java.util.Set;
