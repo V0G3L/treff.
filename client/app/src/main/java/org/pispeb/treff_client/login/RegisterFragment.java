@@ -11,6 +11,7 @@ import org.pispeb.treff_client.R;
 /**
  * Overlay to create a new account
  */
+
 public class RegisterFragment extends Fragment {
 
     public RegisterFragment() {

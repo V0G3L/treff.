@@ -1,0 +1,65 @@
+@startuml
+participant "friends : LiveData<List<User>>" as LD
+participant "fragment : FriendListFragment" as FLF
+participant "vm : FriendListViewModel" as VM
+participant "repo : FriendRepository" as REP
+participant "userDao : UserDao" as DAO
+participant "FriendRepository" as FR
+participant ": RequestEncoder" as ENC
+participant ": treffDataBase" as DB
+
+-> FLF: onCreateView(...)
+activate FLF
+FLF -> VM: <<create>>
+activate VM
+VM -> FR: getEntity()
+activate FR
+FR --> VM: repo : FriendRepository
+deactivate FR
+VM -> REP: getFriends()
+activate REP
+REP ->> ENC: getContacts()
+activate ENC
+REP -> DAO: getFriends()
+activate DAO
+DAO -> DB: @Query("SELECT * FROM user WHERE isFriend = true")
+activate DB
+DB --> DAO: : Cursor
+deactivate DB
+DAO --> REP: friends : LiveData<List<User>>
+deactivate DAO
+REP --> VM: friends : LiveData<List<User>>
+deactivate REP
+VM --> FLF
+deactivate VM
+
+FLF -> VM: getFriends()
+activate VM
+VM -> FLF: friends : LiveData<List<User>>
+deactivate VM
+FLF -> LD: observe(this)
+activate LD
+LD --> FLF
+deactivate LD
+
+ENC -->> REP: newFriends : List<User>
+deactivate FLF
+deactivate ENC
+activate REP
+REP -> DAO:addUsers(newFriends)
+activate DAO
+DAO -> DB: @Insert
+activate DB
+DB ->> LD
+activate LD
+LD ->> FLF: onChanged()
+activate FLF
+deactivate LD
+deactivate FLF
+DB --> DAO
+deactivate DB
+DAO --> REP
+deactivate DAO
+deactivate REP
+
+@enduml

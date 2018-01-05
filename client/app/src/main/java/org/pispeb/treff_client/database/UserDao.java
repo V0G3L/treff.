@@ -6,9 +6,12 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.User;
-
 import java.util.List;
 
+/**
+ * Dao for saving userdata to the database and
+ * loading users based on id/group memberships/friend status etc.
+ */
 
 @Dao
 public interface UserDao {

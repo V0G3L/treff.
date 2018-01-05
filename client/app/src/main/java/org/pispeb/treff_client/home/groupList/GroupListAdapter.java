@@ -3,6 +3,10 @@ package org.pispeb.treff_client.home.groupList;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.ViewGroup;
 
+/**
+ * Adapter to hold {@link GroupListViewHolder}s and display them in a list
+ */
+
 public class GroupListAdapter extends Adapter<GroupListViewHolder>{
 
     @Override

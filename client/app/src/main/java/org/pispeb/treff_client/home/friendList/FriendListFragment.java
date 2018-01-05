@@ -12,6 +12,10 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.databinding.FragmentFriendListBinding;
 import org.pispeb.treff_client.entities.User;
 
+/**
+ * Fragment hosting RecyclerView of FriendList and handling onClick-events
+ * from items in the List
+ */
 
 public class FriendListFragment extends Fragment implements FriendListAdapter.FriendClickedListener {
 

@@ -3,6 +3,10 @@ package org.pispeb.treff_client.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/**
+ * Group of users in which events and polls can be created
+ * and chat messages can be sent
+ */
 
 @Entity(tableName = "usergroup")
 public class UserGroup {

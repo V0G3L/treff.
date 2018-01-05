@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.R;
 
 /**
- * Screen to display and navigate to all the groups the user is part of
+ * Fragment hosting RecyclerView of GroupList and handling onClick-events
+ * from items in the List.
  */
 
 public class GroupListFragment extends Fragment {

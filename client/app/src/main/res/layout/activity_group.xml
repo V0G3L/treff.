@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
-    <android.support.v4.widget.DrawerLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
 
         <!-- The main content view -->
         <android.support.design.widget.CoordinatorLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/group_content_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -51,6 +46,5 @@
 
         </android.support.design.widget.CoordinatorLayout>
 
-    </android.support.v4.widget.DrawerLayout>
 </layout>
 

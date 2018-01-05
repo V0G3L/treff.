@@ -12,7 +12,7 @@ import org.pispeb.treff_client.ui_components.ViewPagerAdapter;
 
 
 /**
- * Group screen
+ * Group screen, hosting chat and event fragments in tabs
  */
 public class GroupActivity extends AppCompatActivity {
 

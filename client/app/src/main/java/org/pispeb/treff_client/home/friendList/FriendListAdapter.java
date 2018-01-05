@@ -10,6 +10,9 @@ import org.pispeb.treff_client.entities.User;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter to hold {@link FriendListViewHolder}s and display them in a list
+ */
 
 public class FriendListAdapter extends Adapter<FriendListViewHolder> {
 

@@ -7,6 +7,9 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.UserGroup;
 
+/**
+ * Dao to save and load groups to/from local database
+ */
 
 @Dao
 public interface UserGroupDao {

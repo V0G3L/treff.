@@ -6,6 +6,10 @@ import android.view.View.OnClickListener;
 
 import org.pispeb.treff_client.databinding.FriendItemBinding;
 
+/**
+ * Holding Layout for single item of the FriendList.
+ * Passing on onCLick-events on that item to {@link FriendListFragment}
+ */
 
 public class FriendListViewHolder extends ViewHolder implements OnClickListener {
 

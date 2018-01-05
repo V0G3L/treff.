@@ -11,6 +11,7 @@ import org.pispeb.treff_client.R;
 /**
  * Navigation Drawer accessed from Home to access settings etc
  */
+
 public class NavigationDrawerFragment extends Fragment {
 
     public NavigationDrawerFragment() {

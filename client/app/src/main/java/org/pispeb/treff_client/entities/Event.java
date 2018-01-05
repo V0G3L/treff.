@@ -6,6 +6,9 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
 
+/**
+ * Pojo defining an event in a group
+ */
 
 @Entity(tableName = "event")
 public class Event {

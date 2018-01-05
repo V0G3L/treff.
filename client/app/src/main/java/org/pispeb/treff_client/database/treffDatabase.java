@@ -11,6 +11,10 @@ import org.pispeb.treff_client.entities.GroupMembership;
 import org.pispeb.treff_client.entities.User;
 import org.pispeb.treff_client.entities.UserGroup;
 
+/**
+ * Local database storing all cached Data for entities.
+ * To avoid desynchronization, treffDataBase is implemented as a Singleton
+ */
 
 @Database(entities = {User.class, UserGroup.class, Event.class, GroupMembership.class}, version = 1)
 public abstract class treffDatabase extends RoomDatabase {

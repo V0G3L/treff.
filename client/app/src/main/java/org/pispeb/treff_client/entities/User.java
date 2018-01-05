@@ -4,6 +4,10 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/**
+ * Pojo for information about a user that is relevant for the client
+ * (private information such as e-mail is not passed on to the client)
+ */
 
 @Entity(tableName = "user")
 public class User {

@@ -7,6 +7,10 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.Event;
 
+/**
+ * Dao for events with methods to save events to the database or
+ * load them all/based on group/based on id
+ */
 
 @Dao
 public interface EventDao {

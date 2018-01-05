@@ -2,6 +2,9 @@ package org.pispeb.treff_client.entities;
 
 import java.time.LocalDateTime;
 
+/**
+ * Pojo for a users geographical position, given by latitude and longitude
+ */
 
 public class Position {
 

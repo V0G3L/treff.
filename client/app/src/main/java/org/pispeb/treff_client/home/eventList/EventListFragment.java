@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 
 import org.pispeb.treff_client.R;
 
+/**
+ * Fragment hosting RecyclerView of EventList and handling onClick-events
+ * from items in the List
+ */
 
 public class EventListFragment extends Fragment {
 

@@ -3,6 +3,9 @@ package org.pispeb.treff_client.home.eventList;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.ViewGroup;
 
+/**
+ * Adapter to hold {@link EventListViewHolder}s and display them in a list
+ */
 
 public class EventListAdapter extends Adapter<EventListViewHolder> {
 
