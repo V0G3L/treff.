@@ -44,15 +44,33 @@ package android.view.View {
         +onClick(v : View)
     }
 }
-package android.support.v7.widget.RecyclerView {
-    class "Adapter<ViewHolder>" {
+package android.support.v7.widget {
+    class RecyclerView {
+        +setAdapter()
+        +setLayoutManager()
+    }
+    abstract class "Adapter<ViewHolder>" {
         +onCreateViewHolder()
         +onBindViewHolder()
         +getItemCount()
         +setData()
     }
-    class ViewHolder
+    abstract class ViewHolder {
+        +<<create>>(itemView : View)
+    }
+
+    abstract class LayoutManager
+
+    class LinearLayoutManager {
+        <<create>>(context : Context)
+    }
 }
+
+
+RecyclerView +-- "Adapter<ViewHolder>"
+RecyclerView +-- ViewHolder
+RecyclerView +-- LayoutManager
+LayoutManager <|-left- LinearLayoutManager
 
 FriendClickedListener <|.. FriendListFragment
 ViewModel <|-- FriendListViewModel

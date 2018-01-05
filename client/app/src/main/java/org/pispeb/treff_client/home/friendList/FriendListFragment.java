@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,9 @@ public class FriendListFragment extends Fragment implements FriendListAdapter.Fr
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final FragmentFriendListBinding binding = FragmentFriendListBinding.inflate(inflater, container, false);
         final FriendListAdapter adapter = new FriendListAdapter(this);
+        RecyclerView rv = binding.list;
         binding.list.setAdapter(adapter);
-        binding.list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
 
         FriendListViewModel vm = ViewModelProviders.of(this).get(FriendListViewModel.class);

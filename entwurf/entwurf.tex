@@ -324,11 +324,8 @@ Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
 \end{itemize}
 
 \begin{center}
-	\includegraphics[width = \columnwidth / 3 * 2]{database.png}
-	\captionof{figure}{Bei dieser Darstellung sind View und ViewModel nicht als tatsächliche packages
-		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig.
-		Fehlende Klassen verhalten sich allerdings äquivalent.}
-
+	\svgFigure{database}{Bei dieser Darstellung sind View und ViewModel nicht als tatsächliche packages
+		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}{200pt}
 \end{center}
 
 \subsubsection{LiveData}
@@ -338,20 +335,25 @@ Wenn sich nun durch eine Änderung der Datenbank die anzuzeigenden Daten veränd
 Observer (also die View) darüber benachrichtigt und können entsprechend angepasst werden.
 Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert werden und stellt sicher,
 dass diese bei Änderungen der Datenbank auch die nötigen onChange() Methoden aufrufen.
+Der Ablauf eines solchen Updates lässt sich in Abb.\ref{fig:datafetch} nachvollziehen.
 
-\begin{center}
-	\includegraphics[width = \paperheight / 3 * 2, angle = -90]{datafetch.png}
-	\captionof{figure}{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf die Datenbank.
-	Im oberen Teil ist zu sehen, wie ein View-Objekt (in diesem Fall fragment) sich als Observer
-	eines LiveData Objekts eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
-	reagiert und das fragment benachrichtigt.}
+	\begin{figure}
+		\def\svgwidth{250pt}
+		\rotatebox{90}{\input{build/images/datafetch.pdf_tex}}
+		\caption{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf die Datenbank.
+			Im oberen Teil ist zu sehen, wie ein View-Objekt (in diesem Fall fragment) sich als Observer
+			eines LiveData Objekts eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
+			reagiert und das fragment benachrichtigt.}
+		\label{fig:datafetch}
+	\end{figure}
 
-\end{center}
+%
 
 \subsection{Bestandteile der GUI}
 % Strukturierung der GUI durch Activities und deren Aufteilung in Fragments,
 %	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
+
 Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den wahrscheinlich wichtigsten Teil stellt die
 Home-Activity dar, auf dem der Nutzer in vier Tabs auf alle Gruppen, Events, Freunde
 und die Karte zugreifen kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Events
@@ -375,10 +377,16 @@ kommt eine Recyclerview zum Einsatz, da sie flexibler und weniger ressourcenbela
 	\item{Layoutmanager} bestimmt, wie die einzelnen Elemente der Liste zueinander angeordnet sein sollen
 	(Im Falle einer Liste also ein LinearLayoutManager).
 \end{itemize}
+Für den LayoutManager existiert bereits eine fertige Implementierung, der LinearLayoutManager, welcher
+die items als Liste darstellt. Sowohl der ViewHolder als auch der Adapter wird jedoch für den entsprechenden
+Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 
 \begin{center}
-	\includegraphics[width = \columnwidth / 3 * 2]{lists2.png}
+	\svgFigure{lists}{Diese Darstellung zeigt die Vererbungen und Beziehungen im Aufbau einer
+	RecyclerView am Beispiel der FriendList. Group- und EventList verhalten sich allerdings
+	äquivalent.}{200pt}
 \end{center}
+
 
 \subsection{Bestandteile Datenverarbeitung}
 % Aufteilung der Funktionalitäten auf seperate Klassen,
