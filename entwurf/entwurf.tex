@@ -224,6 +224,30 @@ Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktion
 % Aufteilung der Funktionalitäten auf seperate Klassen;
 % Zusammenspiel dieser Klassen (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
+Der Server besteht aus drei Verschiedene Bestandteilen:
+
+\subsubsection{Netzwerkkommunikation}
+%Klassendiagramm(Server, ConnectionHandler und Kontext)
+Die Klasse Server ist die Hauptklasse des Servers.
+Sie startet beim hochfahren des Servers die Datenbank und ist zuständig für
+die Netzwerkkommunikation. Dazu wird für jede Verbindung die der Server mit
+Klienten hat ein ConnectionHandler erstellt. Diese geben die erhaltenen
+Anfragen an den RequestHandler weiter und senden am Ende die erhaltenen
+Antworten zurück an den Klienten.
+
+\subsubsection{De- und Encodierung von Anfragen}
+%Klassendiagramm RequestHandler und Kontext
+Die Klasse RequestHandler erhält die Kodierten Anfragen an die Datenbank und
+ist für die Dekodierung und Weiterleitung der Anfragen zuständig, sowie für
+für die Kodierung der Antworten und die Rückgabe der Antworten an die
+ConnectionHandler.
+
+\subsubsection{Datenbankzugriff}
+%Klassendiagramm sql-package
+Die Klasse EntityManager ist für den Datenbankzugriff verantwortlich.
+Dazu werden die Anfragen vom RequestHandler entgegengenommen auf der Datenbank
+ausgeführt und die Ergebnisse zum Encodieren an den RequestHandler 
+zurückgegeben.
 
 \subsection{Bestandteile des Servers}
 % Aufbau und genaue Funktionalität dieser Klassen
