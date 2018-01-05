@@ -17,5 +17,5 @@ public interface UserGroupDao {
     void save(UserGroup group);
 
     @Query("SELECT * FROM usergroup WHERE groupID = :groupId")
-    LiveData<UserGroup> load(int groupId);
+    LiveData<UserGroup> getGroupByID(int groupId);
 }

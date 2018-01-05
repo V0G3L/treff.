@@ -1,0 +1,58 @@
+@startuml
+
+package database {
+    class "UserDao" as UD {
+        save(user : User)
+        getUserByID(id : int) : LiveData<User>
+        getFriends() : LiveData<List<User>>\n...
+    }
+    class "UserGroupDao" as UGD {
+        save(userGroup : UserGroup)
+        getGroupByID(id : int) : LiveData<UserGroup>\n...
+    }
+    class "EventDao" as ED {
+        save(event : Event)
+        getEventByID(id : int) : LiveData<Event>\n...
+    }
+    class "treffDataBase" as DB {
+        getUserDao() : UserDao
+        getUserGroupDao() : UserGroupDao
+        getEventDao() : EventDao
+    }
+}
+
+package repositories {
+    class "UserRepository" as UR <<Singleton>> {
+        +getUser(id : int) : LiveData<User>
+        +getFriends() : LiveData<List<User>>\n...
+    }
+    class "UserGroupRepository" as UGR <<Singleton>> {
+        +addGroup(userGroup : UserGroup)
+        +getGroup(id : int) : LiveData<UserGroup>\n...
+    }
+    class "EventRepository" as ER <<Singleton>> {
+        +addEvent(event : Event)
+        +getEvent(id : int) : LiveData<Event>\n...
+    }
+}
+
+package networking {
+    class "RequestEncoder" as RE <<Singleton>> {
+
+    }
+}
+
+UR o-up- UD
+UGR o-up- UGD
+ER o-up- ED
+
+DB o-down- UD
+DB o-down- UGD
+DB o-down- ED
+
+UR o-down- RE
+UGR o-down- RE
+ER o-down- RE
+
+
+@enduml

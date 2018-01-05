@@ -18,5 +18,5 @@ public interface EventDao {
     void save(Event event);
 
     @Query("SELECT * FROM event WHERE id = :eventId")
-    LiveData<Event> load(int eventId);
+    LiveData<Event> getEventByID(int eventId);
 }

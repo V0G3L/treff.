@@ -7,6 +7,7 @@ import android.content.Context;
 import org.pispeb.treff_client.database.UserDao;
 import org.pispeb.treff_client.database.treffDatabase;
 import org.pispeb.treff_client.entities.User;
+import org.pispeb.treff_client.networking.RequestEncoder;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class UserRepository {
     private static treffDatabase db;
     private static UserDao userDao;
 
+    private RequestEncoder encoder;
+
     private static UserRepository INSTANCE;
 
     //TODO get proper context, maybe via dagger
@@ -22,9 +25,16 @@ public class UserRepository {
         if (INSTANCE == null) {
             INSTANCE = new UserRepository();
             INSTANCE.db = treffDatabase.getAppDatabase(context);
+            INSTANCE.init();
             userDao = db.getUserDao();
         }
         return INSTANCE;
+    }
+
+    private void init() {
+        if (encoder == null) {
+            encoder = RequestEncoder.getEntity();
+        }
     }
 
     public LiveData<User> getUser(int userID) {

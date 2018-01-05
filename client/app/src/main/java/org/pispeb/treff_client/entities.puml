@@ -1,0 +1,29 @@
+
+
+TODO what is this shit
+
+@startuml
+
+package entities {
+    class Chat
+    class "ChatMessage" as CM
+    class Event
+    class "GroupMemberShip" as GMS
+    class Poll
+    class "PollOption" as PO
+    class Position
+    class User
+    class "UserGroup" as UG
+}
+
+Chat o-- CM
+UG o-- Chat
+UG o-- User
+UG o-- Poll
+UG o-- Event
+Poll o-- PO
+User o-- Position
+PO o-- Position
+Event o-- Position
+
+@enduml
