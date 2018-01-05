@@ -176,7 +176,7 @@ von sowohl Klienten als auch Servern.
 \subsection{Funktion - Client}
 Der Klient speichert für den Nutzer relevante Daten in einer lokalen Datenbank ab.
 Diese können vom Nutzer eingesehen werden.
-Anfragen des Nutzers werden in Form von Befehlen an den Server weitergegeben (\ref{command}).
+Anfragen des Nutzers werden in Form von Befehlen an den Server weitergegeben (\ref{sec:commands}).
 Diverse Daten wie beispielsweise GPS-Standort oder Chatnachrichten werden
 dabei als Parameter der Befehle an den Server übergeben.
 
@@ -198,8 +198,14 @@ aufgeführt.
 \begin{tabular}[t]{ l l }
     \textbf{Deutsch} & \textbf{Englisch}\\
     \hline
-    Benutzerkonto & Account\\
-    Gruppe & Group\\
+    Benutzerkonto & account\\
+    Gruppe & group\\
+		Gruppenmitgliedschaft & groupmembership\\
+		Abstimmung & poll\\
+		Option einer Abstimmung & polloption\\
+		Verabredung & event\\
+
+
 \end{tabular}
 
 %%%%%%%%%%%%%%%%%%%%
@@ -209,33 +215,34 @@ aufgeführt.
 Dieses Kapitel beschreibt den theoretischen Aufbau des in diesem Projekt
 relevanten Ausschnitts der realen Welt.
 
-\subsection{Account - account}
+\subsection{Benutzerkonto}
 %TODO account-ERD einfügen
-Ein Nutzer wird im System in Form eines Accounts repräsentiert.
-Dieser wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Jeder Account beinhaltet den Nutzernamen 'username' und die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
-Für den Account wird desweiteren der Hash seines Passworts und des Salts, sowie das verwendete Salt gespeichert.
+Ein Nutzer wird im System in Form eines Benutzerkontos repräsentiert.
+Dieses wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Jedes Benutzerkonto beinhaltet den Nutzernamen 'username' und die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
+Für das Benutzerkonto wird desweiteren der Hash seines Passworts und des Salts, sowie das verwendete Salt gespeichert.
 Außerdem wird durch die Werte 'lon' und 'lat' Längen- und Breitengrad der aktuellen Position des
 Nutzers und durch 'timemeasured' der letzte Messzeitpunkt dieser Position gespeichert.
-Ein Account beinhaltet eine beliebig große Menge von Accounts, den Kontakten/Freunden des Nutzers.
-Diese Menge darf leer sein, jedoch nicht den eigenen Account beinhalten.
-Ein Account beinhaltet eine weitere, beliebig große Menge von Accounts.
-Diese Menge stellt die vom Nutzer blockierten Accounts dar und darf leer sein,
-jedoch nicht den eigenen Account beinhalten. Ein Account kann Verabredungen erstellen und an solchen teilnehmen.
-Ein Account kann Abstimmungen innerhalb einer Gruppe erstellen und für deren Optionen abstimmen.
-Jeder Account besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der er mitglied ist.
+Ein Benutzerkonto beinhaltet eine beliebig große Menge von Benutzerkonten, den Kontakten/Freunden des Nutzers.
+Diese Menge darf leer sein, jedoch nicht das eigene Benutzerkonto beinhalten.
+Ein Benutzerkonto beinhaltet eine weitere, beliebig große Menge von Benutzerkonten.
+Diese Menge stellt die vom Nutzer blockierten Benutzerkonten dar und darf leer sein,
+jedoch nicht das eigene Benutzerkonto beinhalten. Ein Benutzerkonto kann Verabredungen erstellen und an solchen teilnehmen.
+Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für deren Optionen abstimmen.
+Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der es mitglied ist.
 %TODO Warum haben wir was wie gemacht
 
-\subsection{Gruppenmitgliedschaft - groupmembership}
+\subsection{Gruppenmitgliedschaft}
 %TODO groupmembership-ERD einfügen
-Eine Gruppenmitgliedschaft gehört zu exakt einem Account und zu exakt einer Gruppe.
+Eine Gruppenmitgliedschaft gehört zu exakt einem Benutzerkonto und zu exakt einer Gruppe.
 Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Außerdem beinhaltet sie boolsche Werte, die angeben,
-welche Rechte der zugehörige Account in der zugehörigen Gruppe hat.
+welche Rechte das zugehörige Benutzerkonto in der zugehörigen Gruppe hat.
 Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe der Gruppenmitgliedschaft und sind nur in dieser gültig.
 \begin{itemize}
 	\item 'permission-change-group-name' - das Recht, den Namen der Gruppe zu ändern.
- 	\item 'permission-manage-members' - das Recht, Nutzer bzw deren Accounts in die Gruppe hinzuzufügen bzw Gruppenmitglieder zu entfernen.
+ 	\item 'permission-manage-members' - das Recht, Nutzer bzw dessen Benutzerkonto in die Gruppe hinzuzufügen
+	und Gruppenmitglieder zu entfernen.
  	\item 'permission-change-permissions' - das Recht, die Gruppenberechtigungen der Gruppenmitglieder zu bearbeiten.
  	\item 'permission-create-event' - das Recht, Verabredungen zu erstellen.
  	\item 'permission-edit-any-event' - das Recht, Verabredungen zu bearbeiten, welche man nicht selbst erstellt hat.
@@ -243,10 +250,10 @@ Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe der Gruppenmit
  	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten, welche man nicht selbst erstellt hat.
 \end{itemize}
 %TODO Warum haben wir was wie gemacht
-Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine Dreiecksbeziehung zwischen Account,
+Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine Dreiecksbeziehung zwischen Benutzerkonto,
 Gruppe und den Berechtigungen aufzulösen.
 
-\subsection{Gruppe - group}
+\subsection{Gruppe}
 %TODO group-ERD einfügen
 Eine Gruppe ist eine Ansammlung von Nutzern.
 Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
@@ -256,24 +263,27 @@ Außerdem beinhaltet eine Gruppe eine beliebig große Menge an Verabredungen und
 Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein können, dürfen beide Mengen leer sein.
 %TODO Warum haben wir was wie gemacht
 
-\subsection{Abstimmung - poll}
+\subsection{Abstimmung}
 %TODO poll-ERD einfügen
 Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird und einem Wahrheitswert der festlegt,
+Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird
+und einem Wahrheitswert der festlegt,
 ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu stimmen.
-Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung, aber mindestens eine.
-Desweiteren speichert die Abstimmung einen Account, ihren Ersteller.
+Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung,
+jedoch mindestens eine.
+Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
 %ODO Warum haben wir was wie gemacht
 
-\subsection{Option einer Abstimmung - polloption}
+\subsection{Option einer Abstimmung}
 %TODO polloption-ERD einfügen
 Die Option einer Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Die Option speichert ihren Start- und Endzeitpunkt starttime und endtime,
 sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und Breitengrad.
-Weiterhin wird eine beliebige Menge von Accounts gespeichert die für diese Option gestimmt haben.
+Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten gespeichert,
+die für diese Option gestimmt haben.
 %TODO Warum haben wir was wie gemacht
 
-\subsection{Verabredung - event}
+\subsection{Verabredung}
 %TODO event-ERD einfügen
 Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
 Sie besteht aus einem Namen 'title', einem Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
@@ -297,10 +307,10 @@ Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktion
 =======
 Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln, um z.B. Datenverlust und
 inkonsistentes Verhalten zu verhindern, das sonst bei Aktionen wie dem Pausieren oder drehen der App
-vorkommen kann. 
+vorkommen kann.
 
 \subsubsection{MVVM}
-Um diese Entkopplung zu erreichen kommt die MVVM-Architektur (Model-View-ViewModel) zu Einsatz.
+Um diese Entkopplung zu erreichen kommt die MVVM-Architektur (Model-View-ViewModel) zum Einsatz.
 Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
 \begin{itemize}
 	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments) behandeln Eingaben des Nutzers
@@ -318,13 +328,14 @@ Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
 \begin{center}
 	\includegraphics[width = \columnwidth / 3 * 2]{database.png}
 	\captionof{figure}{Bei dieser Darstellung sind View und ViewModel nicht als tatsächliche packages
-		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}
-	
+		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig.
+		Fehlende Klassen verhalten sich allerdings äquivalent.}
+
 \end{center}
 
 \subsubsection{LiveData}
 Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist, bietet Android eine
-WrapperKlasse anems LiveData an, welche von View-Elementen \enquote{observed} werden kann.
+WrapperKlasse namens LiveData an, welche von View-Elementen \enquote{observed} werden kann.
 Wenn sich nun durch eine Änderung der Datenbank die anzuzeigenden Daten verändern, werden alle
 Observer (also die View) darüber benachrichtigt und können entsprechend angepasst werden.
 Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert werden und stellt sicher,
@@ -336,7 +347,7 @@ dass diese bei Änderungen der Datenbank auch die nötigen onChange() Methoden a
 	Im oberen Teil ist zu sehen, wie ein View-Objekt (in diesem Fall fragment) sich als Observer
 	eines LiveData Objekts eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
 	reagiert und das fragment benachrichtigt.}
-	
+
 \end{center}
 
 %
@@ -352,17 +363,17 @@ dass diese bei Änderungen der Datenbank auch die nötigen onChange() Methoden a
 
 Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den wahrscheinlich wichtigsten Teil stellt die
 Home-Activity dar, auf dem der Nutzer in vier Tabs auf alle Gruppen, Events, Freunde
-und die Karte zugreifen kann. Details zu einer Gruppe sowie alle in dieser Gruppe geplanten Events
+und die Karte zugreifen kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Events
 können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity benötigt, die es dem
 Nutzer erlaubt, sich einzuloggen bzw. zu registrieren. Die letzte wichtige Komponente stellt die
-Settings-Activity dar, in welcher der Nutzer Accounteinstellungen vornehmen kann.
+Settings-Activity dar, in welcher der Nutzer Benutzerkonto-Einstellungen vornehmen kann.
 
 \subsubsection{Home-Activity}
 Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer nach dem Login hier landet und
 auf alle weiteren Funktionen von hier aus zugreifen kann. Die unterschiedlichen Tabs mit Karte,
 Freundes-, Gruppen-, und Eventliste werden dabei als Fragments realisiert, welche von einem
 ViewPagerAdapter verwaltet werden. Bis auf das Mapfragment unterscheiden sich die Fragments selbst
-kaum untereinander, da alle anderen lediglich eine Liste darstellen müssen. Um dies zu bewerkstelligen
+kaum voneinander, da alle anderen lediglich eine Liste darstellen müssen. Um dies zu bewerkstelligen
 kommt eine Recyclerview zum Einsatz, da sie flexibler und weniger ressourcenbelastend ist als zuvor
 übliche Listviews. Jede dieser Recyclerviews besteht im wesentlichen aus drei Teilen:
 \begin{itemize}
@@ -403,7 +414,7 @@ Der Server besteht aus drei verschiedenen Bestandteilen:
 
 \subsubsection{Netzwerkkommunikation}
 %Klassendiagramm(Server, ConnectionHandler und Kontext)
-Die Klasse Server ist die Hauptklasse des Servers.
+Die Klasse 'Server' ist die Hauptklasse des Servers.
 Sie startet beim Hochfahren des Servers die Datenbank und ist zuständig für
 die Netzwerkkommunikation. Dazu wird für jede Verbindung die der Server mit
 Klienten hat ein ConnectionHandler erstellt. Diese geben die erhaltenen
