@@ -1,9 +1,12 @@
 package org.pispeb.treff_client.home.friendList;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 
 import org.pispeb.treff_client.entities.User;
+import org.pispeb.treff_client.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,25 +16,34 @@ import java.util.List;
  */
 
 public class FriendListViewModel extends ViewModel {
-    private MutableLiveData<List<User>> data;
+    private LiveData<List<User>> users;
+    private UserRepository userRepo;
 
-    public FriendListViewModel() {
-        data = new MutableLiveData<>();
+    public FriendListViewModel(Context context) {
+
+        this.userRepo = UserRepository.getUserRepository(context);
+        users = userRepo.getFriends();
+
+
+        //TODO remove
+        users = new MutableLiveData<>();
         List<User> newData = new ArrayList<>();
-        newData.add(new User(1, "Max Mustermann"));
-        newData.add(new User(2, "Erika Experiment"));
-        newData.add(new User(3, "Thorsten Test"));
-        data.postValue(newData);
+        newData.add(new User(1, "Max Mustermann", true, false));
+        newData.add(new User(2, "Erika Experiment", true, false));
+        newData.add(new User(3, "Thorsten Test", true, false));
+
+        users.getValue().addAll(newData);
     }
 
-    public MutableLiveData<List<User>> getData() {
-        if(data == null) data = new MutableLiveData<>();
-        return data;
+    public LiveData<List<User>> getUsers() {
+        if (users == null) {
+            users = new MutableLiveData<>();
+        }
+        return users;
     }
 
     public void onAddClick() {
-        List<User> newData = data.getValue();
-        newData.add(new User(5, "Norton Neu"));
-        data.postValue(newData);
+        List<User> newData = users.getValue();
+        users.getValue().add(new User(5, "Norton Neu", true, false));
     }
 }

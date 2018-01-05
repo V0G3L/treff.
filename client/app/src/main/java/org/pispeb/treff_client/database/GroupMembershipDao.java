@@ -16,9 +16,15 @@ public interface GroupMembershipDao {
     @Insert
     void save(GroupMembership groupMembership);
 
-    @Query("SELECT usergroup.groupID, name FROM groupmembership INNER JOIN usergroup ON groupmembership.groupID = usergroup.groupID WHERE groupmembership.userID = :userID")
+    @Query("SELECT usergroup.groupID, name " +
+            "FROM groupmembership INNER JOIN usergroup " +
+            "ON groupmembership.groupID = usergroup.groupID " +
+            "WHERE groupmembership.userID = :userID")
     LiveData<List<UserGroup>> getGroupsByUser(int userID);
 
-    @Query("SELECT user.userID, username FROM groupmembership INNER JOIN user ON groupmembership.userID = user.userID WHERE groupmembership.groupID = :groupID")
+    @Query("SELECT user.userID, username, isFriend, isBlocked " +
+            "FROM groupmembership INNER JOIN user " +
+            "ON groupmembership.userID = user.userID " +
+            "WHERE groupmembership.groupID = :groupID")
     LiveData<List<User>> getUsersByGroup(int groupID);
 }

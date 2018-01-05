@@ -10,12 +10,16 @@ public class User {
     @PrimaryKey
     private int userID;
     private String username;
+    private boolean isFriend;
+    private boolean isBlocked;
     //TODO replace
     //private Position position;
 
-    public User(int userID, String username) {
+    public User(int userID, String username, boolean isFriend, boolean isBlocked) {
         this.userID = userID;
         this.username = username;
+        this.isFriend = isFriend;
+        this.isBlocked = isBlocked;
     }
 
     public int getUserID() {
@@ -32,6 +36,22 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(boolean friend) {
+        isFriend = friend;
+    }
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 
     /*TODO fix

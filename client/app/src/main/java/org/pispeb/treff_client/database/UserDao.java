@@ -7,6 +7,8 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.entities.User;
 
+import java.util.List;
+
 
 @Dao
 public interface UserDao {
@@ -14,5 +16,9 @@ public interface UserDao {
     void save(User user);
 
     @Query("SELECT * FROM user WHERE userID = :userID")
-    LiveData<User> load(int userID);
+    LiveData<User> getUserByID(int userID);
+
+    @Query("SELECT * FROM user WHERE isFriend = 1")
+    LiveData<List<User>> getFriends();
+
 }

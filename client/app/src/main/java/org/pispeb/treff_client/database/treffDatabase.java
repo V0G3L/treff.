@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.database;
 
+import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Database;
