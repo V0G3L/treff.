@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.lists;
+package org.pispeb.treff_client.home.eventList;
 
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.ViewGroup;

@@ -32,6 +32,11 @@
 
         <activity
             android:name=".home.HomeActivity">
+
+        </activity>
+
+        <activity
+            android:name=".group.GroupActivity">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -39,12 +44,10 @@
         </activity>
 
         <activity
-            android:name=".group.GroupActivity">
-        </activity>
-
-        <activity
             android:name=".settings.SettingsActivity">
         </activity>
+
+        <activity android:name=".friend.FriendActivity"/>
 
     </application>
 

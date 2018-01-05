@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.home;
+package org.pispeb.treff_client.home.friendList;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;

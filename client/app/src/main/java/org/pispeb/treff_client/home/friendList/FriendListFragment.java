@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.home;
+package org.pispeb.treff_client.home.friendList;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FragmentFriendListBinding;
 import org.pispeb.treff_client.entities.User;
-import org.pispeb.treff_client.lists.FriendListAdapter;
 
 
 public class FriendListFragment extends Fragment implements FriendListAdapter.FriendClickedListener {

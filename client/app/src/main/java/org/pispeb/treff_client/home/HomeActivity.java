@@ -12,7 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityHomeBinding;
+import org.pispeb.treff_client.home.eventList.EventListFragment;
+import org.pispeb.treff_client.home.friendList.FriendListFragment;
+import org.pispeb.treff_client.home.groupList.GroupListFragment;
 import org.pispeb.treff_client.ui_components.TabbedNavigationActivity;
+import org.pispeb.treff_client.ui_components.ViewPagerAdapter;
 
 
 /**

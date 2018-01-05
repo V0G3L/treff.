@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.home;
+package org.pispeb.treff_client.home.groupList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
