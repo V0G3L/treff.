@@ -163,8 +163,8 @@
 \section{Einleitung}
 
 \subsection{Client-Server-Architektur}
-Für die App \enquote{treff.} soll eine Klient-Server-Architektur verwendet werden,
-um die Interaktion mehrerer Nutzer zu realisieren.
+Für die App \enquote{treff.} soll eine Klient-Server-Architektur verwendet 
+werden, um die Interaktion mehrerer Nutzer zu realisieren.
 Hierbei stellen die Geräte der Nutzer die Klienten dar und der Server
 fungiert als Vermittler und Datenbank.
 Hierbei werden leicht bedienbare Kommunikationsschnittstellen verwendet.
@@ -174,9 +174,11 @@ Außerdem ermöglicht dies Kompatibilität mit alternativen Implementierungen
 von sowohl Klienten als auch Servern.
 
 \subsection{Funktion - Client}
-Der Klient speichert für den Nutzer relevante Daten in einer lokalen Datenbank ab.
+Der Klient speichert für den Nutzer relevante Daten in einer lokalen Datenbank
+ab.
 Diese können vom Nutzer eingesehen werden.
-Anfragen des Nutzers werden in Form von Befehlen an den Server weitergegeben (\ref{sec:commands}).
+Anfragen des Nutzers werden in Form von Befehlen an den Server weitergegeben
+(\ref{sec:commands}).
 Diverse Daten wie beispielsweise GPS-Standort oder Chatnachrichten werden
 dabei als Parameter der Befehle an den Server übergeben.
 
@@ -217,61 +219,81 @@ relevanten Ausschnitts der realen Welt.
 
 \subsection{Benutzerkonto}
 Ein Nutzer wird im System in Form eines Benutzerkontos repräsentiert.
-Dieses wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Jedes Benutzerkonto beinhaltet den Nutzernamen 'username' und die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
-Für das Benutzerkonto wird desweiteren der Hash seines Passworts und des Salts, sowie das verwendete Salt gespeichert.
-Außerdem wird durch die Werte 'lon' und 'lat' Längen- und Breitengrad der aktuellen Position des
-Nutzers und durch 'timemeasured' der letzte Messzeitpunkt dieser Position gespeichert.
-Ein Benutzerkonto beinhaltet eine beliebig große Menge von Benutzerkonten, den Kontakten/Freunden des Nutzers.
-Diese Menge darf leer sein, jedoch nicht das eigene Benutzerkonto beinhalten.
-Ein Benutzerkonto beinhaltet eine weitere, beliebig große Menge von Benutzerkonten.
-Diese Menge stellt die vom Nutzer blockierten Benutzerkonten dar und darf leer sein,
-jedoch nicht das eigene Benutzerkonto beinhalten. Ein Benutzerkonto kann Verabredungen erstellen und an solchen teilnehmen.
-Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für deren Optionen abstimmen.
-Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der es mitglied ist.
+Dieses wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und
+angesprochen. Jedes Benutzerkonto beinhaltet den Nutzernamen 'username' und
+die verwendete E-Mailadresse 'email' des zugehörigen Nutzers.
+Für das Benutzerkonto wird desweiteren der Hash seines Passworts und des Salts,
+sowie das verwendete Salt gespeichert.
+Außerdem wird durch die Werte 'lon' und 'lat' Längen- und Breitengrad der
+aktuellen Position des Nutzers und durch 'timemeasured' der letzte
+Messzeitpunkt dieser Position gespeichert.
+Ein Benutzerkonto beinhaltet eine beliebig große Menge von Benutzerkonten,
+den Kontakten/Freunden des Nutzers. Diese Menge darf leer sein, jedoch nicht
+das eigene Benutzerkonto beinhalten.
+Ein Benutzerkonto beinhaltet eine weitere,
+beliebig große Menge von Benutzerkonten.
+Diese Menge stellt die vom Nutzer blockierten Benutzerkonten dar und darf leer
+sein, jedoch nicht das eigene Benutzerkonto beinhalten. Ein Benutzerkonto kann
+Verabredungen erstellen und an solchen teilnehmen.
+Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für
+deren Optionen abstimmen.
+Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der
+es mitglied ist.
 %TODO Warum haben wir was wie gemacht
 
 \svgFigure{erd-account}{Benutzerkonto}{300pt}
 
 \subsection{Gruppenmitgliedschaft}
-Eine Gruppenmitgliedschaft gehört zu exakt einem Benutzerkonto und zu exakt einer Gruppe.
-Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Außerdem beinhaltet sie boolsche Werte, die angeben,
-welche Rechte das zugehörige Benutzerkonto in der zugehörigen Gruppe hat.
-Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe der Gruppenmitgliedschaft und sind nur in dieser gültig.
+Eine Gruppenmitgliedschaft gehört zu exakt einem Benutzerkonto und zu exakt
+einer Gruppe. Sie wird durch eine eindeutige Identifikationsnummer 'id'
+identifiziert und angesprochen. Außerdem beinhaltet sie boolsche Werte,
+die angeben, welche Rechte das zugehörige Benutzerkonto in der zugehörigen
+Gruppe hat. Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe
+der Gruppenmitgliedschaft und sind nur in dieser gültig.
 \begin{itemize}
-	\item 'permission-change-group-name' - das Recht, den Namen der Gruppe zu ändern.
- 	\item 'permission-manage-members' - das Recht, Nutzer bzw dessen Benutzerkonto in die Gruppe hinzuzufügen
-	und Gruppenmitglieder zu entfernen.
- 	\item 'permission-change-permissions' - das Recht, die Gruppenberechtigungen der Gruppenmitglieder zu bearbeiten.
+	\item 'permission-change-group-name' - das Recht, den Namen der Gruppe zu
+        ändern.
+ 	\item 'permission-manage-members' - das Recht, Nutzer bzw dessen
+        Benutzerkonto in die Gruppe hinzuzufügen und Gruppenmitglieder zu 
+        entfernen.
+ 	\item 'permission-change-permissions' - das Recht, die
+        Gruppenberechtigungen der Gruppenmitglieder zu bearbeiten.
  	\item 'permission-create-event' - das Recht, Verabredungen zu erstellen.
- 	\item 'permission-edit-any-event' - das Recht, Verabredungen zu bearbeiten, welche man nicht selbst erstellt hat.
+ 	\item 'permission-edit-any-event' - das Recht, Verabredungen zu bearbeiten,
+        welche man nicht selbst erstellt hat.
  	\item 'permission-create-poll' - das Recht, Abstimmungen zu erstellen.
- 	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten, welche man nicht selbst erstellt hat.
+ 	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten,
+        welche man nicht selbst erstellt hat.
 \end{itemize}
 
 %TODO Warum haben wir was wie gemacht
-Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine Dreiecksbeziehung zwischen Benutzerkonto,
+Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine
+Dreiecksbeziehung zwischen Benutzerkonto,
 Gruppe und den Berechtigungen aufzulösen.
 
 \svgFigure{erd-groupmembership}{Gruppenmitgliedschaft}{300pt}
 
 \subsection{Gruppe}
-Eine Gruppe ist eine Ansammlung von Nutzern.
-Sie wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Eine Gruppe besitzt einen Namen 'name' und beinhaltet eine beliebig große Menge der Gruppenmitgliedschaften aller Nutzer,
-die Teil der Gruppe sind. Da eine Gruppe ohne Mitglieder nicht existieren kann, darf diese Menge nicht leer sein.
-Außerdem beinhaltet eine Gruppe eine beliebig große Menge an Verabredungen und eine beliebig große Menge von Abstimmungen.
-Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein können, dürfen beide Mengen leer sein.
+Eine Gruppe ist eine Ansammlung von Nutzern. Sie wird durch eine eindeutige
+Identifikationsnummer 'id' identifiziert und angesprochen. Eine Gruppe besitzt
+einen Namen 'name' und beinhaltet eine beliebig große Menge der
+Gruppenmitgliedschaften aller Nutzer, die Teil der Gruppe sind. 
+Da eine Gruppe ohne Mitglieder nicht existieren kann, darf diese Menge nicht
+leer sein. Außerdem beinhaltet eine Gruppe eine beliebig große Menge an
+Verabredungen und eine beliebig große Menge von Abstimmungen.
+Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein
+können, dürfen beide Mengen leer sein.
 %TODO Warum haben wir was wie gemacht
 
 \svgFigure{erd-group}{Gruppe}{200pt}
 
 \subsection{Abstimmung}
-Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id'
+identifiziert und angesprochen.
 Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird
 und einem Wahrheitswert der festlegt,
-ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu stimmen.
+ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu 
+stimmen.
 Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung,
 jedoch mindestens eine.
 Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
@@ -280,20 +302,25 @@ Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
 \svgFigure{erd-poll}{Abstimmung}{280pt}
 
 \subsection{Abstimmungsoption}
-Die Abstimmungsoption wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
+Die Abstimmungsoption wird durch eine eindeutige Identifikationsnummer 'id'
+identifiziert und angesprochen.
 Die Option speichert ihren Start- und Endzeitpunkt starttime und endtime,
-sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und Breitengrad.
-Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten gespeichert,
-die für diese Option gestimmt haben.
+sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und 
+Breitengrad.
+Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten
+gespeichert, die für diese Option gestimmt haben.
 %TODO Warum haben wir was wie gemacht
 
 \svgFigure{erd-polloption}{Abstimmungsoption}{300pt}
 
 \subsection{Verabredung}
-Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id' identifiziert und angesprochen.
-Sie besteht aus einem Namen 'title', einem Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
-und Längen- sowie Breitengrad des Treffpuktes 'lon' und 'lat'. Sie speichert ihren Ersteller und die Gruppe,
-in der sie erstellt wurde. Eine Verabredung beinhaltet eine beliebig große Teilmenge von Mitgliedern der zugehörigen Gruppe.
+Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id'
+identifiziert und angesprochen. Sie besteht aus einem Namen 'title', einem
+Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
+und Längen- sowie Breitengrad des Treffpuktes 'lon' und 'lat'. Sie speichert
+ihren Ersteller und die Gruppe, in der sie erstellt wurde.
+Eine Verabredung beinhaltet eine beliebig große Teilmenge von Mitgliedern der
+zugehörigen Gruppe.
 Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 %TODO Warum haben wir was wie gemacht
 
@@ -314,49 +341,63 @@ Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 % Aufteilung in GUI und Datenverarbeitung (Fließtext)
 % Ihre Funktionen
 Der Client, also die App selbst, besteht grundsätzlich auch zwei Teilen:
-der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung.
-Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle Funktionen der App zugreifen kann.
-Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln, um z.B. Datenverlust und
-inkonsistentes Verhalten zu verhindern, das sonst bei Aktionen wie dem Pausieren oder drehen der App
-vorkommen kann.
+der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund
+ablaufenden Datenverwaltung.
+Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle
+Funktionen der App zugreifen kann.
+Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln,
+um z.B. Datenverlust und inkonsistentes Verhalten zu verhindern, das sonst
+bei Aktionen wie dem Pausieren oder drehen der App vorkommen kann.
 
 \subsubsection{MVVM}
-Um diese Entkopplung zu erreichen kommt die MVVM-Architektur (Model-View-ViewModel) zum Einsatz.
+Um diese Entkopplung zu erreichen kommt die MVVM-Architektur
+(Model-View-ViewModel) zum Einsatz.
 Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
 \begin{itemize}
-	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments) behandeln Eingaben des Nutzers
-	und bestimmen das Aussehen der Benutzeroberfläche.
-	\item Das Model stellt eine Abstraktion der zugrunde liegenden Datenstruktur zur Verfügung.
-	In diesem Fall handelt es sich dabei um Repositories, welche sowohl auf eine lokale Datenbank
-	zugreifen können, als auch über einen Netzwerkadapter Updates vom Server anfordern können.
-	\item Die Verbindung zwischen der Model- und der View-Ebene stellen ViewModels dar.
-	Diese stellen der darüber liegenden View Verbindungen zu allen benötigten Daten zur Verfügung.
-	Wichtig ist dieser Schritt deshalb, weil ViewModels im Gegensatz zu View-Objekten auch
-	Configuration-changes überleben, die Daten also z.B. nach dem Drehen des Geräts weiterhin zur
-	Verfügung stehen und sofort wieder von der View verwendet werden können.
+	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments)
+        behandeln Eingaben des Nutzers und bestimmen das Aussehen der
+        Benutzeroberfläche.
+	\item Das Model stellt eine Abstraktion der zugrunde liegenden
+        Datenstruktur zur Verfügung. In diesem Fall handelt es sich dabei um
+        Repositories, welche sowohl auf eine lokale Datenbank zugreifen können,
+        als auch über einen Netzwerkadapter Updates vom Server anfordern
+        können.
+	\item Die Verbindung zwischen der Model- und der View-Ebene stellen
+        ViewModels dar. Diese stellen der darüber liegenden View Verbindungen
+        zu allen benötigten Daten zur Verfügung.
+	    Wichtig ist dieser Schritt deshalb, weil ViewModels im Gegensatz zu
+        View-Objekten auch Configuration-changes überleben, die Daten also z.B.
+        nach dem Drehen des Geräts weiterhin zur Verfügung stehen und sofort
+        wieder von der View verwendet werden können.
 \end{itemize}
 
 \begin{center}
-	\svgFigure{database}{Bei dieser Darstellung sind View und ViewModel nicht als tatsächliche packages
-		zu verstehen, sondern dienen lediglich der vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}{200pt}
+	\svgFigure{database}{Bei dieser Darstellung sind View und ViewModel nicht
+        als tatsächliche packages zu verstehen, sondern dienen lediglich der 
+        vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm
+        vollständig.
+        Fehlende Klassen verhalten sich allerdings äquivalent.}{200pt}
 \end{center}
 
 \subsubsection{LiveData}
-Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist, bietet Android eine
-WrapperKlasse namens LiveData an, welche von View-Elementen \enquote{observed} werden kann.
-Wenn sich nun durch eine Änderung der Datenbank die anzuzeigenden Daten verändern, werden alle
-Observer (also die View) darüber benachrichtigt und können entsprechend angepasst werden.
-Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert werden und stellt sicher,
-dass diese bei Änderungen der Datenbank auch die nötigen onChange() Methoden aufrufen.
-Der Ablauf eines solchen Updates lässt sich in Abb.\ref{fig:datafetch} nachvollziehen.
+Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
+bietet Android eine WrapperKlasse namens LiveData an, welche von View-Elementen
+\enquote{observed} werden kann. Wenn sich nun durch eine Änderung der Datenbank
+die anzuzeigenden Daten verändern, werden alle Observer (also die View) darüber
+benachrichtigt und können entsprechend angepasst werden.
+Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert
+werden und stellt sicher, dass diese bei Änderungen der Datenbank auch die
+nötigen onChange() Methoden aufrufen. Der Ablauf eines solchen Updates lässt
+sich in Abb.\ref{fig:datafetch} nachvollziehen.
 
 	\begin{figure}
 		\def\svgwidth{250pt}
 		\rotatebox{90}{\input{build/images/datafetch.pdf_tex}}
-		\caption{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf die Datenbank.
-			Im oberen Teil ist zu sehen, wie ein View-Objekt (in diesem Fall fragment) sich als Observer
-			eines LiveData Objekts eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
-			reagiert und das fragment benachrichtigt.}
+		\caption{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf
+            die Datenbank. Im oberen Teil ist zu sehen, wie ein View-Objekt
+            (in diesem Fall fragment) sich als Observer eines LiveData Objekts
+            eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine
+            Änderung reagiert und das fragment benachrichtigt.}
 		\label{fig:datafetch}
 	\end{figure}
 
@@ -367,43 +408,52 @@ Der Ablauf eines solchen Updates lässt sich in Abb.\ref{fig:datafetch} nachvoll
 %	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
 
-Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den wahrscheinlich wichtigsten Teil stellt die
-Home-Activity dar, auf dem der Nutzer in vier Tabs auf alle Gruppen, Events, Freunde
-und die Karte zugreifen kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Events
-können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity benötigt, die es dem
-Nutzer erlaubt, sich einzuloggen bzw. zu registrieren. Die letzte wichtige Komponente stellt die
-Settings-Activity dar, in welcher der Nutzer Benutzerkonto-Einstellungen vornehmen kann.
+Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den
+wahrscheinlich wichtigsten Teil stellt die Home-Activity dar, auf dem der
+Nutzer in vier Tabs auf alle Gruppen, Events, Freunde und die Karte zugreifen
+kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Events
+können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity
+benötigt, die es dem Nutzer erlaubt, sich einzuloggen bzw. zu registrieren.
+Die letzte wichtige Komponente stellt die Settings-Activity dar, in welcher
+der Nutzer Benutzerkonto-Einstellungen vornehmen kann.
 
 \subsubsection{Home-Activity}
-Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer nach dem Login hier landet und
-auf alle weiteren Funktionen von hier aus zugreifen kann. Die unterschiedlichen Tabs mit Karte,
-Freundes-, Gruppen-, und Eventliste werden dabei als Fragments realisiert, welche von einem
-ViewPagerAdapter verwaltet werden. Bis auf das Mapfragment unterscheiden sich die Fragments selbst
-kaum voneinander, da alle anderen lediglich eine Liste darstellen müssen. Um dies zu bewerkstelligen
-kommt eine Recyclerview zum Einsatz, da sie flexibler und weniger ressourcenbelastend ist als zuvor
-übliche Listviews. Jede dieser Recyclerviews besteht im wesentlichen aus drei Teilen:
+Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer
+nach dem Login hier landet und auf alle weiteren Funktionen von hier aus
+zugreifen kann. Die unterschiedlichen Tabs mit Karte, Freundes-, Gruppen-, und
+Eventliste werden dabei als Fragments realisiert, welche von einem
+ViewPagerAdapter verwaltet werden. Bis auf das Mapfragment unterscheiden sich
+die Fragments selbst kaum voneinander, da alle anderen lediglich eine Liste
+darstellen müssen. Um dies zu bewerkstelligen kommt eine Recyclerview zum
+Einsatz, da sie flexibler und weniger ressourcenbelastend ist als zuvor
+übliche Listviews. Jede dieser Recyclerviews besteht im wesentlichen aus
+drei Teilen:
 \begin{itemize}
-	\item{ViewHolder} ist dafür verantwortlich, die Daten eines einzelnen Elements der Liste zu
-	behalten und die Verbindung zum Layout eines Listeneintrags herzustellen.
-	\item{Adapter} stellt die Verbindung zwischen der Menge an Daten, die angezeigt werden soll und den
-	ViewHoldern dar.
-	\item{Layoutmanager} bestimmt, wie die einzelnen Elemente der Liste zueinander angeordnet sein sollen
-	(Im Falle einer Liste also ein LinearLayoutManager).
+	\item{ViewHolder} ist dafür verantwortlich, die Daten eines einzelnen
+        Elements der Liste zu behalten und die Verbindung zum Layout eines
+        Listeneintrags herzustellen.
+	\item{Adapter} stellt die Verbindung zwischen der Menge an Daten, die
+        angezeigt werden soll und den ViewHoldern dar.
+	\item{Layoutmanager} bestimmt, wie die einzelnen Elemente der Liste
+        zueinander angeordnet sein sollen
+        (Im Falle einer Liste also ein LinearLayoutManager).
 \end{itemize}
-Für den LayoutManager existiert bereits eine fertige Implementierung, der LinearLayoutManager, welcher
-die items als Liste darstellt. Sowohl der ViewHolder als auch der Adapter wird jedoch für den entsprechenden
+Für den LayoutManager existiert bereits eine fertige Implementierung, der
+LinearLayoutManager, welcher die items als Liste darstellt. Sowohl der
+ViewHolder als auch der Adapter wird jedoch für den entsprechenden
 Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 
 \begin{center}
-	\svgFigure{lists}{Diese Darstellung zeigt die Vererbungen und Beziehungen im Aufbau einer
-	RecyclerView am Beispiel der FriendList. Group- und EventList verhalten sich allerdings
-	äquivalent.}{200pt}
+	\svgFigure{lists}{Diese Darstellung zeigt die Vererbungen und Beziehungen
+    im Aufbau einer RecyclerView am Beispiel der FriendList. Group- und
+    EventList verhalten sich allerdings äquivalent.}{200pt}
 \end{center}
 
 
 \subsection{Bestandteile Datenverarbeitung}
 % Aufteilung der Funktionalitäten auf seperate Klassen,
-% sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
+% sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme,
+% ggf Sequenzdiagramme)
 
 \subsection{Kommunikation von GUI und Datenverarbeitung}
 % Zusammenspiel von GUI und Datenverarbeitung
@@ -649,9 +699,10 @@ latitude/Breitengrad{,} auf dem die Verabredung stattfindet (Angabe als
 Dezimalgrad),
 longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
 Dezimalgrad)}
-{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in weiteren
-Befehlen referenziert werden kann}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-event-create}
+{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in
+weiteren Befehlen referenziert werden kann}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,
+no-permission-event-create}
 
 \apiCommand{edit-event}
 {Editieren einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -690,7 +741,8 @@ weiteren Befehlen referenziert werden kann,
 option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
 Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
 Abstimmungsoptionen.}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-create}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,
+no-permission-poll-create}
 
 \apiCommand{edit-poll}
 {Editieren einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -705,8 +757,8 @@ Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 
 \apiCommand{add-poll-option}
-{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
+{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
+Mitglied ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
 wurde,
 poll-id/Identifikationsnummer der Abstimmung{,} zu der die Abstimmungsoption
@@ -717,7 +769,8 @@ time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
 time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
 {id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
-{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,no-permission-poll-edit}
+{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
+no-permission-poll-edit}
 
 % TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
