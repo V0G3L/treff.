@@ -1,13 +1,23 @@
 NAME=entwurf
 
-.PHONY: show clean distclean dev
-
-default dev all: distclean build/$(NAME).pdf
+default dev all: distclean svg uml build/$(NAME).pdf
 
 dev: CONT_FLAG = -pvc
 
+svg: $(patsubst %.svg,build/%.pdf,$(wildcard images/*.svg))
+
+uml: $(patsubst uml-source/%.plantuml,build/uml/%.png,$(wildcard uml-source/*.plantuml))
+
+build/images/%.pdf: images/%.svg
+	mkdir -p build/images
+	inkscape -D -z --file=$< --export-pdf=$@ --export-latex
+
+build/uml/%.png: uml-source/%.plantuml
+	mkdir -p build/uml
+	plantuml $<
+	mv $(patsubst build/uml/%.png,uml-source/%.png,$@) $@
+
 build/%.pdf: %.tex *.sty
-	plantuml uml-source/*.plantuml
 	mkdir -p build
 	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 
@@ -18,5 +28,5 @@ clean:
 	rm -f *.tmp *.tui *.log *.tuc *.mp *.bbl *.blg *.fls *.idx *.aux *.out *.fdb_latexmk *.ilg *.ind
 	rm -rf build
 
-distclean: clean
+distclean:
 	rm -f build/$(NAME).pdf
