@@ -329,7 +329,7 @@ Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 
 \svgFigure{erd-event}{Verabredung}{350pt}
 
-\subsection{Gesammtkonstrukt}
+\subsection{Gesamtkonstrukt}
 \begin{figure}
     \centering
     \def\svgwidth{600pt}
@@ -619,7 +619,7 @@ als Eingabe verlangt wird}
 pass/Passwort des eigenen Kontos,
 name/vorgeschlagener{,} neuer Name}
 {---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid, invalid-email}
+{cred-wrong, user-id-invalid, username-already-in-use}
 
 \apiCommand{edit-email}
 {Editieren der eigenen E-Mail-Adresse}
@@ -627,7 +627,7 @@ name/vorgeschlagener{,} neuer Name}
 pass/Passwort des eigenen Kontos,
 email/vorgeschlagene{,} neue E-Mail}
 {---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid, username-already-in-use}\
+{cred-wrong, user-id-invalid, invalid-email}\
 
 \apiCommand{edit-password}
 {Editieren des eigenen Passworts}
