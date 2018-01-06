@@ -242,6 +242,7 @@ es mitglied ist.
 %TODO Warum haben wir was wie gemacht
 
 \svgFigure{erd-account}{Benutzerkonto}{300pt}
+\pagebreak
 
 \subsection{Gruppenmitgliedschaft}
 Eine Gruppenmitgliedschaft gehört zu exakt einem Benutzerkonto und zu exakt
@@ -275,6 +276,8 @@ Dreiecksbeziehung zwischen Benutzerkonto,
 Gruppe und den Berechtigungen aufzulösen.
 
 \svgFigure{erd-groupmembership}{Gruppenmitgliedschaft}{300pt}
+\pagebreak
+
 
 \subsection{Gruppe}
 Eine Gruppe ist eine Ansammlung von Nutzern. Sie wird durch eine eindeutige
@@ -287,8 +290,13 @@ Verabredungen und eine beliebig große Menge von Abstimmungen.
 Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein
 können, dürfen beide Mengen leer sein.
 %TODO Warum haben wir was wie gemacht
+\\
+\\
+\\
 
 \svgFigure{erd-group}{Gruppe}{200pt}
+\pagebreak
+
 
 \subsection{Abstimmung}
 Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id'
@@ -301,8 +309,13 @@ Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung,
 jedoch mindestens eine.
 Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
 %TODO Warum haben wir was wie gemacht
+\\
+\\
+\\
 
 \svgFigure{erd-poll}{Abstimmung}{280pt}
+\pagebreak
+
 
 \subsection{Abstimmungsoption}
 Die Abstimmungsoption wird durch eine eindeutige Identifikationsnummer 'id'
@@ -313,8 +326,13 @@ Breitengrad.
 Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten
 gespeichert, die für diese Option gestimmt haben.
 %TODO Warum haben wir was wie gemacht
+\\
+\\
+\\
 
 \svgFigure{erd-polloption}{Abstimmungsoption}{300pt}
+\pagebreak
+
 
 \subsection{Verabredung}
 Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id'
@@ -326,13 +344,18 @@ Eine Verabredung beinhaltet eine beliebig große Teilmenge von Mitgliedern der
 zugehörigen Gruppe.
 Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 %TODO Warum haben wir was wie gemacht
+\\
+\\
+\\
 
 \svgFigure{erd-event}{Verabredung}{350pt}
+\pagebreak
+
 
 \subsection{Gesamtkonstrukt}
-\begin{figure}
+\begin{figure}[!htb]
     \centering
-    \def\svgwidth{600pt}
+    \def\svgwidth{540pt}
     \rotatebox{90}{\input{build/images/erd-complete.pdf_tex}}
     \caption{Gesamtkonstrukt}
     \label{fig:erd-complete}
