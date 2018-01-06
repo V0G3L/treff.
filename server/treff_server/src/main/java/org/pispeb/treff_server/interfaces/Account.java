@@ -6,6 +6,7 @@ import org.pispeb.treff_server.sql.Position;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.SortedSet;
 
 /**
  * An object representing an account with an associated username, email address,
@@ -57,7 +58,42 @@ public interface Account {
 
     void updatePosition(Position position);
 
-    // TODO: unload on inactivity. Or maybe not? Maybe not store data in objects at all?
+    /**
+     * Adds an {@link Update} that affects this {@link Account} to the set of undelivered
+     * Updates.
+     * Will call {@link AccountUpdateListener#onUpdateAdded(Update)} on all registered
+     * AccountUpdateListeners.
+     * @param update The Update to add
+     */
+    void addUpdate(Update update);
+
+    /**
+     * Returns the set of {@link Update}s that affect this {@link Account} but have
+     * not been delivered to it yet.
+     * @return The set of undelivered Updates, sorted by time in ascending order.
+     */
+    SortedSet<Update> getUndeliveredUpdates();
+
+    /**
+     * Marks an {@link Update} that affects this {@link Account} as delivered, removing
+     * it from the set returned by {@link #getUndeliveredUpdates()}.
+     */
+    void markUpdateAsDelivered(Update update);
+
+    /**
+     * Registers an {@link AccountUpdateListener} whose
+     * {@link AccountUpdateListener#onUpdateAdded(Update)}
+     * method is called when an {@link Update} is added via {@link #addUpdate(Update)}.
+     * @param updateListener The AccountUpdateListener to add
+     */
+    void addUpdateListener(AccountUpdateListener updateListener);
+
+    /**
+     * Removes an {@link AccountUpdateListener}, no longer notifying it when an
+     * {@link Update} is added via {@link #addUpdate(Update)}.
+     * @param updateListener The AccountUpdateListener to remove
+     */
+    void removeUpdateListener(AccountUpdateListener updateListener);
 
     /** Deletes this account. TODO: specify further
      */

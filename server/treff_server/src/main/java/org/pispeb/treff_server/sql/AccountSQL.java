@@ -3,10 +3,13 @@ package org.pispeb.treff_server.sql;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Group;
+import org.pispeb.treff_server.interfaces.Update;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.SortedSet;
 
 public class AccountSQL implements Account {
 
@@ -88,6 +91,31 @@ public class AccountSQL implements Account {
     @Override
     public void updatePosition(Position position) {
         // not persistent
+    }
+
+    @Override
+    public void addUpdate(Update update) {
+        
+    }
+
+    @Override
+    public SortedSet<Update> getUndeliveredUpdates() {
+        return null;
+    }
+
+    @Override
+    public void markUpdateAsDelivered(Update update) {
+
+    }
+
+    @Override
+    public void addUpdateListener(AccountUpdateListener updateListener) {
+
+    }
+
+    @Override
+    public void removeUpdateListener(AccountUpdateListener updateListener) {
+
     }
 
     @Override

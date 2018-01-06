@@ -4,8 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/server.iml" filepath="$PROJECT_DIR$/server.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/treff_server.iml" filepath="$PROJECT_DIR$/.idea/modules/treff_server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/treff_server_main.iml" filepath="$PROJECT_DIR$/.idea/modules/treff_server_main.iml" group="treff_server" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/treff_server_test.iml" filepath="$PROJECT_DIR$/.idea/modules/treff_server_test.iml" group="treff_server" />
     </modules>
   </component>
 </project>
