@@ -1,6 +1,6 @@
 package org.pispeb.treff_server.interfaces;
 
-import org.pispeb.treff_server.sql.Position;
+import org.pispeb.treff_server.Position;
 
 import java.util.Date;
 import java.util.Set;

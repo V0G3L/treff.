@@ -46,20 +46,6 @@ public interface AccountManager {
     Account getAccountByEmail(String email);
 
     /**
-     * <p>Returns an {@link Account} object that does not represent an actual
-     * account but whose methods will take a similar time to return compared to
-     * those of an {@link Account} object representing an actual account.</p>
-     * <p>All getter-methods will always return either null or, if returning a
-     * primitive, the default value. Since this object is stateless, invoking
-     * any setter-methods will have no effect on the object's behaviour.</p>
-     * <p>This object may be used as part of a protection against timing
-     * attacks.</p>
-     * @return An dummy {@link Account} object
-     */
-    // TODO: Overkill?
-    Account getDummyAccount();
-
-    /**
      * Creates a new account with the supplied username, email address and password.
      * @param username The username for the new account
      * @param email The email of the new account

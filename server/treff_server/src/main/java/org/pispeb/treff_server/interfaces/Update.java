@@ -9,7 +9,7 @@ import java.util.Set;
  * Represents a change to the database caused by user interaction that
  * affects other {@link Account}s.
  * This change can be either an edit to an entity or a chat message sent to a
- * {@link Group}.
+ * {@link Usergroup}.
  *
  * <p>Once an {@link Update} is sent to a client device using an {@link Account}
  * that is affected by that Update, the Account should be removed from the
@@ -81,7 +81,7 @@ public interface Update extends Comparable<Update> {
         EDIT,
         /**
          * The type of Updates that represent chat messages sent to
-         * {@link Group}s
+         * {@link Usergroup}s
          */
         CHAT
     }

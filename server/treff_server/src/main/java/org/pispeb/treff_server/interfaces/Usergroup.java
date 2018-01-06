@@ -6,7 +6,7 @@ import org.pispeb.treff_server.sql.Permission;
 import java.util.List;
 import java.util.Set;
 
-public interface Group {
+public interface Usergroup {
 
     void setName(String name);
     String getName();

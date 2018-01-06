@@ -1,10 +1,11 @@
 package org.pispeb.treff_server.sql;
 
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
-import org.pispeb.treff_server.interfaces.Group;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
 
 import java.util.Date;
@@ -64,17 +65,17 @@ public class AccountSQL implements Account {
     }
 
     @Override
-    public Map<Integer, Group> getAllGroups() {
+    public Map<Integer, Usergroup> getAllGroups() {
         return null;
     }
 
     @Override
-    public void addToGroup(Group group) {
+    public void addToGroup(Usergroup usergroup) {
 
     }
 
     @Override
-    public void removeFromGroup(Group group) {
+    public void removeFromGroup(Usergroup usergroup) {
 
     }
 

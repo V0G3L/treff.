@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;

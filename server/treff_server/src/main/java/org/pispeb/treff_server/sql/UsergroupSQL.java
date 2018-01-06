@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GroupSQL implements Group {
+public class UsergroupSQL implements Usergroup {
 
     private Set<Account> members;
     private Map<Account, Set<Permission>> memberPermissions;

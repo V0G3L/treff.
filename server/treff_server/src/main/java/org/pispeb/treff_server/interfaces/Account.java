@@ -2,7 +2,7 @@ package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
-import org.pispeb.treff_server.sql.Position;
+import org.pispeb.treff_server.Position;
 
 import java.util.Date;
 import java.util.Map;
@@ -46,12 +46,12 @@ public interface Account {
 
     /**
      *
-     * @return ID -> Group mapping containing only groups that this account is a member
+     * @return ID -> Usergroup mapping containing only groups that this account is a member
      * of.
      */
-    Map<Integer, Group> getAllGroups();
-    void addToGroup(Group group);
-    void removeFromGroup(Group group);
+    Map<Integer, Usergroup> getAllGroups();
+    void addToGroup(Usergroup usergroup);
+    void removeFromGroup(Usergroup usergroup);
 
     Position getLastPosition();
     Date getLastPositionTime();

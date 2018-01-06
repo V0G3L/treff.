@@ -4,12 +4,20 @@ import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.sql.exceptions.EntityManagerNotInitializedException;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The single entry-point for MySQL implementation of the database interfaces.
+ * Uses the singleton design pattern. The instance must be initialized with the
+ * {@link #initialize()} method and can be requested with {@link #getInstance()}.
+ *
+ * @see AccountManager
+ */
 public class EntityManagerSQL implements AccountManager {
 
     private static EntityManagerSQL instance;
@@ -21,9 +29,24 @@ public class EntityManagerSQL implements AccountManager {
         this.loadedAccountsByID = new HashMap<>();
     }
 
-    public static synchronized EntityManagerSQL getInstance() {
+    /**
+     * Creates the {@link EntityManagerSQL} instance and prepares it to create
+     * connections to the specified MySQL database on being supplied with
+     *
+     */
+    public static synchronized void initialize() {
+        // create instance with supplied parameters
+    }
+
+    /**
+     * Returns the {@link EntityManagerSQL} instance created with {@link #initialize()}
+     * @return The {@link EntityManagerSQL} instance
+     * @throws EntityManagerNotInitializedException
+     */
+    public static EntityManagerSQL getInstance()
+            throws EntityManagerNotInitializedException {
         if (instance == null) {
-            instance = new EntityManagerSQL();
+            throw new EntityManagerNotInitializedException();
         }
         return instance;
     }
@@ -55,22 +78,16 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getDummyAccount() {
-        // return new AccountDummySQL()
-        return null;
-    }
-
-    @Override
     public AccountSQL createAccount(String username, String email, String password)
             throws DuplicateEmailException, DuplicateUsernameException {
         return null;
     }
 
-    public Set<GroupSQL> getGroupsOfAccount(AccountSQL account) {
+    public Set<UsergroupSQL> getGroupsOfAccount(AccountSQL account) {
         return null;
     }
 
-    public List<EventSQL> getEventsOfGroup(GroupSQL group) {
+    public List<EventSQL> getEventsOfGroup(UsergroupSQL group) {
         return null;
     }
 }
