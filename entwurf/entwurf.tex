@@ -249,22 +249,25 @@ einer Gruppe. Sie wird durch eine eindeutige Identifikationsnummer 'id'
 identifiziert und angesprochen. Außerdem beinhaltet sie boolsche Werte,
 die angeben, welche Rechte das zugehörige Benutzerkonto in der zugehörigen
 Gruppe hat. Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe
-der Gruppenmitgliedschaft und sind nur in dieser gültig.
-\begin{itemize}
-	\item 'permission-change-group-name' - das Recht, den Namen der Gruppe zu
-        ändern.
- 	\item 'permission-manage-members' - das Recht, Nutzer bzw dessen
-        Benutzerkonto in die Gruppe hinzuzufügen und Gruppenmitglieder zu 
-        entfernen.
- 	\item 'permission-change-permissions' - das Recht, die
-        Gruppenberechtigungen der Gruppenmitglieder zu bearbeiten.
- 	\item 'permission-create-event' - das Recht, Verabredungen zu erstellen.
- 	\item 'permission-edit-any-event' - das Recht, Verabredungen zu bearbeiten,
-        welche man nicht selbst erstellt hat.
- 	\item 'permission-create-poll' - das Recht, Abstimmungen zu erstellen.
- 	\item 'permission-edit-any-poll' - das Recht, Abstimmungen zu bearbeiten,
-        welche man nicht selbst erstellt hat.
-\end{itemize}
+der Gruppenmitgliedschaft und sind nur in dieser gültig.\\
+\begin{tabular}[t]{ l l }
+    \textbf{Berechtigung} & \textbf{Berechtigt dazu}\\
+    \hline
+    permission-change-group-name & den Namen der Gruppe zu ändern.\\
+    permission-manage-members & Nutzer bzw deren Benutzerkonto in die Gruppe\\
+     & hinzuzufügen und Gruppenmitglieder zu entfernen.\\
+    permission-change-permissions & die Gruppenberechtigungen der
+        Gruppenmitglieder zu\\
+     & bearbeiten.\\
+    perm ission-create-event & Verabredungen zu erstellen.\\
+    permission-edit-any-event & Verabredungen zu bearbeiten, welche man nicht
+        selbst\\
+     & erstellt hat.\\
+    permission-create-poll & Abstimmungen zu erstellen.\\
+    permission-edit-any-poll & Abstimmungen zu bearbeiten, welche man nicht
+    selbst\\
+     & erstellt hat.\\
+\end{tabular}
 
 %TODO Warum haben wir was wie gemacht
 Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine
