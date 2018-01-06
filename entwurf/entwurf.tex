@@ -17,7 +17,6 @@
 \usepackage{algpseudocode}
 \usepackage{listings}
 \usepackage{bera}
-\usepackage{tabu}
 
 \setlist{nosep}
 
@@ -207,7 +206,7 @@ aufgeführt.
 		Abstimmung & poll\\
 		Abstimmungsoption & polloption\\
 		Verabredung & event\\
-        Änderung & update\\
+		Äzzzzz & update\\
 
 
 \end{tabular}
@@ -255,24 +254,24 @@ identifiziert und angesprochen. Außerdem beinhaltet sie boolsche Werte,
 die angeben, welche Rechte das zugehörige Benutzerkonto in der zugehörigen
 Gruppe hat. Diese Rechte beziehen sich dabei immer auf die zugehörige Gruppe
 der Gruppenmitgliedschaft und sind nur in dieser gültig.\\
-
-\begin{tabu} to \linewidth { l X }
-    \textbf{Berechtigung} & \textbf{berechtigt dazu, \dots}\\
+\begin{tabular}[t]{ l l }
+    \textbf{Berechtigung} & \textbf{berechtigt dazu}\\
     \hline
-    change-group-name & den Namen der Gruppe zu ändern.\\
-    manage-members & Benutzerkonten der Gruppe hinzuzufügen und
-    Gruppenmitglieder zu entfernen.\\
-    change-permissions & die Gruppenberechtigungen der Gruppenmitglieder zu
-    bearbeiten.\\
-    create-event & Verabredungen zu erstellen.\\
-    edit-any-event & Verabredungen zu bearbeiten, welche man nicht
+    permission-change-group-name & den Namen der Gruppe zu ändern.\\
+    permission-manage-members & Nutzer bzw deren Benutzerkonto in die Gruppe\\
+     & hinzuzufügen und Gruppenmitglieder zu entfernen.\\
+    permission-change-permissions & die Gruppenberechtigungen der
+        Gruppenmitglieder zu\\
+     & bearbeiten.\\
+    perm ission-create-event & Verabredungen zu erstellen.\\
+    permission-edit-any-event & Verabredungen zu bearbeiten, welche man nicht
         selbst\\
      & erstellt hat.\\
-    create-poll & Abstimmungen zu erstellen.\\
-    edit-any-poll & Abstimmungen zu bearbeiten, welche man nicht
+    permission-create-poll & Abstimmungen zu erstellen.\\
+    permission-edit-any-poll & Abstimmungen zu bearbeiten, welche man nicht
     selbst\\
      & erstellt hat.\\
-\end{tabu}
+\end{tabular}
 
 %TODO Warum haben wir was wie gemacht
 Diese Abbildung der Gruppenmitgliedschaften wurde gewählt um eine
@@ -284,22 +283,15 @@ Gruppe und den Berechtigungen aufzulösen.
 
 
 \subsection{Gruppe}
-Eine Gruppe ist eine Ansammlung von Benutzerkonten.
-Sie wird durch eine eindeutige Identifikationsnummer \enquote{id} identifiziert
-und angesprochen.
-Eine Gruppe besitzt einen Namen \enquote{name} und beinhaltet eine beliebig
-große Menge der Gruppenmitgliedschaften aller Benutzerkonten, die Teil der
-Gruppe sind.
+Eine Gruppe ist eine Ansammlung von Nutzern. Sie wird durch eine eindeutige
+Identifikationsnummer 'id' identifiziert und angesprochen. Eine Gruppe besitzt
+einen Namen 'name' und beinhaltet eine beliebig große Menge der
+Gruppenmitgliedschaften aller Nutzer, die Teil der Gruppe sind.
 Da eine Gruppe ohne Mitglieder nicht existieren kann, darf diese Menge nicht
 leer sein. Außerdem beinhaltet eine Gruppe eine beliebig große Menge an
 Verabredungen und eine beliebig große Menge von Abstimmungen.
-Da es möglich ist, dass zu gewissen Zeitpunkten keine Verabredungen vereinbart
-oder in Planung sind, dürfen beide Mengen leer sein.
-\par Benutzerkonten können ebenfalls Textnachrichten an die Gruppe senden, die dann
-an alle Benutzerkonten weitergeleitet werden.
-Da diese Textnachrichten allerdings nur bis zum Abruf durch die betroffenen
-Benutzerkonten gespeichert werden, werden Textnachrichten nicht als Teil einer
-Gruppe modelliert.
+Da zu gewissen Zeitpunkten keine Verabredungen vereinbart oder in Planung sein
+können, dürfen beide Mengen leer sein.
 %TODO Warum haben wir was wie gemacht
 \\
 \\
@@ -376,7 +368,7 @@ werden müssen.
 \\
 \\
 
-\svgFigure{erd-update}{Änderung}{350pt}
+\svgFigure{erd-update}{Verabredung}{350pt}
 \pagebreak
 
 
@@ -811,10 +803,10 @@ Gruppe gelöscht.}
 {Abfragen der Rechte eines Benutzerkontos in einer Gruppe}
 {id/Eindeutige Identifikationsnummer der Gruppe,
 userid/Eindeutige Identifikationsnummer des Benutzerkontos}
-{permissions/Ein Array an Booleans das die Berectigungen darstellt}
-{group-id-invalid, no-permission-permissions-edit}
+{permissions/Ein Array an Booleans das die Berechtigungen darstellt}
+{group-id-invalid}
 
-\apiCommand{set-permissions}
+\apiCommand{edit-permissions}
 {Ändern der Rechte eines Benutzerkontos in einer Gruppe}
 {id/Eindeutige Identifikationsnummer der Gruppe,
 userid/Eindeutige Identifikationsnummer des Benutzerkontos,
@@ -963,6 +955,13 @@ Kapitel \ref{sec:groupdesc})}
 {\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
 {group-id-invalid}
+
+\apiCommand{get-user-details}
+{Abrufen von Details eines Benutzerkontos}
+{id/Identifikationsnummer des Benutzerkontos}
+{\dots/Eine Beschreibung eines Benutzerkontos{,} das zu der angegebenen
+ID gehört (siehe \ref{sec:accountdesc})}
+{user-id-invalid}
 
 % TODO: Definiere „aktive Verabredung“
 \apiCommand{get-event-details}
