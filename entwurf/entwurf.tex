@@ -239,6 +239,8 @@ Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für
 deren Optionen abstimmen.
 Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der
 es mitglied ist.
+Ein Benutzerkonto hat eine Menge von Updates die dieses Benutzerkonto
+betreffen.
 %TODO Warum haben wir was wie gemacht
 
 \svgFigure{erd-account}{Benutzerkonto}{300pt}
@@ -350,6 +352,24 @@ Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
 
 \svgFigure{erd-event}{Verabredung}{350pt}
 \pagebreak
+
+\subsection{Änderung}
+Eine Änderung wird durch eine eindeutige Identifikationsnummer 'id'
+identifiziert und angesprochen. Sie besteht aus einem String 'updateString',
+dieser beschreibt eine Änderung in der Datenbank.
+Eine Änderung beinhaltet eine beliebig große Menge von Benutzerkonten die durch
+diese Änderung betroffen sind.
+Diese Entitäten werden verwendet um sich zu speichern welche Änderungen der
+Datenbank an den Klienten in dem ein Benutzerkonto eingeloggt ist übertragen
+werden müssen.
+%TODO Warum haben wir was wie gemacht
+\\
+\\
+\\
+
+\svgFigure{erd-update}{Verabredung}{350pt}
+\pagebreak
+
 
 
 \subsection{Gesamtkonstrukt}
