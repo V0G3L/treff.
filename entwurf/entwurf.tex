@@ -163,7 +163,7 @@
 \section{Einleitung}
 
 \subsection{Client-Server-Architektur}
-Für die App \enquote{treff.} soll eine Klient-Server-Architektur verwendet 
+Für die App \enquote{treff.} soll eine Klient-Server-Architektur verwendet
 werden, um die Interaktion mehrerer Nutzer zu realisieren.
 Hierbei stellen die Geräte der Nutzer die Klienten dar und der Server
 fungiert als Vermittler und Datenbank.
@@ -280,7 +280,7 @@ Gruppe und den Berechtigungen aufzulösen.
 Eine Gruppe ist eine Ansammlung von Nutzern. Sie wird durch eine eindeutige
 Identifikationsnummer 'id' identifiziert und angesprochen. Eine Gruppe besitzt
 einen Namen 'name' und beinhaltet eine beliebig große Menge der
-Gruppenmitgliedschaften aller Nutzer, die Teil der Gruppe sind. 
+Gruppenmitgliedschaften aller Nutzer, die Teil der Gruppe sind.
 Da eine Gruppe ohne Mitglieder nicht existieren kann, darf diese Menge nicht
 leer sein. Außerdem beinhaltet eine Gruppe eine beliebig große Menge an
 Verabredungen und eine beliebig große Menge von Abstimmungen.
@@ -295,7 +295,7 @@ Eine Abstimmung wird durch eine eindeutige Identifikationsnummer 'id'
 identifiziert und angesprochen.
 Eine Abstimmung besteht aus einer Frage, die für diese Abstimmung gestellt wird
 und einem Wahrheitswert der festlegt,
-ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu 
+ob die Abstimmung dem Nutzer erlaubt für mehrere oder nur für eine Option zu
 stimmen.
 Außerdem beinhaltet sie eine beliebig große Menge von Optionen der Abstimmung,
 jedoch mindestens eine.
@@ -308,7 +308,7 @@ Desweiteren speichert die Abstimmung ein Benutzerkonto, ihren Ersteller.
 Die Abstimmungsoption wird durch eine eindeutige Identifikationsnummer 'id'
 identifiziert und angesprochen.
 Die Option speichert ihren Start- und Endzeitpunkt starttime und endtime,
-sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und 
+sowie ihre Position in Form der Werte 'lon' und 'lat' als Längen- und
 Breitengrad.
 Weiterhin wird eine beliebige Menge von Nutzern bzw deren Benutzerkonten
 gespeichert, die für diese Option gestimmt haben.
@@ -376,7 +376,7 @@ Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
 
 \begin{center}
 	\svgFigure{database}{Bei dieser Darstellung sind View und ViewModel nicht
-        als tatsächliche packages zu verstehen, sondern dienen lediglich der 
+        als tatsächliche packages zu verstehen, sondern dienen lediglich der
         vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm
         vollständig.
         Fehlende Klassen verhalten sich allerdings äquivalent.}{200pt}
@@ -602,6 +602,40 @@ pass/Passwort des Kontos}
 {token/Authentifizierungstoken{,} welches in weiteren Befehlen
 als Eingabe verlangt wird}
 {cred-wrong}
+
+\apiCommand{edit-username}
+{Editieren des eigenen Benutzernamens}
+{id/Identifikationsnummer des eigenen Benutzerkontos,
+pass/Passwort des eigenen Kontos,
+name/vorgeschlagener{,} neuer Name}
+{---/Leeres JSON-Objekt bei Erfolg}
+{cred-wrong, user-id-invalid, invalid-email}
+
+\apiCommand{edit-email}
+{Editieren der eigenen E-Mail-Adresse}
+{id/Identifikationsnummer des eigenen Benutzerkontos,
+pass/Passwort des eigenen Kontos,
+email/vorgeschlagene{,} neue E-Mail}
+{---/Leeres JSON-Objekt bei Erfolg}
+{cred-wrong, user-id-invalid, username-already-in-use}\
+
+\apiCommand{edit-password}
+{Editieren des eigenen Passworts}
+{id/Identifikationsnummer des eigenen Benutzerkontos,
+pass/aktuelles Passwort des eigenen Kontos,
+newpass/vorgeschlagenes{,} neues Passwort}
+{---/Leeres JSON-Objekt bei Erfolg}
+{cred-wrong, user-id-invalid}
+
+\apiCommand{delete-account}
+{Löschen des eigenen Kontos .Dies führt wie erwartet dazu{,}
+dass der Nutzer automatisch ausgeloggt wird und dadurch seinen
+Authentifizierungstoken und somit den weiteren Zugriff auf die Funktionalitäten
+der App verliert.}
+{id/Identifikationsnummer des eigenen Benutzerkontos,
+pass/Passwort des eigenen Kontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{cred-wrong, user-id-invalid}
 
 \apiCommand{get-user-id}
 {Abrufen der Idenfikationsnummer eines anderen Benutzekontos durch Übergeben
@@ -839,7 +873,7 @@ id/Identifikationsnummer der Abstimmung}
 \apiCommand{send-chat-message}
 {Senden einer Textnachricht an eine Gruppe, in der das Benutzerkonto Mitglied
 ist}
-{group-id/Identifikationsnummer der Gruppe
+{group-id/Identifikationsnummer der Gruppe,
 message/Textnachricht} % TODO: Länge beschränken (vllt. auch Gruppengröße etc)
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid}
