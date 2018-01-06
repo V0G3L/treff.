@@ -26,17 +26,17 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".view.login.LoginActivity"
             android:label="@string/title_activity_login">
         </activity>
 
         <activity
-            android:name=".home.HomeActivity">
+            android:name=".view.home.HomeActivity">
 
         </activity>
 
         <activity
-            android:name=".group.GroupActivity">
+            android:name=".view.group.GroupActivity">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,10 +44,10 @@
         </activity>
 
         <activity
-            android:name=".settings.SettingsActivity">
+            android:name=".view.settings.SettingsActivity">
         </activity>
 
-        <activity android:name=".friend.FriendActivity"/>
+        <activity android:name=".view.friend.FriendActivity"/>
 
     </application>
 

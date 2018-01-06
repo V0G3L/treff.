@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.pispeb.treff_client.home.HomeActivity">
+        tools:context=".view.home.HomeActivity">
 
     </android.support.constraint.ConstraintLayout>
 </layout>
