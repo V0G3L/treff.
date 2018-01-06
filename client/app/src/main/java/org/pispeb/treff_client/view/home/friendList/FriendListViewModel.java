@@ -11,39 +11,52 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Stores and manages the necessary data for the {@link FriendListFragment}
  */
 
 public class FriendListViewModel extends ViewModel {
-    private LiveData<List<User>> users;
-    private UserRepository userRepo;
+    private LiveData<List<User>> friends;
+    private final UserRepository userRepo;
 
-    public FriendListViewModel(Context context) {
+    @Inject
+    public FriendListViewModel(UserRepository userRepo) {
 
-        this.userRepo = UserRepository.getUserRepository(context);
-        users = userRepo.getFriends();
+        this.userRepo = userRepo;
 
 
+    /*
         //TODO remove
-        users = new MutableLiveData<>();
+        friends = new MutableLiveData<>();
         List<User> newData = new ArrayList<>();
         newData.add(new User(1, "Max Mustermann", true, false));
         newData.add(new User(2, "Erika Experiment", true, false));
         newData.add(new User(3, "Thorsten Test", true, false));
 
-        users.getValue().addAll(newData);
+        friends.getValue().addAll(newData);
+    */
     }
 
-    public LiveData<List<User>> getUsers() {
-        if (users == null) {
-            users = new MutableLiveData<>();
+
+    public void init() {
+        if (friends == null) {
+            friends = userRepo.getFriends();
         }
-        return users;
     }
 
+
+    public LiveData<List<User>> getFriends() {
+        if (friends == null) {
+            friends = new MutableLiveData<>();
+        }
+        return friends;
+    }
+
+    //TODO remove mock floating action button behaviour
     public void onAddClick() {
-        List<User> newData = users.getValue();
-        users.getValue().add(new User(5, "Norton Neu", true, false));
+        List<User> newData = friends.getValue();
+        friends.getValue().add(new User(5, "Norton Neu", true, false));
     }
 }

@@ -12,7 +12,7 @@ import org.pispeb.treff_client.data.entities.Event;
  */
 
 public class RequestEncoder {
-    private static RequestEncoder entity;
+    private static RequestEncoder INSTANCE;
     private ConnectionHandler connectionHandler;
 
     private final char SEP1 = (char) 1;
@@ -20,10 +20,10 @@ public class RequestEncoder {
     private final char SEP3 = (char) 3;
 
     public static RequestEncoder getEntity() {
-        if(entity == null) {
-            entity = new RequestEncoder();
+        if(INSTANCE == null) {
+            INSTANCE = new RequestEncoder();
         }
-        return entity;
+        return INSTANCE;
     }
 
     private RequestEncoder() {

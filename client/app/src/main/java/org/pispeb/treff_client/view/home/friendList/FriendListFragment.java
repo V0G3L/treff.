@@ -29,8 +29,9 @@ public class FriendListFragment extends Fragment implements FriendListAdapter.Fr
         binding.list.setHasFixedSize(true);
 
         FriendListViewModel vm = ViewModelProviders.of(this).get(FriendListViewModel.class);
-        vm.getUsers().observe(this, users -> {
-            adapter.setData(users);
+        vm.init();
+        vm.getFriends().observe(this, friends -> {
+            adapter.setData(friends);
         });
         binding.setVm(vm);
 

@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 /**
  * This class compares the positions given by the NETWORK_PROVIDER and the GPS_PROIDER.
- * The best position will be given to the listening mapViewModel and Requestencoder.
+ * The best position will be given to the listening mapViewModel and RequestEncoder.
  */
 
 public class GPSProvider {
@@ -30,7 +30,7 @@ public class GPSProvider {
 
 
     /**
-     * By calling this method the MapViewModel wont get new positions.
+     * By calling this method the MapViewModel won't get new positions.
      * If no MapViewModel ist listening, nothing happens.
      */
     public void dismissMap() {}
@@ -48,8 +48,8 @@ public class GPSProvider {
 
 
     /**
-     * By calling this method the RequestEncoder wont get new positions.
-     * If no RequestEncoder ist listening, nothing happens.
+     * By calling this method the RequestEncoder won't get new positions.
+     * If no RequestEncoder is listening, nothing happens.
      */
     public void dismissRequestEncoder() {}
 

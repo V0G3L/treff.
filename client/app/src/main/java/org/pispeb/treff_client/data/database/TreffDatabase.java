@@ -12,26 +12,15 @@ import org.pispeb.treff_client.data.entities.UserGroup;
 
 /**
  * Local database storing all cached Data for entities.
- * To avoid desynchronization, treffDataBase is implemented as a Singleton
+ * To avoid desynchronization, TreffDataBase is implemented as a Singleton
  */
 
-@Database(entities = {User.class, UserGroup.class, Event.class, GroupMembership.class}, version = 1)
-public abstract class treffDatabase extends RoomDatabase {
+@Database(entities = {User.class, UserGroup.class, Event.class, GroupMembership.class}, version = 2, exportSchema = false)
+public abstract class TreffDatabase extends RoomDatabase {
 
     public abstract UserDao getUserDao();
     public abstract EventDao getEventDao();
     public abstract UserGroupDao getUserGroupDao();
     public abstract GroupMembershipDao getGroupmembershipDao();
-
-    private static treffDatabase INSTANCE;
-
-    public static treffDatabase getAppDatabase(Context context) {
-        if (INSTANCE == null) {
-            //TODO username specific db
-            INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                    treffDatabase.class, "username-database").build();
-        }
-        return INSTANCE;
-    }
 
 }

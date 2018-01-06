@@ -25,6 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <!-- TODO add activities -->
+
         <activity
             android:name=".view.login.LoginActivity"
             android:label="@string/title_activity_login">
@@ -32,15 +34,14 @@
 
         <activity
             android:name=".view.home.HomeActivity">
-
-        </activity>
-
-        <activity
-            android:name=".view.group.GroupActivity">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".view.group.GroupActivity">
         </activity>
 
         <activity
