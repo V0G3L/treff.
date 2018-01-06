@@ -527,8 +527,10 @@ folgenden definiert.
 
 \subsection{Befehle}\label{sec:commands}
 
-\apiErrorNew{token-invalid}{010}{Authentifizierungstoken ungültig}
-\apiErrorNew{cred-wrong}{020}{Nutzername/Passwort-Kombination ungültig}
+\apiErrorNew{username-already-in-use}{000}{Nutzername schon vergeben}
+\apiErrorNew{invalid-email}{010}{Email nicht gültig}
+\apiErrorNew{token-invalid}{020}{Authentifizierungstoken ungültig}
+\apiErrorNew{cred-wrong}{030}{Nutzername/Passwort-Kombination ungültig}
 
 \apiErrorNew{no-permission-group-edit}{100}{Das Benutzerkonto besitzt nicht
 die nötigen Rechte, um die Gruppe zu editieren}
@@ -542,6 +544,8 @@ die nötigen Rechte, um die Verabredung zu editieren}
 die nötigen Rechte, um in der angegebenen Gruppe Abstimmung zu erstellen}
 \apiErrorNew{no-permission-poll-edit}{121}{Das Benutzerkonto besitzt nicht
 die nötigen Rechte, um die Abstimmung zu editieren}
+\apiErrorNew{no-permission-permissions-edit}{122}{Das Benutzerkonto besitzt
+nicht die nötigen Rechte, um die Berechtigungen zu editieren}
 
 \apiErrorNew{username-invalid}{200}{Nutzername ungültig}
 \apiErrorNew{user-id-invalid}{201}{Mindestens eine
@@ -574,13 +578,22 @@ das eigene Benutzerkonto blockiert}
 \apiErrorNew{not-blocking}{511}{Benutzerkonto wird nicht durch
 das eigene Benutzerkonto blockiert}
 
-Bis auf dem \textbf{login}-Befehl erfordert jeder Befehl folgenden
-Parameter:\\
+Bis auf dem \textbf{login}-Befehl und den \textbf{register}-Befehl erfordert
+jeder Befehl folgenden Parameter:\\
 \apiArgument{token/Authentifizierungtoken{,} welches beim Einloggen in das
 Benutzerkonto vom Server zurückgegeben wurde}
 \par\par Ist das übermittelte Token ungültig, wird der Befehl nicht
 ausgeführt und folgender Fehlercode zurückgegeben:\\
 \apiErrorPrint{token-invalid}
+
+\apiCommand{register}
+{Registrieren eines Nutzerkontos}
+{user/Benutzername des Kontos,
+pass/Passwort des Kontos,
+email/Email des Kontos}
+{token/Authentifizierungstoken{,} welches in weiteren Befehlen
+als Eingabe verlangt wird}
+{username-already-in-use,invalid-email}
 
 \apiCommand{login}
 {Einloggen in ein Nutzerkonto}
@@ -687,6 +700,21 @@ Werden durch diesen Befehl alle Mitglieder einer Gruppe entfernt{,} wird die
 Gruppe gelöscht.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,user-not-in-group}
+
+\apiCommand{get-permissions}
+{Abfragen der Rechte eines Benutzerkontos in einer Gruppe}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+userid/Eindeutige Identifikationsnummer des Benutzerkontos}
+{permissions/Ein Array an Booleans das die Berectigungen darstellt}
+{group-id-invalid, no-permission-permissions-edit}
+
+\apiCommand{set-permissions}
+{Ändern der Rechte eines Benutzerkontos in einer Gruppe}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+userid/Eindeutige Identifikationsnummer des Benutzerkontos,
+permissions/Ein Array an Booleans das die Berectigungen darstellt}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid, no-permission-permissions-edit}
 
 \apiCommand{create-event}
 {Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -850,6 +878,14 @@ wurde}
 {\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
 {group-id-invalid,poll-id-invalid}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{request-position}
+{Sendet eine Standortanfrage an eine Gruppe}
+{id/Eindeutige Identifikationsnummer der Gruppe,
+time/ Endzeit der Standortübertragung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
