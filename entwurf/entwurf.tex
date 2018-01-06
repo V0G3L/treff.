@@ -627,6 +627,16 @@ newpass/vorgeschlagenes{,} neues Passwort}
 {---/Leeres JSON-Objekt bei Erfolg}
 {cred-wrong, user-id-invalid}
 
+\apiCommand{reset-password}
+{Zurücksetzen des eigenen Passworts. Dies führt dazu, dass das eigene Passwort
+vom Server durch ein von diesem generierten ersetzt wird. Anschließend wird das
+neue Passwort an an die angegebene E-Mail-Adresse des Kontos verschickt.}
+%TODO wirklich ersetzt oder ist das alte ebenfalls nach wie vor gültig
+{id/Identifikationsnummer des eigenen Benutzerkontos,
+pass/Passwort des eigenen Kontos}
+{---/Leeres JSON-Objekt bei Erfolg}
+{cred-wrong, user-id-invalid}
+
 \apiCommand{delete-account}
 {Löschen des eigenen Kontos .Dies führt wie erwartet dazu{,}
 dass der Nutzer automatisch ausgeloggt wird und dadurch seinen
