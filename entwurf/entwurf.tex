@@ -162,7 +162,7 @@
 \pagebreak
 \section{Einleitung}
 
-\subsection{Client-Server-Architektur}
+\subsection{Klient-Server-Architektur}
 Für die App \enquote{treff.} soll eine Klient-Server-Architektur verwendet
 werden, um die Interaktion mehrerer Nutzer zu realisieren.
 Hierbei stellen die Geräte der Nutzer die Klienten dar und der Server
@@ -173,7 +173,7 @@ vorgestellten Implementierungen für Klient und Server vermieden.
 Außerdem ermöglicht dies Kompatibilität mit alternativen Implementierungen
 von sowohl Klienten als auch Servern.
 
-\subsection{Funktion - Client}
+\subsection{Funktion - Klient}
 Der Klient speichert für den Nutzer relevante Daten in einer lokalen Datenbank
 ab.
 Diese können vom Nutzer eingesehen werden.
@@ -338,12 +338,12 @@ Diese Menge stellt die Teilnehmer der Verabredung dar und darf auch leer sein.
     \label{fig:erd-complete}
 \end{figure}
 
-\section{Aufbau und internes Verhalten - Client}
+\section{Aufbau und internes Verhalten - Klient}
 
 \subsection{Aufbau}
 % Aufteilung in GUI und Datenverarbeitung (Fließtext)
 % Ihre Funktionen
-Der Client, also die App selbst, besteht grundsätzlich auch zwei Teilen:
+Der Klient, also die App selbst, besteht grundsätzlich auch zwei Teilen:
 der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund
 ablaufenden Datenverwaltung.
 Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle
@@ -355,7 +355,7 @@ bei Aktionen wie dem Pausieren oder drehen der App vorkommen kann.
 \subsubsection{MVVM}
 Um diese Entkopplung zu erreichen kommt die MVVM-Architektur
 (Model-View-ViewModel) zum Einsatz.
-Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
+Das bedeutet, dass der Klient in 3 wesentliche Schichten gegliedert ist:
 \begin{itemize}
 	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments)
         behandeln Eingaben des Nutzers und bestimmen das Aussehen der
@@ -374,13 +374,14 @@ Das bedeutet, dass der Client in 3 wesentliche Schichten gegliedert ist:
         wieder von der View verwendet werden können.
 \end{itemize}
 
-\begin{center}
-	\svgFigure{database}{Bei dieser Darstellung sind View und ViewModel nicht
-        als tatsächliche packages zu verstehen, sondern dienen lediglich der
+\begin{figure}
+    \centering
+    \includegraphics[width = \columnwidth / 3 * 2]{database.png}
+	\captionof{figure}{Bei dieser Darstellung sind View und ViewModel nicht als
+        tatsächliche packages zu verstehen, sondern dienen lediglich der
         vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm
-        vollständig.
-        Fehlende Klassen verhalten sich allerdings äquivalent.}{200pt}
-\end{center}
+        vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}
+\end{figure}
 
 \subsubsection{LiveData}
 Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
@@ -393,16 +394,16 @@ werden und stellt sicher, dass diese bei Änderungen der Datenbank auch die
 nötigen onChange() Methoden aufrufen. Der Ablauf eines solchen Updates lässt
 sich in Abb.\ref{fig:datafetch} nachvollziehen.
 
-	\begin{figure}
-		\def\svgwidth{250pt}
-		\rotatebox{90}{\input{build/images/datafetch.pdf_tex}}
-		\caption{Dieser Ablauf steht beispielhaft für fast alle Zugriffe auf
-            die Datenbank. Im oberen Teil ist zu sehen, wie ein View-Objekt
-            (in diesem Fall fragment) sich als Observer eines LiveData Objekts
-            eintragen kann. Im unteren Teil ist zu sehen, wie dieses auf eine
-            Änderung reagiert und das fragment benachrichtigt.}
-		\label{fig:datafetch}
-	\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[width = \paperheight / 3 * 2, angle = -90]{datafetch.png}
+	\captionof{figure}{Dieser Ablauf steht beispielhaft für fast alle Zugriffe
+    auf die Datenbank. Im oberen Teil ist zu sehen, wie ein View-Objekt (in
+    diesem Fall fragment) sich als Observer eines LiveData Objekts eintragen
+    kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
+ 	reagiert und das fragment benachrichtigt.}
+	\label{fig:datafetch}
+\end{figure}
 
 %
 
@@ -446,11 +447,14 @@ LinearLayoutManager, welcher die items als Liste darstellt. Sowohl der
 ViewHolder als auch der Adapter wird jedoch für den entsprechenden
 Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 
-\begin{center}
-	\svgFigure{lists}{Diese Darstellung zeigt die Vererbungen und Beziehungen
+\begin{figure}
+    \centering
+    \includegraphics[width = \columnwidth / 3 * 2]{lists.png}
+    \captionof{figure}{Diese Darstellung zeigt die Vererbungen und Beziehungen
     im Aufbau einer RecyclerView am Beispiel der FriendList. Group- und
-    EventList verhalten sich allerdings äquivalent.}{200pt}
-\end{center}
+    EventList verhalten sich allerdings äquivalent.}
+	\label{fig:lists}
+\end{figure}
 
 
 \subsection{Bestandteile Datenverarbeitung}
@@ -499,19 +503,19 @@ zurückgegeben.
 
 \subsection{Bestandteile des Servers}
 % Aufbau und genaue Funktionalität dieser Klassen
-% [z.B. Datenbank, Schnittstelle zum Client]
+% [z.B. Datenbank, Schnittstelle zum Klient]
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
 
 \subsection{JavaDoc}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
-\section{Kommunikation zwischen Client und Server}
-% Zusammenspiel von Client und Server
+\section{Kommunikation zwischen Klient und Server}
+% Zusammenspiel von Klient und Server
 % (Fließtext und Sequenzdiagram, ggf UML-Klassendiagram)
 % TODO: JSON verlinken / footnote
 % TODO: Alphabet und Escapes genau festlegen
-Client und Server kommunizieren mittels Nachrichten im JSON-Format.
+Klient und Server kommunizieren mittels Nachrichten im JSON-Format.
 Die oberste Ebene jeder Nachricht bildet ein einzelnes JSON-Objekt.
 Parameter, Rückgabewerte und Fehlercodes werden als Eigenschaften dieses
 Objektes kodiert.
@@ -1035,7 +1039,7 @@ Unixzeit)}
 Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächliche
 Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
 Beschreibung.
-Der Client ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
+Der Klient ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
 mit denen des Servers übereinstimmen, ohne die Datensätze erneut anfordern zu
 müssen.
 
