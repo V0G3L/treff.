@@ -490,62 +490,62 @@ Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 	\label{fig:lists}
 \end{figure}
 
-Das einzig wesentlich andere Tab auf dem Homescreen stellt das MapFragment dar. 
-Es ist zugleich der für den Nutzer wohl wichtigste Teil, da hier alle 
-Informationen angezeigt werden, die unsere Anwendung bereitstellt. Dies 
-beinhaltet in erster Linie die Standorte von befreundeten Benutzern oder andere 
-Mitglieder in Gruppen, aber auch Events werden hier angezeigt. Dabei beruht die 
-Darstellung der Karte auf einer MapView, welche mithilfe von 
+Das einzig wesentlich andere Tab auf dem Homescreen stellt das MapFragment dar.
+Es ist zugleich der für den Nutzer wohl wichtigste Teil, da hier alle
+Informationen angezeigt werden, die unsere Anwendung bereitstellt. Dies
+beinhaltet in erster Linie die Standorte von befreundeten Benutzern oder andere
+Mitglieder in Gruppen, aber auch Events werden hier angezeigt. Dabei beruht die
+Darstellung der Karte auf einer MapView, welche mithilfe von
 osmdroid\footnote{\url{https://github.com/osmdroid/osmdroid}} die
-OpenStreetMap\footnote{\url{https://www.openstreetmap.org}} (OSM) anzeigt. 
-Der osmdroid Ersatz für Android's MapView Klasse bietet auch bereits die 
-Möglichkeit, unterschiedliche Markierungen auf der Karte anzubringen. Um die 
-relevanten Daten wie Nutzerstandorte bereit zu stellen kommt wieder ein angepasstes 
-MapViewModel zu Einsatz. Zusätzlich soll der Nutzer Filter einstellen können, 
-um die Art angezeigter Marker einzuschränken. Diese Einstellung wird ebenfalls 
-in dem ViewModel abgelegt um Persistenz über Drehung etc. zu garantieren. Der 
+OpenStreetMap\footnote{\url{https://www.openstreetmap.org}} (OSM) anzeigt.
+Der osmdroid Ersatz für Android's MapView Klasse bietet auch bereits die
+Möglichkeit, unterschiedliche Markierungen auf der Karte anzubringen. Um die
+relevanten Daten wie Nutzerstandorte bereit zu stellen kommt wieder ein angepasstes
+MapViewModel zu Einsatz. Zusätzlich soll der Nutzer Filter einstellen können,
+um die Art angezeigter Marker einzuschränken. Diese Einstellung wird ebenfalls
+in dem ViewModel abgelegt um Persistenz über Drehung etc. zu garantieren. Der
 Filter kann vom Benutzer über einen Android-eigenen Dialog angepasst werden.
 
 \svgFigure{activity-home-layout}{Layout der Home-Activity}{300pt}
 
-Das XML-Layout der Activity basiert auf einem DrawerLayout. Dessen erstes Element 
-ist der eigentliche Bildschirm, den der Nutzer sieht, das zweite ist ein 
+Das XML-Layout der Activity basiert auf einem DrawerLayout. Dessen erstes Element
+ist der eigentliche Bildschirm, den der Nutzer sieht, das zweite ist ein
 \enquote{Drawer}, kann also herausgeschoben werden. Im DrawerLayout sind wiederum
-Ein AppBarLayout mit der Toolbar und einem TabLayout sowie ein ViewPager, der 
-immer ein Fragment hält. Das AppBarLayout gruppiert die Toolbar mit dem Appnamen und 
+Ein AppBarLayout mit der Toolbar und einem TabLayout sowie ein ViewPager, der
+immer ein Fragment hält. Das AppBarLayout gruppiert die Toolbar mit dem Appnamen und
 dem Hamburgermenü und das TabLayout, welches die Titel der Tabs anzeigt.
 \\Die NavigationView enthält ein Menü mit einer Gruppe an items; diese bilden mit
 Namen und Icon versehen die oberste Navigationsebene der App.
 
 \subsubsection{GroupActivity}
 
-Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für 
-mehrere als Fragments, welche als Tabs angeordnet werden. In diesem Fall 
-handelt es sich dabei um ein das GroupEventFragment und GroupChatFragment. In 
-ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls 
-angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in 
-chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das 
-GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf 
-Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet 
-dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von 
+Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für
+mehrere als Fragments, welche als Tabs angeordnet werden. In diesem Fall
+handelt es sich dabei um ein das GroupEventFragment und GroupChatFragment. In
+ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls
+angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in
+chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das
+GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf
+Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet
+dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von
 Verabredungen, Abstimmungen bzw. Benutzern.
 
 \subsubsection{LoginActivity}
 
-Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist 
-dafür zuständig, über den Requestencoder eine Synchronisation mit dem Server 
-anzufordern. Während dieses Prozesses stellt sie das Layout eines 
-Ladebildschirms dar. Ist die Synchrinisation erfolgreich, startet sie die 
-HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf, 
-weil zB. aktuell gar kein, oder ein nicht gültiger Token vergeben ist, wird der 
-Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der Login, 
-als auch der Registrierungsbildschirm werden durch Fragments realisiert. Per 
-Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der 
-Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw. 
-login Knopf betätigt, werden die Daten durch das Fragment an den 
-Requestencoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich 
-war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder 
-ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment 
+Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist
+dafür zuständig, über den Requestencoder eine Synchronisation mit dem Server
+anzufordern. Während dieses Prozesses stellt sie das Layout eines
+Ladebildschirms dar. Ist die Synchrinisation erfolgreich, startet sie die
+HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf,
+weil zB. aktuell gar kein, oder ein nicht gültiger Token vergeben ist, wird der
+Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der Login,
+als auch der Registrierungsbildschirm werden durch Fragments realisiert. Per
+Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der
+Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw.
+login Knopf betätigt, werden die Daten durch das Fragment an den
+Requestencoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich
+war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder
+ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment
 angezeigt.
 
 \subsubsection{SettingsActivity}
@@ -575,19 +575,19 @@ Bestandteile sind wie folgt:
 
 \subsubsection{Lokale Datenbank}
 
-Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Klient 
-relevanten Daten auf dem Gerät zu cachen und zu verhindern, dass alle 
-Informationen stets vom Server geholt werden müssen. 
-Sie wird von der Android Library 
-Room\footnote{\url{https://developer.android.com/topic/libraries/architecture/room.html}} 
-erstellt, welche zugleich eine Abstraktionsebene zu dieser 
-Datenbank bereitstellt. Diese erlaubt es, fließend mit der Datenbank zu 
-interagieren. Dazu werden Data Access Objects (DAOs) verwendet. Diese 
-wandeln Aufrufe von Java-Methoden in SQL-Queries, um Daten in für Java 
-sinnvollen Formaten aus der Datenbank zu lesen. Im Fall von treff. sollen zum 
-Beispiel vor allem Nutzer-, Gruppen-, und Verabredungs-Details angezeigt 
-werden, welche entsprechend gespeichert werden müssen. Das bedeutet, dass unter 
-anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um 
+Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Client
+relevanten Daten auf dem Gerät zu cachen und zu verhindern, dass alle
+Informationen stets vom Server geholt werden müssen.
+Sie wird von der Android Library
+Room\footnote{\url{https://developer.android.com/topic/libraries/architecture/room.html}}
+erstellt, welche zugleich eine Abstraktionsebene zu dieser
+Datenbank bereitstellt. Diese erlaubt es, fließend mit der Datenbank zu
+interagieren. Dazu werden Data Access Objects (DAOs) verwendet. Diese
+wandeln Aufrufe von Java-Methoden in SQL-Queries, um Daten in für Java
+sinnvollen Formaten aus der Datenbank zu lesen. Im Fall von treff. sollen zum
+Beispiel vor allem Nutzer-, Gruppen-, und Verabredungs-Details angezeigt
+werden, welche entsprechend gespeichert werden müssen. Das bedeutet, dass unter
+anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um
 diese Objekte in der Datenbank zu repräsentieren.
 
 \subsubsection{Verbindung zum Server}
@@ -607,53 +607,53 @@ zurück zu geben.
 
 \subsubsection{Repositories}
 
-Das entscheidende Verbindungsglied zwischen den beiden oben genannten 
-Komponenten stellen die Repositories dar. Wie auch von den DAOs gibt es von 
-ihnen eines pro Entität, wobei beispielsweise Gruppen und 
-Gruppenmitgliedschaften zusammengefasst sind. Repositories werden 
-direkt von den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese 
-möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die 
-gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten 
-sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische 
-Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte 
-Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage 
-an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen 
-Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die 
-angeforderten Daten als LiveData (genaueres in \ref{sec:livedata}) aus der 
-Datenbank angefordert und an das 
-ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert 
-haben, erhält das Repository nun Rückmeldung darüber und kann diese 
-Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData 
-kompatibel ist löst dies automatisch eine Aktualisierung der View aus, was 
+Das entscheidende Verbindungsglied zwischen den beiden oben genannten
+Komponenten stellen die Repositories dar. Wie auch von den DAOs gibt es von
+ihnen eines pro Entität, wobei beispielsweise Gruppen und
+Gruppenmitgliedschaften zusammengefasst sind. Repositories werden
+direkt von den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese
+möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die
+gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten
+sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische
+Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte
+Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage
+an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen
+Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die
+angeforderten Daten als LiveData (genaueres in \ref{sec:livedata}) aus der
+Datenbank angefordert und an das
+ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert
+haben, erhält das Repository nun Rückmeldung darüber und kann diese
+Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData
+kompatibel ist löst dies automatisch eine Aktualisierung der View aus, was
 bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \columnwidth]{model.png}
-	\captionof{figure}{Die Der Aufbau der Datenverarbeitung am Beispiel von 
-	Usern, Events und UserGroups. Weder das repositories-, noch das 
-	database-package sind dabei vollständig, fehlende Klassen und auch fehlende 
+	\captionof{figure}{Die Der Aufbau der Datenverarbeitung am Beispiel von
+	Usern, Events und UserGroups. Weder das repositories-, noch das
+	database-package sind dabei vollständig, fehlende Klassen und auch fehlende
 	Methoden wurden für eine bessere Lesbarkeit ausgelassen.}
 	\label{fig:model}
 \end{figure}
 
 \subsubsection{GPSProider}
 
-Der GPS Provider ist dafür zuständig, die Positionsdaten des Nutzers für den 
-Server und das Map ViewModel bereitzustellen. Obwohl Android mit dem 
-LocationManager und dem LocationListener über eine Beobachter Schnittstelle 
-verfüg, ist dieser Zwischenschritt über eine Eigene Klasse notwendig. Denn so 
-kann man die durch GPS ermittelte Position mit derjenigen vergleichen, welche 
-über Netzwerkdaten errechnet wurde. Dadurch wird sichergestellt, dass immer 
-nur die aktuell bestmögliche Position beachtet wird. Die Kommunikation mit dem 
-ViewModel und dem RequestEncoder erfolgt ähnlich dem Beobachter Modell. Von 
-beiden Klassen kann sich maximal ein Objekt, welches über jede 
-Positionsänderung informiert werden soll, über die subscribe Methode anmelden. 
-Durch die Trennung von ViewModel und Requestencoder wird es auch ermöglicht die 
-Position zu übertragen ohne eine Karte anzuzeigen, bzw. eine Karte mit Standort 
-anzuzeigen, währen die Übertragung an den Server nicht erwünscht ist. Zudem 
-erbt die GPSProvider Klasse von der IntentService Klasse von Android. So wird es 
-möglich, die Positionsbestimmung / Übertragung auch nach dem Schließen der 
+Der GPS Provider ist dafür zuständig, die Positionsdaten des Nutzers für den
+Server und das Map ViewModel bereitzustellen. Obwohl Android mit dem
+LocationManager und dem LocationListener über eine Beobachter Schnittstelle
+verfüg, ist dieser Zwischenschritt über eine Eigene Klasse notwendig. Denn so
+kann man die durch GPS ermittelte Position mit derjenigen vergleichen, welche
+über Netzwerkdaten errechnet wurde. Dadurch wird sichergestellt, dass immer
+nur die aktuell bestmögliche Position beachtet wird. Die Kommunikation mit dem
+ViewModel und dem RequestEncoder erfolgt ähnlich dem Beobachter Modell. Von
+beiden Klassen kann sich maximal ein Objekt, welches über jede
+Positionsänderung informiert werden soll, über die subscribe Methode anmelden.
+Durch die Trennung von ViewModel und Requestencoder wird es auch ermöglicht die
+Position zu übertragen ohne eine Karte anzuzeigen, bzw. eine Karte mit Standort
+anzuzeigen, währen die Übertragung an den Server nicht erwünscht ist. Zudem
+erbt die GPSProvider Klasse von der IntentService Klasse von Android. So wird es
+möglich, die Positionsbestimmung / Übertragung auch nach dem Schließen der
 Anwendung aufrechtzuerhalten.
 
 
@@ -688,20 +688,20 @@ sich in Abb.\ref{fig:datafetch} nachvollziehen.
 
 \subsubsection{Fehlerbehandlung} \label{sec:error}
 
-Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte 
-Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername 
-schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom 
-Klient behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder. 
-Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe 
-\ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum 
-festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010: 
-Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler 
-310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der 
-RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei 
-fehlerhafter Benutzereingabe und InternalError bei internem Problem). Je nach 
-konkreter Implementation werden diese an unterschiedlichen Stellen des 
-Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis 
-zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um 
+Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte
+Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername
+schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom
+Client behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder.
+Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe
+\ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum
+festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010:
+Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler
+310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der
+RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei
+fehlerhafter Benutzereingabe und InternalError bei internem Problem). Je nach
+konkreter Implementation werden diese an unterschiedlichen Stellen des
+Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis
+zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um
 den Nutzer über das Problem zu informieren.
 
 
@@ -1285,6 +1285,13 @@ Unixzeit)}
 \subsection{Fehlercodes}\label{sec:errorcodes}
 \apiErrorTable
 
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width = \columnwidth]{build/uml/get-event-details-sequence.png}
+    \captionof{figure}{Sequenz-Diagramm des Befehl 'get-event-details'}
+	\label{fig:sequence-diagram}
+\end{figure}
+
 \subsection{Gruppenbeschreibung}\label{sec:groupdesc}
 
 \subsubsection{Oberflächlich}
@@ -1484,7 +1491,7 @@ Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
         ressourceneffiziente Mitteilungen an den Klienten.
         Für das verwendete Framework gibt es neben Google's Firebase noch
         wenige weitere quelloffene Kandidaten.
-        Die Umsetzung dieser Übertragungsmöglichkeit wird sich erst während 
+        Die Umsetzung dieser Übertragungsmöglichkeit wird sich erst während
         der Implementierung zeigen.
 \end{itemize}
 
