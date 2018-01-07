@@ -30,6 +30,12 @@ public class RequestEncoder {
         this.connectionHandler = new ConnectionHandler("", 1);
     }
 
+    public Error getErrorByCode(int code) {
+        for (Error e : Error.values()) {
+            if(e.getCode() == code) return e;
+        }
+        return Error.ERRORCODE_INVALID;
+    }
 
     /**
      * Method to perform a login request

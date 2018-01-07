@@ -32,6 +32,7 @@ treffDataBase <-down- UserDao
 treffDataBase <-down- EventDao
 
 package networking {
+    enum Error
     class RequestEncoder
     class ConnectionHandler
 }
@@ -47,6 +48,7 @@ RequestEncoder <-down- UserRepository
 EventDao <-down- EventRepository
 RequestEncoder <-left- EventRepository
 ConnectionHandler <-down- RequestEncoder
+Error <-right- RequestEncoder
 Server <-down- ConnectionHandler
 
 package SQL <<Database>> {

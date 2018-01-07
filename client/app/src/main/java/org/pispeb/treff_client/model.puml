@@ -37,7 +37,13 @@ package repositories {
 }
 
 package networking {
+    enum "Error" as E {
+        -code : int
+        -message : String
+        -isUserRelevant : boolean
+    }
     class "RequestEncoder" as RE <<Singleton>> {
+        -getErrorByCode(code : int) : Error
         +getUser(id : int) : LiveData<User>
         +getFriends() : LiveData<List<User>>
         +addGroup(userGroup : UserGroup)
@@ -63,6 +69,7 @@ UGR o-down- RE
 ER o-down- RE
 
 RE o-down- CH
+RE -right- E
 
 
 @enduml
