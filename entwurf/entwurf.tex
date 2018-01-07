@@ -599,6 +599,8 @@ Benutzerkonto-Identifikationsnummer ungültig}
 oder Benutzerkonto nicht Teil der Gruppe}
 \apiErrorNew{event-id-invalid}{220}{Verabredungs-Identifikationsnummer ungültig}
 \apiErrorNew{poll-id-invalid}{230}{Abstimmungs-Identifikationsnummer ungültig}
+\apiErrorNew{poll-option-id-invalid}{240}
+{Abstimmungsoptions-Identifikationsnummer ungültig}
 
 \apiErrorNew{time-end-in-past}{300}{Mindestens ein Endzeitpunkt liegt
 in der Vergangenheit}
@@ -607,21 +609,30 @@ nicht nach dem dazugehörigen Startzeitpunkt}
 \apiErrorNew{time-measured-future}{310}{Messzeitpunkt liegt zu weit in der
 Zukunft}
 
-\apiErrorNew{no-user-invited}{400}{Kein Benutzerkonto eingeladen,
-das nicht das eigene ist}
-\apiErrorNew{user-already-in-group}{401}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
-\apiErrorNew{user-not-in-group}{402}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
-
-\apiErrorNew{not-in-contacts}{500}{Benutzerkonto nicht in
+\apiErrorNew{not-in-contacts}{400}{Benutzerkonto nicht in
 der eigenen Kontaktliste}
-\apiErrorNew{being-blocked}{501}{Benutzerkonto wird vom angegeben
+\apiErrorNew{being-blocked}{401}{Benutzerkonto wird vom angegeben
 Benutzerkonto blockiert}
-\apiErrorNew{blocking-already}{510}{Benutzerkonto wird durch
+\apiErrorNew{blocking-already}{402}{Benutzerkonto wird durch
 das eigene Benutzerkonto blockiert}
-\apiErrorNew{not-blocking}{511}{Benutzerkonto wird nicht durch
+\apiErrorNew{not-blocking}{403}{Benutzerkonto wird nicht durch
 das eigene Benutzerkonto blockiert}
+\apiErrorNew{no-user-invited}{410}{Kein Benutzerkonto eingeladen,
+das nicht das eigene ist}
+\apiErrorNew{user-already-in-group}{411}{Mindestens eine Identifikationsnummer
+gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
+\apiErrorNew{user-not-in-group}{412}{Mindestens eine Identifikationsnummer
+gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
+\apiErrorNew{already-participating-event}{420}{Das Benutzerkonto ist bereits
+Teil dieser Verabredung}
+\apiErrorNew{not-participating-event}{421}{Das Benutzerkonto ist kein Teil
+dieser Verabredung}
+\apiErrorNew{already-voting-for-option}{430}{Das Benutzerkonto hat bereits
+eine Stimme für diese Option abgegeben}
+\apiErrorNew{poll-not-multichoice}{431}{Es ist keine Mehrfachauswahl für
+diese Abstimmung möglich}
+\apiErrorNew{not-voting-for-option}{432}{Das Benutzerkonto hat keine Stimme
+für dies Option abgegeben}
 
 Bis auf dem \textbf{login}-Befehl und den \textbf{register}-Befehl erfordert
 jeder Befehl folgenden Parameter:\\
@@ -840,8 +851,25 @@ id/Identifikationsnummer der Verabredung,
 Identifikationsnummer{,} die überschrieben werden sollen.
 Die Schlüssel entsprechen denen einer ausführlichen Verabredungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,%
+{group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-event-edit}
+
+\apiCommand{join-event}
+{Beitreten einer Verabredung einer Gruppe, in der das Benutzerkonto Mitglied
+ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Verabredung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid,event-id-invalid,already-participating-event}
+
+\apiCommand{leave-event}
+{Verlassen einer Verabredung, an welcher das Benutzerkonto teilnimmt}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
+wurde,
+id/Identifikationsnummer der Verabredung}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid,event-id-invalid,not-participating-event}
 
 \apiCommand{remove-event}
 {Entfernen einer Verabredung aus einer Gruppe, in der das Benutzerkonto
@@ -910,7 +938,28 @@ id/Identifikationsnummer der Abstimmungsoption,
 Identifikationsnummer{,} die überschrieben werden sollen.
 Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
-{group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,no-permission-poll-edit}
+
+\apiCommand{vote-for-option}
+{Stimmen für eine Abstimmungsoption in einer Abstimmung einer Gruppe,
+in der das Benutzerkonto Mitglied ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung,
+id/Identifikationsnummer der Abstimmungsoption}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,poll-not-multichoice,
+already-voting-for-option}
+
+\apiCommand{withdraw-vote-for-option}
+{Stimme zurückziehen für eine Abstimmungsoption in einer Abstimmung
+einer Gruppe, in der das Benutzerkonto Mitglied ist}
+{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
+wurde,
+poll-id/Identifikationsnummer der Abstimmung,
+id/Identifikationsnummer der Abstimmungsoption}
+{---/Leeres JSON-Objekt bei Erfolg}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,not-voting-for-option}
 
 \apiCommand{remove-poll-option}
 {Entfernen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
@@ -920,7 +969,8 @@ wurde,
 poll-id/Identifikationsnummer der Abstimmung,
 id/Identifikationsnummer der Abstimmungsoption}
 {---/Leeres JSON-Objekt bei Erfolg}
-{group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+{group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
+poll-option-id-invalid,no-permission-poll-edit}
 
 \apiCommand{remove-poll}
 {Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
