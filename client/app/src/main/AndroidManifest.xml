@@ -49,6 +49,9 @@
         <activity android:name=".view.group.eventList.AddEventActivity"/>
         <activity android:name=".view.group.eventList.AddPollActivity"/>
 
+
+        <service android:name=".data.gps_handling.GPSProvider" />
+
     </application>
 
 </manifest>

@@ -1,7 +1,10 @@
 package org.pispeb.treff_client.data.gps_handling;
 
+import android.app.IntentService;
+import android.content.Intent;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.annotation.Nullable;
 
 import org.pispeb.treff_client.view.home.map.MapViewModel;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
@@ -11,7 +14,7 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
  * The best position will be given to the listening mapViewModel and RequestEncoder.
  */
 
-public class GPSProvider {
+public class GPSProvider extends IntentService {
 
     LocationManager locationManager;
     LocationListener gpsListener;
@@ -19,6 +22,27 @@ public class GPSProvider {
     private RequestEncoder requestEncoder;
     private MapViewModel mapViewModel;
     private boolean isUpdating = false;
+
+    public GPSProvider() {
+        super("GPSProvider");
+    }
+
+    /**
+     * Updates the location until this method returns and the service stops
+     * @param intent the intent that started this service
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
+
+    }
+
+    /**
+     * Is called when the service stops, clean up
+     */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 
 
     /**
@@ -42,7 +66,7 @@ public class GPSProvider {
      *
      * @param requestEncoder Sets the RequestEncoder to recieve the current positions
      */
-    public void subsribe(RequestEncoder requestEncoder) {
+    public void subscribe(RequestEncoder requestEncoder) {
         requestEncoder = requestEncoder;
     }
 
@@ -52,8 +76,6 @@ public class GPSProvider {
      * If no RequestEncoder is listening, nothing happens.
      */
     public void dismissRequestEncoder() {}
-
-
 
 
 
