@@ -1,0 +1,92 @@
+@startuml
+package treff_server <<Frame>> {
+    package interfaces <<Frame>> {
+        interface Account {
+            getUsername(): String
+            setUsername(username:String)
+            checkPassword(password: String): boolean
+            setPassword(password: String)
+            getEmail(): String
+            setEmail(email:String)
+            getAllGroups(): Map<Integer, Usergroup>
+            addToGroup(Usergroup usergroup)
+            removeFromGroup(Usergroup usergroup)
+            getLastPosition():Position
+            getLastPositionTime():Date
+            updatePosition(Position position)
+            addUpdate(update: Update)
+            getUndeliveredUpdates(): SortedSet<Update>
+            markUpdateAsDelivered(Update update)
+            addUpdateListener(AccountUpdateListener updateListener)
+            removeUpdateListener(AccountUpdateListener updateListener)
+            delete()
+        }
+
+        interface AccountManager {
+            hasAccountWithUsername(String username): boolean
+            hasAccountWithEmail(String email): boolean
+            getAccountByUsername(String username): Account
+            getAccountByEmail(String email): Account
+            createAccount(String username, String email, String password): Account
+        }
+
+        interface AccountUpdateListener {
+            onUpdateAdded(Update update)
+        }
+
+        interface Usergroup {
+            setName(String name)
+            getName(): String
+            addMember(Account member)
+            removeMember(Account member)
+            getAllMembers(): Set<Account>
+            addEvent()
+            getAllEvents(): List<Event>
+            addChatMessage(ChatMessage message)
+            getAllChatMessages(): List<ChatMessage>
+            addPoll(Poll poll)
+            getAllPolls(): List<Poll>
+            getPermissionsOfMember(Account member): Set<Permission>
+            addPermissionToMember(Account member, Permission permission)
+            removePermissionFromMember(Account member, Permission permission)
+        }
+    }
+
+    package sql <<Frame>> {
+        class AccountSQL {
+            -id: int
+
+            AccountSQL(int id) <<constructor>>
+        }
+
+        class EntityManagerSQL <<singleton>>{
+            -instance: EntityManagerSQL
+
+            -EntityManagerSQL() <<contructor>>
+            +initialize()
+        }
+
+        enum Permission {
+            CHANGE_GROUP_NAME
+            ADD_MEMBER
+            REMOVE_MEMBER
+            CHANGE_PERMISSIONS
+            SEND_CHAT_MESSAGE
+            CREATE_EVENT
+            EDIT_ANY_EVENT
+            CREATE_POLL
+            EDIT_ANY_POLL
+        }
+
+        class UsergroupSQL {
+            -id: int
+
+            UsergroupSQL(int id) <<constructor>>
+        }
+    }
+
+    Account <|.. AccountSQL
+    AccountManager <|.. EntityManagerSQL
+    Usergroup <|.. UsergroupSQL
+}
+@enduml

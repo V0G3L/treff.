@@ -722,7 +722,6 @@ Der Server besteht aus drei verschiedenen Bestandteilen:
 	\label{fig:serverclassdiagram}
 \end{figure}
 
-
 \subsubsection{Netzwerkkommunikation}
 %Klassendiagramm(Server, ConnectionHandler und Kontext)
 Die Klasse 'Server' ist die Hauptklasse des Servers.
@@ -752,17 +751,65 @@ ist für die Dekodierung und Weiterleitung der Anfragen, sowie für
 die Kodierung und die Rückgabe der Antworten an die ConnectionHandler zuständig.
 
 \subsubsection{Datenbankzugriff}
-%Klassendiagramm sql-package
-Die Implementierung des Interfaces AccountManager sind für den
-Datenbankzugriff verantwortlich. Dazu werden die Anfragen vom RequestHandler
-entgegengenommen, auf der Datenbank ausgeführt und die Ergebnisse zum Kodieren
-an den RequestHandler zurückgegeben.
+Die Entitäten des semantisches Datenmodells werden durch Adapterklassen für
+eine beliebige Datenbankstruktur repräsentiert.
+Die Entkopplung von einer konkreten Datenbankstruktur wird dadurch erreicht,
+das diese Adapterklassen durch Interfaces abstrahiert werden.
+Eine Implementierung dieser Interfaces für eine MySQL-Datenbank ist ebenfalls
+Teil dieses Entwurfs.
+
+\par Referenzen auf Datenbankobjekte können nur durch Methoden anderer
+Datenbankobjekte erhalten werden.
+So ist es beispielsweise nur möglich, auf ein Usergroup-Objekt zuzugreifen,
+wenn eine Referenz auf ein Account-Objekt, das Mitglied der Gruppe ist,
+vorliegt.
+Des weiteren können Verabredungen und Abstimmungen nur mittels Gruppen
+referenziert werden und Abstimmungsoptionen nur mittels Abstimmungen.
+Der erste Zugriff auf eine Datenbankstruktur erfolgt über einen einzelnen,
+zentralen Einstiegspunkt, nämlich den AccountManager.
+Über diesen ist es möglich, Referenzen auf Account-Instanzen zu erhalten.
+
+\par Die MySQL-Implementierungen der oben genannten Interfaces halten selbst
+keine Daten außer der ID der Entität, die sie repräsentieren.
+Methoden, die auf andere Attribute zugreifen, erreichen dies durch das Abrufen
+bzw. Editieren der jeweiligen Werte aus der MySQL-Datenbank mittels
+vorgefertigten MySQL-Befehlen.
+Die Implementierung des AccountManagers, der EntityManagerSQL, dient den
+anderen MySQL-Implementierungen gleichzeitig als Schnittstelle zum
+MySQL-Server, indem der EntityManagerSQL eine paketweit sichtbare Methode zum
+Ausführen von MySQL-Befehlen zur Verfügung steht.
+
+\par Die folgenden zwei Klassendiagramme (Abbildung
+    \ref{fig:server-db-adapter1} und \ref{fig:server-db-adapter2} beinhalten
+    die oben beschriebenen Klassen.  Die Teilung in zwei Diagramme dient
+    lediglich der besseren Lesbarkeit.
+Die Klassen in beiden Diagrammen liegen im selben \enquote{sql}- bzw.
+\enquote{interfaces}-Paket.
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width = \columnwidth / 2 * 3, angle = 90]
+        {build/uml/server-database-adapters-p1.png}
+    \captionof{figure}{Klassen-Diagramm für den Datenbankzugriff relevanten
+    Pakete (Teil 1)}
+	\label{fig:server-db-adapter1}
+\end{figure}
+\pagebreak
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width = \columnwidth / 2 * 3, angle = 90]
+        {build/uml/server-database-adapters-p2.png}
+    \captionof{figure}{Klassen-Diagramm für den Datenbankzugriff relevanten
+    Pakete (Teil 2)}
+	\label{fig:server-db-adapter1}
+\end{figure}
+\pagebreak
 
 \subsection{Bestandteile des Servers}
 % Aufbau und genaue Funktionalität dieser Klassen
 % [z.B. Datenbank, Schnittstelle zum Klient]
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
-
 
 \begin{figure}[!htb]
 	\centering

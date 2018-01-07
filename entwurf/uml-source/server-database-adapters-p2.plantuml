@@ -1,0 +1,86 @@
+@startuml
+package treff_server <<Frame>> {
+    package interfaces <<Frame>> {
+        interface Event {
+            setTitle(String title)
+            getTitle(): String
+            setPosition(Position position)
+            getPosition(): Position
+            setTimeStart();
+            getTimeStart(): Date
+            setTimeEnd()
+            getTimeEnd(): Date
+            getTimeCreated(): Date
+            getCreator(): Account
+            addParticipant(Account participant)
+            removeParticipant(Account participant)
+            getAllParticipants(): Set<Account>
+        }
+
+        interface Poll {
+            getQuestion(): String
+            setQuestion(String question)
+            getPollOptions():List<Polloption>
+            addPollOption(String title, Position position): Polloption
+            removePollOption(PollOption pollOption): boolean
+            isMultiChoice(): boolean
+            setMultiChoice(boolean multiChoice)
+            endPoll(): Event
+            cancelPoll()
+        }
+
+        interface PollOption {
+            getTitle(): String
+            setTitle(String title)
+            getPosition(): Position
+            setPosition(Position position)
+        }
+
+        interface Update {
+            getTime(): Date
+            getType(): UpdateTime
+            getUpdate(): JsonObject
+            addAffectedAccount(Account account)
+            removeAffectedAccount(Account account): boolean
+            getAffectedAccounts(): Set<Account>
+        }
+
+        enum UpdateType {
+            EDIT
+            CHAT
+        }
+    }
+
+    package sql <<Frame>> {
+        class EventSQL {
+            -id: int
+
+            EventSQL(int id) <<constructor>>
+        }
+
+        class PollSQL {
+            -id: int
+
+            PollSQL(int id) <<constructor>>
+        }
+
+        class PollOptionSQL {
+            -id: int
+
+            PollOptionSQL(int id) <<constructor>>
+        }
+
+        class UpdateSQL {
+            -id: int
+
+            UpdateSQL(int id) <<constructor>>
+        }
+
+    }
+
+    Event <|.. EventSQL
+    Poll <|.. PollSQL
+    PollOption <|.. PollOptionSQL
+    Update <|.. UpdateSQL
+}
+@enduml
