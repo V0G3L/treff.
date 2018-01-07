@@ -590,19 +590,29 @@ anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um
 diese Objekte in der Datenbank zu repräsentieren.
 
 \subsubsection{Verbindung zum Server}
-Das Senden von Requests an den Server wird von zwei Klassen bereitgestellt, dem
-RequestEncoder und dem ConnectionHandler. Dabei hat der RequestEncoder die
-Aufgabe, von den Repositories angefragte Befehle und deren Argumente in für den
-Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an
-den ConnectionHandler weiterzugeben. Außerdem wandelt der
-RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings)
-wieder in sinnvolle Java-Objekte um. Des weiteren wird hier mit der
-Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errorcodes}. Der ConnectionHandler
-ist nun lediglich
-dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über
-einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die
-Antworten auf einem BufferedReader wieder auszulesen und an den RequestEncoder
-zurück zu geben.
+\begin{description}
+\item[RequestEncoder]\hfill \\
+Der Requestencoder ist die Schnittstelle zwischen dem Repository zur Datenverarbeitung
+und dem ConnectionHandler, welcher mit dem Server kommuniziert. Er stellt für jede Anfrage an den
+Server eine Methode bereit. Der Ablauf einer solchen Methode sieht immer wie folgt aus:
+1. Die Anfragen und Parameter werden in das festgelegte JSON Format gebracht.
+2. Die formatierte Anfrage wird an den ConnectionHandler übergeben, um sie zum Server zu senden.
+3. Nach der Abarbeitung durch den Server wird vom ConnectionHandler die Antwort im JSON
+Format entgegengenommen.
+4. Die Antwort wird zerlegt und in passende primitive Datentypen oder Objekte umgewandelt. Diese werden dem Aufrufer zurückgegeben.
+Die einzige Ausnahme zu diesem Vorgehen stellen die Methoden zum Einloggen und Registrieren dar. Denn sie sind noch zusätzlich zur Formatierung für das Hashen der Passwörter zuständig.
+Zudem ist der RequestEncoder dafür zuständig den Authentifizierungstoken zu verwalten. Er hat die Kontrolle über das Shared Preference Objekt, welches den Token speichert.
+\item[ConnectionHandler]\hfill \\ 
+Der ConnectionHandler ist die einzige Möglichkeit, Anfragen an den Server zu 
+senden. Er stellt eine Socket-Verbindung zum Server her und er leitet über 
+einen PrintWriter, als Strings gegebene Befehle an den Server weiter. Hierfür 
+stellt er die Methode sendRequest bereit, welche allerdings nur durch den 
+Request Encoder aufgerufen wird. Die Antworten des Servers liest er auf 
+einem BufferedReader wieder aus und gibt sie an den RequestEncoder zurück. 
+Damit der Nutzer bei einer schlechten Internetverbindung nicht gezwungen ist, 
+zB. auf das Senden einer Nachricht warten zu müssen, wird die Kommunikation 
+natürlich asynchron im Hintergrund ausgeführt.
+\end{description}
 
 \subsubsection{Repositories}
 
