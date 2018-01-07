@@ -471,7 +471,7 @@ Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 
 \begin{figure}
     \centering
-    \includegraphics[width = \columnwidth / 3 * 2]{lists.png}
+    \includegraphics[width = \columnwidth]{lists.png}
     \captionof{figure}{Diese Darstellung zeigt die Vererbungen und Beziehungen
     im Aufbau einer RecyclerView am Beispiel der FriendList. Group- und
     EventList verhalten sich allerdings äquivalent.}
@@ -504,6 +504,18 @@ GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf
 Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet 
 dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von 
 Events, Polls bzw. Usern.
+
+\subsubsection{SettingsActivity}
+
+Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity 
+zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen wie Nutzernamen 
+oder Passwort ändern etc. vorzunehmen, aber auch die App stummschalten oder 
+ähnliches. Änderungen am Account werden dabei vom ViewModel direkt an den 
+RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten betreffen. 
+Darin unterscheiden sich die Settings von den meisten anderen Activities. 
+Einstellungen wie stummschalten, welche nur den Nutzer selbst betreffen und für 
+den Server nicht relevant sind, werden hingegen in den SharedPreferences 
+abgelegt.
 
 %TODO Settings, die ganzen Adds, Login...
 
@@ -539,7 +551,9 @@ Aufgabe, von den Repositories angefragte Befehle und deren Argumente in für den
 Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an 
 den ConnectionHandler weiterzugeben. Außerdem wandelt der 
 RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings) 
-wieder in sinnvolle Java-Objekte um. Der ConnectionHandler ist nun lediglich 
+wieder in sinnvolle Java-Objekte um. Des weiteren wird hier mit der 
+Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errors} Der ConnectionHandler 
+ist nun lediglich 
 dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über 
 einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die 
 Antworten auf einem BufferedReader wieder auszulesen und an den RequestEncoder 
@@ -557,7 +571,8 @@ Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte
 Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage 
 an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen 
 Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die 
-angeforderten Daten als LiveData aus der Datenbank angefordert und an das 
+angeforderten Daten als LiveData (genaueres in \ref{sec:livedata}) aus der 
+Datenbank angefordert und an das 
 ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert 
 haben, erhält das Repository nun Rückmeldung darüber und kann diese 
 Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData 
@@ -578,10 +593,12 @@ bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 \subsection{Kommunikation von GUI und Datenverarbeitung}
 % Zusammenspiel von GUI und Datenverarbeitung
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
+Die Kommunikation von GUI und Datenverarbeitung findet im wesentlichen zwischen 
+ViewModels und Repositories statt. 
 
-\subsubsection{LiveData}
+\subsubsection{LiveData} \label{sec:livedata}
 Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
-bietet Android eine WrapperKlasse namens LiveData an, welche von View-Elementen
+bietet Android eine Wrapper-Klasse namens LiveData an, welche von View-Elementen
 \enquote{observed} werden kann. Wenn sich nun durch eine Änderung der Datenbank
 die anzuzeigenden Daten verändern, werden alle Observer (also die View) darüber
 benachrichtigt und können entsprechend angepasst werden.
@@ -600,6 +617,26 @@ sich in Abb.\ref{fig:datafetch} nachvollziehen.
 		reagiert und das fragment benachrichtigt.}
 	\label{fig:datafetch}
 \end{figure}
+
+
+\subsubsection{Fehlerbehandlung} \label{sec:error}
+Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte 
+Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername 
+schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom 
+Client behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder. 
+Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe 
+\ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum 
+festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010: 
+Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler 
+310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der 
+RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei 
+fehlerhaftem Userinput und InternalError bei internem Problem). Je nach 
+konkreter Implementation werden diese an unterschiedlichen Stellen des 
+Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis 
+zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um 
+den Nutzer über das Problem zu informieren.
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%
