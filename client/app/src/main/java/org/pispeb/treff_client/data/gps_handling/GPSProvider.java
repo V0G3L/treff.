@@ -30,8 +30,8 @@ public class GPSProvider {
 
 
     /**
-     * By calling this method the MapViewModel won't get new positions.
-     * If no MapViewModel ist listening, nothing happens.
+     * By calling this method the GroupMapViewModel won't get new positions.
+     * If no GroupMapViewModel ist listening, nothing happens.
      */
     public void dismissMap() {}
 

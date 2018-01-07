@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.group;
+package org.pispeb.treff_client.view.home.groupList;
 
 import android.support.v7.app.AppCompatActivity;
 

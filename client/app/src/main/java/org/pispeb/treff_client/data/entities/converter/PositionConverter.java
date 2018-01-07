@@ -1,6 +1,8 @@
-package org.pispeb.treff_client.data.entities;
+package org.pispeb.treff_client.data.entities.converter;
 
 import android.arch.persistence.room.TypeConverter;
+
+import org.pispeb.treff_client.data.entities.Position;
 
 
 public class PositionConverter {

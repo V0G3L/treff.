@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.friend;
+package org.pispeb.treff_client.view.home.friendList;
 
 import android.support.v7.app.AppCompatActivity;
 

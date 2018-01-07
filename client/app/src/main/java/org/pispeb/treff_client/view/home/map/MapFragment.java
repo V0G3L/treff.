@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.ui_components;
+package org.pispeb.treff_client.view.home.map;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;

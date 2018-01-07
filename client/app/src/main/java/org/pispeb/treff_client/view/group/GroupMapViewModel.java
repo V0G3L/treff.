@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.group.map;
+package org.pispeb.treff_client.view.group;
 
 import android.arch.lifecycle.ViewModel;
 
@@ -6,7 +6,7 @@ import android.arch.lifecycle.ViewModel;
  * Keeps track of filter options etc.
  */
 
-public class MapViewModel extends ViewModel {
+public class GroupMapViewModel extends ViewModel {
 
 
     /**
