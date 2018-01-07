@@ -624,6 +624,25 @@ bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 	\label{fig:model}
 \end{figure}
 
+\subsection{GPSProider}
+
+Der GPS Provider ist dafür zuständig, die Positionsdaten des Nutzers für den 
+Server und das Map ViewModel bereitzustellen. Obwohl Android mit dem 
+LocationManager und dem LocationListener über eine Beobachter Schnittstelle 
+verfüg, ist dieser Zwischenschritt über eine Eigene Klasse notwendig. Denn so 
+kann man die durch GPS ermittelte Position mit derjenigen vergleichen, welche 
+über Netzwerkdaten errechnet wurde. Dadurch wird sichergestellt, dass immer 
+nur die aktuell bestmögliche Position beachtet wird. Die Kommunikation mit dem 
+ViewModel und dem RequestEncoder erfolgt ähnlich dem Beobachter Modell. Von 
+beiden Klassen kann sich maximal ein Objekt, welches über jede 
+Positionsänderung informiert werden soll, über die subscribe Methode anmelden. 
+Durch die Trennung von ViewModel und Requestencoder wird es auch ermöglicht die 
+Position zu übertragen ohne eine Karte anzuzeigen, bzw. eine Karte mit Standort 
+anzuzeigen, währen die Übertragung an den Server nicht erwünscht ist. Zudem 
+erbt die GPSProvider Klasse von der IntentService Klasse von Android. So wird es 
+möglich, die Positionsbestimmung / Übertragung auch nach dem Schließen der 
+Anwendung aufrechtzuerhalten.
+
 
 \subsection{Kommunikation von GUI und Datenverarbeitung}
 % Zusammenspiel von GUI und Datenverarbeitung
