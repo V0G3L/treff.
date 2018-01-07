@@ -46,8 +46,8 @@
         <activity android:name=".view.friend.FriendActivity"/>
         <activity android:name=".view.friend.AddFriendActivity"/>
         <activity android:name=".view.group.AddGroupActivity"/>
-        <activity android:name=".view.group.event.AddEventActivity"/>
-        <activity android:name=".view.group.event.AddPollActivity"/>
+        <activity android:name=".view.group.eventList.AddEventActivity"/>
+        <activity android:name=".view.group.eventList.AddPollActivity"/>
 
     </application>
 

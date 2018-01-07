@@ -15,7 +15,7 @@ import org.pispeb.treff_client.databinding.ActivityHomeBinding;
 import org.pispeb.treff_client.view.home.eventList.EventListFragment;
 import org.pispeb.treff_client.view.home.friendList.FriendListFragment;
 import org.pispeb.treff_client.view.home.groupList.GroupListFragment;
-import org.pispeb.treff_client.view.home.map.MapFragment;
+import org.pispeb.treff_client.view.ui_components.MapFragment;
 import org.pispeb.treff_client.view.ui_components.TabbedNavigationActivity;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 

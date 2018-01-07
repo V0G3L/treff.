@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.group.event;
+package org.pispeb.treff_client.view.group.eventList;
 
 import android.support.v4.app.Fragment;
 

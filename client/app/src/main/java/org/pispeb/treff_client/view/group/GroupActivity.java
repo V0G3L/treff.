@@ -9,7 +9,7 @@ import android.os.Bundle;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
-import org.pispeb.treff_client.view.group.event.GroupEventFragment;
+import org.pispeb.treff_client.view.group.eventList.GroupEventFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 
 
