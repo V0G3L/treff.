@@ -30,10 +30,11 @@ package treff_server <<Frame>> {
     }
 
     package update_notifier <<Frame>> {
-        class PushNotificationSender {
-            -account: Account
+        class PersistentConnection {
+            out:PrintWriter
+            -observedAccount: Account
 
-            +PushNotificationSender(account: Account) <<constructor>>
+            +PersistentConnection(out:PrintWriter, accountManager:AccountManager, userID:int) <<constructor>>
             +onUpdateAdded(update: Update)
         }
     }
@@ -64,7 +65,7 @@ package treff_server <<Frame>> {
 
     Thread <|-- ConnectionHandler
     AccountManager <|.. EntityManagerSQL
-    AccountUpdateListener <|.. PushNotificationSender
+    AccountUpdateListener <|.. PersistentConnection
     Server "1" --> "n" ConnectionHandler : creates
     ConnectionHandler "1" --> "n" RequestHandler : creates
     Server "1" --> "1" AccountManager : has
