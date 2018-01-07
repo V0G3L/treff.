@@ -517,6 +517,24 @@ Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet
 dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von 
 Verabredungen, Abstimmungen bzw. Benutzern.
 
+\subsection{LoginActivity}
+
+Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist 
+dafür zuständig, über den Requestencoder eine Synchronisation mit dem Server 
+anzufordern. Während dieses Prozesses stellt sie das Layout eines 
+Ladebildschirms dar. Ist die Synchrinisation erfolgreich, startet sie die 
+HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf, 
+weil zB. aktuell gar kein, oder ein nicht gültiger Token vergeben ist, wird der 
+Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der Login, 
+als auch der Registrierungsbildschirm werden durch Fragments realisiert. Per 
+Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der 
+Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw. 
+login Knopf betätigt, werden die Daten durch das Fragment an den 
+Requestencoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich 
+war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder 
+ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment 
+angezeigt.
+
 \subsubsection{SettingsActivity}
 
 Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity
