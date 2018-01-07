@@ -205,7 +205,7 @@ aufgeführt.
 		Abstimmung & poll\\
 		Abstimmungsoption & polloption\\
 		Verabredung & event\\
-		Äzzzzz & update\\
+		Änderungen & update\\
 
 
 \end{tabular}
@@ -682,7 +682,7 @@ verwendet der Server um dem Klienten eine Nachricht zu schicken wenn es
 
 \subsubsection{De- und Encodierung von Anfragen}
 %Klassendiagramm RequestHandler und Kontext
-Die Klasse RequestHandler erhält die Kodierten Anfragen an die Datenbank und
+Die Klasse RequestHandler erhält die kodierten Anfragen an die Datenbank und
 ist für die Dekodierung und Weiterleitung der Anfragen zuständig, sowie für
 für die Kodierung der Antworten und die Rückgabe der Antworten an die
 ConnectionHandler.
@@ -691,7 +691,7 @@ ConnectionHandler.
 %Klassendiagramm sql-package
 Die Implementationen des Interfaces AccountManager sind für den
 Datenbankzugriff verantwortlich. Dazu werden die Anfragen vom RequestHandler
-entgegengenommen auf der Datenbank ausgeführt und die Ergebnisse zum Encodieren
+entgegengenommen auf der Datenbank ausgeführt und die Ergebnisse zum Kodieren
 an den RequestHandler zurückgegeben.
 
 \subsection{Bestandteile des Servers}
@@ -851,7 +851,7 @@ pass/Passwort des eigenen Kontos}
 {cred-wrong, user-id-invalid}
 
 \apiCommand{delete-account}
-{Löschen des eigenen Kontos .Dies führt wie erwartet dazu{,}
+{Löschen des eigenen Kontos. Dies führt wie erwartet dazu{,}
 dass der Nutzer automatisch ausgeloggt wird und dadurch seinen
 Authentifizierungstoken und somit den weiteren Zugriff auf die Funktionalitäten
 der App verliert.}
