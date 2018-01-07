@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.sql.exceptions;
+package org.pispeb.treff_server.exceptions;
 
 /**
  * Thrown to indicate that an {@link org.pispeb.treff_server.sql.EntityManagerSQL}

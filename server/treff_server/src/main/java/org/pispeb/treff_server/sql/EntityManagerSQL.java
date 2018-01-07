@@ -6,7 +6,7 @@ import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.sql.exceptions.EntityManagerNotInitializedException;
+import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
 
 import java.util.HashMap;
 import java.util.List;

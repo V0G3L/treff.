@@ -1,0 +1,213 @@
+@startuml
+class Thread {
+}
+
+package treff_server <<Frame>> {
+    class Server {
+        -port: int
+        -accountManager: AccountManager
+
+        +main(args: Array of String)
+        -Server(port:int) <<constructor>>
+    }
+
+    class ConnectionHandler {
+        -socket: Socket
+        -accountManager: AccountManager
+
+        +ConnectionHandler(socket:Socket, accountManager:AccountManager) <<constructor>>
+        +run()
+    }
+
+    class RequestHandler {
+        -request: String
+        -accountManager: AccountManager
+        -didRun: boolean
+
+        +RequestHandler(request: String, accountManager:AccountManager) <<constructor>>
+        +run()
+    }
+
+    class Position {
+        +latitude: int
+        +longitude: int
+
+        +Position(latitude: int, longitude: int) <<constructor>>
+    }
+
+    package update_notifier <<Frame>> {
+        class PushNotificationSender {
+            -account: Account
+
+            +PushNotificationSender(account: Account) <<constructor>>
+            +onUpdateAdded(update: Update)
+        }
+    }
+
+    package interfaces <<Frame>> {
+        interface Account {
+            getUsername(): String
+            setUsername(username:String)
+            checkPassword(password: String): boolean
+            setPassword(password: String)
+            getEmail(): String
+            setEmail(email:String)
+            getAllGroups(): Map<Integer, Usergroup>
+            addToGroup(Usergroup usergroup)
+            removeFromGroup(Usergroup usergroup)
+            getLastPosition():Position
+            getLastPositionTime():Date
+            updatePosition(Position position)
+            addUpdate(update: Update)
+            getUndeliveredUpdates(): SortedSet<Update>
+            markUpdateAsDelivered(Update update)
+            addUpdateListener(AccountUpdateListener updateListener)
+            removeUpdateListener(AccountUpdateListener updateListener)
+            delete()
+        }
+
+        interface AccountManager {
+            hasAccountWithUsername(String username): boolean
+            hasAccountWithEmail(String email): boolean
+            getAccountByUsername(String username): Account
+            getAccountByEmail(String email): Account
+            createAccount(String username, String email, String password): Account
+        }
+
+        interface AccountUpdateListener {
+            onUpdateAdded(Update update)
+        }
+
+        interface ChatMessage {
+            getSender(): Account
+            getContent(): String
+            getTimeSent(): Date
+        }
+
+        interface Event {
+            setTitle(String title)
+            getTitle(): String
+            setPosition(Position position)
+            getPosition(): Position
+            setTimeStart();
+            getTimeStart(): Date
+            setTimeEnd()
+            getTimeEnd(): Date
+            getTimeCreated(): Date
+            getCreator(): Account
+            addParticipant(Account participant)
+            removeParticipant(Account participant)
+            getAllParticipants(): Set<Account>
+        }
+
+        interface Poll {
+            getQuestion(): String
+            setQuestion(String question)
+            getPollOptions():List<Polloption>
+            addPollOption(String title, Position position): Polloption
+            removePollOption(PollOption pollOption): boolean
+            isMultiChoice(): boolean
+            setMultiChoice(boolean multiChoice)
+            endPoll(): Event
+            cancelPoll()
+        }
+
+        interface PollOption {
+            getTitle(): String
+            setTitle(String title)
+            getPosition(): Position
+            setPosition(Position position)
+        }
+
+        interface Update {
+            getTime(): Date
+            getType(): UpdateTime
+            getUpdate(): JsonObject
+            addAffectedAccount(Account account)
+            removeAffectedAccount(Account account): boolean
+            getAffectedAccounts(): Set<Account>
+        }
+
+        enum UpdateType {
+            EDIT
+            CHAT
+        }
+
+        interface Usergroup {
+            setName(String name)
+            getName(): String
+            addMember(Account member)
+            removeMember(Account member)
+            getAllMembers(): Set<Account>
+            addEvent()
+            getAllEvents(): List<Event>
+            addChatMessage(ChatMessage message)
+            getAllChatMessages(): List<ChatMessage>
+            addPoll(Poll poll)
+            getAllPolls(): List<Poll>
+            checkPermissionOfMember(Account member, Permission permission): boolean
+            setPermissionOfMember(Account member, Permission permission, boolean value)
+        }
+    }
+
+    package sql <<Frame>> {
+        class AccountSQL {
+            -sqlDatabase: SQLDatabase
+            -valid:boolean
+            -id: int
+            -lastPosition: Position
+
+            AccountSQL(int id) <<constructor>>
+            invalidate()
+        }
+
+        class EntityManagerSQL <<singleton>>{
+            -instance: EntityManagerSQL
+            -loadedAccountsByID: Map<Integer, Account>
+
+            -EntityManagerSQL() <<contructor>>
+            +initialize()
+        }
+
+        class EventSQL {
+        }
+
+        class PollSQL {
+        }
+
+        class PollOptionSQL {
+        }
+
+        class UpdateSQL {
+        }
+
+        enum Permission {
+            CHANGE_GROUP_NAME
+            ADD_MEMBER
+            REMOVE_MEMBER
+            CHANGE_PERMISSIONS
+            SEND_CHAT_MESSAGE
+            CREATE_EVENT
+            EDIT_ANY_EVENT
+            CREATE_POLL
+            EDIT_ANY_POLL
+        }
+
+        class UsergroupSQL {
+        }
+
+        class SQLDatabase {
+        }
+    }
+
+    Thread <|-- ConnectionHandler
+    Account <|.. AccountSQL
+    AccountManager <|.. EntityManagerSQL
+    AccountUpdateListener <|.. PushnotificationSender
+    Event <|.. EventSQL
+    Poll <|.. PollSQL
+    PollOption <|.. PolloptionSQL
+    Update <|.. UpdateSQL
+    Usergroup <|.. UsergroupSQL
+}
+@enduml

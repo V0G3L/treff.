@@ -1,0 +1,75 @@
+@startuml
+
+class Thread {
+}
+
+package treff_server <<Frame>> {
+    class Server {
+        -port: int
+        -accountManager: AccountManager
+
+        +main(args: Array of String)
+        -Server(port:int) <<constructor>>
+    }
+
+    class ConnectionHandler {
+        -socket: Socket
+        -accountManager: AccountManager
+
+        +ConnectionHandler(socket:Socket, accountManager:AccountManager) <<constructor>>
+        +run()
+    }
+
+    class RequestHandler {
+        -request: String
+        -accountManager: AccountManager
+        -didRun: boolean
+
+        +RequestHandler(request: String, accountManager:AccountManager) <<constructor>>
+        +run(): String
+    }
+
+    package update_notifier <<Frame>> {
+        class PushNotificationSender {
+            -account: Account
+
+            +PushNotificationSender(account: Account) <<constructor>>
+            +onUpdateAdded(update: Update)
+        }
+    }
+
+    package interfaces <<Frame>> {
+        interface AccountManager {
+            hasAccountWithUsername(String username): boolean
+            hasAccountWithEmail(String email): boolean
+            getAccountByUsername(String username): Account
+            getAccountByEmail(String email): Account
+            createAccount(String username, String email, String password): Account
+        }
+
+        interface AccountUpdateListener{
+            onUpdateAdded(update: Update)
+        }
+    }
+
+    package sql <<Frame>> {
+        class EntityManagerSQL <<singleton>>{
+            -instance: EntityManagerSQL
+            -loadedAccountsByID: Map<Integer, Account>
+
+            -EntityManagerSQL() <<contructor>>
+            +initialize()
+        }
+    }
+
+    Thread <|-- ConnectionHandler
+    AccountManager <|.. EntityManagerSQL
+    AccountUpdateListener <|.. PushNotificationSender
+    Server "1" --> "n" ConnectionHandler : creates
+    ConnectionHandler "1" --> "n" RequestHandler : creates
+    Server "1" --> "1" AccountManager : has
+    ConnectionHandler "n" --> "1" AccountManager : has
+    RequestHandler "n" --> "1" AccountManager : has
+    ConnectionHandler "1" -> "1" AccountUpdateListener : has
+}
+@enduml

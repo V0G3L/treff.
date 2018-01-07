@@ -18,7 +18,7 @@ public class Server {
         new Server(Integer.valueOf(args[0]));
     }
 
-    public Server (int port) {
+    private Server (int port) {
         port = port;
         
         // Start DB
