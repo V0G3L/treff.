@@ -388,12 +388,11 @@ werden müssen.
 \section{Aufbau und internes Verhalten - Klient}
 
 \subsection{Aufbau}
-% Aufteilung in GUI und Datenverarbeitung (Fließtext)
-% Ihre Funktionen
+
 Der Klient, also die App selbst, besteht grundsätzlich aus zwei Teilen:
-der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund
-ablaufenden Datenverwaltung.
-Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle
+der Grafischen Benutzeroberfläche (GBO), also dem für den Benutzer
+sichtbaren Teil und der im Hintergrund ablaufenden Datenverwaltung.
+Die GBO bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle
 Funktionen der App zugreifen kann.
 Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln,
 um z.B. Datenverlust und inkonsistentes Verhalten zu verhindern, das sonst
@@ -433,20 +432,18 @@ Das bedeutet, dass der Klient in 3 wesentliche Schichten gegliedert ist:
 
 
 \pagebreak
-\subsection{Bestandteile der GUI}
-% Strukturierung der GUI durch Activities und deren Aufteilung in Fragments,
-%	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
-% ggf Sequenzdiagramme)
 
-Die GUI besteht im Wesentlichen aus den folgenden vier Teilen. Den
-wahrscheinlich wichtigsten Teil stellt die Home-Activity dar, auf dem der
-Nutzer in vier Tabs auf alle Gruppen, Verabredungen, Freunde und die Karte zugreifen
-kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Verabredungen
-können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity
-benötigt, die es dem Nutzer erlaubt, sich einzuloggen bzw. zu registrieren.
-Die letzte wichtige Komponente stellt die Settings-Activity dar, in welcher
-der Nutzer Benutzerkonto-Einstellungen vornehmen kann. Eine genaue Auflistung
-aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
+\subsection{Bestandteile der GBO}
+
+Die GBO besteht im Wesentlichen aus den
+folgenden vier Teilen: Den wahrscheinlich wichtigsten Teil stellt die Home-Activity
+dar, auf dem der Nutzer in vier Tabs auf alle Gruppen, Verabredungen, Freunde und
+die Karte zugreifen kann. Details zu einer Gruppe, sowie alle in dieser Gruppe
+geplanten Verabredungen können in einer eigenen Activity eingesehen werden.
+Außerdem wird eine Activity benötigt, die es dem Nutzer erlaubt, sich anzumelden
+bzw. zu registrieren. Die letzte wichtige Komponente stellt die Settings-Activity
+dar, in welcher der Nutzer Benutzerkonto-Einstellungen vornehmen kann. Eine genaue
+Auflistung aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
 
 \begin{figure}
 	\centering
@@ -537,39 +534,35 @@ Verabredungen, Abstimmungen bzw. Benutzern.
 \subsubsection{LoginActivity}
 
 Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist
-dafür zuständig, über den Requestencoder eine Synchronisation mit dem Server
+dafür zuständig, über den RequestEncoder eine Synchronisation mit dem Server
 anzufordern. Während dieses Prozesses stellt sie das Layout eines
 Ladebildschirms dar. Ist die Synchronisation erfolgreich, startet sie die
 HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf,
-weil zB. aktuell gar kein, oder ein nicht gültiger Token vergeben ist, wird der
-Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der Login,
-als auch der Registrierungsbildschirm werden durch Fragments realisiert. Per
-Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der
-Nutzer seine Nutzerdaten vollständig eingegeben und den 'registrieren'-, bzw.
-'login'-Knopf betätigt, werden die Daten durch das Fragment an den
-Requestencoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich
+weil zum Beispiel aktuell gar kein, oder ein nicht gültiger Token vergeben ist,
+wird der Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der
+Login, als auch der Registrierungsbildschirm werden durch Fragments realisiert.
+Per Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der
+Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw.
+login Knopf betätigt, werden die Daten durch das Fragment an den
+RequestEncoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich
 war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder
 ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment
 angezeigt.
 
 \subsubsection{SettingsActivity}
 
-Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity
+Auf die Einstellungen kann der Nutzer über den NavigationDrawer der HomeActivity
 zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen vorzunehmen,
 wie beispielsweise den Nutzernamen oder das Passwort zu ändern oder diverse
 'Mutefunktionen' zu bearbeiten. Änderungen am Account werden dabei vom ViewModel
 direkt an den RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten
-betreffen. Darin unterscheiden sich die Settings von den meisten anderen
-Activities. Einstellungen wie dem Stummschalten, welche nur den Nutzer selbst
-betreffen und für den Server nicht relevant sind, werden hingegen in den
-SharedPreferences abgelegt.
-
-%TODO Settings, die ganzen Adds, Login...
+betreffen. Darin unterscheiden sich die Settings von den meisten anderen Activities.
+Einstellungen wie stummschalten, welche nur den Nutzer selbst betreffen und für
+den Server nicht relevant sind, werden hingegen in den SharedPreferences
+abgelegt.
 
 \subsection{Bestandteile der Datenverarbeitung}
-% Aufteilung der Funktionalitäten auf seperate Klassen,
-% sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme,
-% ggf Sequenzdiagramme)
+
 Die Datenverarbeitung beruht auf einer Unterteilung in eine lokale Datenbank
 und die Verbindung zum Server, welche unabhängig voneinander agieren. Um stets
 zu garantieren, dass diese Datenquellen synchronisiert werden kommen
@@ -654,7 +647,7 @@ nur die aktuell bestmögliche Position beachtet wird. Die Kommunikation mit dem
 ViewModel und dem RequestEncoder erfolgt ähnlich dem Beobachter Modell. Von
 beiden Klassen kann sich maximal ein Objekt, welches über jede
 Positionsänderung informiert werden soll, über die subscribe Methode anmelden.
-Durch die Trennung von ViewModel und Requestencoder wird es auch ermöglicht die
+Durch die Trennung von ViewModel und RequestEncoder wird es auch ermöglicht die
 Position zu übertragen ohne eine Karte anzuzeigen, bzw. eine Karte mit Standort
 anzuzeigen, während die Übertragung an den Server nicht erwünscht ist. Zudem
 erbt die GPSProvider Klasse von der IntentService Klasse von Android. So wird es
@@ -662,10 +655,10 @@ möglich, die Positionsbestimmung / Übertragung auch nach dem Schließen der
 Anwendung aufrechtzuerhalten.
 
 
-\subsection{Kommunikation von GUI und Datenverarbeitung}
-% Zusammenspiel von GUI und Datenverarbeitung
+\subsection{Kommunikation von GBO und Datenverarbeitung}
+% Zusammenspiel von GBO und Datenverarbeitung
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
-Die Kommunikation von GUI und Datenverarbeitung findet im wesentlichen zwischen
+Die Kommunikation von GBO und Datenverarbeitung findet im wesentlichen zwischen
 ViewModels und Repositories statt.
 
 \subsubsection{LiveData} \label{sec:livedata}
