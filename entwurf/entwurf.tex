@@ -447,7 +447,7 @@ aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
 \begin{figure}
 	\centering
 	\includegraphics[width = \columnwidth / 100 * 95]{treff2.pdf}
-	\captionof{figure}{Sämtliche Klassen und Packages des treff-Clients. Eine
+	\captionof{figure}{Sämtliche Klassen und Packages des treff-Klients. Eine
 	Darstellung als UML-Klassendiagramm wäre unübersichtlich und nicht sinnvoll
 	gewesen.}
 	\label{fig:classes}
@@ -562,7 +562,7 @@ Bestandteile sind wie folgt:
 
 \subsubsection{Lokale Datenbank}
 
-Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Client 
+Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Klient 
 relevanten Daten auf dem Gerät zu cachen und zu verhindern, dass alle 
 Informationen stets vom Server geholt werden müssen. 
 Sie wird von der Android Library 
@@ -678,7 +678,7 @@ sich in Abb.\ref{fig:datafetch} nachvollziehen.
 Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte 
 Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername 
 schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom 
-Client behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder. 
+Klient behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder. 
 Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe 
 \ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum 
 festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010: 
@@ -706,7 +706,7 @@ Der Server besteht aus drei verschiedenen Bestandteilen:
 
 \begin{figure}
     \centering
-    \includegraphics[width = \columnwidth / 3 * 2]{server.png}
+    \includegraphics[width = \columnwidth / 3 * 2]{build/uml/server.png}
     \captionof{figure}{Klassen-Diagramm der wichtigen Klassen des Servers}
 	\label{fig:lists}
 \end{figure}
@@ -752,6 +752,17 @@ an den RequestHandler zurückgegeben.
 % Aufbau und genaue Funktionalität dieser Klassen
 % [z.B. Datenbank, Schnittstelle zum Klient]
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
+
+
+\begin{figure}[!htb]
+	\centering
+	\includegraphics[width = \columnwidth / 100 * 90]{treff3.pdf}
+	\captionof{figure}{Sämtliche Klassen und Packages des treff-Servers. Eine
+	Darstellung als UML-Klassendiagramm wäre unübersichtlich und nicht sinnvoll
+	gewesen.}
+	\label{fig:classesserver}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%
