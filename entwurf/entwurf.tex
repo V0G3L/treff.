@@ -185,10 +185,12 @@ dabei als Parameter der Befehle an den Server übergeben.
 Der Server speichert die Daten der Nutzer in einer zentralen Datenbank, nimmt
 Befehle der Klienten entgegen und verändert gegebenenfalls die Datensätze.
 Bei Veränderung von Daten werden alle betroffenen Klienten darüber informiert,
-welche daraufhin ihre lokalen Datensätze aktualisieren können.
+welche daraufhin ihre lokalen Datensätze aktualisieren können. Außerdem
+vermittelt er Anfragen der Klienten untereinander.
 
 \pagebreak
 
+\pagebreak
 \subsection{Sprache dieses Dokumentes}
 Während dieses Entwurfsdokument grundsätzlich in deutscher Sprache verfasst
 ist, besitzen die in der Implementierung erscheinenden Entitäten, Relationen,
@@ -240,7 +242,7 @@ Verabredungen erstellen und an solchen teilnehmen.
 Ein Benutzerkonto kann Abstimmungen innerhalb einer Gruppe erstellen und für
 deren Optionen abstimmen.
 Jedes Benutzerkonto besitzt eine Gruppenmitgliedschaft für jede Gruppe, in der
-es mitglied ist.
+es Mitglied ist.
 Ein Benutzerkonto hat eine Menge von Updates die dieses Benutzerkonto
 betreffen.
 %TODO Warum haben wir was wie gemacht
@@ -258,18 +260,18 @@ der Gruppenmitgliedschaft und sind nur in dieser gültig.\\
 \begin{tabular}[t]{ l l }
     \textbf{Berechtigung} & \textbf{berechtigt dazu}\\
     \hline
-    permission-change-group-name & den Namen der Gruppe zu ändern.\\
-    permission-manage-members & Nutzer bzw deren Benutzerkonto in die Gruppe\\
+    change-group-name & den Namen der Gruppe zu ändern.\\
+    manage-members & Nutzer bzw deren Benutzerkonto in die Gruppe\\
      & hinzuzufügen und Gruppenmitglieder zu entfernen.\\
-    permission-change-permissions & die Gruppenberechtigungen der
+    change-permissions & die Gruppenberechtigungen der
         Gruppenmitglieder zu\\
      & bearbeiten.\\
-    perm ission-create-event & Verabredungen zu erstellen.\\
-    permission-edit-any-event & Verabredungen zu bearbeiten, welche man nicht
+    create-event & Verabredungen zu erstellen.\\
+    edit-any-event & Verabredungen zu bearbeiten, welche man nicht
         selbst\\
      & erstellt hat.\\
-    permission-create-poll & Abstimmungen zu erstellen.\\
-    permission-edit-any-poll & Abstimmungen zu bearbeiten, welche man nicht
+    create-poll & Abstimmungen zu erstellen.\\
+    edit-any-poll & Abstimmungen zu bearbeiten, welche man nicht
     selbst\\
      & erstellt hat.\\
 \end{tabular}
@@ -342,7 +344,7 @@ gespeichert, die für diese Option gestimmt haben.
 Eine Verabredung wird durch eine eindeutige Identifikationsnummer 'id'
 identifiziert und angesprochen. Sie besteht aus einem Namen 'title', einem
 Start- sowie einem Endzeitpunkt 'timestart' und 'timeend',
-und Längen- sowie Breitengrad des Treffpuktes 'lon' und 'lat'. Sie speichert
+und Längen- sowie Breitengrad 'lon' und 'lat' des Treffpunktes. Sie speichert
 ihren Ersteller und die Gruppe, in der sie erstellt wurde.
 Eine Verabredung beinhaltet eine beliebig große Teilmenge von Mitgliedern der
 zugehörigen Gruppe.
@@ -388,14 +390,14 @@ werden müssen.
 \subsection{Aufbau}
 % Aufteilung in GUI und Datenverarbeitung (Fließtext)
 % Ihre Funktionen
-Der Klient, also die App selbst, besteht grundsätzlich auch zwei Teilen:
+Der Klient, also die App selbst, besteht grundsätzlich aus zwei Teilen:
 der GUI, also dem für den Benutzer sichtbaren Teil und der im Hintergrund
 ablaufenden Datenverwaltung.
 Die GUI bietet dem Nutzer eine Oberfläche, mit der er einfach auf alle
 Funktionen der App zugreifen kann.
 Dabei ist es wichtig, die beiden Teile klar voneinander zu entkoppeln,
 um z.B. Datenverlust und inkonsistentes Verhalten zu verhindern, das sonst
-bei Aktionen wie dem Pausieren oder drehen der App auftreten kann.
+bei Aktionen wie dem Pausieren oder Drehen der App auftreten kann.
 
 \subsubsection{MVVM}
 Um diese Entkopplung zu erreichen kommt die MVVM-Architektur
@@ -429,8 +431,8 @@ Das bedeutet, dass der Klient in 3 wesentliche Schichten gegliedert ist:
     \label{fig:structure}
 \end{figure}
 
-%
 
+\pagebreak
 \subsection{Bestandteile der GUI}
 % Strukturierung der GUI durch Activities und deren Aufteilung in Fragments,
 %	sowie das Zusammenspiel der Activities (Fließtext und UML-Klassendiagramme,
@@ -455,10 +457,11 @@ aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
 	\label{fig:classes}
 \end{figure}
 
+\pagebreak
 \subsubsection{HomeActivity}
 Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer
-nach dem Login hier landet und auf alle weiteren Funktionen von hier aus
-zugreifen kann. Die unterschiedlichen Tabs mit Karte, Freundes-, Gruppen-, und
+von hier aus auf alle weiteren Funktionen zugreifen kann.
+Die unterschiedlichen Tabs mit Karte, Freundes-, Gruppen-, und
 Verabredungsliste werden dabei als Fragments realisiert, welche von einem
 ViewPagerAdapter verwaltet werden. Bis auf das MapFragment unterscheiden sich
 die Fragments selbst kaum voneinander, da alle anderen lediglich eine Liste
@@ -467,17 +470,17 @@ Einsatz, da sie flexibler und weniger ressourcenbelastend ist als zuvor
 übliche Listviews. Jede dieser Recyclerviews besteht im wesentlichen aus
 drei Teilen:
 \begin{itemize}
-	\item{ViewHolder} ist dafür verantwortlich, die Daten eines einzelnen
+	\item{'ViewHolder'} ist dafür verantwortlich, die Daten eines einzelnen
         Elements der Liste zu behalten und die Verbindung zum Layout eines
         Listeneintrags herzustellen.
-	\item{Adapter} stellt die Verbindung zwischen der Menge an Daten, die
+	\item{'Adapter'} stellt die Verbindung zwischen der Menge an Daten, die
         angezeigt werden soll und den ViewHoldern dar.
-	\item{Layoutmanager} bestimmt, wie die einzelnen Elemente der Liste
+	\item{'Layoutmanager'} bestimmt, wie die einzelnen Elemente der Liste
         zueinander angeordnet sein sollen
         (Im Falle einer Liste also ein LinearLayoutManager).
 \end{itemize}
 Für den LayoutManager existiert bereits eine fertige Implementierung, der
-LinearLayoutManager, welcher die items als Liste darstellt. Sowohl der
+LinearLayoutManager, welcher die Items als Liste darstellt. Sowohl der
 ViewHolder als auch der Adapter wird jedoch für den entsprechenden
 Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 
@@ -490,7 +493,8 @@ Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 	\label{fig:lists}
 \end{figure}
 
-Das einzig wesentlich andere Tab auf dem Homescreen stellt das MapFragment dar.
+\pagebreak
+Der einzige wesentlich andere Tab auf dem Homescreen stellt das MapFragment dar.
 Es ist zugleich der für den Nutzer wohl wichtigste Teil, da hier alle
 Informationen angezeigt werden, die unsere Anwendung bereitstellt. Dies
 beinhaltet in erster Linie die Standorte von befreundeten Benutzern oder andere
@@ -509,19 +513,19 @@ Filter kann vom Benutzer über einen Android-eigenen Dialog angepasst werden.
 \svgFigure{activity-home-layout}{Layout der Home-Activity}{300pt}
 
 Das XML-Layout der Activity basiert auf einem DrawerLayout. Dessen erstes Element
-ist der eigentliche Bildschirm, den der Nutzer sieht, das zweite ist ein
+ist der eigentliche Bildschirm, den der Nutzer sieht Das zweite ist ein
 \enquote{Drawer}, kann also herausgeschoben werden. Im DrawerLayout sind wiederum
 Ein AppBarLayout mit der Toolbar und einem TabLayout sowie ein ViewPager, der
 immer ein Fragment hält. Das AppBarLayout gruppiert die Toolbar mit dem Appnamen und
 dem Hamburgermenü und das TabLayout, welches die Titel der Tabs anzeigt.
-\\Die NavigationView enthält ein Menü mit einer Gruppe an items; diese bilden mit
+\\Die NavigationView enthält ein Menü mit einer Gruppe an Items; diese bilden mit
 Namen und Icon versehen die oberste Navigationsebene der App.
 
 \subsubsection{GroupActivity}
 
 Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für
-mehrere als Fragments, welche als Tabs angeordnet werden. In diesem Fall
-handelt es sich dabei um ein das GroupEventFragment und GroupChatFragment. In
+mehrere Fragments, welche als Tabs angeordnet werden. In diesem Fall
+handelt es sich dabei um das GroupEventFragment und GroupChatFragment. In
 ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls
 angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in
 chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das
@@ -535,14 +539,14 @@ Verabredungen, Abstimmungen bzw. Benutzern.
 Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist
 dafür zuständig, über den Requestencoder eine Synchronisation mit dem Server
 anzufordern. Während dieses Prozesses stellt sie das Layout eines
-Ladebildschirms dar. Ist die Synchrinisation erfolgreich, startet sie die
+Ladebildschirms dar. Ist die Synchronisation erfolgreich, startet sie die
 HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf,
 weil zB. aktuell gar kein, oder ein nicht gültiger Token vergeben ist, wird der
 Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der Login,
 als auch der Registrierungsbildschirm werden durch Fragments realisiert. Per
 Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der
-Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw.
-login Knopf betätigt, werden die Daten durch das Fragment an den
+Nutzer seine Nutzerdaten vollständig eingegeben und den 'registrieren'-, bzw.
+'login'-Knopf betätigt, werden die Daten durch das Fragment an den
 Requestencoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich
 war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder
 ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment
@@ -551,18 +555,18 @@ angezeigt.
 \subsubsection{SettingsActivity}
 
 Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity
-zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen wie Nutzernamen
-oder Passwort ändern etc. vorzunehmen, aber auch die App stummschalten oder
-ähnliches. Änderungen am Account werden dabei vom ViewModel direkt an den
-RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten betreffen.
-Darin unterscheiden sich die Settings von den meisten anderen Activities.
-Einstellungen wie stummschalten, welche nur den Nutzer selbst betreffen und für
-den Server nicht relevant sind, werden hingegen in den SharedPreferences
-abgelegt.
+zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen vorzunehmen,
+wie beispielsweise den Nutzernamen oder das Passwort zu ändern oder diverse
+'Mutefunktionen' zu bearbeiten. Änderungen am Account werden dabei vom ViewModel
+direkt an den RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten
+betreffen. Darin unterscheiden sich die Settings von den meisten anderen
+Activities. Einstellungen wie dem Stummschalten, welche nur den Nutzer selbst
+betreffen und für den Server nicht relevant sind, werden hingegen in den
+SharedPreferences abgelegt.
 
 %TODO Settings, die ganzen Adds, Login...
 
-\subsection{Bestandteile Datenverarbeitung}
+\subsection{Bestandteile der Datenverarbeitung}
 % Aufteilung der Funktionalitäten auf seperate Klassen,
 % sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
@@ -598,7 +602,7 @@ Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an
 den ConnectionHandler weiterzugeben. Außerdem wandelt der
 RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings)
 wieder in sinnvolle Java-Objekte um. Des weiteren wird hier mit der
-Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errors} Der ConnectionHandler
+Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errorcodes}. Der ConnectionHandler
 ist nun lediglich
 dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über
 einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die
@@ -614,7 +618,7 @@ Gruppenmitgliedschaften zusammengefasst sind. Repositories werden
 direkt von den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese
 möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die
 gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten
-sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische
+sind, ohne dass sich das ViewModel selbst darum kümmern muss. Die typische
 Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte
 Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage
 an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen
@@ -637,12 +641,13 @@ bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 	\label{fig:model}
 \end{figure}
 
+\pagebreak
 \subsubsection{GPSProider}
 
 Der GPS Provider ist dafür zuständig, die Positionsdaten des Nutzers für den
 Server und das Map ViewModel bereitzustellen. Obwohl Android mit dem
 LocationManager und dem LocationListener über eine Beobachter Schnittstelle
-verfüg, ist dieser Zwischenschritt über eine Eigene Klasse notwendig. Denn so
+verfügt, ist dieser Zwischenschritt über eine Eigene Klasse notwendig. Denn so
 kann man die durch GPS ermittelte Position mit derjenigen vergleichen, welche
 über Netzwerkdaten errechnet wurde. Dadurch wird sichergestellt, dass immer
 nur die aktuell bestmögliche Position beachtet wird. Die Kommunikation mit dem
@@ -651,7 +656,7 @@ beiden Klassen kann sich maximal ein Objekt, welches über jede
 Positionsänderung informiert werden soll, über die subscribe Methode anmelden.
 Durch die Trennung von ViewModel und Requestencoder wird es auch ermöglicht die
 Position zu übertragen ohne eine Karte anzuzeigen, bzw. eine Karte mit Standort
-anzuzeigen, währen die Übertragung an den Server nicht erwünscht ist. Zudem
+anzuzeigen, während die Übertragung an den Server nicht erwünscht ist. Zudem
 erbt die GPSProvider Klasse von der IntentService Klasse von Android. So wird es
 möglich, die Positionsbestimmung / Übertragung auch nach dem Schließen der
 Anwendung aufrechtzuerhalten.
@@ -698,10 +703,10 @@ festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010:
 Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler
 310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der
 RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei
-fehlerhafter Benutzereingabe und InternalError bei internem Problem). Je nach
-konkreter Implementation werden diese an unterschiedlichen Stellen des
+fehlerhafter Benutzereingabe bzw. InternalError bei internem Problem). Je nach
+konkreter Implementierung werden diese an unterschiedlichen Stellen des
 Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis
-zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um
+zur View-Ebene weitergegeben, da dort Fehlerdialoge erzeugt werden können, um
 den Nutzer über das Problem zu informieren.
 
 
@@ -735,7 +740,7 @@ ein ConnectionHandler erstellt.
 Dieser gibt die bei Erhalt von Anfragen diese an einen neuen RequestHandler
 weiter und sendet die vom RequestHandler produzierte Antwort zurück an den
 Klienten.
-Da die Anfragen eines Benutzer sequentiell abgearbeitet werden sollen, ruft
+Da die Anfragen eines Benutzers sequentiell abgearbeitet werden sollen, ruft
 der ConnectionHandler den RequestHandler synchron auf.
 Während der Anfragenbearbeitung landen weitere Anfragen in einem Puffer.
 Neben allen anderen existierenden Server-Befehlen, die vom Klienten gesendet
@@ -745,20 +750,19 @@ umwandelt.
 Weitere Details zu Aktualiserungsverbindungen sind im Kapitel
 \ref{sec:get-updates} spezifiziert.
 Für diese Art des Aktualisierungsabrufes ist die
-AccountUpdateListener-Implementation PersistentConnection zuständig.
+AccountUpdateListener-Implementierung PersistentConnection zuständig.
 
 \subsubsection{(De-)Kodierung von Anfragen}
 %Klassendiagramm RequestHandler und Kontext
 Die Klasse RequestHandler erhält die kodierten Anfragen des Klienten und
 ist für die Dekodierung und Weiterleitung der Anfragen, sowie für
-die Kodierung der Antworten und die Rückgabe der Antworten an die
-ConnectionHandler zuständig.
+die Kodierung und die Rückgabe der Antworten an die ConnectionHandler zuständig.
 
 \subsubsection{Datenbankzugriff}
 %Klassendiagramm sql-package
-Die Implementationen des Interfaces AccountManager sind für den
+Die Implementierung des Interfaces AccountManager sind für den
 Datenbankzugriff verantwortlich. Dazu werden die Anfragen vom RequestHandler
-entgegengenommen auf der Datenbank ausgeführt und die Ergebnisse zum Kodieren
+entgegengenommen, auf der Datenbank ausgeführt und die Ergebnisse zum Kodieren
 an den RequestHandler zurückgegeben.
 
 \subsection{Bestandteile des Servers}
@@ -779,7 +783,7 @@ an den RequestHandler zurückgegeben.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
-\subsection{Beispielhafter Ablauf eines Befehls}
+\subsection{Beispielhafter Ablauf einer Anfrage eines Klienten}
 
 \begin{figure}[!htb]
     \centering
@@ -1478,9 +1482,9 @@ als Python-Implementierung angegeben:
 Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
 
 \begin{itemize}
-    \item Einzelne Anfrage an den Server, die alle aktuell für das eigene
+    \item Eine einzelne Anfrage an den Server, die alle aktuell für das eigene
         Benutzerkonto vorliegenden Änderungen abruft
-    \item Anfrage an den Server, die die aktuelle Verbindung als
+    \item Eine Anfrage an den Server, die die aktuelle Verbindung als
         \enquote{Aktualisierungsverbindung} kennzeichnet.
         Auf einer Aktualisierungsverbindung werden alle Befehle des Klienten
         ignoriert.
@@ -1489,7 +1493,7 @@ Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
         diese sofort über die Aktualisierungsverbindung an den Klienten
         gesendet.
     \item Push-Notifications.
-        Diese Möglichkeite der Übertragung ist auf mehreren
+        Diese Möglichkeit der Übertragung ist auf mehreren
         Smartphone-Betriebssystemen vertreten und erlaubt sehr
         ressourceneffiziente Mitteilungen an den Klienten.
         Für das verwendete Framework gibt es neben Google's Firebase noch
