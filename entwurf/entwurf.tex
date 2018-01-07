@@ -441,14 +441,14 @@ kann. Details zu einer Gruppe, sowie alle in dieser Gruppe geplanten Events
 können in einer eigenen Activity eingesehen werden. Außerdem wird eine Activity
 benötigt, die es dem Nutzer erlaubt, sich einzuloggen bzw. zu registrieren.
 Die letzte wichtige Komponente stellt die Settings-Activity dar, in welcher
-der Nutzer Benutzerkonto-Einstellungen vornehmen kann. Eine genaue Auflistung 
+der Nutzer Benutzerkonto-Einstellungen vornehmen kann. Eine genaue Auflistung
 aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \columnwidth]{treff2.pdf}
-	\captionof{figure}{Sämtliche Klassen und Packages des treff-Clients. Eine 
-	Darstellung als UML-Klassendiagramm wäre unübersichtlich und nicht sinnvoll 
+	\captionof{figure}{Sämtliche Klassen und Packages des treff-Clients. Eine
+	Darstellung als UML-Klassendiagramm wäre unübersichtlich und nicht sinnvoll
 	gewesen.}
 	\label{fig:classes}
 \end{figure}
@@ -488,43 +488,43 @@ Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 	\label{fig:lists}
 \end{figure}
 
-Das einzig wesentlich andere Tab auf dem Homescreen stellt das Mapfragment dar. 
-Es ist zugleich der für den Nutzer wohl wichtigste Teil, da hier alle 
-Informationen angezeigt werden, die unsere Anwendung bereitstellt. Dies 
-beinhaltet in erster Linie die Standorte von befreundeten Usern oder andere 
-Mitglieder in Gruppen, aber auch Events werden hier angezeigt. Dabei beruht die 
-Darstellung der Karte auf einer MapView, welche von der Open-Street-Map (OSM) 
-zur Verfügung gestellt wird. Diese bietet auch bereits die Möglichkeit, 
-unterschiedliche Markierungen auf der Karte anzubringen. Um die relevanten 
-Daten wie Nutzerstandorte bereit zu stellen kommt wieder ein angepasstes 
-MapViewModel zu Einsatz. Zusätzlich soll der Nutzer Filter einstellen können, 
-um die Art angezeigter Marker einzuschränken. Diese Einstellung wird ebenfalls 
-in dem ViewModel abgelegt um Persistenz über Drehung etc. zu garantieren. Der 
+Das einzig wesentlich andere Tab auf dem Homescreen stellt das Mapfragment dar.
+Es ist zugleich der für den Nutzer wohl wichtigste Teil, da hier alle
+Informationen angezeigt werden, die unsere Anwendung bereitstellt. Dies
+beinhaltet in erster Linie die Standorte von befreundeten Usern oder andere
+Mitglieder in Gruppen, aber auch Events werden hier angezeigt. Dabei beruht die
+Darstellung der Karte auf einer MapView, welche von der Open-Street-Map (OSM)
+zur Verfügung gestellt wird. Diese bietet auch bereits die Möglichkeit,
+unterschiedliche Markierungen auf der Karte anzubringen. Um die relevanten
+Daten wie Nutzerstandorte bereit zu stellen kommt wieder ein angepasstes
+MapViewModel zu Einsatz. Zusätzlich soll der Nutzer Filter einstellen können,
+um die Art angezeigter Marker einzuschränken. Diese Einstellung wird ebenfalls
+in dem ViewModel abgelegt um Persistenz über Drehung etc. zu garantieren. Der
 Filter kann vom User über einen Android-eigenen Dialog angepasst werden.
 
 \subsubsection{GroupActivity}
 
-Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für 
-mehrere als Fragments, welche als Tabs angeordnet werden. In diesem Fall 
-handelt es sich dabei um ein das GroupEventFragment und GroupChatFragment. In 
-ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls 
-angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in 
-chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das 
-GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf 
-Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet 
-dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von 
+Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für
+mehrere als Fragments, welche als Tabs angeordnet werden. In diesem Fall
+handelt es sich dabei um ein das GroupEventFragment und GroupChatFragment. In
+ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls
+angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in
+chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das
+GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf
+Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet
+dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von
 Events, Polls bzw. Usern.
 
 \subsubsection{SettingsActivity}
 
-Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity 
-zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen wie Nutzernamen 
-oder Passwort ändern etc. vorzunehmen, aber auch die App stummschalten oder 
-ähnliches. Änderungen am Account werden dabei vom ViewModel direkt an den 
-RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten betreffen. 
-Darin unterscheiden sich die Settings von den meisten anderen Activities. 
-Einstellungen wie stummschalten, welche nur den Nutzer selbst betreffen und für 
-den Server nicht relevant sind, werden hingegen in den SharedPreferences 
+Auf die Settings kann der Nutzer über den NavigationDrawer der HomeActivity
+zugreifen. Hier hat er die Möglichkeit, Account-Einstellungen wie Nutzernamen
+oder Passwort ändern etc. vorzunehmen, aber auch die App stummschalten oder
+ähnliches. Änderungen am Account werden dabei vom ViewModel direkt an den
+RequestEncoder weitergegeben, da sie keine gespeicherten Entitäten betreffen.
+Darin unterscheiden sich die Settings von den meisten anderen Activities.
+Einstellungen wie stummschalten, welche nur den Nutzer selbst betreffen und für
+den Server nicht relevant sind, werden hingegen in den SharedPreferences
 abgelegt.
 
 %TODO Settings, die ganzen Adds, Login...
@@ -533,68 +533,68 @@ abgelegt.
 % Aufteilung der Funktionalitäten auf seperate Klassen,
 % sowie deren Zusammenspiel (Fließtext und UML-Klassendiagramme,
 % ggf Sequenzdiagramme)
-Die Datenverarbeitung beruht auf einer Unterteilung in eine lokale Datenbank 
-und die Verbindung zum Server, welche unabhängig voneinander agieren. Um stets 
-zu garantieren, dass diese Datenquellen synchronisiert werden kommen 
-Repositories zum Einsatz. Die Struktur des gesamten Datenverarbeitung lässt 
-sich in Abb.\ref{fig:model} erkennen. Die Aufgaben und der Aufbau der einzelnen 
+Die Datenverarbeitung beruht auf einer Unterteilung in eine lokale Datenbank
+und die Verbindung zum Server, welche unabhängig voneinander agieren. Um stets
+zu garantieren, dass diese Datenquellen synchronisiert werden kommen
+Repositories zum Einsatz. Die Struktur des gesamten Datenverarbeitung lässt
+sich in Abb.\ref{fig:model} erkennen. Die Aufgaben und der Aufbau der einzelnen
 Bestandteile sind wie folgt:
 
 \subsubsection{Lokale Datenbank}
-Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Client 
-relevante Daten auf dem Gerät zu cachen und zu verhindern, dass alle 
-Informationen stets vom Server geholt werden müssen. Sie wird von einer Android 
-Library namens Room erstellt, welche zugleich eine Abstraktionsebene zu dieser 
-Datenbank bereitstellt. Diese erlaubt es, fließend mit der Datenbank zu 
-interagieren. Dazu werden sog. Data Access Objects (DAOs) verwendet. Diese 
-wandeln Aufrufe von Java-Methoden in SQL-Queries um Daten in für Java 
-sinnvollen Formaten aus der Datenbank zu lesen. Im Fall von treff. sollen z.B. 
-neben diversen anderen vor allem Nutzer-, Gruppen-, und Event-Details angezeigt 
-werden, welche entsprechend gespeichert werden müssen. Das bedeutet, dass unter 
-anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um 
+Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Client
+relevante Daten auf dem Gerät zu cachen und zu verhindern, dass alle
+Informationen stets vom Server geholt werden müssen. Sie wird von einer Android
+Library namens Room erstellt, welche zugleich eine Abstraktionsebene zu dieser
+Datenbank bereitstellt. Diese erlaubt es, fließend mit der Datenbank zu
+interagieren. Dazu werden sog. Data Access Objects (DAOs) verwendet. Diese
+wandeln Aufrufe von Java-Methoden in SQL-Queries um Daten in für Java
+sinnvollen Formaten aus der Datenbank zu lesen. Im Fall von treff. sollen z.B.
+neben diversen anderen vor allem Nutzer-, Gruppen-, und Event-Details angezeigt
+werden, welche entsprechend gespeichert werden müssen. Das bedeutet, dass unter
+anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um
 diese Objekte in der Datenbank zu repräsentieren.
 
 \subsubsection{Verbindung zum Server}
-Das Senden von Requests an den Server wird von zwei Klassen bereitgestellt, dem 
-RequestEncoder und dem ConnectionHandler. Dabei hat der RequestEncoder die 
-Aufgabe, von den Repositories angefragte Befehle und deren Argumente in für den 
-Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an 
-den ConnectionHandler weiterzugeben. Außerdem wandelt der 
-RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings) 
-wieder in sinnvolle Java-Objekte um. Des weiteren wird hier mit der 
-Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errors} Der ConnectionHandler 
-ist nun lediglich 
-dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über 
-einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die 
-Antworten auf einem BufferedReader wieder auszulesen und an den RequestEncoder 
+Das Senden von Requests an den Server wird von zwei Klassen bereitgestellt, dem
+RequestEncoder und dem ConnectionHandler. Dabei hat der RequestEncoder die
+Aufgabe, von den Repositories angefragte Befehle und deren Argumente in für den
+Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an
+den ConnectionHandler weiterzugeben. Außerdem wandelt der
+RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings)
+wieder in sinnvolle Java-Objekte um. Des weiteren wird hier mit der
+Fehlerbehandlung begonnen, mehr dazu in \ref{sec:errors} Der ConnectionHandler
+ist nun lediglich
+dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über
+einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die
+Antworten auf einem BufferedReader wieder auszulesen und an den RequestEncoder
 zurück zu geben.
 
 \subsubsection{Repositories}
-Das entscheidende Verbindungsglied zwischen den beiden oben genannten 
-Komponenten stellen die Repositories dar. Wie auch von den DAOs gibt es von 
-ihnen eines für jeden Datentyp, den es zu speichern gilt. Repositories werden 
-direkt vn den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese 
-möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die 
-gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten 
-sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische 
-Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte 
-Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage 
-an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen 
-Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die 
-angeforderten Daten als LiveData (genaueres in \ref{sec:livedata}) aus der 
-Datenbank angefordert und an das 
-ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert 
-haben, erhält das Repository nun Rückmeldung darüber und kann diese 
-Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData 
-kompatibel ist löst dies automatisch eine Aktualisierung der View aus, was 
+Das entscheidende Verbindungsglied zwischen den beiden oben genannten
+Komponenten stellen die Repositories dar. Wie auch von den DAOs gibt es von
+ihnen eines für jeden Datentyp, den es zu speichern gilt. Repositories werden
+direkt vn den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese
+möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die
+gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten
+sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische
+Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte
+Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage
+an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen
+Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die
+angeforderten Daten als LiveData (genaueres in \ref{sec:livedata}) aus der
+Datenbank angefordert und an das
+ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert
+haben, erhält das Repository nun Rückmeldung darüber und kann diese
+Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData
+kompatibel ist löst dies automatisch eine Aktualisierung der View aus, was
 bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 
 \begin{figure}
 	\centering
 	\includegraphics[width = \columnwidth]{model.png}
-	\captionof{figure}{Die Der Aufbau der Datenverarbeitung am Beispiel von 
-	Usern, Events und UserGroups. Weder das repositories-, noch das 
-	database-package sind dabei vollständig, fehlende Klassen und auch fehlende 
+	\captionof{figure}{Die Der Aufbau der Datenverarbeitung am Beispiel von
+	Usern, Events und UserGroups. Weder das repositories-, noch das
+	database-package sind dabei vollständig, fehlende Klassen und auch fehlende
 	Methoden wurden für eine bessere Lesbarkeit entfernt.}
 	\label{fig:model}
 \end{figure}
@@ -603,8 +603,8 @@ bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
 \subsection{Kommunikation von GUI und Datenverarbeitung}
 % Zusammenspiel von GUI und Datenverarbeitung
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
-Die Kommunikation von GUI und Datenverarbeitung findet im wesentlichen zwischen 
-ViewModels und Repositories statt. 
+Die Kommunikation von GUI und Datenverarbeitung findet im wesentlichen zwischen
+ViewModels und Repositories statt.
 
 \subsubsection{LiveData} \label{sec:livedata}
 Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
@@ -630,20 +630,20 @@ sich in Abb.\ref{fig:datafetch} nachvollziehen.
 
 
 \subsubsection{Fehlerbehandlung} \label{sec:error}
-Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte 
-Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername 
-schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom 
-Client behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder. 
-Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe 
-\ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum 
-festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010: 
-Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler 
-310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der 
-RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei 
-fehlerhaftem Userinput und InternalError bei internem Problem). Je nach 
-konkreter Implementation werden diese an unterschiedlichen Stellen des 
-Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis 
-zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um 
+Es kann vorkommen, dass Anfragen an den Server fehlerhaft sind oder bestimmte
+Operationen nicht ausgeführt werden können (beispielsweise wenn ein Nutzername
+schon vergeben ist). Der Server liefert dann eine Fehlermeldung zurück, die vom
+Client behandelt werden muss. Diese Aufgabe übernimmt der RequestEncoder.
+Sämtliche Fehler, die auftreten können sind dazu mit ihren Fehlercodes (siehe
+\ref{sec:errorcodes}) in einem Enum hinterlegt. Außerdem ist in diesem Enum
+festgelegt, ob der Fehler für den Nutzer relevant ist (z.B. Fehler 010:
+Nutzername vergeben) oder programmintern behandelt werden muss (z.B. Fehler
+310: Messzeitpunkt liegt in der Zukunft). Davon abhängig wirft der
+RequestEncoder unterschiedliche Exceptions (IllegalArgumentException bei
+fehlerhaftem Userinput und InternalError bei internem Problem). Je nach
+konkreter Implementation werden diese an unterschiedlichen Stellen des
+Programms wieder aufgefangen, allerdings werden IllegalArgumentExceptions bis
+zur View-Ebene weitergegeben, weil dort Fehlerdialoge erzeugt werden können, um
 den Nutzer über das Problem zu informieren.
 
 
@@ -680,12 +680,12 @@ die verwendet werden um eine persistente Verbindung offen zu halten, diese
 verwendet der Server um dem Klienten eine Nachricht zu schicken wenn es
 Änderungen der Datenbank gibt die diesen Klienten betreffen.
 
-\subsubsection{De- und Encodierung von Anfragen}
+\subsubsection{(De-)Kodierung von Anfragen}
 %Klassendiagramm RequestHandler und Kontext
-Die Klasse RequestHandler erhält die kodierten Anfragen an die Datenbank und
-ist für die Dekodierung und Weiterleitung der Anfragen zuständig, sowie für
-für die Kodierung der Antworten und die Rückgabe der Antworten an die
-ConnectionHandler.
+Die Klasse RequestHandler erhält die kodierten Anfragen des Klienten und
+ist für die Dekodierung und Weiterleitung der Anfragen, sowie für
+die Kodierung der Antworten und die Rückgabe der Antworten an die
+ConnectionHandler zuständig.
 
 \subsubsection{Datenbankzugriff}
 %Klassendiagramm sql-package

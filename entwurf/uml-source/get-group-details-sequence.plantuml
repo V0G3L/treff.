@@ -3,6 +3,7 @@ participant ": Server" as sv
 participant ": ConnectionHandler" as ch
 participant ": RequestHandler" as rh
 participant ": EntityManagerSQL" as emSQL
+participant "user : Account" as acc
 
   activate sv
 
@@ -22,28 +23,22 @@ participant ": EntityManagerSQL" as emSQL
   ch -> rh : run()
   activate rh
 
-  rh -> emSQL : getAccountById(accountId)
+  rh -> acc: getAllGroups()
+  activate acc
+
+  acc -> emSQL: executeSQLStatement(sqlsatement)
   activate emSQL
 
-  emSQL --> rh : Account account
+  emSQL --> acc : ResultSet rs
   deactivate emSQL
 
-  rh -> emSQL : getGroupsOfAccount(account)
-  activate emSQL
+  acc --> rh: Map<int, Usergroup> groups
+  deactivate acc
 
-  emSQL --> rh : Set<UsergroupSQL> groups
-  deactivate emSQL
-
-  rh -> emSQL : getEventOfGroup(group)
-  activate emSQL
-
-  emSQL --> rh : List<Event> events
-  deactivate emSQL
-
-  rh --> ch : event
+  rh --> ch : group
   destroy rh
 
-  [<-- ch : event
+  [<-- ch : group
   deactivate ch
 
 @enduml
