@@ -457,7 +457,7 @@ aller Klassen und Packages findet sich unter Abb.\ref{fig:classes}.
 Diese Activity stellt den wichtigsten Teil der Anwendung dar, da der Nutzer
 nach dem Login hier landet und auf alle weiteren Funktionen von hier aus
 zugreifen kann. Die unterschiedlichen Tabs mit Karte, Freundes-, Gruppen-, und
-Eventliste werden dabei als Fragments realisiert, welche von einem
+Verabredungsliste werden dabei als Fragments realisiert, welche von einem
 ViewPagerAdapter verwaltet werden. Bis auf das MapFragment unterscheiden sich
 die Fragments selbst kaum voneinander, da alle anderen lediglich eine Liste
 darstellen müssen. Um dies zu bewerkstelligen kommt eine Recyclerview zum
@@ -503,6 +503,17 @@ MapViewModel zu Einsatz. Zusätzlich soll der Nutzer Filter einstellen können,
 um die Art angezeigter Marker einzuschränken. Diese Einstellung wird ebenfalls 
 in dem ViewModel abgelegt um Persistenz über Drehung etc. zu garantieren. Der 
 Filter kann vom Benutzer über einen Android-eigenen Dialog angepasst werden.
+
+\svgFigure{activity-home-layout}{Layout der Home-Activity}{300pt}
+
+Das XML-Layout der Activity basiert auf einem DrawerLayout. Dessen erstes Element 
+ist der eigentliche Bildschirm, den der Nutzer sieht, das zweite ist ein 
+\enquote{Drawer}, kann also herausgeschoben werden. Im DrawerLayout sind wiederum
+Ein AppBarLayout mit der Toolbar und einem TabLayout sowie ein ViewPager, der 
+immer ein Fragment hält. Das AppBarLayout gruppiert die Toolbar mit dem Appnamen und 
+dem Hamburgermenü und das TabLayout, welches die Titel der Tabs anzeigt.
+\\Die NavigationView enthält ein Menü mit einer Gruppe an items; diese bilden mit
+Namen und Icon versehen die oberste Navigationsebene der App.
 
 \subsubsection{GroupActivity}
 
