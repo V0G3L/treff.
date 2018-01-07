@@ -1,7 +1,10 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+
+import java.time.LocalDateTime;
 
 /**
  * Pojo defining an event in a group
@@ -12,16 +15,17 @@ public class Event {
     @PrimaryKey
     private int id;
     private String name;
-    //TODO replace
-    //private LocalDateTime created;
-    //private LocalDateTime start;
-    //private Position position;
+    @Ignore //TODO time
+    private LocalDateTime created;
+    @Ignore //TODO time
+    private LocalDateTime start;
+    @Ignore //TODO position
+    private Position position;
     private int creator;
 
     public Event(int id, String name, int creator) {
         this.id = id;
         this.name = name;
-        //TODO fix
         //this.created = created;
         //this.start = start;
         //this.position = position;
@@ -53,7 +57,6 @@ public class Event {
         this.creator = creator;
     }
 
-    /* TODO fix
     public LocalDateTime getCreated() {
         return created;
     }
@@ -66,7 +69,6 @@ public class Event {
         return position;
     }
 
-
     public void setCreated(LocalDateTime created) {
         this.created = created;
     }
@@ -78,5 +80,5 @@ public class Event {
     public void setPosition(Position position) {
         this.position = position;
     }
-    */
+
 }

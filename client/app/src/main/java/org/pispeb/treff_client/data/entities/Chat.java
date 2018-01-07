@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
@@ -13,11 +14,12 @@ import java.util.List;
 public class Chat {
     @PrimaryKey
     private int chatID;
+    @Ignore //TODO messages
     private List<ChatMessage> messages;
 
-    public Chat(int chatID, List<ChatMessage> messages) {
+    public Chat(int chatID) {
         this.chatID = chatID;
-        this.messages = messages;
+        //this.messages = messages;
     }
 
     public int getChatID() {

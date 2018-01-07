@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
@@ -14,14 +15,16 @@ public class ChatMessage {
     @PrimaryKey
     private int messageID;
     private String content;
+    @Ignore //TODO user
     private User sender;
+    @Ignore //TODO timestamp
     private LocalDateTime timeSent;
 
-    public ChatMessage(int messageID, String content, User sender, LocalDateTime timeSent) {
+    public ChatMessage(int messageID, String content) {
         this.messageID = messageID;
         this.content = content;
-        this.sender = sender;
-        this.timeSent = timeSent;
+        //this.sender = sender;
+        //this.timeSent = timeSent;
     }
 
     public int getMessageID() {
