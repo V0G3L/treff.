@@ -397,7 +397,7 @@ bei Aktionen wie dem Pausieren oder drehen der App auftreten kann.
 
 \subsubsection{MVVM}
 Um diese Entkopplung zu erreichen kommt die MVVM-Architektur
-(Model-View-ViewModel) zum Einsatz.
+(Model-View-ViewModel) zum Einsatz (siehe Abb.\ref{fig:structure}).
 Das bedeutet, dass der Klient in 3 wesentliche Schichten gegliedert ist:
 \begin{itemize}
 	\item Die View-Ebene (meistens gegeben durch Activities oder Fragments)
@@ -424,28 +424,7 @@ Das bedeutet, dass der Klient in 3 wesentliche Schichten gegliedert ist:
         tatsächliche packages zu verstehen, sondern dienen lediglich der
         vereinfachten Darstellung. Ebenso wenig ist dieses Diagramm
         vollständig. Fehlende Klassen verhalten sich allerdings äquivalent.}
-\end{figure}
-
-\subsubsection{LiveData}
-Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
-bietet Android eine WrapperKlasse namens LiveData an, welche von View-Elementen
-\enquote{observed} werden kann. Wenn sich nun durch eine Änderung der Datenbank
-die anzuzeigenden Daten verändern, werden alle Observer (also die View) darüber
-benachrichtigt und können entsprechend angepasst werden.
-Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert
-werden und stellt sicher, dass diese bei Änderungen der Datenbank auch die
-nötigen onChange() Methoden aufrufen. Der Ablauf eines solchen Updates lässt
-sich in Abb.\ref{fig:datafetch} nachvollziehen.
-
-\begin{figure}
-    \centering
-    \includegraphics[width = \paperheight / 3 * 2, angle = -90]{datafetch.png}
-	\captionof{figure}{Dieser Ablauf steht beispielhaft für fast alle Zugriffe
-    auf die Datenbank. Im oberen Teil ist zu sehen, wie ein View-Objekt (in
-    diesem Fall fragment) sich als Observer eines LiveData Objekts eintragen
-    kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
- 	reagiert und das fragment benachrichtigt.}
-	\label{fig:datafetch}
+    \label{fig:structure}
 \end{figure}
 
 %
@@ -535,11 +514,92 @@ Events, Polls bzw. Usern.
 Die Datenverarbeitung beruht auf einer Unterteilung in eine lokale Datenbank 
 und die Verbindung zum Server, welche unabhängig voneinander agieren. Um stets 
 zu garantieren, dass diese Datenquellen synchronisiert werden kommen 
-Repositories zum Einsatz.
+Repositories zum Einsatz. Die Struktur des gesamten Datenverarbeitung lässt 
+sich in Abb.\ref{fig:model} erkennen. Die Aufgaben und der Aufbau der einzelnen 
+Bestandteile sind wie folgt:
+
+\subsubsection{Lokale Datenbank}
+Die lokale SQLite-Datenbank hat die Aufgabe, alle für den konkreten Client 
+relevante Daten auf dem Gerät zu cachen und zu verhindern, dass alle 
+Informationen stets vom Server geholt werden müssen. Sie wird von einer Android 
+Library namens Room erstellt, welche zugleich eine Abstraktionsebene zu dieser 
+Datenbank bereitstellt. Diese erlaubt es, fließend mit der Datenbank zu 
+interagieren. Dazu werden sog. Data Access Objects (DAOs) verwendet. Diese 
+wandeln Aufrufe von Java-Methoden in SQL-Queries um Daten in für Java 
+sinnvollen Formaten aus der Datenbank zu lesen. Im Fall von treff. sollen z.B. 
+neben diversen anderen vor allem Nutzer-, Gruppen-, und Event-Details angezeigt 
+werden, welche entsprechend gespeichert werden müssen. Das bedeutet, dass unter 
+anderem ein UserDao, ein UserGroupDao, sowie ein EventDao verwendet werden um 
+diese Objekte in der Datenbank zu repräsentieren.
+
+\subsubsection{Verbindung zum Server}
+Das Senden von Requests an den Server wird von zwei Klassen bereitgestellt, dem 
+RequestEncoder und dem ConnectionHandler. Dabei hat der RequestEncoder die 
+Aufgabe, von den Repositories angefragte Befehle und deren Argumente in für den 
+Server verständliche Strings umzuwandeln (siehe auch \ref{sec:commands}) und an 
+den ConnectionHandler weiterzugeben. Außerdem wandelt der 
+RequestEncoder die Rückgabewerte des Servers (ebenfalls kodierte Strings) 
+wieder in sinnvolle Java-Objekte um. Der ConnectionHandler ist nun lediglich 
+dafür verantwortlich, eine Socket-Verbindung zum Server herzustellen und über 
+einen PrintWriter als Strings gegebene Befehle an den Server zu leiten und die 
+Antworten auf einem BufferedReader wieder auszulesen und an den RequestEncoder 
+zurück zu geben.
+
+\subsubsection{Repositories}
+Das entscheidende Verbindungsglied zwischen den beiden oben genannten 
+Komponenten stellen die Repositories dar. Wie auch von den DAOs gibt es von 
+ihnen eines für jeden Datentyp, den es zu speichern gilt. Repositories werden 
+direkt vn den ViewModels angessprochen und ihre Aufgabe ist es, Daten für diese 
+möglichst schnell bereitzustellen und gleichzeitig dafür zu sorgen, dass die 
+gecachten Daten in der Datenbank immer möglichst synchron zu den Serverdaten 
+sind ohne dass sich das ViewModel selbst darum kümmern muss. Die typische 
+Vorgehensweise bei einem Aufruf des Repositories, wenn ein ViewModel bestimmte 
+Daten verlangt, ist immer sehr ähnlich. Zunächst wird eine asynchrone Anfrage 
+an den RequestEncoder gestellt, welche überprüfen soll, ob sich die betroffenen 
+Daten seit der letzten Synchronisation verändert haben. Daraufhin werden die 
+angeforderten Daten als LiveData aus der Datenbank angefordert und an das 
+ViewModel zurückgegeben. Falls sich die Serverdaten tatsächlich verändert 
+haben, erhält das Repository nun Rückmeldung darüber und kann diese 
+Veränderungen in die lokale Datenbank übernehmen. Da die Datanbank mit LiveData 
+kompatibel ist löst dies automatisch eine Aktualisierung der View aus, was 
+bedeutet, dass dort die aktuellsten Daten angezeigt werden können.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \columnwidth]{model.png}
+	\captionof{figure}{Die Der Aufbau der Datenverarbeitung am Beispiel von 
+	Usern, Events und UserGroups. Weder das repositories-, noch das 
+	database-package sind dabei vollständig, fehlende Klassen und auch fehlende 
+	Methoden wurden für eine bessere Lesbarkeit entfernt.}
+	\label{fig:model}
+\end{figure}
+
 
 \subsection{Kommunikation von GUI und Datenverarbeitung}
 % Zusammenspiel von GUI und Datenverarbeitung
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
+
+\subsubsection{LiveData}
+Um sicherzustellen, dass die View stets mit dem Model synchronisiert ist,
+bietet Android eine WrapperKlasse namens LiveData an, welche von View-Elementen
+\enquote{observed} werden kann. Wenn sich nun durch eine Änderung der Datenbank
+die anzuzeigenden Daten verändern, werden alle Observer (also die View) darüber
+benachrichtigt und können entsprechend angepasst werden.
+Room ermöglicht es, dass aus der SQL-Datenbank LiveData Objekte generiert
+werden und stellt sicher, dass diese bei Änderungen der Datenbank auch die
+nötigen onChange() Methoden aufrufen. Der Ablauf eines solchen Updates lässt
+sich in Abb.\ref{fig:datafetch} nachvollziehen.
+
+\begin{figure}
+	\centering
+	\includegraphics[width = \paperheight / 3 * 2, angle = -90]{datafetch.png}
+	\captionof{figure}{Dieser Ablauf steht beispielhaft für fast alle Zugriffe
+		auf die Datenbank. Im oberen Teil ist zu sehen, wie ein View-Objekt (in
+		diesem Fall fragment) sich als Observer eines LiveData Objekts eintragen
+		kann. Im unteren Teil ist zu sehen, wie dieses auf eine Änderung
+		reagiert und das fragment benachrichtigt.}
+	\label{fig:datafetch}
+\end{figure}
 
 
 %%%%%%%%%%%%%%%%%%%%%%

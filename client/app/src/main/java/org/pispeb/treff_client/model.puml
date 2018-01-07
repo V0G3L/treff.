@@ -38,7 +38,15 @@ package repositories {
 
 package networking {
     class "RequestEncoder" as RE <<Singleton>> {
-
+        +getUser(id : int) : LiveData<User>
+        +getFriends() : LiveData<List<User>>
+        +addGroup(userGroup : UserGroup)
+        +getGroup(id : int) : LiveData<UserGroup>
+        +addEvent(event : Event)
+        +getEvent(id : int) : LiveData<Event>\n...
+    }
+    class "ConnectionHandler" as CH {
+        +sendRequest(request : String)
     }
 }
 
@@ -53,6 +61,8 @@ DB o-down- ED
 UR o-down- RE
 UGR o-down- RE
 ER o-down- RE
+
+RE o-down- CH
 
 
 @enduml
