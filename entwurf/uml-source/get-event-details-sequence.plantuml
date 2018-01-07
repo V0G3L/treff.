@@ -4,6 +4,7 @@ participant ": ConnectionHandler" as ch
 participant ": RequestHandler" as rh
 participant ": EntityManagerSQL" as emSQL
 participant "user : Account" as acc
+participant "group : Usergroup" as grp
 
   activate sv
 
@@ -35,10 +36,22 @@ participant "user : Account" as acc
   acc --> rh: Map<int, Usergroup> groups
   deactivate acc
 
-  rh --> ch : group
+  rh -> grp: getAllEvents()
+  activate grp
+
+  grp -> emSQL: executeSQLStatement(sqlsatement)
+  activate emSQL
+
+  emSQL --> grp : ResultSet rs
+  deactivate emSQL
+
+  grp --> rh: List<Event> events
+  deactivate grp
+
+  rh --> ch : event
   destroy rh
 
-  [<-- ch : group
+  [<-- ch : event
   deactivate ch
 
 @enduml
