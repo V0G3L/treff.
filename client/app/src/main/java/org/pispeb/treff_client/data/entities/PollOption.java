@@ -5,7 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
- * Option in a poll that users of the group can vote for
+ * Room {@link Entity} that represents an option of a {@link Poll}. Users can vote for it.
  */
 
 @Entity(tableName = "polloption")

@@ -4,8 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
 /**
- * Group of users in which events and polls can be created
- * and chat messages can be sent
+ * Room {@link Entity} that represents a group of {@link User}s
  */
 
 @Entity(tableName = "usergroup")

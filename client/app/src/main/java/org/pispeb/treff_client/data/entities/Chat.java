@@ -7,7 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.util.List;
 
 /**
- * Pojo containing messages from users of a group
+ * Room {@link Entity} that represents the chat history of a {@link UserGroup}
  */
 
 @Entity(tableName = "chat")

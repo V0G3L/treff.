@@ -7,8 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.util.List;
 
 /**
- * Pojo containing information of a poll in a group and
- * all its possible options for users to vote for
+ * Room {@link Entity} that represents a poll
  */
 
 @Entity(tableName = "poll")

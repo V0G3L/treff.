@@ -1,11 +1,13 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.time.LocalDateTime;
+
 /**
- * Pojo for information about a user that is relevant for the client
- * (private information such as e-mail is not passed on to the client)
+ * Room {@link Entity} that represents a user, contains only as much information as the client needs
  */
 
 @Entity(tableName = "user")
@@ -15,14 +17,18 @@ public class User {
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
-    //TODO replace
-    //private Position position;
+    @Ignore //TODO position
+    private Position position;
+    @Ignore //TODO lastPositionUpdate;
+    private LocalDateTime lastPositionUpdate;
 
     public User(int userID, String username, boolean isFriend, boolean isBlocked) {
         this.userID = userID;
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
+        //this.position = position;
+        //this.lastPositionUpdate = lastPositionUpdate;
     }
 
     public int getUserID() {
@@ -57,13 +63,4 @@ public class User {
         isBlocked = blocked;
     }
 
-    /*TODO fix
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-    */
 }

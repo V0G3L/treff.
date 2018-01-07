@@ -1,5 +1,9 @@
 package org.pispeb.treff_client.data.networking;
 
+import android.content.res.Resources;
+
+import org.pispeb.treff_client.R;
+
 /**
  * Errorcode Enum to map from code to message
  */
@@ -7,10 +11,11 @@ package org.pispeb.treff_client.data.networking;
 public enum Error {
     //TODO add errors
 
-    ERRORCODE_INVALID (-10, "Unbekannter Fehlercode", false),
-    USERNAME_TAKEN (0, "Nutzername ist bereits vergeben", true),
-    EMAIL_INVALID (10, "Die eingegebene Email ist nicht gültig", true),
-    TOKEN_INVALID (20, "Die Session ist abgelaufen, bitte erneut anmelden", true);
+
+    ERRORCODE_INVALID (-10, sys().getString(R.string.error_errorcode_invalid), false),
+    USERNAME_TAKEN (0, sys().getString(R.string.error_username_taken), true),
+    EMAIL_INVALID (10, sys().getString(R.string.error_email_invalid), true),
+    TOKEN_INVALID (20, sys().getString(R.string.error_session), true);
 
     private final int code;
     private final String message;
@@ -24,5 +29,13 @@ public enum Error {
 
     public int getCode() {
         return code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    private static Resources sys() {
+        return Resources.getSystem();
     }
 }

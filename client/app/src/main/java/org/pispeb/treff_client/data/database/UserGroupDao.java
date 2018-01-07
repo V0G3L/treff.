@@ -12,7 +12,7 @@ import org.pispeb.treff_client.data.entities.UserGroup;
 import java.util.List;
 
 /**
- * Dao to save and load groups to/from local database
+ * {@link Dao} which provides access to {@link UserGroup}s
  */
 
 @Dao

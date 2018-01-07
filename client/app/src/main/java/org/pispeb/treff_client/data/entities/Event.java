@@ -7,7 +7,7 @@ import android.arch.persistence.room.PrimaryKey;
 import java.time.LocalDateTime;
 
 /**
- * Pojo defining an event in a group
+ * Room {@link Entity} that represents an event
  */
 
 @Entity(tableName = "event")

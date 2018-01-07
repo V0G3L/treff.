@@ -2,7 +2,7 @@
     <string name="app_name">treff.</string>
     <string name="title_activity_login">Sign in</string>
 
-    <!-- Strings related to login -->
+    <!-- auto generated strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -24,5 +24,11 @@
     <!-- navigation drawer open/close strings for accessibility -->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <!-- error codes -->
+    <string name="error_errorcode_invalid">Unknown error code</string>
+    <string name="error_username_taken">Username is already taken</string>
+    <string name="error_email_invalid">Not a valid email address</string>
+    <string name="error_session">User session is no longer valid</string>
 
 </resources>

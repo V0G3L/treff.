@@ -7,9 +7,8 @@ import android.arch.persistence.room.PrimaryKey;
 import java.time.LocalDateTime;
 
 /**
- * Created by Lukas on 1/5/2018.
+ * Room {@link Entity} that represents a single chat message in a {@link Chat}
  */
-
 @Entity(tableName = "message")
 public class ChatMessage {
     @PrimaryKey

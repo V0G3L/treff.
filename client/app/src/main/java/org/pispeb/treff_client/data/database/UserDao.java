@@ -9,8 +9,7 @@ import org.pispeb.treff_client.data.entities.User;
 import java.util.List;
 
 /**
- * Dao for saving userdata to the database and
- * loading users based on id/group memberships/friend status etc.
+ * {@link Dao} which provides access to {@link User}s
  */
 
 @Dao

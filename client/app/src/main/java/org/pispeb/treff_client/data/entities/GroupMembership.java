@@ -3,6 +3,9 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/**
+ * Room {@link Entity} that represents the relationship between {@link User}s and {@link UserGroup}s
+ */
 @Entity(tableName = "groupmembership")
 public class GroupMembership {
     @PrimaryKey(autoGenerate = true)
