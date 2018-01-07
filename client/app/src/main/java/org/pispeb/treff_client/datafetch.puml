@@ -50,7 +50,7 @@ REP -> DAO:addUsers(newFriends)
 activate DAO
 DAO -> DB: @Insert
 activate DB
-DB ->> LD
+DB ->> LD : considerNotify()
 activate LD
 LD ->> FLF: onChanged()
 activate FLF

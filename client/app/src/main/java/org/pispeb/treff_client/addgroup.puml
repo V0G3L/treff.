@@ -1,0 +1,50 @@
+@startuml
+participant ":View" as V
+participant ":FriendViewModel" as VM
+participant ":LiveData<List<User>>" as LD
+participant ":treffDataBase" as DB
+participant ":UserDao" as D
+participant ":UserRepository" as UR
+participant ":RequestEncoder" as RE
+participant ":ConnectionHandler" as CH
+participant ":Server" as S
+
+activate CH
+activate S
+
+--> V : User adds friend
+activate V
+V ->> VM : onAddFriendClick()
+deactivate V
+activate VM
+VM -> V : getUsername()
+activate V
+V --> VM : username : String
+deactivate V
+VM ->> UR : addFriend(username : String)
+deactivate VM
+activate UR
+UR -> RE : addFriend(username : String)
+activate RE
+RE -> CH : sendRequest(request : String)
+CH ->> S : request : String
+S ->> CH : id : int
+CH --> RE : id : int
+RE --> UR : newUser : User
+deactivate RE
+UR -> D : save(user : User)
+activate D
+D -> DB : @Insert
+activate DB
+DB ->> LD : considerNotify()
+activate LD
+deactivate LD
+DB --> D
+deactivate DB
+D --> UR
+deactivate D
+deactivate UR
+
+
+
+@enduml
