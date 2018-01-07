@@ -1,0 +1,49 @@
+@startuml
+participant ": Server" as sv
+participant ": ConnectionHandler" as ch
+participant ": RequestHandler" as rh
+participant ": EntityManagerSQL" as emSQL
+
+  activate sv
+
+  [-> sv : connection client
+
+  sv -> ch : <<create>>
+  activate ch
+
+  [-> ch : request
+
+  ch -> rh : RequestHandler(request) <<create>>
+  activate rh
+
+  rh --> ch
+  deactivate rh
+
+  ch -> rh : run()
+  activate rh
+
+  rh -> emSQL : getAccountById(accountId)
+  activate emSQL
+
+  emSQL --> rh : Account account
+  deactivate emSQL
+
+  rh -> emSQL : getGroupsOfAccount(account)
+  activate emSQL
+
+  emSQL --> rh : Set<UsergroupSQL> groups
+  deactivate emSQL
+
+  rh -> emSQL : getEventOfGroup(group)
+  activate emSQL
+
+  emSQL --> rh : List<Event> events
+  deactivate emSQL
+
+  rh --> ch : event
+  destroy rh
+
+  [<-- ch : event
+  deactivate ch
+
+@enduml
