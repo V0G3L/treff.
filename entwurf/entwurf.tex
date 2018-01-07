@@ -522,32 +522,34 @@ Namen und Icon versehen die oberste Navigationsebene der App.
 
 Wie bereits die HomeActivity dient die GroupActivity lediglich als Host für
 mehrere Fragments, welche als Tabs angeordnet werden. In diesem Fall
-handelt es sich dabei um das GroupEventFragment und GroupChatFragment. In
-ersterem wird eine Liste aller in dieser Gruppe angelegten Events und Polls
-angezeigt, während das GroupChatFragment die Nachrichten des Gruppenchats in
-chronologischer Reihenfolge darstellt. Zusätzlich kann der Nutzer über das
-GroupSettingsFragment eine Liste aller Gruppenmitglieder einsehen und auf
-Verwaltungsoptionen der Gruppe zugreifen. Jedes dieser Fragments verwendet
-dafür wiederum eine RecyclerView (siehe Abb.\ref{fig:lists}) zum Anzeigen von
-Verabredungen, Abstimmungen bzw. Benutzern.
+handelt es sich dabei um ein GroupEventFragment, GroupChatFragment und ein
+MapFragment. In ersterem wird eine Liste aller in dieser Gruppe angelegten
+Verabredungen und Abstimmungen angezeigt, das GroupChatFragment zeigt die
+Nachrichten des Gruppenchats in chronologischer Reihenfolge an und das
+MapFragment zeigt eine Karte mit Verbredungen und Nutzern der Gruppe.
+Zusätzlich kann der Nutzer über das GroupSettingsFragment eine Liste aller
+Gruppenmitglieder einsehen und auf Verwaltungsoptionen der Gruppe zugreifen.
+Jedes dieser Fragments verwendet dafür wiederum eine RecyclerView
+(siehe Abb.\ref{fig:lists}) zum Anzeigen von Verabredungen, Abstimmungen
+bzw. Benutzern.
 
 \subsubsection{LoginActivity}
 
-Die Login Activity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist
+Die LoginActivity wird bei jedem neuen Start der Anwendung geöffnet. Sie ist
 dafür zuständig, über den RequestEncoder eine Synchronisation mit dem Server
 anzufordern. Während dieses Prozesses stellt sie das Layout eines
 Ladebildschirms dar. Ist die Synchronisation erfolgreich, startet sie die
 HomeActivity und beendet sich selbst. Tritt ein Authentifizierungsproblem auf,
 weil zum Beispiel aktuell gar kein, oder ein nicht gültiger Token vergeben ist,
-wird der Nutzer auf den eigentlichen Login Bildschirm weitergeleitet. Sowohl der
-Login, als auch der Registrierungsbildschirm werden durch Fragments realisiert.
+wird der Nutzer auf den eigentlichen Anmeldebildschirm weitergeleitet. Sowohl der
+Anmelde-, als auch der Registrierungsbildschirm werden durch Fragments realisiert.
 Per Knopfdruck kann jeweils das andere Fragment angezeigt werden. Hat der
-Nutzer seine Nutzerdaten vollständig eingegeben und den registrieren, bzw.
-login Knopf betätigt, werden die Daten durch das Fragment an den
-RequestEncoder übergeben. Dieser gibt dann zurück, ob die Anfrage erfolgreich
-war. Dementsprechend wird der Nutzer zu der Home Activity weitergeleitet, oder
-ein für den Nutzer verständlicher Fehler wird durch das aktuelle Fragment
-angezeigt.
+Nutzer seine Authentifizierungsdetails vollständig eingegeben und den
+\enquote{Registrieren} bzw. \enquote{Anmelden} Knopf betätigt, werden die Daten
+durch das Fragment an den RequestEncoder übergeben. Dieser gibt dann zurück, ob
+die Anfrage erfolgreich war. Dementsprechend wird der Nutzer zur HomeActivity
+weitergeleitet, oder ein für den Nutzer verständlicher Fehler wird durch das
+aktuelle Fragment angezeigt.
 
 \subsubsection{SettingsActivity}
 
