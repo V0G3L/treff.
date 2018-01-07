@@ -9,12 +9,6 @@ order = {
         "latitude",
         "longitude",
         "participants"
-    ],
-    "account": [
-        "type",
-        "id",
-        "user",
-        "icon-checksum"
     ]
 }
 
@@ -35,13 +29,19 @@ def normalize(o):
         return output
     elif type(o) == list:
         output = b"\x04"
-        o.sort(key=lambda x: x["id"])
 
-        for v in o:
-            output += normalize(v) + b"\x05"
+        if len(o) > 0:
+            if type(o[0]) == dict:
+                o.sort(key=lambda x: x["id"])
+            elif type(o[0]) == int:
+                o.sort()
 
-        # remove trailing seperator
-        output = output[:-1]
+            for v in o:
+                output += normalize(v) + b"\x05"
+
+            # remove trailing seperator
+            output = output[:-1]
+
         output += b"\x06"
         return output
     elif type(o) == str:

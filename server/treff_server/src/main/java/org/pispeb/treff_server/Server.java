@@ -8,8 +8,7 @@ import java.net.ServerSocket;
 
 /**
  * Main class of the server.
- * Accepts network connections and creates {@link RequestHandler}s.
- *
+ * Accepts network connections and creates {@link ConnectionHandler}s.
  */
 public class Server {
     private static int port;
@@ -23,6 +22,7 @@ public class Server {
         port = port;
         
         // Start DB
+        EntityManagerSQL.initialize("",0,"","");
         accountManager = EntityManagerSQL.getInstance();
 
         try {

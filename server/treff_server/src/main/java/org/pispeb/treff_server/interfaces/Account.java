@@ -46,7 +46,7 @@ public interface Account {
 
     /**
      *
-     * @return ID -> Usergroup mapping containing only groups that this account is a member
+     * @return ID to Usergroup mapping containing only groups that this account is a member
      * of.
      */
     Map<Integer, Usergroup> getAllGroups();

@@ -46,6 +46,14 @@ public interface AccountManager {
     Account getAccountByEmail(String email);
 
     /**
+     * Returns the account that is associated with the given ID.
+     * @param id The ID of the account
+     * @return An {@link Account} object representing the account with the
+     * supplied ID. <code>null</code> if no such account exists.
+     */
+    Account getAccountByID(int id);
+
+    /**
      * Creates a new account with the supplied username, email address and password.
      * @param username The username for the new account
      * @param email The email of the new account

@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.api.jdbc.Statement;
+import com.mysql.cj.api.mysqla.result.Resultset;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
@@ -14,7 +16,8 @@ import java.util.Set;
 /**
  * The single entry-point for MySQL implementation of the database interfaces.
  * Uses the singleton design pattern. The instance must be initialized with the
- * {@link #initialize()} method and can be requested with {@link #getInstance()}.
+ * {@link #initialize(String, int, String, String)} method and can be requested
+ * with {@link #getInstance()}.
  *
  * @see AccountManager
  */
@@ -34,12 +37,13 @@ public class EntityManagerSQL implements AccountManager {
      * connections to the specified MySQL database on being supplied with
      *
      */
-    public static synchronized void initialize() {
+    public static synchronized void initialize(String dbAddress, int dbPort, String dbUser, String dbPass) {
         // create instance with supplied parameters
     }
 
     /**
-     * Returns the {@link EntityManagerSQL} instance created with {@link #initialize()}
+     * Returns the {@link EntityManagerSQL} instance created with
+     * {@link #initialize(String, int, String, String)}
      * @return The {@link EntityManagerSQL} instance
      * @throws EntityManagerNotInitializedException
      */
@@ -78,6 +82,11 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
+    public Account getAccountByID(int id) {
+        return null;
+    }
+
+    @Override
     public AccountSQL createAccount(String username, String email, String password)
             throws DuplicateEmailException, DuplicateUsernameException {
         return null;
@@ -88,6 +97,10 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     public List<EventSQL> getEventsOfGroup(UsergroupSQL group) {
+        return null;
+    }
+
+    Resultset executeSQLStatement(Statement statement){
         return null;
     }
 }

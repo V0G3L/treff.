@@ -30,7 +30,6 @@
 	bookmarks=true,
 }
 
-
 \graphicspath{ {images/} }
 
 % section numbers in margins:
@@ -510,7 +509,6 @@ Verwendungszweck von uns erweitert, wie in Abb.\ref{fig:lists} zu erkennen ist.
 % Zusammenspiel von GUI und Datenverarbeitung
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
 
-\subsection{JavaDoc}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -550,7 +548,6 @@ zurückgegeben.
 % [z.B. Datenbank, Schnittstelle zum Klient]
 % (Fließtext und UML-Klassendiagramme, ggf Sequenzdiagramme)
 
-\subsection{JavaDoc}
 
 %%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -1061,8 +1058,8 @@ Unixzeit)}
     (Gleitkommazahl),
     longitude/Längengrad{,} auf dem die Verabredung stattfindet
     (Gleitkommazahl),
-    participants/Array an Benutzernamen der Benutzerkonten{,} die an der
-    Verabredung teilnehmen
+    participants/Array an Identifikationsnummern der Benutzerkonten{,} die an
+    der Verabredung teilnehmen
 }
 
 \subsection{Abstimmungsbeschreibung}\label{sec:polldesc}
@@ -1102,9 +1099,14 @@ müssen.
 
 \par Zur Berechnung der Prüfsummen wird der \hashAlg-Algorithmus verwendet.
 
-\par Da es mehrere unterschiedliche, aber äquivalente JSON-Darstellungen für
-eine ausführliche Beschreibung gibt, müssen diese vor Eingabe an den
-\hashAlg-Algorithmus in eine normalisierte Form gebracht werden.
+\par Als Grundlage der Eingabe an den \hashAlg-Algorithmus wird die
+ausführliche Beschreibung des jeweiligen Objektes im gleichen Format wie in den
+vorangegangenen Kapiteln verwendet.
+
+\par Da es aufgrund von Umordnungen, Leerzeichen, Zeilenumbrüchen etc. mehrere
+unterschiedliche, aber äquivalente JSON-Darstellungen für eine ausführliche
+Beschreibung gibt, müssen diese vor Eingabe an den \hashAlg-Algorithmus in eine
+normalisierte Form gebracht werden:
 
 \par \textit{Hinweis: In dem folgenden Absatz bezeichnen Ziffern nicht etwa die
 ASCII-Ziffern \enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern die
@@ -1116,8 +1118,10 @@ Die Eigenschaften werden gemäß der in den Beschreibungsspezifikationen
 aufgeführten Reihenfolgen sortiert.
 JSON-Arrays werden mit einer 4 begonnen und mit einer 6 beendet.
 Elemente dieser JSON-Arrays werden mit einer 5 statt mit einem Komma getrennt.
-In JSON-Arrays von Beschreibungen kommen lediglich Beschreibungen anderer
-Objekte vor. Diese werden aufsteigend nach ihren IDs sortiert.
+In JSON-Arrays von Beschreibungen kommen entweder nur Beschreibungen anderer
+Objekte oder nur Integer vor.
+Diese werden aufsteigend nach ihren IDs bzw. aufsteigend nach ihrem Wert
+sortiert.
 
 Alle JSON-Objekteigenschaften werden ohne Schlüssel, Doppelpunkte, geschwungene
 Klammern und zusätzliche Leerzeichen oder Zeilenumbrüche konkateniert.
@@ -1145,7 +1149,7 @@ Darstellung eindeutig.
 Eine mögliche Kodierung der ausführlichen Beschreibung im JSON-Format kann wie
 folgt aussehen:
 \begin{lstlisting}[language=json,firstnumber=1]
-{   "type": "event",
+{   "type" : "event",
     "id": 2,
     "title": "Beispielverabredung 1010",
     "creator": 200,
@@ -1153,20 +1157,7 @@ folgt aussehen:
     "time-end": 1515000600000,
     "latitude": 49.011978,
     "longitude": 8.416377,
-    "participants": [
-        {   "type": "account",
-            "id": 3,
-            "user": "w4rum"
-        },
-        {   "type": "account",
-            "id": 200,
-            "user": "notw4rum"
-        },
-        {   "type": "account",
-            "id": 43378,
-            "user": "absolutelynotw4rum"
-        }
-    ]
+    "participants": [ 3, 200, 43378 ]
 }
 \end{lstlisting}
 
@@ -1181,20 +1172,40 @@ nicht in der normalisierten Darstellung enthalten.}
 
 \begin{lstlisting}[language=norm,firstnumber=1]
 (*\circled{1}*)"event"(*\circled{2}*)2(*\circled{2}%
-*)"Beispielverabredung 1010"(*\circled{2}*)200(*\circled{2}*)1514761200000
-(*\circled{2}*)1515000600000(*\circled{2}*)49.011978(*\circled{2}%
-*)8.416377(*\circled{2}*)(*\circled{4}*)(*\circled{1}*)"account"(*\circled{2}%
-*)3(*\circled{2}*)"w4rum"(*\circled{2}*)"123abc"
-(*\circled{3}*)(*\circled{5}*)(*\circled{1}*)"account"(*\circled{2}*)200(*%
-\circled{2}*)"notw4rum"(*\circled{2}*)"blaa"(*\circled{3}\circled{5}%
-\circled{1}*)"account"(*\circled{2}*)43378
-(*\circled{2}*)"absolutelynotw4rum"(*\circled{2}*)"foobar"(*\circled{3}%
-\circled{6}\circled{3}*)
+*)"Beispielverabredung 1010"(*\circled{2}*)200(*\circled{2}*)1514761200000(*%
+\circled{2}*)
+1515000600000(*\circled{2}*)49.011978(*\circled{2}*)8.416377(*\circled{2}%
+\circled{4}*)3(*\circled{5}*)200(*\circled{5}*)43378(*\circled{6}\circled{3}*)
 \end{lstlisting}
 
 \par Ein beispielhafter Algorithmus für die Normalisierung ist im folgenden
 als Python-Implementierung angegeben:
 
 \pythonexternal{scripts/normalize.py}
+
+\subsection{Abrufen von Aktualisierungen}
+Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
+
+\begin{itemize}
+    \item Einzelne Anfrage an den Server, die alle aktuell für das eigene
+        Benutzerkonto vorliegenden Änderungen abruft
+    \item Anfrage an den Server, die die aktuelle Verbindung als
+        \enquote{Aktualisierungsverbindung} kennzeichnet.
+        Auf einer Aktualisierungsverbindung werden alle Befehle des Klienten
+        ignoriert.
+        Erhält der Server für ein Benutzerkonto, welches eine offene
+        Aktualisierungsverbindung zum Server hat, eine Aktualisierung, wird
+        diese sofort über die Aktualisierungsverbindung an den Klienten
+        gesendet.
+    \item Push-Notifications.
+        Diese Möglichkeite der Übertragung ist auf mehreren
+        Smartphone-Betriebssystemen vertreten und erlaubt sehr
+        ressourceneffiziente Mitteilungen an den Klienten.
+        Für das verwendete Framework gibt es neben Google's Firebase noch
+        weitere quelloffene Kandidaten.
+        Die Umsetzbarkeit dieser Übertragungsmöglichkeit wird sich
+        wahrscheinlich erst während der Implementierung zeigen.
+\end{itemize}
+
 
 \end{document}

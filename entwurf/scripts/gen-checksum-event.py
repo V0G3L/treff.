@@ -13,26 +13,7 @@ testEvent = {
     "time-end": 1515000600000,
     "latitude": 49.011978,
     "longitude": 8.416377,
-    "participants": [
-        {
-            "type": "account",
-            "id": 3,
-            "user": "w4rum",
-            "icon-checksum": "123abc"
-        },
-        {
-            "type": "account",
-            "id": 200,
-            "user": "notw4rum",
-            "icon-checksum": "blaa"
-        },
-        {
-            "type": "account",
-            "id": 43378,
-            "user": "absolutetlynotw4rum",
-            "icon-checksum": "foobar"
-        },
-    ]
+    "participants": [ 3, 200, 43378 ]
 }
 
 testEvent2 = {
@@ -44,31 +25,19 @@ testEvent2 = {
     "time-end": 1515000600000,
     "latitude": 49.011978,
     "longitude": 8.416377,
-    "participants": [
-        {
-            "type": "account",
-            "id": 3,
-            "user": "w4rum",
-            "icon-checksum": "123abc"
-        },
-        {
-            "type": "account",
-            "id": 200,
-            "user": "notw4rum",
-            "icon-checksum": "blaa"
-        },
-        {
-            "type": "account",
-            "id": 43378,
-            "user": "absolutetlynotw4rum",
-            "icon-checksum": "foobar"
-        },
-    ]
+    "participants": [ 3, 200, 43378 ]
 }
+
+def formatForLatex(s):
+    for i in range(7):
+        s = s.replace(chr(i).encode(), b"(*\circled{%i}*)" % i)
+    return s
+
+s = str(testEvent)
+s2 = str(testEvent2)
 
 n = normalize(testEvent)
 n2 = normalize(testEvent2)
 
-for i in range(7):
-    n = n.replace(chr(i).encode(), b"(*\circled{%i}*)" % i)
-print(n.decode())
+print("String equality: %s\nNormalized string equality: %s" %
+      (s == s2, n == n2))
