@@ -678,15 +678,24 @@ Der Server besteht aus drei verschiedenen Bestandteilen:
 \subsubsection{Netzwerkkommunikation}
 %Klassendiagramm(Server, ConnectionHandler und Kontext)
 Die Klasse 'Server' ist die Hauptklasse des Servers.
-Sie startet beim Hochfahren des Servers die Datenbank und ist zuständig für
-die Netzwerkkommunikation. Dazu wird für jede Verbindung die der Server mit
-Klienten hat ein ConnectionHandler erstellt. Diese geben die erhaltenen
-Anfragen an den RequestHandler weiter und senden am Ende die erhaltenen
-Antworten zurück an den Klienten.
-Außerdem existieren die Implementationen des Interfaces AccountUpdateListener,
-die verwendet werden um eine persistente Verbindung offen zu halten, diese
-verwendet der Server um dem Klienten eine Nachricht zu schicken wenn es
-Änderungen der Datenbank gibt die diesen Klienten betreffen.
+Diese bereitet beim Hochfahren des Servers Verbindungen zur Datenbank vor und
+ist für die Netzwerkkommunikation zuständig.
+Dazu wird für jede Verbindung, welche ein Klient zum Server öffnet,
+ein ConnectionHandler erstellt.
+Dieser gibt die bei Erhalt von Anfragen diese an einen neuen RequestHandler
+weiter und sendet die vom RequestHandler produzierte Antwort zurück an den
+Klienten.
+Da die Anfragen eines Benutzer sequentiell abgearbeitet werden sollen, ruft
+der ConnectionHandler den RequestHandler synchron auf.
+Während der Anfragenbearbeitung landen weitere Anfragen in einem Puffer.
+Neben allen anderen existierenden Server-Befehlen, die vom Klienten gesendet
+werden können und pro Anfrage eine Antwort liefern, gibt es zusätzlich einen
+Befehl, der die bestehende Verbindung in eine Aktualisierungsverbindung
+umwandelt.
+Weitere Details zu Aktualiserungsverbindungen sind im Kapitel
+\ref{sec:get-updates} spezifiziert.
+Für diese Art des Aktualisierungsabrufes ist die
+AccountUpdateListener-Implementation PersistentConnection zuständig.
 
 \subsubsection{(De-)Kodierung von Anfragen}
 %Klassendiagramm RequestHandler und Kontext
@@ -1392,7 +1401,7 @@ als Python-Implementierung angegeben:
 
 \pythonexternal{scripts/normalize.py}
 
-\subsection{Abrufen von Aktualisierungen}
+\subsection{Abrufen von Aktualisierungen}\label{sec:get-updates}
 Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
 
 \begin{itemize}
