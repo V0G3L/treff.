@@ -22,7 +22,10 @@ uml-source/*.png
 *.mtc
 *.mtc1
 *.out
+*.snm
+*.nav
 *.synctex.gz
 entwurf.synctex.gz(busy)'
+entwurf-presentation.pdf
 entwurf.pdf
 entwurf.synctex/
