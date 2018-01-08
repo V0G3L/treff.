@@ -1,8 +1,12 @@
-NAME=entwurf
+DOC_NAME=entwurf
+PRES_NAME=entwurf-presentation
 
-default dev all: distclean svg uml build/$(NAME).pdf
-
+dev: latex-force
 dev: CONT_FLAG = -pvc
+doc:	build/$(DOC_NAME).pdf
+pres:	build/$(PRES_NAME).pdf
+
+default dev all doc: svg uml pres
 
 svg: $(patsubst %.svg,build/%.pdf,$(wildcard images/*.svg))
 
@@ -21,12 +25,10 @@ build/%.pdf: %.tex *.sty
 	mkdir -p build
 	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 
-show: build/$(NAME).pdf
-	xdg-open $<
-
 clean:
 	rm -f *.tmp *.tui *.log *.tuc *.mp *.bbl *.blg *.fls *.idx *.aux *.out *.fdb_latexmk *.ilg *.ind
 	rm -rf build
 
-distclean:
-	rm -f build/$(NAME).pdf
+latex-force:
+	rm -f build/$(DOC_NAME).pdf
+	rm -f build/$(PRES_NAME).pdf
