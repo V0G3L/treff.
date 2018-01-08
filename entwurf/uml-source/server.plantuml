@@ -1,10 +1,10 @@
 @startuml
 
-class Thread {
+class "Thread" as T {
 }
 
 package treff_server <<Frame>> {
-    class Server {
+    class "Server" as S {
         -port: int
         -accountManager: AccountManager
 
@@ -12,7 +12,7 @@ package treff_server <<Frame>> {
         -Server(port:int) <<constructor>>
     }
 
-    class ConnectionHandler {
+    class "ConnectionHandler" as CH {
         -socket: Socket
         -accountManager: AccountManager
 
@@ -20,7 +20,7 @@ package treff_server <<Frame>> {
         +run()
     }
 
-    class RequestHandler {
+    class "RequestHandler" as RH {
         -request: String
         -accountManager: AccountManager
         -didRun: boolean
@@ -29,18 +29,13 @@ package treff_server <<Frame>> {
         +run(): String
     }
 
-    package update_notifier <<Frame>> {
-        class PersistentConnection {
-            out:PrintWriter
-            -observedAccount: Account
 
-            +PersistentConnection(out:PrintWriter, accountManager:AccountManager, userID:int) <<constructor>>
-            +onUpdateAdded(update: Update)
-        }
-    }
 
     package interfaces <<Frame>> {
-        interface AccountManager {
+        interface "AccountUpdateListener" as AUL {
+                onUpdateAdded(update: Update)
+            }
+        interface "AccountManager" as AM {
             hasAccountWithUsername(String username): boolean
             hasAccountWithEmail(String email): boolean
             getAccountByUsername(String username): Account
@@ -48,29 +43,40 @@ package treff_server <<Frame>> {
             createAccount(String username, String email, String password): Account
         }
 
-        interface AccountUpdateListener{
-            onUpdateAdded(update: Update)
-        }
+
     }
 
     package sql <<Frame>> {
-        class EntityManagerSQL <<singleton>>{
+        class "EntityManagerSQL" as EMS <<singleton>>{
             -instance: EntityManagerSQL
             -loadedAccountsByID: Map<Integer, Account>
 
-            -EntityManagerSQL() <<contructor>>
+            -EntityManagerSQL() <<constructor>>
             +initialize()
         }
     }
 
-    Thread <|-- ConnectionHandler
-    AccountManager <|.. EntityManagerSQL
-    AccountUpdateListener <|.. PersistentConnection
-    Server "1" --> "n" ConnectionHandler : creates
-    ConnectionHandler "1" --> "n" RequestHandler : creates
-    Server "1" --> "1" AccountManager : has
-    ConnectionHandler "n" --> "1" AccountManager : has
-    RequestHandler "n" --> "1" AccountManager : has
-    ConnectionHandler "1" -> "1" AccountUpdateListener : has
+    package update_notifier <<Frame>> {
+            class "PersistentConnection" as PC {
+                out:PrintWriter
+                -observedAccount: Account
+
+                +PersistentConnection(out:PrintWriter, accountManager:AccountManager, userID:int) <<constructor>>
+                +onUpdateAdded(update: Update)
+            }
+        }
+
+
 }
+
+T <|-- CH
+    AM <|.down. EMS
+    AUL <|.down. PC
+    S "1" -right-> "n" CH : creates
+    CH "1" --> "n" RH : creates
+    S "1" --> "1" AM : has
+    CH "n" --> "1" AM : has
+    RH "n" -left-> "1" AM : has
+
+    CH "1" -> "1" AUL : has
 @enduml
