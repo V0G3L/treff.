@@ -3,10 +3,10 @@ PRES_NAME	:= entwurf-presentation
 
 default: prep pres
 
-doc:	build/$(DOC_NAME).pdf
-pres:	build/$(PRES_NAME).pdf
+doc:	prep build/$(DOC_NAME).pdf
+pres:	prep build/$(PRES_NAME).pdf
 
-prep: svg uml
+prep:	svg uml
 
 docdev: CONT_FLAG = -pvc
 docdev: latex-force prep doc
