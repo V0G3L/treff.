@@ -1,14 +1,19 @@
-DOC_NAME=entwurf
-PRES_NAME=entwurf-presentation
+DOC_NAME	:= entwurf
+PRES_NAME	:= entwurf-presentation
 
-dev: 	latex-force
-dev: 	CONT_FLAG = -pvc
+default: prep pres
+
 doc:	build/$(DOC_NAME).pdf
 pres:	build/$(PRES_NAME).pdf
 
-default: svg uml pres
-all: svg uml doc pres
-dev: svg uml
+prep: svg uml
+
+docdev: CONT_FLAG = -pvc
+docdev: latex-force prep doc
+presdev: CONT_FLAG = -pvc
+presdev: latex-force prep pres
+
+all: prep doc pres
 
 svg: $(patsubst %.svg,build/%.pdf,$(wildcard images/*.svg))
 

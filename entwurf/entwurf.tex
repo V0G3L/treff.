@@ -876,6 +876,7 @@ folgenden definiert.
 \apiErrorNew{invalid-email}{010}{Email nicht gültig}
 \apiErrorNew{token-invalid}{020}{Authentifizierungstoken ungültig}
 \apiErrorNew{cred-wrong}{030}{Nutzername/Passwort-Kombination ungültig}
+\apiErrorNew{reset-code-invalid}{040}{Passwort-Zurücksetzungcode ungültig}
 
 \apiErrorNew{no-permission-group-edit}{100}{Das Benutzerkonto besitzt nicht
 die nötigen Rechte, um die Gruppe zu editieren}
@@ -934,8 +935,8 @@ diese Abstimmung möglich}
 \apiErrorNew{not-voting-for-option}{432}{Das Benutzerkonto hat keine Stimme
 für dies Option abgegeben}
 
-Bis auf dem \textbf{login}-Befehl und den \textbf{register}-Befehl erfordert
-jeder Befehl folgenden Parameter:\\
+Bis auf die Befehle \textbf{login}, \textbf{register} und
+\textbf{reset-password} erfordert jeder Befehl folgenden Parameter:\\
 \apiArgument{token/Authentifizierungtoken{,} welches beim Anmelden in das
 Benutzerkonto vom Server zurückgegeben wurde}
 \par\par Ist das übermittelte Token ungültig, wird der Befehl nicht
@@ -943,13 +944,14 @@ ausgeführt und folgender Fehlercode zurückgegeben:\\
 \apiErrorPrint{token-invalid}
 
 \apiCommand{register}
-{Registrieren eines Nutzerkontos}
+{Registrieren eines Nutzerkontos. Die Angabe einer E-Mail-Adresse ist nicht
+zwingend erforderlich, kann aber mit dem Befehl \textbf{edit-emai} hinzugefügt
+werden.}
 {user/Benutzername des Kontos,
-pass/Passwort des Kontos,
-email/Email des Kontos}
+pass/Passwort des Kontos}
 {token/Authentifizierungstoken{,} welches in weiteren Befehlen
 als Eingabe verlangt wird}
-{username-already-in-use,invalid-email}
+{username-already-in-use}
 
 \apiCommand{login}
 {Anmelden in ein Nutzerkonto}
@@ -962,7 +964,9 @@ als Eingabe verlangt wird}
 \apiCommand{request-updates}
 {Anfragen der Updateliste vom Server}
 {user/Benutzername des Kontos}
-{updates/} %TODO In welcher Form werden die Updates übergeben
+{updates/Ein Array an Änderungsbeschreibungen (Siehe Kapitel \ref{updatedesc}).
+Diese Updates sind in der Reihenfolge anzuwenden{,} in der sie im Array
+erscheinen.}
 {user-id-invalid}
 
 \apiCommand{edit-username}
@@ -990,14 +994,28 @@ newpass/vorgeschlagenes{,} neues Passwort}
 {cred-wrong, user-id-invalid}
 
 \apiCommand{reset-password}
-{Zurücksetzen des eigenen Passworts. Dies führt dazu, dass das eigene Passwort
-vom Server durch ein von diesem generierten ersetzt wird. Anschließend wird das
-neue Passwort an an die angegebene E-Mail-Adresse des Kontos verschickt.}
-%TODO wirklich ersetzt oder ist das alte ebenfalls nach wie vor gültig
-{id/Identifikationsnummer des eigenen Benutzerkontos,
-pass/Passwort des eigenen Kontos}
+{Sendet eine Zurücksetzungsanfrage für ein Passwort.
+Falls die angegebene E-Mail-Adresse einem Benutzerkonto zugewiesen ist, wird
+eine E-Mail mit einem Zeichencode an die E-Mail-Adresse gesandt, der mit dem
+\textbf{reset-password-confirm}-Befehl genutzt werden kann, um das Passwort des
+entsprechenden Benutzerkontos zurückzusetzen.
+Ist die E-Mail-Adresse keinem Benutzerkonto zugewiesen, wird \textbf{kein}
+Fehler ausgegeben.
+Dies dient dem Schutz von E-Mail-Adressen vor Brute-Force-Angriffen.}
+{email/E-Mail-Adresse des Benutzerkontos{,} dessen Passwort zurückgesetzt werden
+soll}
 {---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid}
+{}
+
+\apiCommand{reset-password-confirm}
+{Führt die Passwortzurücksetzung durch.
+Der verwendete Bestätigungscode ist nach Ausführung ungültig und kann
+verworfen werden.}
+{code/Bestätigungscode{,} der nach Ausführung des \textbf{reset-password}-Befehls
+an die dort angegebene E-Mail-Adresse gesandt wurde,
+pass/Neues Passwort}
+{---/Leeres JSON-Objekt bei Erfolg}
+{reset-code-invalid}
 
 \apiCommand{delete-account}
 {Löschen des eigenen Kontos. Dies führt wie erwartet dazu{,}
@@ -1010,7 +1028,7 @@ pass/Passwort des eigenen Kontos}
 {cred-wrong, user-id-invalid}
 
 \apiCommand{get-user-id}
-{Abrufen der Idenfikationsnummer eines anderen Benutzekontos durch Übergeben
+{Abrufen der Idenfikationsnummer eines anderen Benutzerkontos durch Übergeben
 des Benutzernamens}
 {user/Benutzername des Benutzerkontos}
 {\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
@@ -1111,14 +1129,15 @@ Gruppe gelöscht.}
 {Abfragen der Rechte eines Benutzerkontos in einer Gruppe}
 {id/Eindeutige Identifikationsnummer der Gruppe,
 userid/Eindeutige Identifikationsnummer des Benutzerkontos}
-{permissions/Ein Array an Booleans das die Berechtigungen darstellt}
+{permissions/Eine Rechtebeschreibung (Siehe Kapitel \ref{sec:permdesc})}
 {group-id-invalid}
 
 \apiCommand{edit-permissions}
 {Ändern der Rechte eines Benutzerkontos in einer Gruppe}
 {id/Eindeutige Identifikationsnummer der Gruppe,
 userid/Eindeutige Identifikationsnummer des Benutzerkontos,
-permissions/Ein Array an Booleans das die Berectigungen darstellt}
+permissions/Eine partielle Rechtebeschreibung{,} die alle zu überschreibenden
+Wertepaare enthält (Siehe Kapitel \ref{sec:permdesc})}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid, no-permission-permissions-edit}
 
@@ -1437,6 +1456,9 @@ Unixzeit)}
     supporters/Array an Identifikationsnummern der Benutzerkonten{,} die
     momentan für diese Options stimmen.
 }
+
+\subsection{Rechtebeschreibung}\label{sec:permdesc}
+\subsection{Änderungsbeschreibung}\label{sec:updatedesc}
 
 \subsection{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}
