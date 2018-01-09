@@ -1,0 +1,16 @@
+\documentclass[aspectratio=0510]{beamer}
+
+\usepackage{listingspdf}
+
+\begin{document}
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+    \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
+    \begin{lstlisting}[language=norm,firstnumber=1]
+(*\circled{1}*)"event"(*\circled{2}*)2(*\circled{2}%
+*)"Beispielverabredung 1010"(*\circled{2}*)200
+(*\circled{2}*)1514761200000(*\circled{2}*)1515000600000(*\circled{2}%
+*)49.011978(*\circled{2}*)8.416377
+(*\circled{2}\circled{4}*)3(*\circled{5}*)200(*\circled{5}*)43378(*%
+\circled{6}\circled{3}*)
+    \end{lstlisting}
+\end{document}

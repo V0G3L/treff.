@@ -6,7 +6,7 @@ default: prep pres
 doc:	prep build/$(DOC_NAME).pdf
 pres:	prep build/$(PRES_NAME).pdf
 
-prep:	svg uml
+prep:	svg uml lst
 
 docdev: CONT_FLAG = -pvc
 docdev: latex-force prep doc
@@ -16,8 +16,8 @@ presdev: latex-force prep pres
 all: prep doc pres
 
 svg: $(patsubst %.svg,build/%.pdf,$(wildcard images/*.svg))
-
 uml: $(patsubst uml-source/%.plantuml,build/uml/%.png,$(wildcard uml-source/*.plantuml))
+lst: $(patsubst %.tex,build/%.pdf,$(wildcard listings/*.tex))
 
 build/images/%.pdf: images/%.svg
 	mkdir -p build/images
@@ -32,8 +32,14 @@ build/%.pdf: %.tex *.sty
 	mkdir -p build
 	latexmk $(CONT_FLAG) -pdf -g -f -auxdir=build -outdir=build $<
 
+build/listings/%.pdf: listings/%.tex *.sty
+	mkdir -p build/listings
+	latexmk -pdf -g -f -auxdir=build/listings -outdir=build/listings $<
+
+
 clean:
 	rm -f *.tmp *.tui *.log *.tuc *.mp *.bbl *.blg *.fls *.idx *.aux *.out *.fdb_latexmk *.ilg *.ind
+	rm -rf build/listings
 	rm -rf build
 
 latex-force:

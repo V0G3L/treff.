@@ -10,8 +10,48 @@
 \usepackage{csquotes}
 \usepackage{amsmath} % for $\text{}$
 \usepackage{enumitem}
-\setlist{nosep}
+\usepackage{entwurf}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{bera}
+\usepackage{pdfpages}
 
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\setlist{nosep}
 
 \newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
 \raggedbottom
@@ -47,7 +87,7 @@
 %%%%%%%% CLIENT %%%%%%%%%%
 
     \begin{frame}[plain]
-        \frametitle{Layout der HomeActivity}
+        \frametitle{\textbf{Klient} -- Layout der HomeActivity}
         \begin{figure}[!htb]
             \centering
             \includegraphics[height = 240pt]{images/activity-home-layout.png}
@@ -55,7 +95,7 @@
     \end{frame}
 
 	\begin{frame}[plain]
-        \frametitle{MVVM \& Room am Beispiel der HomeActivity}
+        \frametitle{\textbf{Klient} -- MVVM \& Room am Beispiel der HomeActivity}
         \begin{figure}[!htb]
             \centering
             \includegraphics[height = 250pt]{images/database.png}
@@ -63,7 +103,7 @@
 	\end{frame}
 
     \begin{frame}[plain]
-        \frametitle{Laden der Freundesliste}
+        \frametitle{\textbf{Klient} -- Laden der Freundesliste}
         \begin{figure}[!htb]
             \centering
             \includegraphics[height = 200pt]{images/datafetch.png}
@@ -73,7 +113,7 @@
 %%%%%%%% SERVER %%%%%%%%%%
 
 	\begin{frame}[plain]
-        \frametitle{Klassen-Diagramm der wichtigen Klassen des Servers}
+        \frametitle{\textbf{Server} -- Klassen-Diagramm der wichtigsten Klassen}
         \begin{figure}[!htb]
             \centering
             \includegraphics[height = 190pt]{build/uml/server.png}
@@ -81,7 +121,7 @@
 	\end{frame}
 
 	\begin{frame}[plain]
-        \frametitle{ERD der Serverdatenbank}
+        \frametitle{\textbf{Server} -- ERD der Serverdatenbank}
         \begin{figure}[!htb]
             \centering
             \includegraphics[width = \columnwidth]{images/erd-complete.png}
@@ -89,41 +129,154 @@
     \end{frame}
 
 	\begin{frame}[plain]
-        \frametitle{Sequenz-Diagramm des Befehls 'get-event-details'}
+        \frametitle{\textbf{Server} -- Sequenz-Diagramm des Befehls 'get-event-details'}
         \begin{figure}[!htb]
             \centering
             \includegraphics[width = \columnwidth]{build/uml/get-event-details-sequence.png}
         \end{figure}
     \end{frame}
 
-%%%%%%%%% API %%%%%%%%%%%
+%%%%%%%%% COMM %%%%%%%%%%%
 
-	\begin{frame}[plain]
-        API (PLATZHALTER)
+    \apiErrorNew{cred-wrong}{030}{Nutzername/Passwort-Kombination ungültig}
+    \apiErrorNew{user-id-invalid}{201}{Mindestens eine
+    Benutzerkonto-Identifikationsnummer ungültig}
+
+    \begin{frame}[plain]
+        \frametitle{\textbf{Kommunikation} -- Protokoll und Format}
+        \begin{minipage}{0.5\textwidth}
+            % trim=left bottom right top
+            \begin{figure}
+                \includegraphics
+                [clip, trim=10pt 200pt 140pt 05pt,width=0.95\textwidth]
+                {build/listings/login-json.pdf}
+                \caption{Request}
+            \end{figure}
+            \begin{figure}
+                \includegraphics
+                [clip, trim=10pt 170pt 140pt 05pt,width=0.95\textwidth]
+                {build/listings/login-json-response.pdf}
+                \caption{Response}
+            \end{figure}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \begin{itemize}
+                \item[--] Einfache TCP-Verbindung von Klient zu Server
+                \item[--] Verschlüsselt mittels TLS
+                \item[--] Mehrere Anfragen pro Verbindung möglich
+                \item[--] Befehle im JSON-Format
+                    \begin{itemize}
+                        \item[$\implies$] menschenlesbar
+                        \item[$\implies$] leicht zu implementieren
+                        \item[$\implies$] Objekte leicht serialisierbar
+                    \end{itemize}
+            \end{itemize}
+        \end{minipage}
 	\end{frame}
 
+    \begin{frame}[plain]
+        \frametitle{\textbf{Kommunikation} -- Befehle}
+        \only<1>{
+            \apiCommand{edit-password}
+            {Editieren des eigenen Passworts\\}
+            {id/Identifikationsnummer des eigenen Benutzerkontos,
+            pass/aktuelles Passwort des eigenen Kontos,
+            newpass/vorgeschlagenes{,} neues Passwort}
+            {---/Leeres JSON-Objekt bei Erfolg}
+            {cred-wrong, user-id-invalid}
+        }
+        \only<2>{
+            \apiCommand{list-groups}
+            {Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist\\}
+            {---/Keine weiteren Parameter}
+            {groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
+            Kapitel 5.3)}
+            {}
+        }
+	\end{frame}
+
+    \begin{frame}[plain]
+        \frametitle{\textbf{Kommunikation} -- Beschreibungen}
+            \begin{tabular}[t]{ p{0.2\textwidth} p{0.75\textwidth} }
+                \textbf{Oberflächlich}\\
+                \hline
+                \hfill\textbf{type} & \enquote{group}\\
+                \hfill\textbf{id} & Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+                weiteren Befehlen referenziert werden kann\\
+                \hfill\textbf{checksum} & Prüfsumme der ausführlichen
+                Beschreibung (siehe 5.10)\\
+                \hline\hline
+                \textbf{Ausführlich}\\
+                \hline
+                \hfill\textbf{type} & \enquote{group}\\
+                \hfill\textbf{id} & Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
+            weiteren Befehlen referenziert werden kann\\
+                \hfill\textbf{name} & Name der Gruppe\\
+                \hfill\textbf{members} & Array an
+                Identifikationsnummern aller Benutzerkonten, die Mitglied der
+                Gruppe sind\\
+                \hfill\textbf{events} & Array an oberflächlich
+                beschriebenen Verabredungen, die in der Gruppe erstellt worden
+                sind (siehe 5.5)\\
+                \hfill\textbf{polls} & Array an oberflächlich
+                beschriebenen Abstimmungen, die in der Gruppe erstellt worden
+                sind (siehe 5.6)\\
+            \end{tabular}
+	\end{frame}
+
+    \begin{frame}[plain]
+        \frametitle{\textbf{Kommunikation} -- Prüfsummen für ausführliche
+        Beschreibungen}
+        \only<1>{
+            \begin{figure}
+                % trim=left bottom right top
+                \includegraphics
+                [clip, trim=10pt 110pt 70pt 05pt,width=0.95\textwidth]
+                {build/listings/example-json.pdf}
+                \caption{Ausführliche Beschreibung einer Beispielverabredung}
+            \end{figure}
+        }
+        \only<2>{
+            \begin{figure}
+                % trim=left bottom right top
+                \includegraphics
+                [clip, trim=05pt 210pt 05pt 05pt,width=0.95\textwidth]
+                {build/listings/example-json-normalized.pdf}
+                \caption{Ausführliche Beschreibung einer Beispielverabredung}
+            \end{figure}
+        }
+        \only<3>{
+            \begin{figure}
+                % trim=left bottom right top
+                \includegraphics
+                [height=230pt]
+                {build/uml/synchronize.png}
+                \caption{Optimierung der (Re-)Synchronisierung mittels
+                Prüfsummen}
+            \end{figure}
+        }
+	\end{frame}
 
 %%%%%%%%% META %%%%%%%%%%
 
     \begin{frame}[plain]
-        \frametitle{Arbeitsweise}
+        \frametitle{\textbf{Arbeitsweise}}
         \begin{minipage}{0.5\textwidth}
             \only<1>{
-                PLATZHALTER
-                % treff.-Positionsicon, TeamSpeak-, Discord- und Telegram-Icon
+        		\includegraphics[width = \columnwidth - 30pt]
+                {images/meet-im-voip.png}
             }
             \only<2>{
-                PLATZHALTER
-                % Screenshot vom Wekanboard
+        		\includegraphics[width = \columnwidth - 10pt]
+                {images/kanbanboard-screenshot.png}
             }
             \only<3>{
-                PLATZHALTER
-                % Ordnerhierarchie (server,client,entwurf)?
+        		\includegraphics[height = 230pt]
+                {images/dir-tree.png}
             }
         	\only<4>{
         		\includegraphics[height = \columnwidth]
         		{images/diagram.JPG}
-        		% Diagrammcode, Lucidchart?
         	}
         \end{minipage}%
         \begin{minipage}{0.5\textwidth}
@@ -161,11 +314,11 @@
         		\begin{itemize}
         			\setlength\itemsep{0.3em}
         			\item[--] Unbekannte Dokumentform
-        			\item[--] Differenzen zur Schulung, vieles \enquote{from 
+        			\item[--] Differenzen zur Schulung, vieles \enquote{from
         			Scratch}
-        			\item[--] Übersichtliche Diagramme erstellen / 
+        			\item[--] Übersichtliche Diagramme erstellen /
         			automatisieren / synchronisieren
-        			Formatierung
+        			/ in Formatierung einbinden
         		\end{itemize}
         	}
         \end{minipage}
