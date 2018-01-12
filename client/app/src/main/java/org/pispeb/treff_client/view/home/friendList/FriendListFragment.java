@@ -10,36 +10,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FragmentFriendListBinding;
-import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
  * Fragment hosting RecyclerView of FriendList and handling onClick-events
  * from items in the List
  */
 
-public class FriendListFragment extends Fragment implements FriendListAdapter.FriendClickedListener {
+public class FriendListFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // binding to layout
         final FragmentFriendListBinding binding = FragmentFriendListBinding.inflate(inflater, container, false);
-        final FriendListAdapter adapter = new FriendListAdapter(this);
-        binding.list.setAdapter(adapter);
-        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
-        binding.list.setHasFixedSize(true);
+        // ViewModel which also serves as onClickListener for adapter
+        FriendListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(FriendListViewModel.class);
+        // adapter to display items
+        final FriendListAdapter adapter = new FriendListAdapter(vm);
 
-        FriendListViewModel vm = ViewModelProviders.of(this).get(FriendListViewModel.class);
-        vm.init();
         vm.getFriends().observe(this, friends -> {
             adapter.setData(friends);
         });
         binding.setVm(vm);
 
-        return binding.getRoot();
-    }
+        binding.list.setAdapter(adapter);
+        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.list.setHasFixedSize(true);
 
-    @Override
-    public void onItemClicked(int position, User user) {
-        //TODO start friend activity
+        return binding.getRoot();
     }
 }

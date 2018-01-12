@@ -19,8 +19,9 @@ public class UserRepository {
     private RequestEncoder encoder;
 
     @Inject
-    public UserRepository(UserDao userDao) {
+    public UserRepository(UserDao userDao, RequestEncoder encoder) {
         this.userDao = userDao;
+        this.encoder = encoder;
     }
 
     public LiveData<User> getUser(int userID) {

@@ -12,21 +12,15 @@ import org.pispeb.treff_client.data.entities.Event;
  */
 
 public class RequestEncoder {
-    private static RequestEncoder INSTANCE;
+
     private ConnectionHandler connectionHandler;
 
     private final char SEP1 = (char) 1;
     private final char SEP2 = (char) 2;
     private final char SEP3 = (char) 3;
 
-    public static RequestEncoder getEntity() {
-        if(INSTANCE == null) {
-            INSTANCE = new RequestEncoder();
-        }
-        return INSTANCE;
-    }
 
-    private RequestEncoder() {
+    public RequestEncoder() {
         this.connectionHandler = new ConnectionHandler("", 1);
     }
 

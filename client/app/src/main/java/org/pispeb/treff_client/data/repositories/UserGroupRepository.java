@@ -10,4 +10,8 @@ public class UserGroupRepository {
     private UserGroupDao userGroupDao;
     private RequestEncoder encoder;
 
+    public UserGroupRepository(UserGroupDao userGroupDao, RequestEncoder encoder) {
+        this.userGroupDao = userGroupDao;
+        this.encoder = encoder;
+    }
 }

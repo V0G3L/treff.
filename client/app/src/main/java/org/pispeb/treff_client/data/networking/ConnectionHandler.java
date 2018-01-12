@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 /**
  * Class to handle the Connection to the server
  * Created by vogel on 1/5/18.
+ * TODO mock implementation (or even actual implementation)
  */
 
 public class ConnectionHandler{
@@ -21,6 +22,7 @@ public class ConnectionHandler{
     int request;
 
     public ConnectionHandler(String server, int port) {
+        /*
         request = 0;
         try {
             socket = new Socket(server, port);
@@ -31,12 +33,15 @@ public class ConnectionHandler{
         } catch (IOException e) {
             e.printStackTrace();
         }
+        */
     }
 
     public String sendRequest(String request){
+        /*
         new Request().execute(request);
-
+        */
         return null;
+
     }
 
     class Request extends AsyncTask<String, Void, String> {

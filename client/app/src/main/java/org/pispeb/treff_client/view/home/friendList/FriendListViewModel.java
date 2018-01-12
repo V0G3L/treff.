@@ -17,14 +17,21 @@ import javax.inject.Inject;
  * Stores and manages the necessary data for the {@link FriendListFragment}
  */
 
-public class FriendListViewModel extends ViewModel {
+public class FriendListViewModel extends ViewModel implements FriendListAdapter.FriendClickedListener {
+
     private LiveData<List<User>> friends;
     private final UserRepository userRepo;
 
-    @Inject
     public FriendListViewModel(UserRepository userRepo) {
-
+        this.friends = new MutableLiveData<>();
         this.userRepo = userRepo;
+
+        /*
+        // TODO revise
+        if (friends == null) {
+            friends = userRepo.getFriends();
+        }
+        */
 
 
     /*
@@ -39,18 +46,7 @@ public class FriendListViewModel extends ViewModel {
     */
     }
 
-
-    public void init() {
-        if (friends == null) {
-            friends = userRepo.getFriends();
-        }
-    }
-
-
     public LiveData<List<User>> getFriends() {
-        if (friends == null) {
-            friends = new MutableLiveData<>();
-        }
         return friends;
     }
 
@@ -58,5 +54,10 @@ public class FriendListViewModel extends ViewModel {
     public void onAddClick() {
         List<User> newData = friends.getValue();
         friends.getValue().add(new User(5, "Norton Neu", true, false));
+    }
+
+    @Override
+    public void onItemClicked(int position, User user) {
+        //TODO start friend activity
     }
 }

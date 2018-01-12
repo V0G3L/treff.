@@ -10,4 +10,8 @@ public class EventRepository {
     private EventDao eventDao;
     private RequestEncoder encoder;
 
+    public EventRepository(EventDao eventDao, RequestEncoder encoder) {
+        this.eventDao = eventDao;
+        this.encoder = encoder;
+    }
 }

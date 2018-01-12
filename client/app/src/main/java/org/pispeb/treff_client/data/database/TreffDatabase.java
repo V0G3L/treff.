@@ -1,7 +1,9 @@
 package org.pispeb.treff_client.data.database;
 
+import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Database;
+import android.content.Context;
 
 import org.pispeb.treff_client.data.entities.*;
 
@@ -21,6 +23,15 @@ import org.pispeb.treff_client.data.entities.*;
         UserGroup.class
         }, version = 2, exportSchema = false)
 public abstract class TreffDatabase extends RoomDatabase {
+
+    private static TreffDatabase INSTANCE;
+
+    public static TreffDatabase getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context, TreffDatabase.class, "treff.db").build();
+        }
+        return INSTANCE;
+    }
 
     public abstract UserDao getUserDao();
     public abstract EventDao getEventDao();

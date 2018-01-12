@@ -1,12 +1,17 @@
 package org.pispeb.treff_client.view.home.eventList;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.entities.Event;
+import org.pispeb.treff_client.databinding.FragmentEventListBinding;
+import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
  * Fragment hosting RecyclerView of EventList and handling onClick-events
@@ -26,9 +31,21 @@ public class EventListFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_event_list, container, false);
+        final FragmentEventListBinding binding = FragmentEventListBinding.inflate(inflater, container, false);
+        EventListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(EventListViewModel.class);
+        final EventListAdapter adapter = new EventListAdapter(vm);
+
+        binding.list.setAdapter(adapter);
+        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.list.setHasFixedSize(true);
+
+        vm.getEvents().observe(this, events -> {
+            adapter.setData(events);
+        });
+
+
+        return binding.getRoot();
     }
 }

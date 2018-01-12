@@ -1,7 +1,9 @@
 package org.pispeb.treff_client.view.home.friendList;
 
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.data.entities.User;
@@ -48,5 +50,29 @@ public class FriendListAdapter extends Adapter<FriendListViewHolder> {
 
     public interface FriendClickedListener {
         void onItemClicked(int position, User user);
+    }
+}
+
+
+/**
+ * Holding Layout for single item of the FriendList.
+ * Passing on onCLick-events on that item to {@link FriendListFragment}
+ */
+
+class FriendListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    final FriendItemBinding binding;
+    private final FriendListAdapter.FriendClickedListener listener;
+
+    public FriendListViewHolder(FriendItemBinding binding, FriendListAdapter.FriendClickedListener listener) {
+        super(binding.getRoot());
+        this.binding = binding;
+        this.listener = listener;
+        binding.getRoot().setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        listener.onItemClicked(getAdapterPosition(), binding.getUser());
     }
 }
