@@ -7,6 +7,8 @@ import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.data.entities.Event;
 
+import java.util.List;
+
 /**
  * {@link Dao} which provides access to {@link Event}s
  */
@@ -18,4 +20,7 @@ public interface EventDao {
 
     @Query("SELECT * FROM event WHERE id = :eventId")
     LiveData<Event> getEventByID(int eventId);
+
+    @Query("SELECT * FROM event")
+    LiveData<List<Event>> getEvents();
 }

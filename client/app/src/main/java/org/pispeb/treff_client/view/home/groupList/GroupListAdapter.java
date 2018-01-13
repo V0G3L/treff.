@@ -44,6 +44,7 @@ public class GroupListAdapter extends Adapter<GroupListViewHolder>{
 
     public void setData(List<UserGroup> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 
     public interface GroupClickedListener {

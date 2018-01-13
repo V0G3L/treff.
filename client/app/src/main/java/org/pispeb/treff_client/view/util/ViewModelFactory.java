@@ -3,6 +3,8 @@ package org.pispeb.treff_client.view.util;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 
 import org.pispeb.treff_client.data.database.EventDao;
@@ -51,9 +53,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         encoder = new RequestEncoder();
 
-        userRepository = new UserRepository(userDao, encoder);
-        userGroupRepository = new UserGroupRepository(userGroupDao, encoder);
-        eventRepository = new EventRepository(eventDao, encoder);
+        HandlerThread thread = new HandlerThread("gbt", HandlerThread.MIN_PRIORITY);
+        thread.start();
+        Handler handler = new Handler(thread.getLooper());
+
+        userRepository = new UserRepository(userDao, encoder, handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
+        eventRepository = new EventRepository(eventDao, encoder, handler);
     }
 
     @NonNull

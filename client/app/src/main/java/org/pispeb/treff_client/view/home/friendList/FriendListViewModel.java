@@ -3,15 +3,12 @@ package org.pispeb.treff_client.view.home.friendList;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Stores and manages the necessary data for the {@link FriendListFragment}
@@ -20,30 +17,20 @@ import javax.inject.Inject;
 public class FriendListViewModel extends ViewModel implements FriendListAdapter.FriendClickedListener {
 
     private LiveData<List<User>> friends;
-    private final UserRepository userRepo;
+    private final UserRepository userRepository;
 
-    public FriendListViewModel(UserRepository userRepo) {
-        this.friends = new MutableLiveData<>();
-        this.userRepo = userRepo;
+    public FriendListViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.friends = userRepository.getFriends();
 
         /*
         // TODO revise
         if (friends == null) {
-            friends = userRepo.getFriends();
+            friends = userRepository.getFriends();
         }
         */
 
 
-    /*
-        //TODO remove
-        friends = new MutableLiveData<>();
-        List<User> newData = new ArrayList<>();
-        newData.add(new User(1, "Max Mustermann", true, false));
-        newData.add(new User(2, "Erika Experiment", true, false));
-        newData.add(new User(3, "Thorsten Test", true, false));
-
-        friends.getValue().addAll(newData);
-    */
     }
 
     public LiveData<List<User>> getFriends() {
@@ -52,8 +39,8 @@ public class FriendListViewModel extends ViewModel implements FriendListAdapter.
 
     //TODO remove mock floating action button behaviour
     public void onAddClick() {
-        List<User> newData = friends.getValue();
-        friends.getValue().add(new User(5, "Norton Neu", true, false));
+        Log.i("FLVM", "add new friend");
+        userRepository.add(new User((int) System.currentTimeMillis(), "Norton Neu", true, false));
     }
 
     @Override

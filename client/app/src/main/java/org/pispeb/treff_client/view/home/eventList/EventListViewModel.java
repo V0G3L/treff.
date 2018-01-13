@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.view.home.eventList;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -14,17 +15,18 @@ import java.util.List;
 
 public class EventListViewModel extends ViewModel implements EventListAdapter.EventClickedListener {
 
-    private MutableLiveData<List<Event>> events;
+    private LiveData<List<Event>> events;
     private final EventRepository eventRepository;
 
     public EventListViewModel(EventRepository eventRepository) {
-        this.events = new MutableLiveData<>();
         this.eventRepository = eventRepository;
+        this.events = eventRepository.getEvents();
     }
 
-    public MutableLiveData<List<Event>> getEvents() {
+    public LiveData<List<Event>> getEvents() {
         return events;
     }
+
 
     @Override
     public void onItemClicked(int position, Event event) {

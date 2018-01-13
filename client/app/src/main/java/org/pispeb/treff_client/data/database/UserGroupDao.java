@@ -23,6 +23,9 @@ public interface UserGroupDao {
     @Query("SELECT * FROM usergroup WHERE groupID = :groupId")
     LiveData<UserGroup> getGroupByID(int groupId);
 
+    @Query("SELECT * FROM usergroup")
+    LiveData<List<UserGroup>> getGroups();
+
     @Insert
     void save(GroupMembership groupMembership);
 

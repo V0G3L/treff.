@@ -37,6 +37,8 @@ public class GroupListFragment extends Fragment {
             adapter.setData(groups);
         });
 
+        binding.setVm(vm);
+
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
