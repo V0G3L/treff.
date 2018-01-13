@@ -23,12 +23,12 @@ public class UserGroupRepository {
         this.backgroundHandler = backgroundHandler;
     }
 
-    public LiveData<UserGroup> getGroupById (int id) {
+    public LiveData<UserGroup> getGroup (int id) {
         return userGroupDao.getGroupByID(id);
     }
 
     public LiveData<List<UserGroup>> getGroups () {
-        return userGroupDao.getGroups();
+        return userGroupDao.getAllGroups();
     }
 
     public void add (UserGroup group) {

@@ -25,6 +25,16 @@ public class EventRepository {
     }
 
     public LiveData<List<Event>> getEvents() {
-        return eventDao.getEvents();
+        return eventDao.getAllEvents();
+    }
+
+    public LiveData<Event> getEvent(int eventID) {
+        return eventDao.getEventByID(eventID);
+    }
+
+    public void addEvent(Event event) {
+        backgroundhandler.post(() -> {
+            eventDao.save(event);
+        });
     }
 }

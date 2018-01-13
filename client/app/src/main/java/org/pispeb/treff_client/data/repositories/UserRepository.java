@@ -18,13 +18,13 @@ public class UserRepository {
 
     private UserDao userDao;
     private RequestEncoder encoder;
-    private Handler backgoundhandler;
+    private Handler backgroundHandler;
 
     @Inject
-    public UserRepository(UserDao userDao, RequestEncoder encoder, Handler backgoundhandler) {
+    public UserRepository(UserDao userDao, RequestEncoder encoder, Handler backgroundHandler) {
         this.userDao = userDao;
         this.encoder = encoder;
-        this.backgoundhandler = backgoundhandler;
+        this.backgroundHandler = backgroundHandler;
     }
 
     public LiveData<User> getUser(int userID) {
@@ -38,7 +38,7 @@ public class UserRepository {
     }
 
     public void add(User user) {
-        backgoundhandler.post(() -> {
+        backgroundHandler.post(() -> {
             userDao.save(user);
         });
     }

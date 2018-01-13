@@ -22,5 +22,5 @@ public interface EventDao {
     LiveData<Event> getEventByID(int eventId);
 
     @Query("SELECT * FROM event")
-    LiveData<List<Event>> getEvents();
+    LiveData<List<Event>> getAllEvents();
 }
