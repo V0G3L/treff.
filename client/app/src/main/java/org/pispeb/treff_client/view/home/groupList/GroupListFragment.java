@@ -30,6 +30,7 @@ public class GroupListFragment extends Fragment {
         final FragmentGroupListBinding binding = FragmentGroupListBinding.inflate(inflater, container, false);
 
         GroupListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(GroupListViewModel.class);
+        vm.setHostFragment(this);
 
         final GroupListAdapter adapter = new GroupListAdapter(vm);
 

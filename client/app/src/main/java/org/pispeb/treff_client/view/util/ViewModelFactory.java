@@ -15,8 +15,12 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.view.friend.FriendViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
+import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
+import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
 import org.pispeb.treff_client.view.home.friendList.FriendListViewModel;
+import org.pispeb.treff_client.view.home.groupList.AddGroupViewModel;
 import org.pispeb.treff_client.view.home.groupList.GroupListViewModel;
 
 /**
@@ -71,6 +75,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new GroupListViewModel(userGroupRepository);
         } else if (EventListViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new EventListViewModel(eventRepository);
+        } else if (AddFriendViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new AddFriendViewModel(userRepository);
+        } else if (FriendViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new FriendViewModel(userGroupRepository, userRepository);
+        } else if (AddGroupViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new AddGroupViewModel(userGroupRepository);
         }
 
         throw new IllegalArgumentException("Building an instance of the given class " + modelClass + " is not supported.");

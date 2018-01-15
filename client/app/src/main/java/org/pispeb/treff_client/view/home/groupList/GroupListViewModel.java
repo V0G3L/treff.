@@ -3,6 +3,7 @@ package org.pispeb.treff_client.view.home.groupList;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.UserGroup;
@@ -19,6 +20,7 @@ public class GroupListViewModel extends ViewModel implements GroupListAdapter.Gr
 
     private LiveData<List<UserGroup>> groups;
     private final UserGroupRepository userGroupRepository;
+    private Fragment hostFragment;
 
     public GroupListViewModel(UserGroupRepository userGroupRepository) {
         this.userGroupRepository = userGroupRepository;
@@ -31,13 +33,15 @@ public class GroupListViewModel extends ViewModel implements GroupListAdapter.Gr
 
 
     public void onAddClick() {
-        //TODO open activity to create new Group
-        Log.i("GLVM", "add new group");
-        userGroupRepository.add(new UserGroup("Good Group", (int) System.currentTimeMillis()));
+        AddGroupActivity.start(hostFragment);
     }
 
     @Override
     public void onItemClicked(int position, UserGroup group) {
         // TODO display group details
+    }
+
+    public void setHostFragment(Fragment hostFragment) {
+        this.hostFragment = hostFragment;
     }
 }

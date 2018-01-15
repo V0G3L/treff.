@@ -26,6 +26,7 @@ public class FriendListFragment extends Fragment {
         final FragmentFriendListBinding binding = FragmentFriendListBinding.inflate(inflater, container, false);
         // ViewModel which also serves as onClickListener for adapter
         FriendListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(FriendListViewModel.class);
+        vm.setHostFragment(this);
         // adapter to display items
         final FriendListAdapter adapter = new FriendListAdapter(vm);
 

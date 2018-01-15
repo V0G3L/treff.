@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="org.pispeb.treff_client.view.home.groupList.AddGroupViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:fitsSystemWindows="true"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar"
+            android:background="@color/colorPrimary"/>
+
+        <EditText
+            android:id="@+id/groupname"
+            android:inputType="text"
+            android:hint="@string/groupname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@={vm.groupname}"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/create_group"
+            android:onClick="@{() -> vm.onOkClick()}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/groupname"
+            app:layout_constraintEnd_toStartOf="@id/cancelButton"
+            app:layout_constraintHorizontal_chainStyle="spread"/>
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:onClick="@{() -> vm.onCancelClick()}"
+            app:layout_constraintTop_toBottomOf="@id/groupname"
+            app:layout_constraintStart_toEndOf="@id/okButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

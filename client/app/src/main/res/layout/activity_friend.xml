@@ -1,6 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</android.support.constraint.ConstraintLayout>
+    <data>
+
+        <variable
+            name="vm"
+            type="org.pispeb.treff_client.view.friend.FriendViewModel" />
+    </data>
+
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+
+        <ImageView
+            android:id="@+id/picture"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/friend_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@{vm.user.username}"
+            app:layout_constraintBottom_toBottomOf="@id/picture"
+            app:layout_constraintStart_toEndOf="@id/picture"
+            app:layout_constraintTop_toTopOf="@id/picture" />
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> vm.onChatClick()}"
+            android:text="@string/private_group"
+            app:layout_constraintEnd_toStartOf="@id/cancelButton"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/picture" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> vm.onBlockClick()}"
+            android:text="@string/block"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@id/okButton"
+            app:layout_constraintTop_toBottomOf="@id/picture" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>
