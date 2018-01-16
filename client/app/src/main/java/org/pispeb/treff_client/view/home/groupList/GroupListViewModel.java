@@ -8,6 +8,7 @@ import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+import org.pispeb.treff_client.view.group.GroupActivity;
 
 import java.util.List;
 import java.util.Random;
@@ -39,6 +40,7 @@ public class GroupListViewModel extends ViewModel implements GroupListAdapter.Gr
     @Override
     public void onItemClicked(int position, UserGroup group) {
         // TODO display group details
+        GroupActivity.start(hostFragment);
     }
 
     public void setHostFragment(Fragment hostFragment) {

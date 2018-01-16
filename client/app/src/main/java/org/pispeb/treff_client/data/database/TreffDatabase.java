@@ -36,5 +36,6 @@ public abstract class TreffDatabase extends RoomDatabase {
     public abstract UserDao getUserDao();
     public abstract EventDao getEventDao();
     public abstract UserGroupDao getUserGroupDao();
+    public abstract ChatDao getChatDao();
 
 }

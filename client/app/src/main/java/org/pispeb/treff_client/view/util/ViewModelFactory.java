@@ -7,15 +7,18 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 
+import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.database.TreffDatabase;
 import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
+import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
+import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
 import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
@@ -35,10 +38,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final UserDao userDao;
     private final UserGroupDao userGroupDao;
     private final EventDao eventDao;
+    private final ChatDao chatDao;
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final EventRepository eventRepository;
+    private final ChatRepository chatRepository;
 
     private final RequestEncoder encoder;
 
@@ -54,6 +59,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         userDao = database.getUserDao();
         userGroupDao = database.getUserGroupDao();
         eventDao = database.getEventDao();
+        chatDao = database.getChatDao();
+
 
         encoder = new RequestEncoder();
 
@@ -64,6 +71,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         userRepository = new UserRepository(userDao, encoder, handler);
         userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
+        chatRepository = new ChatRepository(chatDao, encoder, handler);
     }
 
     @NonNull
@@ -81,6 +89,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new FriendViewModel(userGroupRepository, userRepository);
         } else if (AddGroupViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddGroupViewModel(userGroupRepository);
+        } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new GroupChatViewModel(chatRepository);
         }
 
         throw new IllegalArgumentException("Building an instance of the given class " + modelClass + " is not supported.");

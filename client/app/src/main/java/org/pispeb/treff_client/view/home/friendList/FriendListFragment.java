@@ -23,9 +23,12 @@ public class FriendListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // binding to layout
-        final FragmentFriendListBinding binding = FragmentFriendListBinding.inflate(inflater, container, false);
+        final FragmentFriendListBinding binding = FragmentFriendListBinding
+                .inflate(inflater, container, false);
         // ViewModel which also serves as onClickListener for adapter
-        FriendListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(FriendListViewModel.class);
+        FriendListViewModel vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(getContext()))
+                .get(FriendListViewModel.class);
         vm.setHostFragment(this);
         // adapter to display items
         final FriendListAdapter adapter = new FriendListAdapter(vm);
