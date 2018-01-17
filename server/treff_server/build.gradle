@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
     implementation "javax.json:javax.json-api:1.0"
-    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.8-dmr'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.8-dmr'
 }
