@@ -16,29 +16,39 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/text"
+            app:layout_constraintBottom_toTopOf="@id/textlayout"
             app:layout_constraintVertical_chainStyle="spread"/>
 
-        <EditText
-            android:id="@+id/text"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textlayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:inputType="text"
-            android:text="@={vm.currentMessage}"
-            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/send"/>
+            app:layout_constraintEnd_toStartOf="@id/send"
+            app:layout_constraintTop_toTopOf="@id/send">
 
-        <Button
+            <EditText
+                android:id="@+id/text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:text="@={vm.currentMessage}"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+
+
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/send"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:text="->"
+            android:backgroundTint="@color/colorPrimary"
             android:onClick="@{() -> vm.onSendClick()}"
+            android:layout_margin="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/text"/>
+            app:layout_constraintStart_toEndOf="@id/textlayout"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -20,23 +20,37 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class FriendActivity extends AppCompatActivity {
 
-    // TODO pass on the f**** User!
+    private static final String USER_INTENT = "userIntent";
 
-    public static void start(Activity activity) {
+    public static void start(Activity activity, int userId) {
         Intent intent = new Intent(activity, FriendActivity.class);
+        intent.putExtra(USER_INTENT, userId);
         activity.startActivity(intent);
     }
 
-    public static void start(Fragment fragment) {
+    public static void start(Fragment fragment, int userId) {
         Intent intent = new Intent(fragment.getContext(), FriendActivity.class);
+        intent.putExtra(USER_INTENT, userId);
         fragment.startActivity(intent);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityFriendBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_friend);
-        FriendViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(this)).get(FriendViewModel.class);
+        ActivityFriendBinding binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_friend);
+        FriendViewModel vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(this))
+                .get(FriendViewModel.class);
+
+        int userId = (int) getIntent().getExtras().get(USER_INTENT);
+
+        vm.setUserById(userId);
+
+        vm.getUser().observe(this, user -> {
+            binding.username.setText(user.getUsername());
+        });
+
         binding.setVm(vm);
     }
 }

@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.view.friend;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import org.pispeb.treff_client.data.entities.User;
@@ -15,19 +16,19 @@ public class FriendViewModel extends ViewModel {
     private final UserGroupRepository userGroupRepository;
     private final UserRepository userRepository;
 
-    private User user;
+    private LiveData<User> user;
 
     public FriendViewModel(UserGroupRepository userGroupRepository, UserRepository userRepository) {
         this.userGroupRepository = userGroupRepository;
         this.userRepository = userRepository;
     }
 
-    public User getUser() {
-        return user;
+    public void setUserById(int userId) {
+        user = userRepository.getUser(userId);
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public LiveData<User> getUser() {
+        return user;
     }
 
     public void onBlockClick() {

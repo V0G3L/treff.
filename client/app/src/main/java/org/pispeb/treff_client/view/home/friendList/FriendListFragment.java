@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FragmentFriendListBinding;
+import org.pispeb.treff_client.view.friend.FriendActivity;
+import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
@@ -29,13 +32,14 @@ public class FriendListFragment extends Fragment {
         FriendListViewModel vm = ViewModelProviders
                 .of(this, ViewModelFactory.getInstance(getContext()))
                 .get(FriendListViewModel.class);
-        vm.setHostFragment(this);
         // adapter to display items
         final FriendListAdapter adapter = new FriendListAdapter(vm);
 
         vm.getFriends().observe(this, friends -> {
             adapter.setData(friends);
         });
+
+        vm.getState().observe(this, state -> callback(state));
         binding.setVm(vm);
 
         binding.list.setAdapter(adapter);
@@ -43,5 +47,18 @@ public class FriendListFragment extends Fragment {
         binding.list.setHasFixedSize(true);
 
         return binding.getRoot();
+    }
+
+    private void callback(State state) {
+        switch (state.call) {
+            case DISPLAY_FRIEND_DETAILS:
+                FriendActivity.start(this, state.value);
+                break;
+            case ADD_FRIEND:
+                AddFriendActivity.start(this);
+                break;
+            default:
+                Log.i("FriendList", "Illegal VM State");
+        }
     }
 }

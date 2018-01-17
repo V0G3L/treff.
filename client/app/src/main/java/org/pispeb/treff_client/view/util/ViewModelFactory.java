@@ -18,6 +18,7 @@ import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
+import org.pispeb.treff_client.view.group.GroupViewModel;
 import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
 import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
@@ -64,12 +65,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         encoder = new RequestEncoder();
 
-        HandlerThread thread = new HandlerThread("gbt", HandlerThread.MIN_PRIORITY);
+        HandlerThread thread = new HandlerThread("gbt",
+                HandlerThread.MIN_PRIORITY);
         thread.start();
         Handler handler = new Handler(thread.getLooper());
 
         userRepository = new UserRepository(userDao, encoder, handler);
-        userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, encoder,
+                handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
     }
@@ -91,8 +94,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new AddGroupViewModel(userGroupRepository);
         } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupChatViewModel(chatRepository);
+        } else if (GroupViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new GroupViewModel(userGroupRepository);
         }
 
-        throw new IllegalArgumentException("Building an instance of the given class " + modelClass + " is not supported.");
+        throw new IllegalArgumentException(
+                "Building an instance of the given class " + modelClass + " " +
+                        "is not supported.");
     }
 }

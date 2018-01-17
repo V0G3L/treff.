@@ -38,7 +38,9 @@ public class AddFriendViewModel extends ViewModel {
 
     public void onOkClick() {
         if (!username.equals("")) {
-            userRepository.add(new User((int) System.currentTimeMillis(), username, true, false));
+            userRepository
+                    .add(new User((int) System.currentTimeMillis(), username,
+                            true, false));
             done.postValue(true);
         }
     }

@@ -1,6 +1,8 @@
 package org.pispeb.treff_client.view.group.eventList;
 
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
+import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -8,6 +10,9 @@ import android.view.ViewGroup;
  */
 
 public class GroupEventListAdapter extends Adapter<GroupEventListViewHolder> {
+
+
+
     @Override
     public GroupEventListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return null;
@@ -21,5 +26,12 @@ public class GroupEventListAdapter extends Adapter<GroupEventListViewHolder> {
     @Override
     public int getItemCount() {
         return 0;
+    }
+}
+
+
+class GroupEventListViewHolder extends RecyclerView.ViewHolder {
+    public GroupEventListViewHolder(View itemView) {
+        super(itemView);
     }
 }

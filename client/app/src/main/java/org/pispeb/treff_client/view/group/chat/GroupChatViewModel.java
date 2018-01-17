@@ -29,8 +29,10 @@ public class GroupChatViewModel extends ViewModel {
     }
 
     public void onSendClick() {
-        chatRepository.add(new ChatMessage((int)System.currentTimeMillis(), currentMessage));
-        currentMessage = "";
+        if (!currentMessage.equals("")) {
+            chatRepository.add(new ChatMessage((int) System.currentTimeMillis(), currentMessage));
+            currentMessage = "";
+        }
     }
 
     public String getCurrentMessage() {

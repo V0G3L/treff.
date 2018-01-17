@@ -30,6 +30,8 @@
     <string name="error_username_taken">Username is already taken</string>
     <string name="error_email_invalid">Not a valid email address</string>
     <string name="error_session">User session is no longer valid</string>
+
+    <!-- GUI texts -->
     <string name="username_friend">Friend\'s Username</string>
     <string name="add_friend">Add Friend</string>
     <string name="cancel">Cancel</string>
