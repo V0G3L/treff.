@@ -2,6 +2,7 @@ package org.pispeb.treff_server;
 
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.update_notifier.PersistentConnection;
+import org.pispeb.treff_server.update_notifier.RequestHandlerResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,17 +27,20 @@ class ConnectionHandler extends Thread {
      */
     public void run() {
         try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader
+                    (socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
             // get requeststring
             String request = null;
-            RequestHandler requestHandler = new RequestHandler(request, accountManager);
-            String response = requestHandler.run();
-            if (response != null) {
+            RequestHandler requestHandler
+                    = new RequestHandler(request, accountManager);
+            RequestHandlerResponse response = requestHandler.run();
+            if (!response.requestedPersistentConnection) {
                 // send to client
             } else {
-                new PersistentConnection(out);
+                new PersistentConnection(out, accountManager,
+                        response.accountID);
             }
 
         } catch (IOException e) {

@@ -45,8 +45,6 @@ public interface AccountManager {
      */
     Account getAccountByEmail(String email);
 
-    Account getAccountByID(int id);
-
     /**
      * Returns the account that is associated with the given ID.
      * @param id The ID of the account

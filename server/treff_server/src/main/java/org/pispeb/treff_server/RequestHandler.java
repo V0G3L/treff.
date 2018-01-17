@@ -2,17 +2,12 @@ package org.pispeb.treff_server;
 
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.update_notifier.RequestHandlerResponse;
 
 /**
  * Class to decode and handle JSON-encoded requests
  */
 public class RequestHandler {
-
-    /**
-     * Prefix used to distinguish signals to the {@link ConnectionHandler}
-     * for a persistent connection from usual JSON-encoded responses.
-     */
-    public static final String PERSISTENT_CONNECTION_REQUEST_PREFIX = "###";
 
     private final String request;
     private final AccountManager accountManager;
@@ -41,7 +36,7 @@ public class RequestHandler {
      * @throws RequestHandlerAlreadyRan if the request of this RequestHandler
      * was handled via {@link #run()}
      */
-    public String run() throws RequestHandlerAlreadyRan {
+    public RequestHandlerResponse run() throws RequestHandlerAlreadyRan {
         // decode (and check syntax)
         // check permissions and compatibility with current state
         // send request to Database
