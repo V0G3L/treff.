@@ -73,8 +73,8 @@ public class GroupActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new GroupEventListFragment(), "Events & Polls");
-        adapter.addFragment(new GroupChatFragment(), "Chat");
+        adapter.addFragment(new GroupEventListFragment(), getString(R.string.tabtext_events));
+        adapter.addFragment(new GroupChatFragment(), getString(R.string.tabtext_chat));
         viewPager.setAdapter(adapter);
     }
 

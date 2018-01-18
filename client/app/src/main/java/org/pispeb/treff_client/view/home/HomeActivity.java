@@ -68,7 +68,7 @@ public class HomeActivity extends TabbedNavigationActivity {
         adapter.addFragment(new GroupListFragment(), getString(R.string.tabtext_groups));
         adapter.addFragment(new EventListFragment(), getString(R.string.tabtext_events));
         adapter.addFragment(new MapFragment(), getString(R.string.tabtext_map));
-        adapter.addFragment(new FriendListFragment(), getString(R.string.tabtext_friends));
+        adapter.addFragment(new FriendListFragment(), getString(R.string.tabtext_contacts));
         viewPager.setAdapter(adapter);
     }
 

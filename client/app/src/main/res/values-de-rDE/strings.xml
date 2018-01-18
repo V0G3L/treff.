@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">treff.</string>
+    <string name="prompt_email">Email-Adresse</string>
+    <string name="prompt_password">Passwort</string>
+    <string name="action_sign_in">Anmelden oder Registrieren</string>
+    <string name="action_sign_in_short">Anmelden</string>
+    <string name="error_invalid_email">Keine gültige Email-Adresse</string>
+    <string name="error_invalid_password">Passwort zu kurz</string>
+    <string name="error_incorrect_password">Passwort nicht korrekt</string>
+    <string name="error_field_required">Dies ist ein Pflichtfeld</string>
+    <string name="tabtext_events">Verabredungen</string>
+    <string name="tabtext_map">Karte</string>
+    <string name="tabtext_contacts">Kontakte</string>
+    <string name="tabtext_groups">Gruppen</string>
+    <string name="tabtext_chat">Chat</string>
+    <string name="drawer_open">Seitliche Navigation öffnen</string>
+    <string name="drawer_close">Seitliche Navigation schließen</string>
+    <string name="error_errorcode_invalid">Unbekannter Fehlercode</string>
+    <string name="error_username_taken">Nutzername bereits vergeben</string>
+    <string name="error_email_invalid">Keine gültige Email-Adresse</string>
+    <string name="error_session">Ungültige Sitzung</string>
+    <string name="username_contact">Nutzername des Kontakts</string>
+    <string name="add_contact">Kontakt hinzufügen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="block">Blockieren</string>
+    <string name="private_group">Private Gruppe</string>
+    <string name="groupname">Gruppenname</string>
+    <string name="create_group">Gruppe erstellen</string>
+</resources>

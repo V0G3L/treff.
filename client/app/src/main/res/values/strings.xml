@@ -1,25 +1,26 @@
 <resources>
-    <string name="app_name">treff.</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="app_name" translatable="false">treff.</string>
 
     <!-- auto generated strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="title_activity_login">Login</string>
 
     <!-- home activity tab titles -->
-    <string name="tabtext_events">Events</string>
+    <string name="tabtext_events">Events &amp; Polls</string>
     <string name="tabtext_map">Map</string>
-    <string name="tabtext_friends">Friends</string>
+    <string name="tabtext_contacts">Contacts</string>
     <string name="tabtext_groups">Groups</string>
+
+    <!-- group activity tab titles -->
+    <string name="tabtext_chat">Chat</string>
+
 
     <!-- navigation drawer open/close strings for accessibility -->
     <string name="drawer_open">Open navigation drawer</string>
@@ -31,9 +32,11 @@
     <string name="error_email_invalid">Not a valid email address</string>
     <string name="error_session">User session is no longer valid</string>
 
+
+    <!-- TODO more specific comments -->
     <!-- GUI texts -->
-    <string name="username_friend">Friend\'s Username</string>
-    <string name="add_friend">Add Friend</string>
+    <string name="username_contact">Contact\'s Username</string>
+    <string name="add_contact">Add contact</string>
     <string name="cancel">Cancel</string>
     <string name="block">Block</string>
     <string name="private_group">Private Group</string>

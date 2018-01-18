@@ -21,12 +21,14 @@
             android:id="@+id/add_friend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:onClick="@{v -> vm.onAddClick()}"
             android:layout_marginBottom="20dp"
             android:layout_marginEnd="20dp"
-            app:backgroundTint="@color/colorPrimary"/>
+            android:src="@drawable/ic_person_add_black_24dp"
+            android:tint="@color/white" />
 
     </RelativeLayout>
 </layout>

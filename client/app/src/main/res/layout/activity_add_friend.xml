@@ -24,7 +24,7 @@
         <EditText
             android:id="@+id/username"
             android:inputType="text"
-            android:hint="@string/username_friend"
+            android:hint="@string/username_contact"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@={vm.username}"
@@ -34,7 +34,7 @@
             android:id="@+id/okButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/add_friend"
+            android:text="@string/add_contact"
             android:onClick="@{() -> vm.onOkClick()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/username"
