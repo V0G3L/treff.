@@ -11,10 +11,9 @@ import java.time.LocalDateTime;
  */
 
 @Entity(tableName = "event")
-public class Event {
+public class Event extends Occasion{
     @PrimaryKey
     private int id;
-    private String name;
     @Ignore //TODO time
     private LocalDateTime created;
     @Ignore //TODO time
@@ -39,14 +38,6 @@ public class Event {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getCreator() {

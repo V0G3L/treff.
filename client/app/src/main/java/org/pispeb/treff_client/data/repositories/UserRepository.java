@@ -10,17 +10,12 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import java.util.List;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
-@Singleton
 public class UserRepository {
 
     private UserDao userDao;
     private RequestEncoder encoder;
     private Handler backgroundHandler;
 
-    @Inject
     public UserRepository(UserDao userDao, RequestEncoder encoder, Handler backgroundHandler) {
         this.userDao = userDao;
         this.encoder = encoder;

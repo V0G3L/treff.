@@ -21,7 +21,7 @@ import org.pispeb.treff_client.data.entities.*;
         PollOption.class,
         User.class,
         UserGroup.class
-        }, version = 2, exportSchema = false)
+        }, version = 3, exportSchema = false)
 public abstract class TreffDatabase extends RoomDatabase {
 
     private static TreffDatabase INSTANCE;
@@ -37,5 +37,6 @@ public abstract class TreffDatabase extends RoomDatabase {
     public abstract EventDao getEventDao();
     public abstract UserGroupDao getUserGroupDao();
     public abstract ChatDao getChatDao();
+    public abstract PollDao getPollDao();
 
 }

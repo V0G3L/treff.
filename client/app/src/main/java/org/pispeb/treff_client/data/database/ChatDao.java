@@ -21,4 +21,7 @@ public interface ChatDao {
 
     @Query("SELECT * FROM message")
     LiveData<List<ChatMessage>> getAllMessages();
+
+//    @Query("SELECT * FROM message WHERE id = :groupId")
+//    LiveData<List<ChatMessage>> getMessagesByGroupId(int groupId);
 }

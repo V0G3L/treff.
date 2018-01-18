@@ -9,9 +9,7 @@ import android.os.Handler;
 
 import java.util.List;
 
-import javax.inject.Singleton;
 
-@Singleton
 public class EventRepository {
 
     private EventDao eventDao;

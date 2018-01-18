@@ -9,9 +9,6 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import java.util.List;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class ChatRepository {
     private ChatDao chatDao;
     private RequestEncoder encoder;
@@ -30,6 +27,11 @@ public class ChatRepository {
     }
 
     public LiveData<List<ChatMessage>> getAllMessages() {
+        return chatDao.getAllMessages();
+    }
+
+//    TODO implement
+    public LiveData<List<ChatMessage>> getMessageByGroupId(int groupId) {
         return chatDao.getAllMessages();
     }
 }

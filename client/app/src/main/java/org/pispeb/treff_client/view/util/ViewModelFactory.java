@@ -9,17 +9,20 @@ import android.support.annotation.NonNull;
 
 import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
+import org.pispeb.treff_client.data.database.PollDao;
 import org.pispeb.treff_client.data.database.TreffDatabase;
 import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.PollRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
 import org.pispeb.treff_client.view.group.GroupViewModel;
 import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
+import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
 import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
@@ -40,11 +43,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final UserGroupDao userGroupDao;
     private final EventDao eventDao;
     private final ChatDao chatDao;
+    private final PollDao pollDao;
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final EventRepository eventRepository;
     private final ChatRepository chatRepository;
+    private final PollRepository pollRepository;
 
     private final RequestEncoder encoder;
 
@@ -61,6 +66,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         userGroupDao = database.getUserGroupDao();
         eventDao = database.getEventDao();
         chatDao = database.getChatDao();
+        pollDao = database.getPollDao();
 
 
         encoder = new RequestEncoder();
@@ -75,6 +81,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
+        pollRepository = new PollRepository(pollDao, encoder, handler);
     }
 
     @NonNull
@@ -96,6 +103,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new GroupChatViewModel(chatRepository);
         } else if (GroupViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupViewModel(userGroupRepository);
+        } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new GroupEventListViewModel(eventRepository,
+                    pollRepository);
         }
 
         throw new IllegalArgumentException(

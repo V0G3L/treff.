@@ -10,6 +10,9 @@ import java.util.List;
  * Room {@link Entity} that represents the chat history of a {@link UserGroup}
  */
 
+
+//TODO remove
+
 @Entity(tableName = "chat")
 public class Chat {
     @PrimaryKey

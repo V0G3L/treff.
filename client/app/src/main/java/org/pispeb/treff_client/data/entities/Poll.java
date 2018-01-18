@@ -11,10 +11,9 @@ import java.util.List;
  */
 
 @Entity(tableName = "poll")
-public class Poll {
+public class Poll extends Occasion {
     @PrimaryKey
     private int pollID;
-    private String name;
     @Ignore //TODO options
     private List<PollOption> options;
 
@@ -30,14 +29,6 @@ public class Poll {
 
     public void setPollID(int pollID) {
         this.pollID = pollID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public List<PollOption> getOptions() {

@@ -11,11 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
-import org.pispeb.treff_client.view.group.eventList.GroupEventFragment;
-import org.pispeb.treff_client.view.home.groupList.AddGroupActivity;
+import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
@@ -75,7 +73,7 @@ public class GroupActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new GroupEventFragment(), "Events & Polls");
+        adapter.addFragment(new GroupEventListFragment(), "Events & Polls");
         adapter.addFragment(new GroupChatFragment(), "Chat");
         viewPager.setAdapter(adapter);
     }

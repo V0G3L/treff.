@@ -17,10 +17,10 @@ public interface PollDao {
     @Insert
     void save(Poll poll);
 
-    @Query("SELECT * FROM polls WHERE pollID = :pollID")
+    @Query("SELECT * FROM poll WHERE pollID = :pollID")
     LiveData<Poll> getPollByID(int pollID);
 
-    @Query("SELECT * FROM polls")
+    @Query("SELECT * FROM poll")
     LiveData<List<Poll>> getAllPolls();
 
 }

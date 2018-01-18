@@ -9,9 +9,6 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 import java.util.List;
 import android.os.Handler;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class UserGroupRepository {
     private UserGroupDao userGroupDao;
     private RequestEncoder encoder;

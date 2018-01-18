@@ -9,9 +9,6 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import java.util.List;
 
-import javax.inject.Singleton;
-
-@Singleton
 public class PollRepository {
     private PollDao pollDao;
     private RequestEncoder encoder;

@@ -20,7 +20,9 @@ public class GroupChatFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             Bundle savedInstanceState) {
         final FragmentGroupChatBinding binding = FragmentGroupChatBinding
                 .inflate(inflater, container, false);
         GroupChatViewModel vm = ViewModelProviders
@@ -36,6 +38,7 @@ public class GroupChatFragment extends Fragment {
 
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.list.setHasFixedSize(true);
 
         return binding.getRoot();
     }
