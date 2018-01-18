@@ -14,7 +14,6 @@ import java.util.SortedSet;
 
 public class AccountSQL implements Account {
 
-    private SQLDatabase sqlDatabase;
     private boolean valid;
     private int id;
     private Position lastPosition;

@@ -78,12 +78,22 @@ public interface Update extends Comparable<Update> {
          * The type of Updates that represent changes to the fields
          * of database entities.
          */
-        EDIT,
+        EDIT("edit"),
         /**
          * The type of Updates that represent chat messages sent to
          * {@link Usergroup}s
          */
-        CHAT
+        CHAT("chat");
+
+        private final String name;
+        UpdateType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
 }
