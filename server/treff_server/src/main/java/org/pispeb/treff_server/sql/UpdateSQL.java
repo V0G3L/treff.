@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Update;
 
@@ -7,7 +8,11 @@ import javax.json.JsonObject;
 import java.util.Date;
 import java.util.Set;
 
-public class UpdateSQL implements Update {
+public class UpdateSQL extends SQLObject implements Update {
+
+    UpdateSQL(int id, MysqlDataSource dataSource) {
+        super(id, dataSource);
+    }
 
     @Override
     public Date getTime() {

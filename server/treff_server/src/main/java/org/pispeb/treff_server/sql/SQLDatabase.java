@@ -2,6 +2,8 @@ package org.pispeb.treff_server.sql;
 
 import com.mysql.cj.api.mysqla.result.Resultset;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.pispeb.treff_server.exceptions
+        .SQLDatabaseAlreadyInitializedException;
 import org.pispeb.treff_server.interfaces.Update;
 
 import java.security.MessageDigest;
@@ -17,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * @author tim
  */
-class SQLDatabase {
+public class SQLDatabase {
 
     // TODO: centralize
     private static final String
@@ -37,8 +39,19 @@ class SQLDatabase {
             EVENT_TITLE_LENGTH_MAX = "event_title_length_max";
 
     private Properties config;
+    private static SQLDatabase instance;
 
-    SQLDatabase(Properties config) {
+    public static void initialize(Properties config) throws SQLException,
+            NoSuchAlgorithmException {
+        if (instance == null) {
+            instance = new SQLDatabase(config);
+        } else {
+            throw new SQLDatabaseAlreadyInitializedException();
+        }
+    }
+
+    private SQLDatabase(Properties config) throws SQLException,
+            NoSuchAlgorithmException {
         this.config = config;
 
         // Create DataSource with supplied parameters
@@ -51,12 +64,9 @@ class SQLDatabase {
 
         // TODO: Check database format
         // if db never initialized before:
-        try {
-            initDB(dataSource);
-        } catch (NoSuchAlgorithmException | SQLException e) {
-            e.printStackTrace();
-        }
+        initDB(dataSource);
 
+        EntityManagerSQL.initialize(this);
     }
 
     private void initDB(MysqlDataSource dataSource)
@@ -69,6 +79,8 @@ class SQLDatabase {
                 MessageDigest
                         .getInstance(config.getProperty(PASSWORD_HASH_ALG))
                         .getDigestLength();
+
+        // TODO: Unicode support for fields that might need it (NVARCHAR)
 
         String[] tableCreationStatements = {
                 // accounts

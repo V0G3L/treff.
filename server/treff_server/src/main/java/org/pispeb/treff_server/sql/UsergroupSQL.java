@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.interfaces.*;
 
@@ -7,10 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class UsergroupSQL implements Usergroup {
+public class UsergroupSQL extends SQLObject implements Usergroup {
 
     private Set<Account> members;
     private Map<Account, Set<Permission>> memberPermissions;
+
+    UsergroupSQL(int id, MysqlDataSource dataSource) {
+        super(id, dataSource);
+    }
 
     @Override
     public void setName(String name) {

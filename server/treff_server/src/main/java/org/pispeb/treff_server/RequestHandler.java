@@ -2,7 +2,6 @@ package org.pispeb.treff_server;
 
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.update_notifier.RequestHandlerResponse;
 
 /**
  * Class to decode and handle JSON-encoded requests

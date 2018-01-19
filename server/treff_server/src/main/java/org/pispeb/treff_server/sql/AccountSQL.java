@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -8,34 +9,31 @@ import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
 import java.util.SortedSet;
 
-public class AccountSQL implements Account {
+public class AccountSQL extends SQLObject implements Account {
 
-    private boolean valid;
-    private int id;
-    private Position lastPosition;
+    // TODO: synchronized setters everywhere
 
-    AccountSQL(int id) {
-        this.id = id;
+    AccountSQL(int id, MysqlDataSource dataSource) {
+        super(id, dataSource);
     }
 
-    void invalidate() {
-        this.valid = false;
-    }
-
-    // TODO: add throws for AccountInvalidException
 
     @Override
     public String getUsername() {
+        // TODO: write SQL statements
         return null;
     }
 
     @Override
-    public void setUsername(String username) throws DuplicateUsernameException {
-
+    public void setUsername(String username) throws
+            DuplicateUsernameException {
     }
 
     @Override
@@ -95,7 +93,7 @@ public class AccountSQL implements Account {
 
     @Override
     public void addUpdate(Update update) {
-        
+
     }
 
     @Override
@@ -120,6 +118,10 @@ public class AccountSQL implements Account {
 
     @Override
     public void delete() {
-
+        // removes itself from all groups
+        // removes all contacts (will also removed them from the other sides)
+        // clears its own blocklist
+        // clears itself from all other blocklists (somehow, unclear)
+        // events and polls have to be able to handle non-existent creators
     }
 }

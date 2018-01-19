@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.exceptions
@@ -37,10 +38,9 @@ public class EntityManagerSQL implements AccountManager {
      * Creates the {@link EntityManagerSQL} instance and prepares it to create
      * connections to the specified MySQL database on being supplied with
      */
-    public static synchronized void initialize(Properties config)
+    static synchronized void initialize(SQLDatabase database)
             throws EntityManagerAlreadyInitializedException {
         if (instance == null) {
-            SQLDatabase database = new SQLDatabase(config);
             instance = new EntityManagerSQL(database);
         } else {
             throw new EntityManagerAlreadyInitializedException();

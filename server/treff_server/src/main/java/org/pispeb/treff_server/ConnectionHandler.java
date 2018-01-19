@@ -2,7 +2,6 @@ package org.pispeb.treff_server;
 
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.update_notifier.PersistentConnection;
-import org.pispeb.treff_server.update_notifier.RequestHandlerResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;

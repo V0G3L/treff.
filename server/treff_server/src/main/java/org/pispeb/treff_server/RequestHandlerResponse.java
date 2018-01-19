@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.update_notifier;
+package org.pispeb.treff_server;
 
 /**
  * @author tim

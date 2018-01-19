@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
@@ -7,7 +8,11 @@ import org.pispeb.treff_server.interfaces.Event;
 import java.util.Date;
 import java.util.Set;
 
-public class EventSQL implements Event {
+public class EventSQL extends SQLObject implements Event {
+
+    EventSQL(int id, MysqlDataSource dataSource) {
+        super(id, dataSource);
+    }
 
     @Override
     public void setTitle(String title) {

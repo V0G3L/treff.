@@ -2,6 +2,7 @@ package org.pispeb.treff_server;
 
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.sql.EntityManagerSQL;
+import org.pispeb.treff_server.sql.SQLDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,10 +54,11 @@ public class Server {
 
     private Server(Properties config) {
         // Start DB
+
         try {
-            EntityManagerSQL.initialize(config);
+            SQLDatabase.initialize(config);
         } catch (SQLException | NoSuchAlgorithmException e) {
-            // TODO: error message
+            // TODO: error message and exit
             e.printStackTrace();
         }
         AccountManager accountManager = EntityManagerSQL.getInstance();

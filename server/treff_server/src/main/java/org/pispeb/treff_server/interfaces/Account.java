@@ -98,4 +98,10 @@ public interface Account {
     /** Deletes this account. TODO: specify further
      */
     void delete();
+
+    // TODO: GetAffectedAccounts-method to all interfaces
+    // Will return a Set<Account> of affected accounts when a setter is
+    // invoked. Groups will return list of members. Accounts will return
+    // list of members of all groups, contact list and blocked-by list.
+    // All others will forward the call upwards until it hits Group.
 }
