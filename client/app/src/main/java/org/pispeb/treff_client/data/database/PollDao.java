@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -21,6 +22,6 @@ public interface PollDao {
     LiveData<Poll> getPollByID(int pollID);
 
     @Query("SELECT * FROM poll")
-    LiveData<List<Poll>> getAllPolls();
+    DataSource.Factory<Integer, Poll> getAllPolls();
 
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class ChatMessage {
     @PrimaryKey
     private int messageID;
+    private int groupID;
     private String content;
     @Ignore //TODO user
     private User sender;
@@ -24,6 +25,28 @@ public class ChatMessage {
         this.content = content;
         //this.sender = sender;
         //this.timeSent = timeSent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatMessage that = (ChatMessage) o;
+
+        if (messageID != that.messageID) return false;
+        if (!content.equals(that.content)) return false;
+        if (!sender.equals(that.sender)) return false;
+        return timeSent.equals(that.timeSent);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = messageID;
+        result = 31 * result + content.hashCode();
+        result = 31 * result + (sender != null ? sender.hashCode() : 0);
+        result = 31 * result + (timeSent != null ? timeSent.hashCode() : 0);
+        return result;
     }
 
     public int getMessageID() {
@@ -44,6 +67,14 @@ public class ChatMessage {
 
     public User getSender() {
         return sender;
+    }
+
+    public int getGroupID() {
+        return groupID;
+    }
+
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
     }
 
     public void setSender(User sender) {

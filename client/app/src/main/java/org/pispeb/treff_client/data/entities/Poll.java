@@ -23,6 +23,24 @@ public class Poll extends Occasion {
         //this.options = options;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Poll poll = (Poll) o;
+
+        if (pollID != poll.pollID) return false;
+        return options.equals(poll.options);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pollID;
+        result = 31 * result + options.hashCode();
+        return result;
+    }
+
     public int getPollID() {
         return pollID;
     }

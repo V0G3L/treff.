@@ -36,7 +36,7 @@ public class FriendListFragment extends Fragment {
         final FriendListAdapter adapter = new FriendListAdapter(vm);
 
         vm.getFriends().observe(this, friends -> {
-            adapter.setData(friends);
+            adapter.setList(friends);
         });
 
         vm.getState().observe(this, state -> callback(state));

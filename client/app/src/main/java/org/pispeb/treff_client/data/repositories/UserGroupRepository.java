@@ -7,6 +7,9 @@ import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import java.util.List;
+
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.Handler;
 
 public class UserGroupRepository {
@@ -14,21 +17,24 @@ public class UserGroupRepository {
     private RequestEncoder encoder;
     private Handler backgroundHandler;
 
-    public UserGroupRepository(UserGroupDao userGroupDao, RequestEncoder encoder, Handler backgroundHandler) {
+    public UserGroupRepository(UserGroupDao userGroupDao,
+                               RequestEncoder encoder,
+                               Handler backgroundHandler) {
         this.userGroupDao = userGroupDao;
         this.encoder = encoder;
         this.backgroundHandler = backgroundHandler;
     }
 
-    public LiveData<UserGroup> getGroup (int id) {
+    public LiveData<UserGroup> getGroup(int id) {
         return userGroupDao.getGroupByID(id);
     }
 
-    public LiveData<List<UserGroup>> getGroups () {
-        return userGroupDao.getAllGroups();
+    public LiveData<PagedList<UserGroup>> getGroups() {
+        return new LivePagedListBuilder<>(userGroupDao.getAllGroups(), 30)
+                .build();
     }
 
-    public void add (UserGroup group) {
+    public void add(UserGroup group) {
         backgroundHandler.post(() -> {
             userGroupDao.save(group);
         });

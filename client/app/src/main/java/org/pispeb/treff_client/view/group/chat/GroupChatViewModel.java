@@ -2,6 +2,7 @@ package org.pispeb.treff_client.view.group.chat;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class GroupChatViewModel extends ViewModel {
 
-    private LiveData<List<ChatMessage>> messages;
+    private LiveData<PagedList<ChatMessage>> messages;
     private final ChatRepository chatRepository;
     private String currentMessage;
 
@@ -24,7 +25,7 @@ public class GroupChatViewModel extends ViewModel {
         currentMessage = "";
     }
 
-    public LiveData<List<ChatMessage>> getMessages() {
+    public LiveData<PagedList<ChatMessage>> getMessages() {
         return messages;
     }
 

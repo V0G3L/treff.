@@ -2,6 +2,7 @@ package org.pispeb.treff_client.view.home.friendList;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserRepository;
@@ -18,7 +19,7 @@ import java.util.List;
 public class FriendListViewModel extends ViewModel
         implements FriendListAdapter.FriendClickedListener {
 
-    private LiveData<List<User>> friends;
+    private final LiveData<PagedList<User>> friends;
     private final UserRepository userRepository;
 
     private SingleLiveEvent<State> state;
@@ -30,7 +31,7 @@ public class FriendListViewModel extends ViewModel
         this.state.setValue(new State(ViewCall.IDLE, -1));
     }
 
-    public LiveData<List<User>> getFriends() {
+    public LiveData<PagedList<User>> getFriends() {
         return friends;
     }
 

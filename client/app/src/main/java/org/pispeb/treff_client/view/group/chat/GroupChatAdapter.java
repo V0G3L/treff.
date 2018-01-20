@@ -1,5 +1,8 @@
 package org.pispeb.treff_client.view.group.chat;
 
+import android.arch.paging.PagedListAdapter;
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
@@ -16,43 +19,58 @@ import java.util.List;
  * Created by Lukas on 1/6/2018.
  */
 
-public class GroupChatAdapter extends Adapter<GroupChatViewHolder> {
-
-    private List<ChatMessage> data;
+public class GroupChatAdapter
+        extends PagedListAdapter<ChatMessage, GroupChatViewHolder> {
 
     public GroupChatAdapter() {
-        data = new ArrayList<>();
+        super(diffCallback);
     }
 
     @Override
-    public GroupChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ChatItemBinding binding = ChatItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public GroupChatViewHolder onCreateViewHolder(ViewGroup parent,
+                                                  int viewType) {
+        ChatItemBinding binding = ChatItemBinding
+                .inflate(LayoutInflater.from(parent.getContext()), parent,
+                        false);
         return new GroupChatViewHolder(binding);
     }
 
     @Override
     public void onBindViewHolder(GroupChatViewHolder holder, int position) {
-        holder.binding.setMessage(data.get(position));
+        ChatMessage message = getItem(position);
+        if (message != null) {
+            holder.bindTo(message);
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
+    public static final DiffCallback<ChatMessage> diffCallback = new DiffCallback<ChatMessage>() {
 
-    public void setData(List<ChatMessage> data) {
-        this.data = data;
-        notifyDataSetChanged();
-    }
+
+        @Override
+        public boolean areItemsTheSame(@NonNull ChatMessage oldItem,
+                                       @NonNull ChatMessage newItem) {
+            return oldItem.getMessageID() == newItem.getMessageID();
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull ChatMessage oldItem,
+                                          @NonNull ChatMessage newItem) {
+            return oldItem.equals(newItem);
+        }
+    };
 }
 
 class GroupChatViewHolder extends RecyclerView.ViewHolder {
 
-    final ChatItemBinding binding;
+    private final ChatItemBinding binding;
 
     public GroupChatViewHolder(ChatItemBinding binding) {
         super(binding.getRoot());
         this.binding = binding;
+    }
+
+    public void bindTo(ChatMessage message) {
+        binding.setMessage(message);
     }
 }
 

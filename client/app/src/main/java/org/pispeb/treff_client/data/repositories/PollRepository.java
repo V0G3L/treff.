@@ -1,6 +1,8 @@
 package org.pispeb.treff_client.data.repositories;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.Handler;
 
 import org.pispeb.treff_client.data.database.PollDao;
@@ -20,8 +22,9 @@ public class PollRepository {
         this.backgroundHandler = backgroundHandler;
     }
 
-    public LiveData<List<Poll>> getPolls() {
-        return pollDao.getAllPolls();
+    public LiveData<PagedList<Poll>> getPolls() {
+        return new LivePagedListBuilder<>(pollDao.getAllPolls(), 30)
+                .build();
     }
 
     public LiveData<Poll> getPoll(int pollID) {

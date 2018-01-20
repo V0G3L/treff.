@@ -39,7 +39,7 @@ public class GroupListFragment extends Fragment {
         final GroupListAdapter adapter = new GroupListAdapter(vm);
 
         vm.getGroups().observe(this, groups -> {
-            adapter.setData(groups);
+            adapter.setList(groups);
         });
 
         vm.getState().observe(this, state -> callback(state));

@@ -3,6 +3,7 @@ package org.pispeb.treff_client.view.home.eventList;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.repositories.EventRepository;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public class EventListViewModel extends ViewModel implements EventListAdapter.EventClickedListener {
 
-    private LiveData<List<Event>> events;
+    private LiveData<PagedList<Event>> events;
     private final EventRepository eventRepository;
 
     public EventListViewModel(EventRepository eventRepository) {
@@ -23,7 +24,7 @@ public class EventListViewModel extends ViewModel implements EventListAdapter.Ev
         this.events = eventRepository.getEvents();
     }
 
-    public LiveData<List<Event>> getEvents() {
+    public LiveData<PagedList<Event>> getEvents() {
         return events;
     }
 

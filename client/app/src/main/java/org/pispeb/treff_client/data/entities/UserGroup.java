@@ -20,6 +20,24 @@ public class UserGroup {
         this.groupID = groupID;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserGroup userGroup = (UserGroup) o;
+
+        if (groupID != userGroup.groupID) return false;
+        return name.equals(userGroup.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = groupID;
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
     public String getName() {
         return name;
     }

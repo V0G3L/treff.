@@ -2,6 +2,7 @@ package org.pispeb.treff_client.view.group.eventList;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.Occasion;
@@ -17,8 +18,8 @@ import java.util.List;
 
 public class GroupEventListViewModel extends ViewModel {
 
-    private LiveData<List<Event>> events;
-    private LiveData<List<Poll>> polls;
+    private LiveData<PagedList<Event>> events;
+    private LiveData<PagedList<Poll>> polls;
     private final EventRepository eventRepository;
     private final PollRepository pollRepository;
 
@@ -31,11 +32,11 @@ public class GroupEventListViewModel extends ViewModel {
         this.polls = pollRepository.getPolls();
     }
 
-    public LiveData<List<Event>> getEvents() {
+    public LiveData<PagedList<Event>> getEvents() {
         return events;
     }
 
-    public LiveData<List<Poll>> getPolls() {
+    public LiveData<PagedList<Poll>> getPolls() {
         return polls;
     }
 }

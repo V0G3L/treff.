@@ -1,11 +1,15 @@
 package org.pispeb.treff_client.view.home.groupList;
 
+import android.arch.paging.PagedListAdapter;
+import android.support.annotation.NonNull;
+import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.databinding.GroupItemBinding;
 
@@ -16,41 +20,53 @@ import java.util.List;
  * Adapter to hold {@link GroupListViewHolder}s and display them in a list
  */
 
-public class GroupListAdapter extends Adapter<GroupListViewHolder>{
+public class GroupListAdapter extends PagedListAdapter<UserGroup,
+        GroupListViewHolder> {
 
-    private List<UserGroup> data;
     private GroupClickedListener groupClickedListener;
 
     public GroupListAdapter(GroupClickedListener groupClickedListener) {
-        this.data = new ArrayList<>();
+        super(diffCallback);
         this.groupClickedListener = groupClickedListener;
     }
 
     @Override
-    public GroupListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        GroupItemBinding binding = GroupItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+    public GroupListViewHolder onCreateViewHolder(ViewGroup parent,
+                                                  int viewType) {
+        GroupItemBinding binding = GroupItemBinding
+                .inflate(LayoutInflater
+                        .from(parent.getContext()), parent, false);
         return new GroupListViewHolder(binding, groupClickedListener);
     }
 
     @Override
     public void onBindViewHolder(GroupListViewHolder holder, int position) {
-        holder.binding.setGroup(data.get(position));
+        UserGroup group = getItem(position);
+        if (group != null) {
+            holder.bindTo(getItem(position));
+        }
     }
 
-    @Override
-    public int getItemCount() {
-        return data.size();
-    }
+    public static final DiffCallback<UserGroup> diffCallback = new
+            DiffCallback<UserGroup>() {
 
-    public void setData(List<UserGroup> data) {
-        this.data = data;
-        notifyDataSetChanged();
-    }
+
+                @Override
+                public boolean areItemsTheSame(@NonNull UserGroup oldItem,
+                                               @NonNull UserGroup newItem) {
+                    return oldItem.getGroupID() == newItem.getGroupID();
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull UserGroup oldItem,
+                                                  @NonNull UserGroup newItem) {
+                    return false;
+                }
+            };
 
     public interface GroupClickedListener {
         void onItemClicked(int position, UserGroup group);
     }
-
 }
 
 
@@ -59,14 +75,22 @@ public class GroupListAdapter extends Adapter<GroupListViewHolder>{
  * Passing on onCLick-events on that item to {@link GroupListFragment}
  */
 
-class GroupListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+class GroupListViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+
     final GroupItemBinding binding;
     private final GroupListAdapter.GroupClickedListener listener;
-    public GroupListViewHolder(GroupItemBinding binding, GroupListAdapter.GroupClickedListener listener) {
+
+    public GroupListViewHolder(GroupItemBinding binding,
+                               GroupListAdapter.GroupClickedListener listener) {
         super(binding.getRoot());
         this.binding = binding;
         this.listener = listener;
         binding.getRoot().setOnClickListener(this);
+    }
+
+    public void bindTo(UserGroup group) {
+        binding.setGroup(group);
     }
 
     @Override

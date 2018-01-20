@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -22,5 +23,5 @@ public interface EventDao {
     LiveData<Event> getEventByID(int eventId);
 
     @Query("SELECT * FROM event")
-    LiveData<List<Event>> getAllEvents();
+    DataSource.Factory<Integer, Event> getAllEvents();
 }

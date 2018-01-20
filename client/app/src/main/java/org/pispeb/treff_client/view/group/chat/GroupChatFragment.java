@@ -31,7 +31,7 @@ public class GroupChatFragment extends Fragment {
         final GroupChatAdapter adapter = new GroupChatAdapter();
 
         vm.getMessages().observe(this, messages -> {
-            adapter.setData(messages);
+            adapter.setList(messages);
         });
 
         binding.setVm(vm);

@@ -42,7 +42,7 @@ public class EventListFragment extends Fragment {
         binding.list.setHasFixedSize(true);
 
         vm.getEvents().observe(this, events -> {
-            adapter.setData(events);
+            adapter.setList(events);
         });
 
 

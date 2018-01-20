@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -20,8 +21,8 @@ public interface ChatDao {
     void save(ChatMessage message);
 
     @Query("SELECT * FROM message")
-    LiveData<List<ChatMessage>> getAllMessages();
+    DataSource.Factory<Integer, ChatMessage> getAllMessages();
 
-//    @Query("SELECT * FROM message WHERE id = :groupId")
-//    LiveData<List<ChatMessage>> getMessagesByGroupId(int groupId);
+//    @Query("SELECT * FROM message WHERE groupID = :groupId")
+//    DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
 }

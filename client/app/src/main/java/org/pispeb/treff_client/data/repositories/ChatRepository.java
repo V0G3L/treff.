@@ -1,6 +1,8 @@
 package org.pispeb.treff_client.data.repositories;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.Handler;
 
 import org.pispeb.treff_client.data.database.ChatDao;
@@ -14,7 +16,8 @@ public class ChatRepository {
     private RequestEncoder encoder;
     private Handler backgroundHandler;
 
-    public ChatRepository(ChatDao chatDao, RequestEncoder encoder, Handler backgroundHandler) {
+    public ChatRepository(ChatDao chatDao, RequestEncoder encoder,
+                          Handler backgroundHandler) {
         this.chatDao = chatDao;
         this.encoder = encoder;
         this.backgroundHandler = backgroundHandler;
@@ -26,12 +29,17 @@ public class ChatRepository {
         });
     }
 
-    public LiveData<List<ChatMessage>> getAllMessages() {
-        return chatDao.getAllMessages();
+    public LiveData<PagedList<ChatMessage>> getAllMessages() {
+        return new LivePagedListBuilder<>(chatDao.getAllMessages(), 30)
+                .build();
     }
 
-//    TODO implement
-    public LiveData<List<ChatMessage>> getMessageByGroupId(int groupId) {
-        return chatDao.getAllMessages();
+    //    TODO implement
+    public LiveData<PagedList<ChatMessage>> getMessageByGroupId(int groupId) {
+        return new LivePagedListBuilder<>(chatDao.getAllMessages(), 30)
+                .build();
+//        return new LivePagedListBuilder<>(chatDao
+//                .getMessagesByGroupId(groupId),30)
+//                .build();
     }
 }

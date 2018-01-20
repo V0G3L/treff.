@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
@@ -24,7 +25,7 @@ public interface UserGroupDao {
     LiveData<UserGroup> getGroupByID(int groupId);
 
     @Query("SELECT * FROM usergroup")
-    LiveData<List<UserGroup>> getAllGroups();
+    DataSource.Factory<Integer, UserGroup> getAllGroups();
 
     @Insert
     void save(GroupMembership groupMembership);
@@ -33,11 +34,11 @@ public interface UserGroupDao {
             "FROM groupmembership INNER JOIN usergroup " +
             "ON groupmembership.groupID = usergroup.groupID " +
             "WHERE groupmembership.userID = :userID")
-    LiveData<List<UserGroup>> getGroupsByUser(int userID);
+    DataSource.Factory<Integer, UserGroup> getGroupsByUser(int userID);
 
     @Query("SELECT user.userID, username, isFriend, isBlocked " +
             "FROM groupmembership INNER JOIN user " +
             "ON groupmembership.userID = user.userID " +
             "WHERE groupmembership.groupID = :groupID")
-    LiveData<List<User>> getUsersByGroup(int groupID);
+    DataSource.Factory<Integer, User> getUsersByGroup(int groupID);
 }

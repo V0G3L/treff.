@@ -31,6 +31,28 @@ public class User {
         //this.lastPositionUpdate = lastPositionUpdate;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (userID != user.userID) return false;
+        if (isFriend != user.isFriend) return false;
+        if (isBlocked != user.isBlocked) return false;
+        return username.equals(user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userID;
+        result = 31 * result + username.hashCode();
+        result = 31 * result + (isFriend ? 1 : 0);
+        result = 31 * result + (isBlocked ? 1 : 0);
+        return result;
+    }
+
     public int getUserID() {
         return userID;
     }

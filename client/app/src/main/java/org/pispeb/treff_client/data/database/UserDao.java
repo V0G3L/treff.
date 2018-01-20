@@ -1,12 +1,14 @@
 package org.pispeb.treff_client.data.database;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import org.pispeb.treff_client.data.entities.User;
 import java.util.List;
+
 
 /**
  * {@link Dao} which provides access to {@link User}s
@@ -21,6 +23,6 @@ public interface UserDao {
     LiveData<User> getUserByID(int userID);
 
     @Query("SELECT * FROM user WHERE isFriend = 1")
-    LiveData<List<User>> getFriends();
+    DataSource.Factory<Integer, User> getFriends();
 
 }

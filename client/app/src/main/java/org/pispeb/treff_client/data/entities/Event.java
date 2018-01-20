@@ -31,6 +31,29 @@ public class Event extends Occasion{
         this.creator = creator;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Event event = (Event) o;
+
+        if (id != event.id) return false;
+        if (creator != event.creator) return false;
+        if (!created.equals(event.created)) return false;
+        if (!start.equals(event.start)) return false;
+        return position.equals(event.position);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + created.hashCode();
+        result = 31 * result + start.hashCode();
+        result = 31 * result + position.hashCode();
+        result = 31 * result + creator;
+        return result;
+    }
 
     public int getId() {
         return id;

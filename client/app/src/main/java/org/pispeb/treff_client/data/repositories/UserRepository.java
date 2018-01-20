@@ -2,6 +2,8 @@ package org.pispeb.treff_client.data.repositories;
 
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
 import android.os.Handler;
 
 import org.pispeb.treff_client.data.database.UserDao;
@@ -27,9 +29,9 @@ public class UserRepository {
         return userDao.getUserByID(userID);
     }
 
-    public LiveData<List<User>> getFriends() {
+    public LiveData<PagedList<User>> getFriends() {
         //TODO send update request to server
-        return userDao.getFriends();
+        return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
     }
 
     public void add(User user) {
