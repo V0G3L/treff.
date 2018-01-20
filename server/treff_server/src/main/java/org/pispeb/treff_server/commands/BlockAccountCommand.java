@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
 
@@ -9,18 +10,15 @@ import javax.json.JsonObject;
  */
 public class BlockAccountCommand extends AbstractCommand {
 
-    public BlockAccountCommand(JsonObject jsonObject) {
-        super(jsonObject);
-    }
-
     /**
      * @return an empty JsonObject
+     * @param jsonObject
      */
-    public JsonObject execute() throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
         return null; //TODO
     }
 
-    protected void parseParameters(JsonObject jsonObject) {
+    protected CommandResponse parseParameters(JsonObject jsonObject) {
         //TODO
     }
 }
