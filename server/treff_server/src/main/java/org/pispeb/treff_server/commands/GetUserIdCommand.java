@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.commands;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
+
 import javax.json.JsonObject;
 
 /**
@@ -14,7 +16,7 @@ public class GetUserIdCommand extends AbstractCommand {
     /**
      * @return a description of the Account encoded as a JsonObject
      */
-    public JsonObject execute() {
+    public JsonObject execute() throws DatabaseException {
         return null; //TODO
     }
 

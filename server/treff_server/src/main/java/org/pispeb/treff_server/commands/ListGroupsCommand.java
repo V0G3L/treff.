@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.commands;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
+
 import javax.json.JsonObject;
 
 /**
@@ -15,7 +17,7 @@ public class ListGroupsCommand extends AbstractCommand {
      * @return an array of rough descriptions of the Usergroups encoded as a
      *          JsonObject
      */
-    public JsonObject execute() {
+    public JsonObject execute() throws DatabaseException {
         return null; //TODO
     }
 

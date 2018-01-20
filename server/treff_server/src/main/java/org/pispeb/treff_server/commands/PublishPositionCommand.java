@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.commands;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
+
 import javax.json.JsonObject;
 
 /**
@@ -15,7 +17,7 @@ public class PublishPositionCommand extends AbstractCommand {
     /**
      * @return TODO
      */
-    public JsonObject execute() {
+    public JsonObject execute() throws DatabaseException {
         return null; //TODO
     }
 

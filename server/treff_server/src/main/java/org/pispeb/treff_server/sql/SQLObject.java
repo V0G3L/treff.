@@ -1,6 +1,6 @@
 package org.pispeb.treff_server.sql;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
+import java.util.Properties;
 
 /**
  * @author tim
@@ -8,10 +8,12 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 public abstract class SQLObject {
 
     protected final int id;
-    protected final MysqlDataSource dataSource;
+    protected final SQLDatabase database;
+    protected final Properties config;
 
-    SQLObject(int id, MysqlDataSource dataSource) {
+    SQLObject(int id, SQLDatabase database, Properties config) {
         this.id = id;
-        this.dataSource = dataSource;
+        this.database = database;
+        this.config = config;
     }
 }

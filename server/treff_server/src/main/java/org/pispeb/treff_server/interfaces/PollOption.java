@@ -1,13 +1,16 @@
 package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 
 public interface PollOption {
 
-    String getTitle();
-    void setTitle(String title);
+    String getTitle() throws DatabaseException;
 
-    Position getPosition();
-    void setPosition(Position position);
+    void setTitle(String title) throws DatabaseException;
+
+    Position getPosition() throws DatabaseException;
+
+    void setPosition(Position position) throws DatabaseException;
 
 }

@@ -6,8 +6,6 @@ import org.pispeb.treff_server.sql.SQLDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.NoSuchAlgorithmException;
@@ -61,18 +59,21 @@ public class Server {
             // TODO: error message and exit
             e.printStackTrace();
         }
+        //noinspection UnusedAssignment WTF IntelliJ?
         AccountManager accountManager = EntityManagerSQL.getInstance();
 
-        try {
+        try (ServerSocket socket = new ServerSocket(
+                    Integer.parseInt(config.getProperty("port")))) {
+            //noinspection UnusedAssignment WTF IntelliJ?
+            DatabaseExceptionHandler exceptionHandler
+                    = new DatabaseExceptionHandler();
             // Think of some clever way to indirect config string keys in a
             // centralized manner
-            try (ServerSocket socket = new ServerSocket(
-                    Integer.parseInt(config.getProperty("port")))) {
-                // TODO: some way to exit (SIGTERM, shutdown command, ...)
-                while (true) {
-                    new ConnectionHandler(socket.accept(), accountManager)
-                            .start();
-                }
+            // TODO: some way to exit (SIGTERM, shutdown command, ...)
+            while (!exceptionHandler.hasExceptionHappened()) {
+                new ConnectionHandler(socket.accept(), accountManager,
+                        exceptionHandler)
+                        .start();
             }
         } catch (IOException e) {
             e.printStackTrace(System.out);

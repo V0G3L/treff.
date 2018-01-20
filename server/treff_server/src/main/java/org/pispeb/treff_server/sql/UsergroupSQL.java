@@ -1,11 +1,12 @@
 package org.pispeb.treff_server.sql;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
@@ -13,22 +14,22 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     private Set<Account> members;
     private Map<Account, Set<Permission>> memberPermissions;
 
-    UsergroupSQL(int id, MysqlDataSource dataSource) {
-        super(id, dataSource);
+    UsergroupSQL(int id, SQLDatabase database, Properties config) {
+        super(id, database, config);
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(String name) throws DatabaseException {
 
     }
 
     @Override
-    public String getName() {
+    public String getName() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void addMember(Account member) {
+    public void addMember(Account member) throws DatabaseException {
         // add bidirectional relation
         if (!this.members.contains(member)) {
             this.members.add(member);
@@ -37,7 +38,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public void removeMember(Account member) {
+    public void removeMember(Account member) throws DatabaseException {
         // remove bidirectional relation
         if (this.members.contains(member)) {
             this.members.remove(member);
@@ -46,7 +47,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Set<Account> getAllMembers() {
+    public Set<Account> getAllMembers() throws DatabaseException {
         return null;
     }
 
@@ -56,37 +57,30 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public List<Event> getAllEvents() {
+    public List<Event> getAllEvents() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void addChatMessage(ChatMessage message) {
+    public void addPoll(Poll poll) throws DatabaseException {
 
     }
 
     @Override
-    public List<ChatMessage> getAllChatMessages() {
+    public List<Poll> getAllPolls() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void addPoll(Poll poll) {
-
-    }
-
-    @Override
-    public List<Poll> getAllPolls() {
-        return null;
-    }
-
-    @Override
-    public boolean checkPermissionOfMember(Account member, Permission permission) throws AccountNotInGroupException {
+    public boolean checkPermissionOfMember(Account member, Permission
+            permission) throws AccountNotInGroupException, DatabaseException {
         return memberPermissions.get(member).contains(permission);
     }
 
     @Override
-    public void setPermissionOfMember(Account member, Permission permission, boolean value) throws AccountNotInGroupException {
+    public void setPermissionOfMember(Account member, Permission permission,
+                                      boolean value)
+            throws AccountNotInGroupException, DatabaseException {
 
     }
 }

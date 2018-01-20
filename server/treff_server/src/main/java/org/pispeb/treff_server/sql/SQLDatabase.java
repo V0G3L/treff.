@@ -1,16 +1,14 @@
 package org.pispeb.treff_server.sql;
 
-import com.mysql.cj.api.mysqla.result.Resultset;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.apache.commons.dbutils.QueryRunner;
 import org.pispeb.treff_server.exceptions
         .SQLDatabaseAlreadyInitializedException;
 import org.pispeb.treff_server.interfaces.Update;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Properties;
@@ -38,8 +36,9 @@ public class SQLDatabase {
             POLL_QUESTION_LENGTH_MAX = "poll_question_length_max",
             EVENT_TITLE_LENGTH_MAX = "event_title_length_max";
 
-    private Properties config;
+    private final Properties config;
     private static SQLDatabase instance;
+    private final QueryRunner queryRunner;
 
     public static void initialize(Properties config) throws SQLException,
             NoSuchAlgorithmException {
@@ -61,18 +60,19 @@ public class SQLDatabase {
         dataSource.setServerName(config.getProperty(DB_ADDRESS));
         dataSource.setPort(Integer.parseInt(config.getProperty(DB_PORT)));
         dataSource.setDatabaseName(config.getProperty(DB_DBNAME));
+        this.queryRunner = new QueryRunner(dataSource);
 
         // TODO: Check database format
         // if db never initialized before:
-        initDB(dataSource);
+        createTables();
 
         EntityManagerSQL.initialize(this);
     }
 
-    private void initDB(MysqlDataSource dataSource)
+    private void createTables()
             throws NoSuchAlgorithmException, SQLException {
 
-        wipeDB(dataSource);
+        wipeDB();
 
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
@@ -233,21 +233,18 @@ public class SQLDatabase {
         };
 
         // Execute all table creation statements
-        try (Connection connection = dataSource.getConnection()) {
-            for (String statementString : tableCreationStatements) {
-                try (Statement statement = connection.createStatement()) {
-                    statement.execute(statementString);
-                }
-            }
+        for (String statementString : tableCreationStatements) {
+                queryRunner.execute(statementString);
         }
     }
 
-    private void wipeDB(MysqlDataSource dataSource) {
+    private void wipeDB() throws SQLException {
         // child tables must be listed before their parent tables
         String[] tableNames = {
                 "contacts",
                 "blocks",
                 "updateaffections",
+                "updates",
                 "groupmemberships",
                 "events",
                 "polloptions",
@@ -256,20 +253,14 @@ public class SQLDatabase {
                 "usergroups"
         };
 
-        try (Connection connection = dataSource.getConnection()) {
-            for (String name : tableNames) {
-                try (Statement statement = connection.createStatement()) {
-                    String statementString =
-                            "DROP TABLE IF EXISTS " + name + ";";
-                    statement.execute(statementString);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (String name : tableNames) {
+                String statementString =
+                        "DROP TABLE IF EXISTS " + name + ";";
+                queryRunner.execute(statementString);
         }
     }
 
-    Resultset executeSQLStatement(Statement statement) {
-        return null;
+    QueryRunner getQueryRunner() {
+        return queryRunner;
     }
 }

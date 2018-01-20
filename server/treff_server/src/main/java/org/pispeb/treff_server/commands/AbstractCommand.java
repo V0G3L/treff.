@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.commands;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
+
 import javax.json.JsonObject;
 
 /**
@@ -19,7 +21,7 @@ public abstract class AbstractCommand {
      * executes the command
      * @return the specific return value encoded as a JsonObject
      */
-    public abstract JsonObject execute();
+    public abstract JsonObject execute() throws DatabaseException;
 
     /**
      * extracts the parameters and verifies them

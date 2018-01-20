@@ -1,30 +1,37 @@
 package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import java.util.Date;
 import java.util.Set;
 
 public interface Event {
 
-    void setTitle(String title);
-    String getTitle();
+    void setTitle(String title) throws DatabaseException;
 
-    void setPosition(Position position);
-    Position getPosition();
+    String getTitle() throws DatabaseException;
 
-    void setTimeStart();
-    Date getTimeStart();
+    void setPosition(Position position) throws DatabaseException;
 
-    void setTimeEnd();
-    Date getTimeEnd();
+    Position getPosition() throws DatabaseException;
 
-    Date getTimeCreated();
+    void setTimeStart() throws DatabaseException;
 
-    Account getCreator();
+    Date getTimeStart() throws DatabaseException;
 
-    void addParticipant(Account participant);
-    void removeParticipant(Account participant);
-    Set<Account> getAllParticipants();
+    void setTimeEnd() throws DatabaseException;
+
+    Date getTimeEnd() throws DatabaseException;
+
+    Date getTimeCreated() throws DatabaseException;
+
+    Account getCreator() throws DatabaseException;
+
+    void addParticipant(Account participant) throws DatabaseException;
+
+    void removeParticipant(Account participant) throws DatabaseException;
+
+    Set<Account> getAllParticipants() throws DatabaseException;
 
 }

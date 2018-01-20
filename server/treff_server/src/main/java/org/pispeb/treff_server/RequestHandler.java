@@ -1,5 +1,6 @@
 package org.pispeb.treff_server;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
@@ -14,7 +15,8 @@ public class RequestHandler {
 
     /**
      * Creates a RequestHandler for a JSON-encoded request.
-     * @param request The JSON-encoded request
+     *
+     * @param request        The JSON-encoded request
      * @param accountManager The database entry-point
      */
     public RequestHandler(String request, AccountManager accountManager) {
@@ -33,9 +35,10 @@ public class RequestHandler {
      *
      * @return JSON-encoded response
      * @throws RequestHandlerAlreadyRan if the request of this RequestHandler
-     * was handled via {@link #run()}
+     *                                  was handled via {@link #run()}
      */
-    public RequestHandlerResponse run() throws RequestHandlerAlreadyRan {
+    public RequestHandlerResponse run() throws RequestHandlerAlreadyRan,
+            DatabaseException {
         // decode (and check syntax)
         // check permissions and compatibility with current state
         // send request to Database

@@ -1,7 +1,8 @@
 package org.pispeb.treff_server.sql;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
+import org.apache.commons.dbutils.handlers.MapHandler;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
@@ -9,115 +10,144 @@ import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Properties;
 import java.util.SortedSet;
 
 public class AccountSQL extends SQLObject implements Account {
 
-    // TODO: synchronized setters everywhere
+    private static final Object usernameLock = new Object();
 
-    AccountSQL(int id, MysqlDataSource dataSource) {
-        super(id, dataSource);
+    AccountSQL(int id, SQLDatabase database, Properties config) {
+        super(id, database, config);
     }
 
+    // TODO: synchronized setters everywhere
 
     @Override
-    public String getUsername() {
+    public String getUsername() throws DatabaseException {
         // TODO: write SQL statements
-        return null;
+        try {
+            return (String) database.getQueryRunner().query(
+                    "SELECT username FROM accounts WHERE id=?;",
+                    new MapHandler(),
+                    id
+            ).get("username");
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void setUsername(String username) throws
-            DuplicateUsernameException {
+            DuplicateUsernameException, DatabaseException {
+        // process username changes of everyone in sequence to ensure
+        // uniqueness
+        synchronized (usernameLock) {
+            // check for duplicates
+            try {
+                if (database.getQueryRunner().query(
+                        "SELECT id FROM accounts WHERE username=?;",
+                        new DuplicateCheckHandler(),
+                        username)) {
+                    throw new DuplicateUsernameException();
+                } else {
+                    database.getQueryRunner().update(
+                            "UPDATE accounts set username=? WHERE id=?;",
+                            username,
+                            id);
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException(e);
+            }
+        }
     }
 
     @Override
-    public boolean checkPassword(String password) {
-        // get salt from db
-        // hash supplied pw with salt
-        // compare with hash in db
+    public boolean checkPassword(String password) throws DatabaseException {
+
         return false;
     }
 
     @Override
-    public void setPassword(String password) {
+    public void setPassword(String password) throws DatabaseException {
         // get salt from db
         // hash supplied pw with salt
         // store hash in db
     }
 
     @Override
-    public String getEmail() {
+    public String getEmail() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void setEmail(String email) throws DuplicateEmailException {
+    public void setEmail(String email) throws DuplicateEmailException,
+            DatabaseException {
 
     }
 
     @Override
-    public Map<Integer, Usergroup> getAllGroups() {
+    public Map<Integer, Usergroup> getAllGroups() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void addToGroup(Usergroup usergroup) {
+    public void addToGroup(Usergroup usergroup) throws DatabaseException {
 
     }
 
     @Override
-    public void removeFromGroup(Usergroup usergroup) {
+    public void removeFromGroup(Usergroup usergroup) throws DatabaseException {
 
     }
 
     @Override
-    public Position getLastPosition() {
+    public Position getLastPosition() throws DatabaseException {
         return null;
     }
 
     @Override
-    public Date getLastPositionTime() {
+    public Date getLastPositionTime() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void updatePosition(Position position) {
+    public void updatePosition(Position position) throws DatabaseException {
         // not persistent
     }
 
     @Override
-    public void addUpdate(Update update) {
+    public void addUpdate(Update update) throws DatabaseException {
 
     }
 
     @Override
-    public SortedSet<Update> getUndeliveredUpdates() {
+    public SortedSet<Update> getUndeliveredUpdates() throws DatabaseException {
         return null;
     }
 
     @Override
-    public void markUpdateAsDelivered(Update update) {
+    public void markUpdateAsDelivered(Update update) throws DatabaseException {
 
     }
 
     @Override
-    public void addUpdateListener(AccountUpdateListener updateListener) {
+    public void addUpdateListener(AccountUpdateListener updateListener)
+            throws DatabaseException {
 
     }
 
     @Override
-    public void removeUpdateListener(AccountUpdateListener updateListener) {
+    public void removeUpdateListener(AccountUpdateListener updateListener)
+            throws DatabaseException {
 
     }
 
     @Override
-    public void delete() {
+    public void delete() throws DatabaseException {
         // removes itself from all groups
         // removes all contacts (will also removed them from the other sides)
         // clears its own blocklist

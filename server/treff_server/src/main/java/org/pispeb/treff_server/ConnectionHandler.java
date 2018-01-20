@@ -1,5 +1,6 @@
 package org.pispeb.treff_server;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.update_notifier.PersistentConnection;
 
@@ -15,10 +16,13 @@ import java.net.Socket;
 class ConnectionHandler extends Thread {
     private final Socket socket;
     private final AccountManager accountManager;
+    private final DatabaseExceptionHandler exceptionHandler;
 
-    public ConnectionHandler(Socket socket, AccountManager accountManager) {
+    public ConnectionHandler(Socket socket, AccountManager accountManager,
+                             DatabaseExceptionHandler exceptionHandler) {
         this.socket = socket;
         this.accountManager = accountManager;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -44,6 +48,8 @@ class ConnectionHandler extends Thread {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (DatabaseException e) {
+            exceptionHandler.notifyOfException(e);
         } finally {
             try {
                 socket.close();
