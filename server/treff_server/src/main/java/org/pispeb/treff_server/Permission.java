@@ -1,7 +1,7 @@
-package org.pispeb.treff_server.sql;
+package org.pispeb.treff_server;
 
 public enum Permission {
-    CHANGE_GROUP_NAME("change_group_name"),
+    EDIT_GROUP("edit_group"),
     MANAGE_MEMBERS("manage_members"),
     CHANGE_PERMISSIONS("change_permissions"),
     CREATE_EVENT("create_event"),

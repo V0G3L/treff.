@@ -5,6 +5,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.PollOption;
 
 import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
 
 public class PollOptionSQL extends SQLObject implements PollOption {
 
@@ -30,5 +31,10 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     @Override
     public void setPosition(Position position) throws DatabaseException {
 
+    }
+
+    @Override
+    public ReadWriteLock getReadWriteLock() {
+        return null;
     }
 }

@@ -1,6 +1,6 @@
 package org.pispeb.treff_server.sql;
 
-import org.apache.commons.dbutils.handlers.MapHandler;
+import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
@@ -10,34 +10,44 @@ import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
 
+import javax.json.JsonObject;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static org.pispeb.treff_server.ConfigKeys.*;
 
 public class AccountSQL extends SQLObject implements Account {
 
     private static final Object usernameLock = new Object();
+    private static final String TABLE_NAME = "account";
+
+    private final Lock requestLock = new ReentrantLock();
 
     AccountSQL(int id, SQLDatabase database, Properties config) {
         super(id, database, config);
     }
 
-    // TODO: synchronized setters everywhere
+    @Override
+    protected String tableName() {
+        return "accounts";
+    }
+
+    // TODO: write SQL statements
 
     @Override
     public String getUsername() throws DatabaseException {
-        // TODO: write SQL statements
-        try {
-            return (String) database.getQueryRunner().query(
-                    "SELECT username FROM accounts WHERE id=?;",
-                    new MapHandler(),
-                    id
-            ).get("username");
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return (String) getProperties("username")
+                .get("username");
     }
 
     @Override
@@ -54,10 +64,8 @@ public class AccountSQL extends SQLObject implements Account {
                         username)) {
                     throw new DuplicateUsernameException();
                 } else {
-                    database.getQueryRunner().update(
-                            "UPDATE accounts set username=? WHERE id=?;",
-                            username,
-                            id);
+                    setProperties(new AssignmentList()
+                            .put("username", username));
                 }
             } catch (SQLException e) {
                 throw new DatabaseException(e);
@@ -65,22 +73,62 @@ public class AccountSQL extends SQLObject implements Account {
         }
     }
 
+    private byte[] calculatePasswordHash(String password, byte[] salt) {
+        try {
+            MessageDigest messageDigest = MessageDigest
+                    .getInstance(config.getProperty(
+                            PASSWORD_HASH_ALG.toString()));
+            messageDigest.update(
+                    password.getBytes(Charset.forName("UTF-8")));
+            messageDigest.update(salt);
+
+            return messageDigest.digest();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new AssertionError("Hash algorithm wasn't found" +
+                    "even though it was used in SQLDatabase before. " +
+                    "This really shouldn't happen.");
+        }
+    }
+
     @Override
     public boolean checkPassword(String password) throws DatabaseException {
+        // Retrieve salt and hash from DB
+        // Then check against hash(supplied password + salt)
+        Map<String, Object> result = getProperties("passwordsalt",
+                "passwordhash");
 
-        return false;
+        byte[] correctHash = HexBin.decode(
+                (String) result.get("passwordhash"));
+        byte[] salt = HexBin.decode(
+                (String) result.get("passwordsalt"));
+        byte[] calculatedHash = calculatePasswordHash(password, salt);
+
+        return Arrays.equals(calculatedHash, correctHash);
     }
 
     @Override
     public void setPassword(String password) throws DatabaseException {
-        // get salt from db
-        // hash supplied pw with salt
-        // store hash in db
+        // Generate a new salt with a cryptographically strong RNG
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[
+                Integer.parseInt(config.getProperty(
+                        PASSWORD_SALT_BYTES.toString()))];
+        secureRandom.nextBytes(salt);
+        byte[] newHash = calculatePasswordHash(password, salt);
+
+        // Store new salt and new hash in DB
+        setProperties(new AssignmentList()
+                .put("passwordsalt", HexBin.encode(salt))
+                .put("passwordhash", HexBin.encode(newHash)));
+        JsonObject jsonObject = null;
     }
 
     @Override
     public String getEmail() throws DatabaseException {
-        return null;
+        return (String) getProperties("email")
+                .get("email");
     }
 
     @Override
@@ -135,14 +183,12 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public void addUpdateListener(AccountUpdateListener updateListener)
-            throws DatabaseException {
+    public void addUpdateListener(AccountUpdateListener updateListener) {
 
     }
 
     @Override
-    public void removeUpdateListener(AccountUpdateListener updateListener)
-            throws DatabaseException {
+    public void removeUpdateListener(AccountUpdateListener updateListener) {
 
     }
 
@@ -153,5 +199,13 @@ public class AccountSQL extends SQLObject implements Account {
         // clears its own blocklist
         // clears itself from all other blocklists (somehow, unclear)
         // events and polls have to be able to handle non-existent creators
+        synchronized (this) {
+
+        }
     }
+
+    public Lock getRequestLock() {
+        return requestLock;
+    }
+
 }

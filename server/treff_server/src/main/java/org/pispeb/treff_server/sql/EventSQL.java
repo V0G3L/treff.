@@ -8,6 +8,7 @@ import org.pispeb.treff_server.interfaces.Event;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
 
 public class EventSQL extends SQLObject implements Event {
 
@@ -78,6 +79,11 @@ public class EventSQL extends SQLObject implements Event {
 
     @Override
     public Set<Account> getAllParticipants() throws DatabaseException {
+        return null;
+    }
+
+    @Override
+    public ReadWriteLock getReadWriteLock() {
         return null;
     }
 }

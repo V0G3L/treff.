@@ -6,7 +6,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import java.util.Date;
 import java.util.Set;
 
-public interface Event {
+public interface Event extends DataObject {
 
     void setTitle(String title) throws DatabaseException;
 

@@ -2,6 +2,7 @@ package org.pispeb.treff_server.sql;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
+import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.exceptions
         .SQLDatabaseAlreadyInitializedException;
 import org.pispeb.treff_server.interfaces.Update;
@@ -14,27 +15,12 @@ import java.util.Comparator;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import static org.pispeb.treff_server.ConfigKeys.*;
+
 /**
  * @author tim
  */
 public class SQLDatabase {
-
-    // TODO: centralize
-    private static final String
-            DB_ADDRESS = "db_address",
-            DB_PORT = "db_port",
-            DB_USER = "db_user",
-            DB_PASS = "db_pass",
-            DB_DBNAME = "db_dbname",
-
-    USER_NAME_LENGTH_MAX = "user_name_length_max",
-            EMAIL_LENGTH_MAX = "email_length_max",
-            PASSWORD_SALT_BYTES = "password_salt_bytes",
-            PASSWORD_HASH_ALG = "password_hash_alg",
-
-    USERGROUP_NAME_LENGTH_MAX = "usergroup_name_length_max",
-            POLL_QUESTION_LENGTH_MAX = "poll_question_length_max",
-            EVENT_TITLE_LENGTH_MAX = "event_title_length_max";
 
     private final Properties config;
     private static SQLDatabase instance;
@@ -55,11 +41,12 @@ public class SQLDatabase {
 
         // Create DataSource with supplied parameters
         MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setUser(config.getProperty(DB_USER));
-        dataSource.setPassword(config.getProperty(DB_PASS));
-        dataSource.setServerName(config.getProperty(DB_ADDRESS));
-        dataSource.setPort(Integer.parseInt(config.getProperty(DB_PORT)));
-        dataSource.setDatabaseName(config.getProperty(DB_DBNAME));
+        dataSource.setUser(config.getProperty(DB_USER.toString()));
+        dataSource.setPassword(config.getProperty(DB_PASS.toString()));
+        dataSource.setServerName(config.getProperty(DB_ADDRESS.toString()));
+        dataSource.setPort(Integer.parseInt(config.getProperty(DB_PORT
+                .toString())));
+        dataSource.setDatabaseName(config.getProperty(DB_DBNAME.toString()));
         this.queryRunner = new QueryRunner(dataSource);
 
         // TODO: Check database format
@@ -77,7 +64,8 @@ public class SQLDatabase {
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
                 MessageDigest
-                        .getInstance(config.getProperty(PASSWORD_HASH_ALG))
+                        .getInstance(config.getProperty(PASSWORD_HASH_ALG
+                                .toString()))
                         .getDigestLength();
 
         // TODO: Unicode support for fields that might need it (NVARCHAR)
@@ -95,12 +83,16 @@ public class SQLDatabase {
                                 "timemeasured DATETIME" +
                                 ");",
                         Integer.parseInt(
-                                config.getProperty(USER_NAME_LENGTH_MAX)),
+                                config.getProperty(USER_NAME_LENGTH_MAX
+                                        .toString())),
                         Integer.parseInt(
-                                config.getProperty(EMAIL_LENGTH_MAX)),
+                                config.getProperty(EMAIL_LENGTH_MAX.toString
+                                        ())),
+                        // Hash and salt will be saved hex-encoded, so two
+                        // chars per byte
                         Integer.parseInt(
-                                config.getProperty(PASSWORD_SALT_BYTES)),
-                        // Hash will be saved hex-encoded, so two chars per byte
+                                config.getProperty(PASSWORD_SALT_BYTES
+                                        .toString())) * 2,
                         PASSWORD_HASH_BYTES * 2),
 
                 // contacts
@@ -135,7 +127,8 @@ public class SQLDatabase {
                                 "name VARCHAR(%d) NOT NULL" +
                                 ");",
                         Integer.parseInt(
-                                config.getProperty(USERGROUP_NAME_LENGTH_MAX))),
+                                config.getProperty(USERGROUP_NAME_LENGTH_MAX
+                                        .toString()))),
 
                 // groupmemberships
                 "CREATE TABLE groupmemberships (" +
@@ -172,7 +165,8 @@ public class SQLDatabase {
                                 "latitude DOUBLE NOT NULL" +
                                 ");",
                         Integer.parseInt(
-                                config.getProperty(EVENT_TITLE_LENGTH_MAX))),
+                                config.getProperty(EVENT_TITLE_LENGTH_MAX
+                                        .toString()))),
 
                 // polls
                 String.format("CREATE TABLE polls (" +
@@ -188,7 +182,8 @@ public class SQLDatabase {
                                 "multichoice BIT NOT NULL" +
                                 ");",
                         Integer.parseInt(
-                                config.getProperty(POLL_QUESTION_LENGTH_MAX))),
+                                config.getProperty(POLL_QUESTION_LENGTH_MAX
+                                        .toString()))),
 
                 // polloptions
                 "CREATE TABLE polloptions (" +
@@ -234,7 +229,7 @@ public class SQLDatabase {
 
         // Execute all table creation statements
         for (String statementString : tableCreationStatements) {
-                queryRunner.execute(statementString);
+            queryRunner.execute(statementString);
         }
     }
 
@@ -254,9 +249,9 @@ public class SQLDatabase {
         };
 
         for (String name : tableNames) {
-                String statementString =
-                        "DROP TABLE IF EXISTS " + name + ";";
-                queryRunner.execute(statementString);
+            String statementString =
+                    "DROP TABLE IF EXISTS " + name + ";";
+            queryRunner.execute(statementString);
         }
     }
 

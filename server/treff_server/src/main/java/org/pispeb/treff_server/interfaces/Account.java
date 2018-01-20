@@ -14,7 +14,8 @@ import java.util.SortedSet;
  * and password. An account may only be represented by a single {@link Account}
  * object at a time.
  */
-public interface Account {
+public interface Account extends DataObject {
+
     /**
      * Returns the username of this account.
      **/
@@ -122,8 +123,7 @@ public interface Account {
      *
      * @param updateListener The AccountUpdateListener to add
      */
-    void addUpdateListener(AccountUpdateListener updateListener) throws
-            DatabaseException;
+    void addUpdateListener(AccountUpdateListener updateListener);
 
     /**
      * Removes an {@link AccountUpdateListener}, no longer notifying it when an
@@ -131,8 +131,7 @@ public interface Account {
      *
      * @param updateListener The AccountUpdateListener to remove
      */
-    void removeUpdateListener(AccountUpdateListener updateListener) throws
-            DatabaseException;
+    void removeUpdateListener(AccountUpdateListener updateListener);
 
     /**
      * Deletes this account. TODO: specify further

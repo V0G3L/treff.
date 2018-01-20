@@ -5,7 +5,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import java.util.List;
 
-public interface Poll {
+public interface Poll extends DataObject {
 
     String getQuestion() throws DatabaseException;
 

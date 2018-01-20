@@ -2,12 +2,12 @@ package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
-import org.pispeb.treff_server.sql.Permission;
+import org.pispeb.treff_server.Permission;
 
 import java.util.List;
 import java.util.Set;
 
-public interface Usergroup {
+public interface Usergroup extends DataObject {
 
     void setName(String name) throws DatabaseException;
 

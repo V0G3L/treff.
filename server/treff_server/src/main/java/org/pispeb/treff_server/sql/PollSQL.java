@@ -8,6 +8,7 @@ import org.pispeb.treff_server.interfaces.PollOption;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.locks.ReadWriteLock;
 
 public class PollSQL extends SQLObject implements Poll {
 
@@ -60,5 +61,15 @@ public class PollSQL extends SQLObject implements Poll {
     @Override
     public void cancelPoll() throws DatabaseException {
 
+    }
+
+    @Override
+    protected String tableName() {
+        return null;
+    }
+
+    @Override
+    public ReadWriteLock getReadWriteLock() {
+        return null;
     }
 }
