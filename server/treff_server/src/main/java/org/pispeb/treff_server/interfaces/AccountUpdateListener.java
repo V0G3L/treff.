@@ -1,5 +1,7 @@
 package org.pispeb.treff_server.interfaces;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
+
 /**
  * A listener belonging to a single {@link Account} that performs
  * some action whenever an {@link Update} is marked as affecting
@@ -12,5 +14,5 @@ public interface AccountUpdateListener {
      * {@link Account} is added.
      * @param update The Update that was added
      */
-    void onUpdateAdded(Update update);
+    void onUpdateAdded(Update update)  throws DatabaseException;
 }

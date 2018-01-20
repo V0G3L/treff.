@@ -1,4 +1,4 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.networking;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;

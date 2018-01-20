@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.update_notifier;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Update;
@@ -20,13 +21,13 @@ public class PushNotificationSender implements AccountUpdateListener {
      * @param account The account to notify of {@link Update}s affecting
      *                it
      */
-    public PushNotificationSender(Account account) {
+    public PushNotificationSender(Account account) throws DatabaseException {
         this.account = account;
         account.addUpdateListener(this);
     }
 
     @Override
-    public void onUpdateAdded(Update update) {
+    public void onUpdateAdded(Update update) throws DatabaseException {
         // send push notification
     }
 }
