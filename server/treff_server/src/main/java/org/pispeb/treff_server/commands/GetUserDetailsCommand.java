@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
 
@@ -16,6 +17,10 @@ import javax.json.JsonValue;
 public class GetUserDetailsCommand extends AbstractCommand {
 
     private int id;
+
+    public GetUserDetailsCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
 
     /**
      * @return a description of the Account encoded as a JsonObject

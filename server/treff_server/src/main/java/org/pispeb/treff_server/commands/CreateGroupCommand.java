@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -9,6 +10,10 @@ import javax.json.JsonObject;
  * a command to create a Usergroup
  */
 public class CreateGroupCommand extends AbstractCommand {
+
+    public CreateGroupCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
 
     /**
      * @return the ID of the created Usergroup encoded as a JsonObject
@@ -19,6 +24,6 @@ public class CreateGroupCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        //TODO
+        return null; //TODO
     }
 }

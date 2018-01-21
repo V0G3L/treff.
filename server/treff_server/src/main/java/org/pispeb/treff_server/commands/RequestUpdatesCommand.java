@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -9,6 +10,10 @@ import javax.json.JsonObject;
  * a command to request updates from the server
  */
 public class RequestUpdatesCommand extends AbstractCommand {
+
+    public RequestUpdatesCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
 
     /**
      * @return an array of updates encoded as a JsonObject
@@ -19,6 +24,6 @@ public class RequestUpdatesCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        //TODO
+        return null; //TODO
     }
 }

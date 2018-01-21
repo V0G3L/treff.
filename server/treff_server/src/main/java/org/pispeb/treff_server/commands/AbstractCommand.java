@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -9,6 +10,12 @@ import javax.json.JsonObject;
  * TODO description
  */
 public abstract class AbstractCommand {
+
+    protected AccountManager accountManager;
+
+    public AbstractCommand(AccountManager accountManager) {
+        this.accountManager = accountManager;
+    }
 
     /**
      * executes the command

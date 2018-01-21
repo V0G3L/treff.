@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -9,6 +10,10 @@ import javax.json.JsonObject;
  * a command to get the ID of an Account by its name
  */
 public class GetUserIdCommand extends AbstractCommand {
+
+    public GetUserIdCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
 
     /**
      * @return a description of the Account encoded as a JsonObject
@@ -19,6 +24,6 @@ public class GetUserIdCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        //TODO
+        return null; //TODO
     }
 }

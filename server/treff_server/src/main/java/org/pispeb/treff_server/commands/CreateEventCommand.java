@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -9,6 +10,10 @@ import javax.json.JsonObject;
  * a command to create an Event
  */
 public class CreateEventCommand extends AbstractCommand {
+
+    public CreateEventCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
 
     /**
      * @return the ID of the created Event encoded as a JsonObject
@@ -19,6 +24,6 @@ public class CreateEventCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        //TODO
+        return null; //TODO
     }
 }

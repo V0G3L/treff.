@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
@@ -11,6 +12,10 @@ import javax.json.JsonObject;
  */
 public class PublishPositionCommand extends AbstractCommand {
 
+    public PublishPositionCommand(AccountManager accountManager) {
+        super(accountManager);
+    }
+
     /**
      * @return TODO
      * @param jsonObject
@@ -20,6 +25,6 @@ public class PublishPositionCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        //TODO
+        return null; //TODO
     }
 }
