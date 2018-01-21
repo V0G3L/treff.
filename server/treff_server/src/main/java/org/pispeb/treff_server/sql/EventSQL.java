@@ -89,4 +89,9 @@ public class EventSQL extends SQLObject implements Event {
     public ReadWriteLock getReadWriteLock() {
         return null;
     }
+
+    @Override
+    public int getID() {
+        return id;
+    }
 }

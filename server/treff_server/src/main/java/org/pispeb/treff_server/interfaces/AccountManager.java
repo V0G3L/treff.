@@ -14,30 +14,14 @@ import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
  */
 public interface AccountManager {
 
-    /**
-     * Checks whether an account with the given username exists.
-     *
-     * @param username The username to look up
-     * @return <code>true</code> if an account with that username exists,
-     * <code>false</code> otherwise.
-     */
-    boolean hasAccountWithUsername(String username) throws DatabaseException;
-
-    /**
-     * Checks whether an account with the given email exists.
-     *
-     * @param email The username to look up
-     * @return <code>true</code> if an account with that email exists,
-     * <code>false</code> otherwise.
-     */
-    boolean hasAccountWithEmail(String email) throws DatabaseException;
+    // no has/contains method because simple getters are atomic
 
     /**
      * Returns the account that is associated with the given username.
      *
      * @param username The username of the account
      * @return An {@link Account} object representing the account with the
-     * supplied username. <code>null</code> if no such account exists.
+     * supplied username or <code>null</code> if no such account exists.
      */
     Account getAccountByUsername(String username) throws DatabaseException;
 
@@ -46,7 +30,7 @@ public interface AccountManager {
      *
      * @param email The email address of the account
      * @return An {@link Account} object representing the account with the
-     * supplied email address. <code>null</code> if no such account exists.
+     * supplied email address or <code>null</code> if no such account exists.
      */
     Account getAccountByEmail(String email) throws DatabaseException;
 
@@ -55,7 +39,7 @@ public interface AccountManager {
      *
      * @param id The ID of the account
      * @return An {@link Account} object representing the account with the
-     * supplied ID. <code>null</code> if no such account exists.
+     * supplied ID or <code>null</code> if no such account exists.
      */
     Account getAccount(int id) throws DatabaseException;
 

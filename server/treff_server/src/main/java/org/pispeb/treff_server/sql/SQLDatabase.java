@@ -137,7 +137,6 @@ public class SQLDatabase {
 
                 // groupmemberships
                 String.format("CREATE TABLE %s (" +
-                                "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "accountid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
                                 "   REFERENCES accounts(id)" +
@@ -146,6 +145,7 @@ public class SQLDatabase {
                                 "FOREIGN KEY (usergroupid)" +
                                 "   REFERENCES usergroups(id)" +
                                 "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (accountid, usergroupid)," +
                                 "%s" +
                                 ");",
                         GROUPMEMBERSHIPS.toString(),

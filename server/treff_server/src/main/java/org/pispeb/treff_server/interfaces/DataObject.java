@@ -42,4 +42,6 @@ public interface DataObject {
      */
     boolean isDeleted();
 
+    int getID();
+
 }

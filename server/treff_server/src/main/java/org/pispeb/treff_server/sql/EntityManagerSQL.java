@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.dbutils.handlers.MapHandler;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -13,8 +14,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * The single entry-point for MySQL implementation of the database interfaces.
@@ -26,8 +25,8 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class EntityManagerSQL implements AccountManager {
 
-    public final Object usernameLock = new ReentrantLock();
-    public final Object emailLock = new ReentrantLock();
+    public final Object usernameLock = new Object();
+    public final Object emailLock = new Object();
 
     private static final Object accountFetchLock = new Object();
     private static final Object usergroupFetchLock = new Object();
@@ -41,8 +40,6 @@ public class EntityManagerSQL implements AccountManager {
     private final SQLDatabase database;
     private final Properties config;
     private Map<Integer, AccountSQL> loadedAccounts = new HashMap<>();
-    private Map<String, AccountSQL> loadedAccountsByUsername = new HashMap<>();
-    private Map<String, AccountSQL> loadedAccountsByEmail = new HashMap<>();
     private Map<Integer, UsergroupSQL> loadedUsergroups = new HashMap<>();
     private Map<Integer, EventSQL> loadedEvents = new HashMap<>();
     private Map<Integer, PollSQL> loadedPolls = new HashMap<>();
@@ -83,73 +80,158 @@ public class EntityManagerSQL implements AccountManager {
         return instance;
     }
 
-    private boolean hasObjectInDB(TableName tableName, int id) throws
-            SQLException {
-        return database.getQueryRunner().query(
-                "SELECT id FROM ? WHERE id=?",
-                new ContainsCheckHandler(),
-                tableName.toString(),
-                id);
+    /**
+     * Check whether the specified username is available. The calling method
+     * should acquire a lock on {@link #usernameLock} and hold it until the
+     * username change is complete to avoid conflicts.
+     * @param username The username to check
+     * @return <code>true</code> if the username is available,
+     * <code>false</code> otherwise
+     */
+    boolean usernameAvailable(String username)
+            throws DatabaseException {
+        try {
+            synchronized (usernameLock) {
+                return !database.getQueryRunner().query(
+                        "SELECT FROM ? WHERE username=?;",
+                        new ContainsCheckHandler(),
+                        TableName.ACCOUNTS,
+                        username);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    boolean emailAvailable(String email) throws DatabaseException {
+        try {
+            synchronized (emailLock) {
+                return !database.getQueryRunner().query(
+                        "SELECT FROM ? WHERE username=?;",
+                        new ContainsCheckHandler(),
+                        TableName.ACCOUNTS,
+                        email);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public boolean hasAccountWithUsername(String username) {
-        return false;
+    public AccountSQL getAccountByUsername(String username)
+            throws DatabaseException {
+        // get ID by username, then get Account by ID
+        try {
+            Map<String, Object> resultMap = database.getQueryRunner().query(
+                    "SELECT FROM ? WHERE username=?;",
+                    new MapHandler(),
+                    TableName.ACCOUNTS,
+                    username);
+            if (resultMap.containsKey("id")) {
+                return getAccount((Integer)resultMap.get("id"));
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public boolean hasAccountWithEmail(String email) {
-        // if (SELECT * FROM accounts WHERE email=email).length > 0
-        return false;
-    }
-
-    @Override
-    public AccountSQL getAccountByUsername(String username) {
-        // id = (SELECT id FROM accounts WHERE username=username)
-        // return new Account(id)
-        return null;
-    }
-
-    @Override
-    public AccountSQL getAccountByEmail(String email) {
-        // id = (SELECT id FROM accounts WHERE email=email)
-        // return new Account(id)
-        return null;
+    public AccountSQL getAccountByEmail(String email) throws DatabaseException {
+        // get ID by email, then get Account by ID
+        try {
+            Map<String, Object> resultMap = database.getQueryRunner().query(
+                    "SELECT FROM ? WHERE email=?;",
+                    new MapHandler(),
+                    TableName.ACCOUNTS,
+                    email);
+            if (resultMap.containsKey("id")) {
+                return getAccount((Integer)resultMap.get("id"));
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public AccountSQL getAccount(int id) throws DatabaseException {
         try {
-            AccountSQL account = getSQLObject(AccountSQL::new, id,
+            return getSQLObject(AccountSQL::new, id,
                     loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
-            if (account != null) {
-                Lock readLock = account.getReadWriteLock().readLock();
-                readLock.lock();
-                try {
-                    loadedAccountsByUsername
-                            .put(account.getUsername(), account);
-                    loadedAccountsByEmail
-                            .put(account.getEmail(), account);
-                } finally {
-                    readLock.unlock();
-                }
-            }
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
 
-        // TODO: WIP -w4rum
+    UsergroupSQL getUsergroup(int id) throws SQLException {
+        return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,
+                TableName.USERGROUPS, usergroupFetchLock);
+    }
+
+    EventSQL getEvent(int id) throws SQLException {
+        return getSQLObject(EventSQL::new, id, loadedEvents,
+                TableName.EVENTS, eventFetchLock);
+    }
+
+    PollSQL getPoll(int id) throws SQLException {
+        return getSQLObject(PollSQL::new, id, loadedPolls,
+                TableName.POLLS, pollFetchLock);
+    }
+
+    PollOptionSQL getPollOption(int id) throws SQLException {
+        return getSQLObject(PollOptionSQL::new, id, loadedPollOptions,
+                TableName.POLLOPTIONS, pollOptionFetchLock);
+    }
+
+    UpdateSQL getUpdate(int id) throws SQLException {
+        return getSQLObject(UpdateSQL::new, id, loadedUpdates,
+                TableName.UPDATES, updateFetchLock);
+    }
+
+    @Override
+    public AccountSQL createAccount(String username, String email, String
+            password)
+            throws DuplicateEmailException, DuplicateUsernameException {
         return null;
     }
 
-    private interface SQLObjectFactory<T extends SQLObject> {
-        T create(int id, SQLDatabase database, Properties config);
+    private boolean hasObjectInDB(TableName tableName, int id) throws
+            SQLException {
+        return database.getQueryRunner().query(
+                "SELECT id FROM ? WHERE id=?;",
+                new ContainsCheckHandler(),
+                tableName.toString(),
+                id);
     }
 
-    <T extends SQLObject> T getSQLObject(SQLObjectFactory<T> factory, int id,
-                                         Map<Integer, T> loadedMap,
-                                         TableName tableName,
-                                         Object fetchLock) throws SQLException {
+    /**
+     * Generic method for translating objects in the SQL database into their
+     * respective Java {@link SQLObject}s.
+     * @param factory Factory that produces the SQLObject when supplied with
+     *                its ID, the {@link SQLDatabase} and {@link Properties}.
+     *                The SQLObject's constructor should suffice.
+     * @param id        The ID of the object
+     * @param loadedMap The map that holds already loaded objects of the
+     *                  specified type
+     * @param tableName The {@link TableName} value holding the name of the
+     *                  table that objects of the specified type are stored in
+     * @param fetchLock The lock for the specified type with which fetch
+     *                  operations for this type are synchronized
+     * @param <T> The type of SQLObject to be returned
+     * @return The SQLObject with the specified type and ID. <code>null</code>
+     *         if no such object exists in the database.
+     * @throws SQLException if a database access error occurs
+     */
+    private <T extends SQLObject> T getSQLObject(SQLObjectFactory<T> factory,
+                                                 int id,
+                                                 Map<Integer, T> loadedMap,
+                                                 TableName tableName,
+                                                 Object fetchLock)
+            throws SQLException {
+
         if (loadedMap.containsKey(id)) {
             return loadedMap.get(id);
         } else synchronized (fetchLock) {
@@ -166,15 +248,8 @@ public class EntityManagerSQL implements AccountManager {
         }
     }
 
-    UsergroupSQL getUsergroup(int id) throws SQLException {
-        return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,
-                TableName.USERGROUPS, usergroupFetchLock);
+    private interface SQLObjectFactory<T extends SQLObject> {
+        T create(int id, SQLDatabase database, Properties config);
     }
 
-    @Override
-    public AccountSQL createAccount(String username, String email, String
-            password)
-            throws DuplicateEmailException, DuplicateUsernameException {
-        return null;
-    }
 }

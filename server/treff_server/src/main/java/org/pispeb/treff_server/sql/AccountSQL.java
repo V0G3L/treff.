@@ -1,6 +1,8 @@
 package org.pispeb.treff_server.sql;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
@@ -15,13 +17,21 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.pispeb.treff_server.ConfigKeys.*;
 
@@ -50,7 +60,7 @@ public class AccountSQL extends SQLObject implements Account {
         EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.usernameLock) {
             // check for duplicates
-            if (entityManager.hasAccountWithUsername(username)) {
+            if (entityManager.usernameAvailable(username)) {
                 throw new DuplicateUsernameException();
             } else {
                 setProperties(new AssignmentList()
@@ -123,7 +133,7 @@ public class AccountSQL extends SQLObject implements Account {
         EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.emailLock) {
             // check for duplicates
-            if (entityManager.hasAccountWithEmail(email)) {
+            if (entityManager.emailAvailable(email)) {
                 throw new DuplicateUsernameException();
             } else {
                 setProperties(new AssignmentList()
@@ -134,12 +144,62 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public Map<Integer, Usergroup> getAllGroups() throws DatabaseException {
-        return null;
+        // get ID list
+        try {
+            Map<Integer, Usergroup> usergroupMap = new HashMap<>();
+            List<Integer> idList = database.getQueryRunner()
+                    .query(
+                            "SELECT usergroupid FROM ? WHERE accountid=?",
+                            new MapListHandler(),
+                            TableName.GROUPMEMBERSHIPS,
+                            id)
+                    .stream()
+                    // for each membership, extract ID
+                    .map((map) -> (Integer) map.get("id"))
+                    .collect(Collectors.toList());
+            // Java doesn't allow checked exceptions in streams
+            // so instead of simply mapping to
+            // EntityManagerSQL.getInstance()::getUsergroup
+            // a slight detour via a List is taken
+            for (int id : idList) {
+                usergroupMap.put(id,
+                        EntityManagerSQL.getInstance().getUsergroup(id));
+            }
+            return usergroupMap;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void addToGroup(Usergroup usergroup) throws DatabaseException {
+        // generate placeholders for all permissions
+        String placeholders = String.join(",",
+                Collections.nCopies(Permission.values().length, "?"));
 
+        // generate values for placeholders
+        List<Object> values = new LinkedList<>();
+        values.add(TableName.GROUPMEMBERSHIPS.toString());
+        // permission column names
+        values.add(Arrays.stream(Permission.values())
+                .map(Permission::toString)
+                .collect(Collectors.joining(",")));
+        values.add(id);
+        values.add(usergroup.getID());
+        try {
+            // ignore resultset. If it doesn't simply state OK, an exception
+            // is thrown anyways
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(accountid,usergroupid," +
+                            placeholders +
+                            ") VALUES (?,?," +
+                            placeholders +
+                            ")",
+                    (rs) -> null,
+                    values.toArray());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
@@ -200,4 +260,8 @@ public class AccountSQL extends SQLObject implements Account {
         return requestLock;
     }
 
+    @Override
+    public int getID() {
+        return id;
+    }
 }

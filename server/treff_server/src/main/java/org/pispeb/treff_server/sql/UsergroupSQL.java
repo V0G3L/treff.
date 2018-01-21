@@ -35,20 +35,14 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void addMember(Account member) throws DatabaseException {
-        // add bidirectional relation
-        if (!this.members.contains(member)) {
-            this.members.add(member);
-            member.addToGroup(this);
-        }
+        // actual joining is handled in AccountSQL class
+        member.addToGroup(this);
     }
 
     @Override
     public void removeMember(Account member) throws DatabaseException {
-        // remove bidirectional relation
-        if (this.members.contains(member)) {
-            this.members.remove(member);
-            member.removeFromGroup(this);
-        }
+        // actual removal is handled in AccountSQL class
+        member.removeFromGroup(this);
     }
 
     @Override
@@ -92,5 +86,10 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     @Override
     public ReadWriteLock getReadWriteLock() {
         return null;
+    }
+
+    @Override
+    public int getID() {
+        return id;
     }
 }

@@ -59,4 +59,9 @@ public class UpdateSQL extends SQLObject implements Update {
         // oldest to newest
         return 0;
     }
+
+    @Override
+    public int getID() {
+        return id;
+    }
 }

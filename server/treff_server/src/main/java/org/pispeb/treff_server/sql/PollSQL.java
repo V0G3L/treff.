@@ -71,4 +71,9 @@ public class PollSQL extends SQLObject implements Poll {
     public ReadWriteLock getReadWriteLock() {
         return null;
     }
+
+    @Override
+    public int getID() {
+        return id;
+    }
 }

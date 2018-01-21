@@ -40,4 +40,9 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     public ReadWriteLock getReadWriteLock() {
         return null;
     }
+
+    @Override
+    public int getID() {
+        return id;
+    }
 }
