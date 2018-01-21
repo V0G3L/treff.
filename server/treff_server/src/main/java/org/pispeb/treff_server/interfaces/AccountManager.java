@@ -57,7 +57,7 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied ID. <code>null</code> if no such account exists.
      */
-    Account getAccountByID(int id) throws DatabaseException;
+    Account getAccount(int id) throws DatabaseException;
 
     /**
      * Creates a new account with the supplied username, email address and

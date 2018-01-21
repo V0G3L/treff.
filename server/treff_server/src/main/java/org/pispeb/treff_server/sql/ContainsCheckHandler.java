@@ -12,7 +12,7 @@ import java.sql.SQLException;
  * <p>A return value of <code>false</code> means that the ResultSet was empty.
  * <code>true</code> implies that at least one row was returned.</p>
  */
-public class DuplicateCheckHandler implements ResultSetHandler<Boolean> {
+public class ContainsCheckHandler implements ResultSetHandler<Boolean> {
     @Override
     public Boolean handle(ResultSet rs) throws SQLException {
         return rs.next();

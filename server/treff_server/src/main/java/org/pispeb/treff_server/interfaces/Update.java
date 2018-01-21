@@ -18,7 +18,7 @@ import java.util.Set;
  * Update's set of affected Accounts to ensure that the same Account isn't
  * handed
  * the same Update twice.
- * An Update that has no more affected Accounts should be deleted and no longer
+ * An Update that has no more affected Accounts should be isDeleted and no longer
  * referenced.</p>
  * <p>
  * <p>Updates are naturally ordered from oldest to newest.</p>
@@ -62,7 +62,7 @@ public interface Update extends Comparable<Update> {
      * Removes an {@link Account} from the set of affected Accounts.
      * Should the set be empty after the removal, this method will
      * return true.
-     * In that case, the Update should be considered as deleted.
+     * In that case, the Update should be considered as isDeleted.
      * It's methods should no longer be used and all references to it
      * should be removed.
      *

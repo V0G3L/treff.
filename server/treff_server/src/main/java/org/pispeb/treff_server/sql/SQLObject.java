@@ -3,6 +3,7 @@ package org.pispeb.treff_server.sql;
 import org.apache.commons.dbutils.handlers.MapHandler;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.DataObject;
+import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -18,17 +19,22 @@ import java.util.stream.Collectors;
  */
 public abstract class SQLObject implements DataObject {
 
-    private final ReadWriteLock readWriteLock
-            = new ReentrantReadWriteLock(true);
-
     protected final int id;
     protected final SQLDatabase database;
     protected final Properties config;
 
-    SQLObject(int id, SQLDatabase database, Properties config) {
+    private final ReadWriteLock readWriteLock
+            = new ReentrantReadWriteLock(true);
+    protected boolean deleted = false;
+
+    final TableName tableName;
+
+    SQLObject(int id, SQLDatabase database, Properties config, TableName
+            tableName) {
         this.id = id;
         this.database = database;
         this.config = config;
+        this.tableName = tableName;
     }
 
     protected Map<String, Object> getProperties(String... keys)
@@ -40,7 +46,7 @@ public abstract class SQLObject implements DataObject {
                     "SELECT (?) FROM ? WHERE id=?;",
                     new MapHandler(),
                     keyList,
-                    tableName(),
+                    tableName,
                     id
             );
 
@@ -66,11 +72,11 @@ public abstract class SQLObject implements DataObject {
             // key1=?,key2=?,key3=?
             String assignmentList =
                     keys.stream()
-                        .map((key) -> key + "=?")
-                        .collect(Collectors.joining(","));
+                            .map((key) -> key + "=?")
+                            .collect(Collectors.joining(","));
 
             LinkedList<Object> params = new LinkedList<>();
-            params.add(tableName());
+            params.add(tableName);
             params.add(values);
             params.add(id);
 
@@ -83,10 +89,13 @@ public abstract class SQLObject implements DataObject {
         }
     }
 
-    protected abstract String tableName();
-
     @Override
     public ReadWriteLock getReadWriteLock() {
         return readWriteLock;
+    }
+
+    @Override
+    public boolean isDeleted() {
+        return deleted;
     }
 }

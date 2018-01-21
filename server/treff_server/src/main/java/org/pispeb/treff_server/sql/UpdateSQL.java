@@ -3,6 +3,7 @@ package org.pispeb.treff_server.sql;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Update;
+import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import javax.json.JsonObject;
 import java.util.Date;
@@ -11,8 +12,10 @@ import java.util.Set;
 
 public class UpdateSQL extends SQLObject implements Update {
 
+    private static final TableName TABLE_NAME = TableName.UPDATES;
+
     UpdateSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config);
+        super(id, database, config, TABLE_NAME);
     }
 
     @Override

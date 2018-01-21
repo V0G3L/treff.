@@ -4,21 +4,23 @@ import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
+
+    private static final TableName TABLE_NAME = TableName.USERGROUPS;
 
     private Set<Account> members;
     private Map<Account, Set<Permission>> memberPermissions;
 
     UsergroupSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config);
+        super(id, database, config, TABLE_NAME);
     }
 
     @Override
@@ -85,11 +87,6 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                                       boolean value)
             throws AccountNotInGroupException, DatabaseException {
 
-    }
-
-    @Override
-    protected String tableName() {
-        return null;
     }
 
     @Override

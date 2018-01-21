@@ -5,6 +5,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
+import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.util.List;
 import java.util.Properties;
@@ -12,8 +13,11 @@ import java.util.concurrent.locks.ReadWriteLock;
 
 public class PollSQL extends SQLObject implements Poll {
 
+
+    private static final TableName TABLE_NAME = TableName.POLLS;
+
     PollSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config);
+        super(id, database, config, TABLE_NAME);
     }
 
     @Override
@@ -61,11 +65,6 @@ public class PollSQL extends SQLObject implements Poll {
     @Override
     public void cancelPoll() throws DatabaseException {
 
-    }
-
-    @Override
-    protected String tableName() {
-        return null;
     }
 
     @Override

@@ -9,13 +9,12 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
+import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
-import javax.json.JsonObject;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -28,18 +27,12 @@ import static org.pispeb.treff_server.ConfigKeys.*;
 
 public class AccountSQL extends SQLObject implements Account {
 
-    private static final Object usernameLock = new Object();
-    private static final String TABLE_NAME = "account";
+    private static final TableName TABLE_NAME = TableName.ACCOUNTS;
 
     private final Lock requestLock = new ReentrantLock();
 
     AccountSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config);
-    }
-
-    @Override
-    protected String tableName() {
-        return "accounts";
+        super(id, database, config, TABLE_NAME);
     }
 
     // TODO: write SQL statements
@@ -53,22 +46,15 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public void setUsername(String username) throws
             DuplicateUsernameException, DatabaseException {
-        // process username changes of everyone in sequence to ensure
-        // uniqueness
-        synchronized (usernameLock) {
+        // have to acquire lock since username changes are not atomical
+        EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
+        synchronized (entityManager.usernameLock) {
             // check for duplicates
-            try {
-                if (database.getQueryRunner().query(
-                        "SELECT id FROM accounts WHERE username=?;",
-                        new DuplicateCheckHandler(),
-                        username)) {
-                    throw new DuplicateUsernameException();
-                } else {
-                    setProperties(new AssignmentList()
-                            .put("username", username));
-                }
-            } catch (SQLException e) {
-                throw new DatabaseException(e);
+            if (entityManager.hasAccountWithUsername(username)) {
+                throw new DuplicateUsernameException();
+            } else {
+                setProperties(new AssignmentList()
+                        .put("username", username));
             }
         }
     }
@@ -122,7 +108,6 @@ public class AccountSQL extends SQLObject implements Account {
         setProperties(new AssignmentList()
                 .put("passwordsalt", HexBin.encode(salt))
                 .put("passwordhash", HexBin.encode(newHash)));
-        JsonObject jsonObject = null;
     }
 
     @Override
@@ -134,7 +119,17 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public void setEmail(String email) throws DuplicateEmailException,
             DatabaseException {
-
+        // have to acquire lock since email address changes are not atomical
+        EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
+        synchronized (entityManager.emailLock) {
+            // check for duplicates
+            if (entityManager.hasAccountWithEmail(email)) {
+                throw new DuplicateUsernameException();
+            } else {
+                setProperties(new AssignmentList()
+                        .put("email", email));
+            }
+        }
     }
 
     @Override
@@ -199,9 +194,6 @@ public class AccountSQL extends SQLObject implements Account {
         // clears its own blocklist
         // clears itself from all other blocklists (somehow, unclear)
         // events and polls have to be able to handle non-existent creators
-        synchronized (this) {
-
-        }
     }
 
     public Lock getRequestLock() {

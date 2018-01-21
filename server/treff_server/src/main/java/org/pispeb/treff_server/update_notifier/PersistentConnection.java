@@ -28,7 +28,7 @@ public class PersistentConnection implements AccountUpdateListener {
     public PersistentConnection(PrintWriter out, AccountManager accountManager,
                                 int userID) throws DatabaseException {
         this.out = out;
-        this.observedAccount = accountManager.getAccountByID(userID);
+        this.observedAccount = accountManager.getAccount(userID);
         observedAccount.addUpdateListener(this);
     }
 

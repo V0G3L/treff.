@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.pispeb.treff_server.ConfigKeys.*;
+import static org.pispeb.treff_server.sql.SQLDatabase.TableName.*;
 
 /**
  * @author tim
@@ -53,7 +54,7 @@ public class SQLDatabase {
         // if db never initialized before:
         createTables();
 
-        EntityManagerSQL.initialize(this);
+        EntityManagerSQL.initialize(this, config);
     }
 
     private void createTables()
@@ -72,7 +73,7 @@ public class SQLDatabase {
 
         String[] tableCreationStatements = {
                 // accounts
-                String.format("CREATE TABLE accounts (" +
+                String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "username VARCHAR(%d) NOT NULL UNIQUE," +
                                 "email VARCHAR(%d) UNIQUE," +
@@ -82,6 +83,7 @@ public class SQLDatabase {
                                 "latitude DOUBLE," +
                                 "timemeasured DATETIME" +
                                 ");",
+                        ACCOUNTS.toString(),
                         Integer.parseInt(
                                 config.getProperty(USER_NAME_LENGTH_MAX
                                         .toString())),
@@ -96,60 +98,65 @@ public class SQLDatabase {
                         PASSWORD_HASH_BYTES * 2),
 
                 // contacts
-                "CREATE TABLE contacts (" +
-                        "lowid INT NOT NULL," +
-                        "highid INT NOT NULL," +
-                        "FOREIGN KEY (lowid)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "FOREIGN KEY (highid)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "PRIMARY KEY (lowid,highid)" +
-                        ");",
+                String.format("CREATE TABLE %s (" +
+                                "lowid INT NOT NULL," +
+                                "highid INT NOT NULL," +
+                                "FOREIGN KEY (lowid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "FOREIGN KEY (highid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (lowid,highid)" +
+                                ");",
+                        CONTACTS.toString()),
 
                 // blocks
-                "CREATE TABLE blocks (" +
-                        "blocker INT NOT NULL," +
-                        "blocked INT NOT NULL," +
-                        "FOREIGN KEY (blocker)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "FOREIGN KEY (blocked)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "PRIMARY KEY (blocker,blocked)" +
-                        ");",
+                String.format("CREATE TABLE %s (" +
+                                "blocker INT NOT NULL," +
+                                "blocked INT NOT NULL," +
+                                "FOREIGN KEY (blocker)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "FOREIGN KEY (blocked)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (blocker,blocked)" +
+                                ");",
+                        BLOCKS.toString()),
 
                 // usergroups
-                String.format("CREATE TABLE usergroups (" +
+                String.format("CREATE TABLE %s(" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "name VARCHAR(%d) NOT NULL" +
                                 ");",
+                        USERGROUPS.toString(),
                         Integer.parseInt(
                                 config.getProperty(USERGROUP_NAME_LENGTH_MAX
                                         .toString()))),
 
                 // groupmemberships
-                "CREATE TABLE groupmemberships (" +
-                        "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                        "accountid INT NOT NULL," +
-                        "FOREIGN KEY (accountid)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "usergroupid INT NOT NULL," +
-                        "FOREIGN KEY (usergroupid)" +
-                        "   REFERENCES usergroups(id)" +
-                        "   ON DELETE CASCADE," +
+                String.format("CREATE TABLE %s (" +
+                                "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                                "accountid INT NOT NULL," +
+                                "FOREIGN KEY (accountid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "usergroupid INT NOT NULL," +
+                                "FOREIGN KEY (usergroupid)" +
+                                "   REFERENCES usergroups(id)" +
+                                "   ON DELETE CASCADE," +
+                                "%s" +
+                                ");",
+                        GROUPMEMBERSHIPS.toString(),
                         // add all permissions
                         Arrays.stream(Permission.values())
                                 .map((p) -> "permission_" +
                                         p.toString() + " BIT NOT NULL")
-                                .collect(Collectors.joining(",")) +
-                        ");",
+                                .collect(Collectors.joining(","))),
 
                 // events
-                String.format("CREATE TABLE events (" +
+                String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -164,12 +171,13 @@ public class SQLDatabase {
                                 "longitude DOUBLE NOT NULL," +
                                 "latitude DOUBLE NOT NULL" +
                                 ");",
+                        EVENTS.toString(),
                         Integer.parseInt(
                                 config.getProperty(EVENT_TITLE_LENGTH_MAX
                                         .toString()))),
 
                 // polls
-                String.format("CREATE TABLE polls (" +
+                String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -181,31 +189,34 @@ public class SQLDatabase {
                                 "   REFERENCES accounts(id)," +
                                 "multichoice BIT NOT NULL" +
                                 ");",
+                        POLLS.toString(),
                         Integer.parseInt(
                                 config.getProperty(POLL_QUESTION_LENGTH_MAX
                                         .toString()))),
 
                 // polloptions
-                "CREATE TABLE polloptions (" +
-                        "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                        "pollid INT NOT NULL," +
-                        "FOREIGN KEY (pollid)" +
-                        "   REFERENCES polls(id)" +
-                        "   ON DELETE CASCADE," +
-                        "timestart DATETIME NOT NULL," +
-                        "timeend DATETIME NOT NULL," +
-                        "longitude DOUBLE NOT NULL," +
-                        "latitude DOUBLE NOT NULL" +
-                        ");",
+                String.format("CREATE TABLE %s (" +
+                                "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                                "pollid INT NOT NULL," +
+                                "FOREIGN KEY (pollid)" +
+                                "   REFERENCES polls(id)" +
+                                "   ON DELETE CASCADE," +
+                                "timestart DATETIME NOT NULL," +
+                                "timeend DATETIME NOT NULL," +
+                                "longitude DOUBLE NOT NULL," +
+                                "latitude DOUBLE NOT NULL" +
+                                ");",
+                        POLLOPTIONS.toString()),
 
                 // updates
-                String.format("CREATE TABLE updates (" +
+                String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL," +
                                 "time DATETIME NOT NULL," +
                                 "type VARCHAR(%d) NOT NULL," +
                                 "latitude DOUBLE NOT NULL" +
                                 ");",
+                        UPDATES.toString(),
                         // set max size of 'type' field to size of longest
                         // UpdateType
                         Arrays.stream(Update.UpdateType.values())
@@ -214,17 +225,18 @@ public class SQLDatabase {
                                 .get()),
 
                 // updateaffections
-                "CREATE TABLE updateaffections (" +
-                        "updateid INT NOT NULL," +
-                        "FOREIGN KEY (updateid)" +
-                        "   REFERENCES updates(id)" +
-                        "   ON DELETE CASCADE," +
-                        "accountid INT NOT NULL," +
-                        "FOREIGN KEY (accountid)" +
-                        "   REFERENCES accounts(id)" +
-                        "   ON DELETE CASCADE," +
-                        "PRIMARY KEY (updateid,accountid)" +
-                        ");",
+                String.format("CREATE TABLE %s (" +
+                                "updateid INT NOT NULL," +
+                                "FOREIGN KEY (updateid)" +
+                                "   REFERENCES updates(id)" +
+                                "   ON DELETE CASCADE," +
+                                "accountid INT NOT NULL," +
+                                "FOREIGN KEY (accountid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (updateid,accountid)" +
+                                ");",
+                        UPDATEAFFECTIONS.toString())
         };
 
         // Execute all table creation statements
@@ -236,16 +248,16 @@ public class SQLDatabase {
     private void wipeDB() throws SQLException {
         // child tables must be listed before their parent tables
         String[] tableNames = {
-                "contacts",
-                "blocks",
-                "updateaffections",
-                "updates",
-                "groupmemberships",
-                "events",
-                "polloptions",
-                "polls",
-                "accounts",
-                "usergroups"
+                CONTACTS.toString(),
+                BLOCKS.toString(),
+                UPDATEAFFECTIONS.toString(),
+                UPDATES.toString(),
+                GROUPMEMBERSHIPS.toString(),
+                EVENTS.toString(),
+                POLLOPTIONS.toString(),
+                POLLS.toString(),
+                ACCOUNTS.toString(),
+                USERGROUPS.toString(),
         };
 
         for (String name : tableNames) {
@@ -257,5 +269,29 @@ public class SQLDatabase {
 
     QueryRunner getQueryRunner() {
         return queryRunner;
+    }
+
+    enum TableName {
+        ACCOUNTS("accounts"),
+        CONTACTS("contacts"),
+        BLOCKS("blocks"),
+        USERGROUPS("usergroups"),
+        GROUPMEMBERSHIPS("groupmemberships"),
+        EVENTS("events"),
+        POLLS("polls"),
+        POLLOPTIONS("polloptions"),
+        UPDATES("updates"),
+        UPDATEAFFECTIONS("updateaffections");
+
+        private final String name;
+
+        TableName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
