@@ -16,10 +16,11 @@ public class LoginCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return a verifying token for further commands encoded as a JsonObject
-     * @param jsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 

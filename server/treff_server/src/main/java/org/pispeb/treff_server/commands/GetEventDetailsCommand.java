@@ -16,10 +16,11 @@ public class GetEventDetailsCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return a detailed description of the Event encoded as a JsonObject
-     * @param jsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 

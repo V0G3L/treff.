@@ -26,19 +26,19 @@ public class GetUserDetailsCommand extends AbstractCommand {
     }
 
     /**
-     * @return a description of the Account encoded as a JsonObject
      * @param jsonObject the command encoded as a JsonObject
+     * @return a description of the Account encoded as a JsonObject
      */
     public CommandResponse execute(JsonObject jsonObject)
             throws DatabaseException {
         // extract parameters
         CommandResponse parseResponse = parseParameters(jsonObject);
-        if(parseResponse != null) {
+        if (parseResponse != null) {
             return parseResponse;
         }
         // get the account
         Account account = this.accountManager.getAccount(this.id);
-        if(account == null) {
+        if (account == null) {
             return new CommandResponse(StatusCode.USERIDINVALID,
                     Json.createObjectBuilder().build());
         }
@@ -75,11 +75,12 @@ public class GetUserDetailsCommand extends AbstractCommand {
         }
         // extract parameters
         this.id = number;
-        return  null;
+        return null;
     }
 
     /**
      * converts a JsonValue to an Integer
+     *
      * @param jsonValue the JsonValue to convert
      * @return the Integer if possible, null else
      */
@@ -87,7 +88,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
         Integer ret = null;
         if (jsonValue.getValueType() == JsonValue.ValueType.NUMBER) {
             JsonNumber jsonNumber = (JsonNumber) jsonValue;
-            if (jsonNumber.isIntegral()){
+            if (jsonNumber.isIntegral()) {
                 long value = jsonNumber.longValue();
                 if (value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE) {
                     ret = (int) value;

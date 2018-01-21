@@ -16,11 +16,12 @@ public class CreatePollCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return the ID of the created Poll and an array of IDs of the polloptions
-     *          encoded as a JsonObject
-     * @param jsonObject
+     * encoded as a JsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 

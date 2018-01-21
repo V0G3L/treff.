@@ -16,10 +16,11 @@ public class CreateEventCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return the ID of the created Event encoded as a JsonObject
-     * @param jsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 

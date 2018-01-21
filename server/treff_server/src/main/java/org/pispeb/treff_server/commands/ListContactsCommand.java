@@ -16,10 +16,11 @@ public class ListContactsCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return an array of IDs of the Accounts encoded as a JsonObject
-     * @param jsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 

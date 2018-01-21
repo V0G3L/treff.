@@ -16,11 +16,12 @@ public class ListGroupsCommand extends AbstractCommand {
     }
 
     /**
+     * @param jsonObject the command encoded as a JsonObject
      * @return an array of rough descriptions of the Usergroups encoded as a
-     *          JsonObject
-     * @param jsonObject
+     * JsonObject
      */
-    public CommandResponse execute(JsonObject jsonObject) throws DatabaseException {
+    public CommandResponse execute(JsonObject jsonObject) throws
+            DatabaseException {
         return null; //TODO
     }
 
