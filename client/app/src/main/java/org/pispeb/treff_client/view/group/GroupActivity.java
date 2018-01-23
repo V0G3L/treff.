@@ -27,12 +27,13 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 public class GroupActivity extends AppCompatActivity implements
         EoPDialogFragment.EoPDialogListener {
 
+    // identifier for group id in starting intent
     private static final String GRP_INTENT = "groupIntent";
 
+    // id of the group
     private int groupId;
 
     private ActivityGroupBinding binding;
-
     private TabLayout tabLayout;
     private ViewPager viewPager;
 

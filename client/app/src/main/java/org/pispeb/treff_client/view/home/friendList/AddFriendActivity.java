@@ -21,11 +21,19 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class AddFriendActivity extends AppCompatActivity {
 
+    /**
+     * Create intent to start this activity from another activity
+     * @param activity parent activity
+     */
     public static void start(Activity activity) {
         Intent intent = new Intent(activity, AddFriendActivity.class);
         activity.startActivity(intent);
     }
 
+    /**
+     * Create intent to start this activity from a fragment
+     * @param fragment parent fragment
+     */
     public static void start(Fragment fragment) {
         Intent intent = new Intent(fragment.getContext(), AddFriendActivity.class);
         fragment.startActivity(intent);
