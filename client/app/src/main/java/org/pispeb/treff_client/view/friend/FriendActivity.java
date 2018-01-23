@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityFriendBinding;
@@ -43,14 +45,30 @@ public class FriendActivity extends AppCompatActivity {
                 .of(this, ViewModelFactory.getInstance(this))
                 .get(FriendViewModel.class);
 
+        //toolbar
+        Toolbar toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         int userId = (int) getIntent().getExtras().get(USER_INTENT);
 
         vm.setUserById(userId);
 
         vm.getUser().observe(this, user -> {
             binding.username.setText(user.getUsername());
+            getSupportActionBar().setTitle(user.getUsername());
         });
 
         binding.setVm(vm);
+
+
     }
 }
