@@ -21,14 +21,14 @@ import org.pispeb.treff_client.data.entities.*;
         PollOption.class,
         User.class,
         UserGroup.class
-        }, version = 3, exportSchema = false)
+        }, version = 4, exportSchema = false)
 public abstract class TreffDatabase extends RoomDatabase {
 
     private static TreffDatabase INSTANCE;
 
     public static TreffDatabase getInstance(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.databaseBuilder(context, TreffDatabase.class, "treff.db").build();
+            INSTANCE = Room.databaseBuilder(context, TreffDatabase.class, "treff.db").fallbackToDestructiveMigration().build();
         }
         return INSTANCE;
     }

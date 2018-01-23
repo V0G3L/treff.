@@ -15,10 +15,6 @@ import org.pispeb.treff_client.databinding.ChatItemBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Lukas on 1/6/2018.
- */
-
 public class GroupChatAdapter
         extends PagedListAdapter<ChatMessage, GroupChatViewHolder> {
 
