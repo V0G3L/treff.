@@ -3,6 +3,7 @@ package org.pispeb.treff_client.view.group.eventList;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 
 import org.pispeb.treff_client.data.entities.Occasion;
 import org.pispeb.treff_client.databinding.FragmentGroupEventsBinding;
+import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.LinkedList;
@@ -27,6 +29,7 @@ public class GroupEventListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        // inflate layout
         final FragmentGroupEventsBinding binding = FragmentGroupEventsBinding
                 .inflate(inflater, container, false);
         GroupEventListViewModel vm = ViewModelProviders.of(this,
@@ -34,14 +37,18 @@ public class GroupEventListFragment extends Fragment {
                 (GroupEventListViewModel.class);
         final GroupEventListAdapter adapter = new GroupEventListAdapter();
 
+        binding.setVm(vm);
+
+        vm.getState().observe(this, state -> callback(state));
+
+        // merge event and poll list when either of them changes
         vm.getEvents().observe(this, events -> {
             List<Occasion> list = new LinkedList<>();
             if (events != null) {
                 list.addAll(events);
             }
             if (vm.getPolls().getValue() != null) {
-                list.addAll(vm.getPolls()
-                        .getValue());
+                list.addAll(vm.getPolls().getValue());
             }
             adapter.setData(list);
         });
@@ -63,4 +70,18 @@ public class GroupEventListFragment extends Fragment {
 
         return binding.getRoot();
     }
+
+    // handling callbacks from the ViewModel that require a context
+    private void callback(State state) {
+        switch (state.call) {
+            case DISPLAY_EOP_DIALOG:
+                DialogFragment dialog = new EoPDialogFragment();
+                dialog.show(getFragmentManager(), "event or poll");
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal VM state");
+        }
+    }
+
+
 }

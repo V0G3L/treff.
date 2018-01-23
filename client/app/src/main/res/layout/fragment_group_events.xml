@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="vm"
+            type="org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel"/>
+    </data>
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -11,6 +17,15 @@
             android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="10dp"
+            android:onClick="@{() -> vm.onAddClick()}"
+            android:backgroundTint="@color/colorPrimary"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

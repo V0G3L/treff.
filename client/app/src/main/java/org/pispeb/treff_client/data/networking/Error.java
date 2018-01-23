@@ -35,6 +35,15 @@ public enum Error {
         return message;
     }
 
+    public static Error getValue(int code) {
+        for (Error e : Error.values()) {
+            if (e.code == code) {
+                return e;
+            }
+        }
+        return ERRORCODE_INVALID;
+    }
+
     private static Resources sys() {
         return Resources.getSystem();
     }

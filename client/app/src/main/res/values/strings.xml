@@ -42,5 +42,9 @@
     <string name="private_group">Private Group</string>
     <string name="groupname">Groupname</string>
     <string name="create_group">Create Group</string>
+    <string name="poll_or_event">What do you want to add?</string>
+    <string name="poll">Poll</string>
+    <string name="event">Event</string>
+
 
 </resources>

@@ -15,6 +15,7 @@ import android.view.View;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
+import org.pispeb.treff_client.view.group.eventList.EoPDialogFragment;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
@@ -23,7 +24,8 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 /**
  * Group screen, hosting chat and event fragments in tabs
  */
-public class GroupActivity extends AppCompatActivity {
+public class GroupActivity extends AppCompatActivity implements
+        EoPDialogFragment.EoPDialogListener {
 
     private static final String GRP_INTENT = "groupIntent";
 
@@ -82,6 +84,16 @@ public class GroupActivity extends AppCompatActivity {
         //tab titles
         tabLayout = binding.groupTabs;
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public void onPollClick() {
+//        AddPollActivity.start(this);
+    }
+
+    @Override
+    public void onEventClick() {
+//        AddEventActivity.start(this);
     }
 
     private void setupViewPager(ViewPager viewPager) {
