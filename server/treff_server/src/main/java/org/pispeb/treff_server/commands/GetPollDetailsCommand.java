@@ -7,6 +7,7 @@ import org.pispeb.treff_server.networking.CommandResponse;
 import javax.json.JsonObject;
 
 //TODO needs to be tested
+
 /**
  * a command to get a detailed description of a Poll of a Usergroup
  */

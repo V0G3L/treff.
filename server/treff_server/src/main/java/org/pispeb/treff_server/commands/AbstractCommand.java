@@ -5,7 +5,11 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
 
-import javax.json.*;
+import javax.json.JsonObject;
+import javax.json.Json;
+import javax.json.JsonValue;
+import javax.json.JsonString;
+import javax.json.JsonNumber;
 
 /**
  * TODO description
@@ -20,28 +24,31 @@ public abstract class AbstractCommand {
 
     /**
      * executes the command
+     *
+     * @param jsonObject TODO
      * @return a CommandResponse with a status code and
      * the specific return value encoded as a JsonObject
-     * @param jsonObject
      */
     public abstract CommandResponse execute(JsonObject jsonObject)
             throws DatabaseException;
 
     /**
      * extracts the parameters and verifies their format
+     *
      * @param jsonObject the command given as a JsonObject
      */
     protected abstract CommandResponse parseParameters(JsonObject jsonObject);
 
     /**
      * extracts a string value given by a JsonObject into a variable
-     * @param storage the variable to store the value
-     * @param key the key of the string
+     *
+     * @param storage    the variable to store the value
+     * @param key        the key of the string
      * @param jsonObject the JsonObject
      * @return null if successful, an error-commandResponse else
      */
     protected CommandResponse extractStringParameter(String storage, String key,
-                                                      JsonObject jsonObject) {
+                                                     JsonObject jsonObject) {
         // does the parameter exist
         if (!jsonObject.containsKey(key)) {
             return new CommandResponse(StatusCode.SYNTAX,
@@ -60,13 +67,14 @@ public abstract class AbstractCommand {
 
     /**
      * extracts an integer value given by a JsonObject into a variable
-     * @param storage the variable to store the value
-     * @param key the key of the integer
+     *
+     * @param storage    the variable to store the value
+     * @param key        the key of the integer
      * @param jsonObject the JsonObject
      * @return null if sucessful, an error-commandResponse else
      */
     protected CommandResponse extractIntegerParameter(int storage, String key,
-                                             JsonObject jsonObject) {
+                                                      JsonObject jsonObject) {
         // does the parameter exist
         if (!jsonObject.containsKey(key)) {
             return new CommandResponse(StatusCode.SYNTAX,
