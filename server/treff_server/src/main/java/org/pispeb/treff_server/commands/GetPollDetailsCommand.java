@@ -6,10 +6,14 @@ import org.pispeb.treff_server.networking.CommandResponse;
 
 import javax.json.JsonObject;
 
+//TODO needs to be tested
 /**
  * a command to get a detailed description of a Poll of a Usergroup
  */
 public class GetPollDetailsCommand extends AbstractCommand {
+
+    private int id;
+    private int groupId;
 
     public GetPollDetailsCommand(AccountManager accountManager) {
         super(accountManager);
@@ -21,10 +25,15 @@ public class GetPollDetailsCommand extends AbstractCommand {
      */
     public CommandResponse execute(JsonObject jsonObject) throws
             DatabaseException {
-        return null; //TODO
+        return null; //TODO need a Map<Token, Account> or an account id
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        return null; //TODO
+        CommandResponse response = extractIntegerParameter(this.groupId,
+                "group-id", jsonObject);
+        if (response == null) {
+            response = extractIntegerParameter(this.id, "id", jsonObject);
+        }
+        return response;
     }
 }

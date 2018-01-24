@@ -7,15 +7,14 @@ import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
 
 import javax.json.Json;
-import javax.json.JsonNumber;
 import javax.json.JsonObject;
-import javax.json.JsonValue;
 import java.util.concurrent.locks.Lock;
 
+
+//TODO needs to be tested
 /**
  * a command to get a detailed description of an Account by its ID
  */
-//TODO needs to be tested
 public class GetUserDetailsCommand extends AbstractCommand {
 
     private int id;
@@ -62,39 +61,6 @@ public class GetUserDetailsCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        // does the id parameter exist
-        if (!jsonObject.containsKey("id")) {
-            return new CommandResponse(StatusCode.SYNTAX,
-                    Json.createObjectBuilder().build());
-        }
-        // is it an Integer
-        Integer number = toInt(jsonObject.get("id"));
-        if (number == null) {
-            return new CommandResponse(StatusCode.SYNTAX,
-                    Json.createObjectBuilder().build());
-        }
-        // extract parameters
-        this.id = number;
-        return null;
-    }
-
-    /**
-     * converts a JsonValue to an Integer
-     *
-     * @param jsonValue the JsonValue to convert
-     * @return the Integer if possible, null else
-     */
-    private Integer toInt(JsonValue jsonValue) {
-        Integer ret = null;
-        if (jsonValue.getValueType() == JsonValue.ValueType.NUMBER) {
-            JsonNumber jsonNumber = (JsonNumber) jsonValue;
-            if (jsonNumber.isIntegral()) {
-                long value = jsonNumber.longValue();
-                if (value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE) {
-                    ret = (int) value;
-                }
-            }
-        }
-        return ret;
+        return extractIntegerParameter(this.id, "id", jsonObject);
     }
 }

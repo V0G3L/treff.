@@ -8,10 +8,10 @@ import org.pispeb.treff_server.networking.StatusCode;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.util.concurrent.locks.Lock;
 
+
+//TODO needs to be tested
 /**
  * a command to get the ID of an Account by its name
  */
@@ -61,19 +61,6 @@ public class GetUserIdCommand extends AbstractCommand {
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {
-        // does the id parameter exist
-        if (!jsonObject.containsKey("user")) {
-            return new CommandResponse(StatusCode.SYNTAX,
-                    Json.createObjectBuilder().build());
-        }
-        // is it a String
-        if (jsonObject.get("user").getValueType()
-                != JsonValue.ValueType.STRING) {
-            return new CommandResponse(StatusCode.SYNTAX,
-                    Json.createObjectBuilder().build());
-        }
-        // extract parameters
-        this.username = ((JsonString) jsonObject.get("user")).getString();
-        return null;
+        return extractStringParameter(this.username, "user", jsonObject);
     }
 }
