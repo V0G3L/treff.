@@ -23,9 +23,15 @@
     <string name="tabtext_chat">Chat</string>
 
 
-    <!-- navigation drawer open/close strings for accessibility -->
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <!-- navigation drawer -->
+        <!-- open/close strings for accessibility -->
+        <string name="drawer_open">Open navigation drawer</string>
+        <string name="drawer_close">Close navigation drawer</string>
+        <!-- actual menu items -->
+        <string name="drawer_nav_home">Home</string>
+        <string name="drawer_nav_settings">Settings</string>
+        <string name="drawer_nav_about">About us</string>
+        <string name="drawer_nav_logout">Log out</string>
 
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>
