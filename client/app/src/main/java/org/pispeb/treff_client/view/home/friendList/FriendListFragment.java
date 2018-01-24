@@ -25,7 +25,7 @@ public class FriendListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // binding to layout
+        // frameBinding to layout
         final FragmentFriendListBinding binding = FragmentFriendListBinding
                 .inflate(inflater, container, false);
         // ViewModel which also serves as onClickListener for adapter

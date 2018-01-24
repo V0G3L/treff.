@@ -1,10 +1,10 @@
 package org.pispeb.treff_client.view.home;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
-import android.databinding.DataBindingUtil;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,36 +16,46 @@ import org.pispeb.treff_client.view.home.eventList.EventListFragment;
 import org.pispeb.treff_client.view.home.friendList.FriendListFragment;
 import org.pispeb.treff_client.view.home.groupList.GroupListFragment;
 import org.pispeb.treff_client.view.home.map.MapFragment;
-import org.pispeb.treff_client.view.ui_components.TabbedNavigationActivity;
+import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 
 
 /**
  * Main screen to host different tabs, access navigation drawer
  */
-public class HomeActivity extends TabbedNavigationActivity {
+public class HomeActivity extends NavigationActivity {
 
     private ActivityHomeBinding binding;
 
     private Toolbar toolbar;
-    private DrawerLayout drawer;
     private ActionBarDrawerToggle drawerToggle;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
+    /**
+     * Create intent to start this activity from another activity
+     * @param activity parent activity
+     */
+    public static void start(Activity activity) {
+        Intent intent = new Intent(activity, HomeActivity.class);
+        activity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
+
+        binding = ActivityHomeBinding.inflate(getLayoutInflater(),
+                frameBinding.contentFrame, false);
+        frameBinding.contentFrame.addView(binding.getRoot());
+
 
         //set custom toolbar as action bar
         toolbar = binding.toolbarHome;
         setSupportActionBar(toolbar);
 
         //drawer view
-        drawer = binding.drawerLayout;
         drawerToggle = setupDrawerToggle();
         drawer.addDrawerListener(drawerToggle);
 
@@ -73,6 +83,16 @@ public class HomeActivity extends TabbedNavigationActivity {
     }
 
     /**
+     * Called after the activity's onStart(), this method ensures that the drawerToggle's state is restored correctly
+     * @param savedInstanceState previous saved state
+     */
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    /**
      * Creates a drawerToggle with the right context and accessibility strings
      * @return the drawerToggle
      */
@@ -89,16 +109,6 @@ public class HomeActivity extends TabbedNavigationActivity {
                 invalidateOptionsMenu();
             }
         };
-    }
-
-    /**
-     * Called after the activity's onStart(), this method ensures that the drawerToggle's state is restored correctly
-     * @param savedInstanceState previous saved state
-     */
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        drawerToggle.syncState();
     }
 
     /**
