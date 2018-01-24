@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Room {@link Entity} that represents an event
@@ -14,20 +15,17 @@ import java.time.LocalDateTime;
 public class Event extends Occasion{
     @PrimaryKey
     private int id;
-    @Ignore //TODO time
-    private LocalDateTime created;
-    @Ignore //TODO time
-    private LocalDateTime start;
-    @Ignore //TODO position
+    private Date created;
+    private Date start;
     private Position position;
     private int creator;
 
     public Event(int id, String name, int creator) {
         this.id = id;
         this.name = name;
-        //this.created = created;
-        //this.start = start;
-        //this.position = position;
+        this.created = created;
+        this.start = start;
+        this.position = position;
         this.creator = creator;
     }
 
@@ -71,11 +69,11 @@ public class Event extends Occasion{
         this.creator = creator;
     }
 
-    public LocalDateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public LocalDateTime getStart() {
+    public Date getStart() {
         return start;
     }
 
@@ -83,11 +81,11 @@ public class Event extends Occasion{
         return position;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 

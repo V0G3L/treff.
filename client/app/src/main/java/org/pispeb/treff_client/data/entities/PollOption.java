@@ -13,13 +13,12 @@ public class PollOption {
     @PrimaryKey
     private int optionID;
     private String name;
-    @Ignore //TODO position
     private Position position;
 
     public PollOption(int optionID, String name) {
         this.optionID = optionID;
         this.name = name;
-        //this.position = position;
+        this.position = position;
     }
 
     public int getOptionID() {

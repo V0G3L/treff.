@@ -7,14 +7,17 @@ import org.pispeb.treff_client.data.entities.Position;
 
 public class PositionConverter {
     @TypeConverter
-    public static Position toPosition(double lon, double lat) {
-        //TODO implement
-        return null;
+    public static Position toPosition(String position) {
+        if (position == null) return null;
+        String[] coords = position.split("#");
+        double lat = Double.parseDouble(coords[0]);
+        double lon = Double.parseDouble(coords[1]);
+        return new Position(lat, lon);
     }
 
     @TypeConverter
-    public static double[] toDoubles(Position position) {
-        //TODO implement
-        return null;
+    public static String toDoubles(Position position) {
+        if (position == null) return null;
+        return position.getLat() + "#" + position.getLon();
     }
 }

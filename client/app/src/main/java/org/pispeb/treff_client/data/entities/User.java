@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Room {@link Entity} that represents a user, contains only as much information as the client needs
@@ -17,18 +18,19 @@ public class User {
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
-    @Ignore //TODO position
+
+
+
     private Position position;
-    @Ignore //TODO lastPositionUpdate;
-    private LocalDateTime lastPositionUpdate;
+    private Date lastPositionUpdate;
 
     public User(int userID, String username, boolean isFriend, boolean isBlocked) {
         this.userID = userID;
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
-        //this.position = position;
-        //this.lastPositionUpdate = lastPositionUpdate;
+        this.position = position;
+        this.lastPositionUpdate = lastPositionUpdate;
     }
 
     @Override
@@ -36,12 +38,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        User user = (User) o;
-
-        if (userID != user.userID) return false;
-        if (isFriend != user.isFriend) return false;
-        if (isBlocked != user.isBlocked) return false;
-        return username.equals(user.username);
+        return userID == ((User) o).userID;
     }
 
     @Override
@@ -85,4 +82,19 @@ public class User {
         isBlocked = blocked;
     }
 
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public Date getLastPositionUpdate() {
+        return lastPositionUpdate;
+    }
+
+    public void setLastPositionUpdate(Date lastPositionUpdate) {
+        this.lastPositionUpdate = lastPositionUpdate;
+    }
 }

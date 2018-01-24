@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * Room {@link Entity} that represents a single chat message in a {@link Chat}
@@ -17,14 +18,13 @@ public class ChatMessage {
     private String content;
     @Ignore //TODO user
     private User sender;
-    @Ignore //TODO timestamp
-    private LocalDateTime timeSent;
+    private Date timeSent;
 
     public ChatMessage(int messageID, String content) {
         this.messageID = messageID;
         this.content = content;
         //this.sender = sender;
-        //this.timeSent = timeSent;
+        this.timeSent = timeSent;
     }
 
     @Override
@@ -38,8 +38,7 @@ public class ChatMessage {
         if (!content.equals(that.content)) return false;
         //TODO set these values; null causes runtime crashes when sending chat messages
         //if (!sender.equals(that.sender)) return false;
-        //return timeSent.equals(that.timeSent);
-        return true;
+        return timeSent.equals(that.timeSent);
     }
 
     @Override
@@ -83,11 +82,11 @@ public class ChatMessage {
         this.sender = sender;
     }
 
-    public LocalDateTime getTimeSent() {
+    public Date getTimeSent() {
         return timeSent;
     }
 
-    public void setTimeSent(LocalDateTime timeSent) {
+    public void setTimeSent(Date timeSent) {
         this.timeSent = timeSent;
     }
 }
