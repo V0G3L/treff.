@@ -38,7 +38,8 @@ public class ChatMessage {
         if (!content.equals(that.content)) return false;
         //TODO set these values; null causes runtime crashes when sending chat messages
         //if (!sender.equals(that.sender)) return false;
-        return timeSent.equals(that.timeSent);
+        //if (!timeSent.equals(that.timeSent)) return false;
+        return true;
     }
 
     @Override

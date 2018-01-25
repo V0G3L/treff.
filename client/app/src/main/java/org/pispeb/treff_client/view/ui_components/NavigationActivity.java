@@ -20,8 +20,11 @@ import org.pispeb.treff_client.view.settings.SettingsActivity;
 
 public abstract class NavigationActivity extends AppCompatActivity {
 
+<<<<<<< HEAD
     protected Toolbar toolbar;
     private ActionBarDrawerToggle drawerToggle;
+=======
+>>>>>>> Change Chat (not fixing bug sadly)
     protected DrawerLayout drawer;
     protected ActivityNavigationBinding frameBinding;
 
@@ -82,6 +85,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
         drawerToggle = setupDrawerToggle();
         drawer.addDrawerListener(drawerToggle);
     }
+<<<<<<< HEAD
 
 
     /**
@@ -137,4 +141,6 @@ public abstract class NavigationActivity extends AppCompatActivity {
     }
 
 
+=======
+>>>>>>> Change Chat (not fixing bug sadly)
 }

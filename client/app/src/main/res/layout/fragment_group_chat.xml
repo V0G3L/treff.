@@ -9,7 +9,8 @@
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
@@ -19,36 +20,34 @@
             app:layout_constraintBottom_toTopOf="@id/textlayout"
             app:layout_constraintVertical_chainStyle="spread"/>
 
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:id="@+id/textlayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/send"
-            app:layout_constraintTop_toTopOf="@id/send">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/text"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.85"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:text="@={vm.currentMessage}"/>
+                android:text="@={vm.currentMessage}">
+                <requestFocus></requestFocus>
+            </EditText>
 
-        </android.support.design.widget.TextInputLayout>
+            <Button
+                android:id="@+id/send"
+                android:layout_width="0dp"
+                android:layout_weight="0.15"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorPrimary"
+                android:onClick="@{() -> vm.onSendClick()}"
+                app:layout_constraintStart_toEndOf="@id/textlayout"/>
 
-
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/send"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:onClick="@{() -> vm.onSendClick()}"
-            android:layout_margin="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textlayout"/>
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 </layout>
