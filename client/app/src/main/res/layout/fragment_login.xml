@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <layout>
 
     <data>
-
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.login.RegisterViewModel" />
+            type="org.pispeb.treff_client.view.login.LoginViewModel" />
     </data>
 
     <ScrollView
@@ -29,19 +29,6 @@
                 android:layout_marginBottom="24dp"
                 android:layout_gravity="center_horizontal" />
 
-            <!--  Name Label -->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
-                <EditText android:id="@+id/input_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapWords"
-                    android:hint="Name" />
-            </android.support.design.widget.TextInputLayout>
-
             <!-- Email Label -->
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -51,8 +38,8 @@
                 <EditText android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:hint="Email" />
+                    android:inputType="textCapWords"
+                    android:hint="Benutzername" />
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->
@@ -68,27 +55,27 @@
                     android:hint="Password"/>
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Signup Button -->
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/signup_button"
+                android:id="@+id/login_button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
                 android:padding="12dp"
-                android:text="Registrieren"
-                android:onClick="@{v -> vm.onRegister()}" />
+                android:text="Anmelden"
+                android:onClick="@{v -> vm.onLogin()}"/>
 
-            <TextView android:id="@+id/goto_login"
+            <TextView android:id="@+id/signup_link"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:text="Anmelden"
+                android:text="Registrieren"
                 android:gravity="center"
                 android:textSize="16dip"
-                android:onClick="@{v -> vm.onGoToLogin()}"
+                android:onClick="@{v -> vm.onGoToRegister()}"
                 android:textColor="@color/white" />
 
         </LinearLayout>
     </ScrollView>
+
 </layout>

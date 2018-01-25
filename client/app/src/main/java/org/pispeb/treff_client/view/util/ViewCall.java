@@ -11,5 +11,9 @@ public enum ViewCall {
     ADD_GROUP,
     ADD_FRIEND,
     DISPLAY_EOP_DIALOG,
-    DISPLAY_SETTINGS
+    DISPLAY_SETTINGS,
+    LOGIN,
+    REGISTER,
+    GO_TO_LOGIN,
+    GO_TO_REGISTER
 }

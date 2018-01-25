@@ -29,6 +29,8 @@ import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
 import org.pispeb.treff_client.view.home.friendList.FriendListViewModel;
 import org.pispeb.treff_client.view.home.groupList.AddGroupViewModel;
 import org.pispeb.treff_client.view.home.groupList.GroupListViewModel;
+import org.pispeb.treff_client.view.login.LoginViewModel;
+import org.pispeb.treff_client.view.login.RegisterViewModel;
 
 /**
  * Factory to pass Daos to Repositories
@@ -106,6 +108,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupEventListViewModel(eventRepository,
                     pollRepository);
+        }else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new LoginViewModel();
+        } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new RegisterViewModel();
         }
 
         throw new IllegalArgumentException(

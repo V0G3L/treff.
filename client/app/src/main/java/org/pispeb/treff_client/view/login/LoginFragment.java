@@ -1,7 +1,5 @@
 package org.pispeb.treff_client.view.login;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,21 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.databinding.FragmentRegisterBinding;
+import org.pispeb.treff_client.databinding.FragmentLoginBinding;
 import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
- * Overlay to create a new account
+ * Created by matth on 25.01.2018.
  */
 
-public class RegisterFragment extends Fragment {
+public class LoginFragment extends Fragment{
 
-    FragmentRegisterBinding binding;
+    FragmentLoginBinding binding;
 
-    public RegisterFragment() {
+    public LoginFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +37,11 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        binding = FragmentRegisterBinding.inflate(inflater, container, false);
+        binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-        RegisterViewModel vm = ViewModelProviders
+        LoginViewModel vm = ViewModelProviders
                 .of(this, ViewModelFactory.getInstance(getContext()))
-                .get(RegisterViewModel.class);
+                .get(LoginViewModel.class);
 
         vm.getState().observe(this, state -> callback(state));
         binding.setVm(vm);
@@ -58,16 +56,13 @@ public class RegisterFragment extends Fragment {
         switch (state.call) {
             case IDLE:
                 break;
-            case REGISTER:
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
+            case LOGIN:Intent intent = new Intent(getActivity(), HomeActivity.class);
                 getActivity().startActivity(intent);
-
                 break;
-            case GO_TO_LOGIN:
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new LoginFragment()).commit();
+            case GO_TO_REGISTER:
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new RegisterFragment()).commit();
                 break;
             default:
         }
     }
-
 }
