@@ -79,6 +79,7 @@ public class SQLDatabase {
                                 "email VARCHAR(%d) UNIQUE," +
                                 "passwordsalt CHAR(%d) NOT NULL," +
                                 "passwordhash CHAR(%d) NOT NULL," +
+                                "logintoken CHAR(%d) UNIQUE," +
                                 "longitude DOUBLE," +
                                 "latitude DOUBLE," +
                                 "timemeasured DATETIME" +
@@ -88,14 +89,18 @@ public class SQLDatabase {
                                 config.getProperty(USER_NAME_LENGTH_MAX
                                         .toString())),
                         Integer.parseInt(
-                                config.getProperty(EMAIL_LENGTH_MAX.toString
-                                        ())),
+                                config.getProperty(EMAIL_LENGTH_MAX
+                                        .toString())),
                         // Hash and salt will be saved hex-encoded, so two
                         // chars per byte
                         Integer.parseInt(
                                 config.getProperty(PASSWORD_SALT_BYTES
                                         .toString())) * 2,
-                        PASSWORD_HASH_BYTES * 2),
+                        PASSWORD_HASH_BYTES * 2,
+                        Integer.parseInt(
+                                config.getProperty(LOGIN_TOKEN_BYTES
+                                        .toString())
+                        )),
 
                 // contacts
                 String.format("CREATE TABLE %s (" +

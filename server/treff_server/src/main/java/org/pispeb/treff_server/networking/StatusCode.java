@@ -8,17 +8,17 @@ public enum StatusCode {
     /**
      * no errors
      */
-    SUCESSFULL(000),
+    SUCCESSFUL(000),
 
     /**
      * error: parameter wasn't given or has a wrong format
      */
-    SYNTAX(100),
+    SYNTAX_INVALID(100),
 
     /**
      * error: authentication token invalid
      */
-    TOKENINVALID(110),
+    TOKEN_INVALID(110),
 
     /**
      * error: username/password combination invalid

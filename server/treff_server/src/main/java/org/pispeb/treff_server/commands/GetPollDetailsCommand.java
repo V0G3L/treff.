@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
 
@@ -17,24 +18,13 @@ public class GetPollDetailsCommand extends AbstractCommand {
     private int groupId;
 
     public GetPollDetailsCommand(AccountManager accountManager) {
-        super(accountManager);
+        super(accountManager, requiresLogin, expectedSyntax);
     }
 
-    /**
-     * @param jsonObject the command encoded as a JsonObject
-     * @return a detailed description of the Poll encoded as a JsonObject
-     */
-    public CommandResponse execute(JsonObject jsonObject) throws
+    @Override
+    protected CommandResponse executeInternal(JsonObject input, Account actingAccount) throws
             DatabaseException {
         return null; //TODO need a Map<Token, Account> or an account id
     }
 
-    protected CommandResponse parseParameters(JsonObject jsonObject) {
-        CommandResponse response = extractIntegerParameter(this.groupId,
-                "group-id", jsonObject);
-        if (response == null) {
-            response = extractIntegerParameter(this.id, "id", jsonObject);
-        }
-        return response;
-    }
 }

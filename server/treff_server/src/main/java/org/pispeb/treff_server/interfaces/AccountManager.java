@@ -50,7 +50,7 @@ public interface AccountManager {
      * @param username The username for the new account
      * @param email    The email of the new account
      * @param password The password of the new account
-     * @return An {@link Account} object representing the new account.
+     * @return The hex-encoded login token used for authentication
      * @throws DuplicateUsernameException if the supplied username is already
      * associated with
      *                                    another account. No account will be
@@ -60,7 +60,12 @@ public interface AccountManager {
      *                                    another account. No account will be
      *                                    created in this case.
      */
-    Account createAccount(String username, String email, String password)
+    String createAccount(String username, String email, String password)
             throws DuplicateEmailException, DuplicateUsernameException,
             DatabaseException;
+
+    Account getAccountByLoginToken(String token) throws DatabaseException;
+
+    String generateNewLoginToken(Account account) throws DatabaseException;
+
 }

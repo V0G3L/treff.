@@ -22,17 +22,14 @@ public class GetUserIdCommand extends AbstractCommand {
     private String username;
 
     public GetUserIdCommand(AccountManager accountManager) {
-        super(accountManager);
+        super(accountManager, requiresLogin, expectedSyntax);
     }
 
-    /**
-     * @param jsonObject the command encoded as a JsonObject
-     * @return a description of the Account encoded as a JsonObject
-     */
-    public CommandResponse execute(JsonObject jsonObject)
+    @Override
+    protected CommandResponse executeInternal(JsonObject input, Account actingAccount)
             throws DatabaseException {
         // extract parameters
-        CommandResponse parseResponse = parseParameters(jsonObject);
+        CommandResponse parseResponse = parseParameters(input);
         if (parseResponse != null) {
             return parseResponse;
         }
@@ -58,7 +55,7 @@ public class GetUserIdCommand extends AbstractCommand {
         JsonObject response = Json.createObjectBuilder()
                 .add("type", "account").add("id", this.id)
                 .add("user", this.username).build();
-        return new CommandResponse(StatusCode.SUCESSFULL, response);
+        return new CommandResponse(StatusCode.SUCCESSFUL, response);
     }
 
     protected CommandResponse parseParameters(JsonObject jsonObject) {

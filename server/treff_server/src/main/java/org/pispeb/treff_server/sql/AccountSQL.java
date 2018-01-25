@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.sql;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
@@ -29,9 +30,7 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.pispeb.treff_server.ConfigKeys.*;
 
@@ -83,8 +82,8 @@ public class AccountSQL extends SQLObject implements Account {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             throw new AssertionError("Hash algorithm wasn't found" +
-                    "even though it was used in SQLDatabase before. " +
-                    "This really shouldn't happen.");
+                    "even though the configuration parameters where checked " +
+                    "at startup. This really shouldn't happen.");
         }
     }
 
@@ -95,10 +94,16 @@ public class AccountSQL extends SQLObject implements Account {
         Map<String, Object> result = getProperties("passwordsalt",
                 "passwordhash");
 
-        byte[] correctHash = HexBin.decode(
-                (String) result.get("passwordhash"));
-        byte[] salt = HexBin.decode(
-                (String) result.get("passwordsalt"));
+        byte[] correctHash;
+        byte[] salt;
+        try {
+            correctHash = Hex.decodeHex(
+                    (String) result.get("passwordhash"));
+            salt = Hex.decodeHex(
+                    (String) result.get("passwordsalt"));
+        } catch (DecoderException e) {
+            throw new DatabaseException(e);
+        }
         byte[] calculatedHash = calculatePasswordHash(password, salt);
 
         return Arrays.equals(calculatedHash, correctHash);
@@ -116,8 +121,8 @@ public class AccountSQL extends SQLObject implements Account {
 
         // Store new salt and new hash in DB
         setProperties(new AssignmentList()
-                .put("passwordsalt", HexBin.encode(salt))
-                .put("passwordhash", HexBin.encode(newHash)));
+                .put("passwordsalt", Hex.encodeHexString(salt))
+                .put("passwordhash", Hex.encodeHexString(newHash)));
     }
 
     @Override
@@ -254,6 +259,8 @@ public class AccountSQL extends SQLObject implements Account {
         // clears its own blocklist
         // clears itself from all other blocklists (somehow, unclear)
         // events and polls have to be able to handle non-existent creators
+        if (true)
+            System.out.println();
     }
 
     public Lock getRequestLock() {

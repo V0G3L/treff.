@@ -1,19 +1,24 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.exceptions
         .EntityManagerAlreadyInitializedException;
 import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
+import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.Lock;
 
 /**
  * The single entry-point for MySQL implementation of the database interfaces.
@@ -28,12 +33,12 @@ public class EntityManagerSQL implements AccountManager {
     public final Object usernameLock = new Object();
     public final Object emailLock = new Object();
 
-    private static final Object accountFetchLock = new Object();
-    private static final Object usergroupFetchLock = new Object();
-    private static final Object eventFetchLock = new Object();
-    private static final Object pollFetchLock = new Object();
-    private static final Object pollOptionFetchLock = new Object();
-    private static final Object updateFetchLock = new Object();
+    private final Object accountFetchLock = new Object();
+    private final Object usergroupFetchLock = new Object();
+    private final Object eventFetchLock = new Object();
+    private final Object pollFetchLock = new Object();
+    private final Object pollOptionFetchLock = new Object();
+    private final Object updateFetchLock = new Object();
 
     private static EntityManagerSQL instance;
 
@@ -95,7 +100,7 @@ public class EntityManagerSQL implements AccountManager {
                 return !database.getQueryRunner().query(
                         "SELECT FROM ? WHERE username=?;",
                         new ContainsCheckHandler(),
-                        TableName.ACCOUNTS,
+                        TableName.ACCOUNTS.toString(),
                         username);
             }
         } catch (SQLException e) {
@@ -109,9 +114,19 @@ public class EntityManagerSQL implements AccountManager {
                 return !database.getQueryRunner().query(
                         "SELECT FROM ? WHERE username=?;",
                         new ContainsCheckHandler(),
-                        TableName.ACCOUNTS,
+                        TableName.ACCOUNTS.toString(),
                         email);
             }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public AccountSQL getAccount(int id) throws DatabaseException {
+        try {
+            return getSQLObject(AccountSQL::new, id,
+                    loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -125,7 +140,7 @@ public class EntityManagerSQL implements AccountManager {
             Map<String, Object> resultMap = database.getQueryRunner().query(
                     "SELECT FROM ? WHERE username=?;",
                     new MapHandler(),
-                    TableName.ACCOUNTS,
+                    TableName.ACCOUNTS.toString(),
                     username);
             if (resultMap.containsKey("id")) {
                 return getAccount((Integer)resultMap.get("id"));
@@ -144,7 +159,7 @@ public class EntityManagerSQL implements AccountManager {
             Map<String, Object> resultMap = database.getQueryRunner().query(
                     "SELECT FROM ? WHERE email=?;",
                     new MapHandler(),
-                    TableName.ACCOUNTS,
+                    TableName.ACCOUNTS.toString(),
                     email);
             if (resultMap.containsKey("id")) {
                 return getAccount((Integer)resultMap.get("id"));
@@ -157,14 +172,47 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getAccount(int id) throws DatabaseException {
+    public Account getAccountByLoginToken(String loginToken)
+            throws DatabaseException {
         try {
-            return getSQLObject(AccountSQL::new, id,
-                    loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
+            Map<String, Object> resultMap = database.getQueryRunner().query(
+                    "SELECT id FROM ? WHERE logintoken=?",
+                    new MapHandler(),
+                    TableName.ACCOUNTS.toString(),
+                    loginToken
+                    );
+            if (resultMap.containsKey("id")) {
+                return getAccount((Integer)resultMap.get("id"));
+            } else {
+                return null;
+            }
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
+
+    @Override
+    public String generateNewLoginToken(Account account)
+            throws DatabaseException {
+        SecureRandom secureRandom = new SecureRandom();
+
+        int loginTokenByteSize = Integer.parseInt(config.getProperty(
+                ConfigKeys.LOGIN_TOKEN_BYTES.toString()));
+        byte[] loginTokenBytes = new byte[loginTokenByteSize];
+        secureRandom.nextBytes(loginTokenBytes);
+        String loginToken = Hex.encodeHexString(loginTokenBytes);
+        try {
+            database.getQueryRunner().update(
+                    "UPDATE ? SET logintoken=? WHERE id=?",
+                    TableName.ACCOUNTS.toString(),
+                    loginToken,
+                    account.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return loginToken;
+    }
+
 
     UsergroupSQL getUsergroup(int id) throws SQLException {
         return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,
@@ -192,7 +240,7 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL createAccount(String username, String email, String
+    public String createAccount(String username, String email, String
             password)
             throws DuplicateEmailException, DuplicateUsernameException {
         return null;

@@ -14,6 +14,7 @@ public enum ConfigKeys {
     EMAIL_LENGTH_MAX("email_length_max"),
     PASSWORD_SALT_BYTES("password_salt_bytes"),
     PASSWORD_HASH_ALG("password_hash_alg"),
+    LOGIN_TOKEN_BYTES("login_token_bytes"),
 
     USERGROUP_NAME_LENGTH_MAX("usergroup_name_length_max"),
     POLL_QUESTION_LENGTH_MAX("poll_question_length_max"),

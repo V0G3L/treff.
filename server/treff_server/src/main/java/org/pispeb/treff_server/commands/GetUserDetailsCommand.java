@@ -18,50 +18,41 @@ import java.util.concurrent.locks.Lock;
  */
 public class GetUserDetailsCommand extends AbstractCommand {
 
-    private int id;
-    private String username;
-
     public GetUserDetailsCommand(AccountManager accountManager) {
-        super(accountManager);
+        super(accountManager, true,
+                Json.createObjectBuilder()
+                        .add("id", 0)
+                        .build());
     }
 
-    /**
-     * @param jsonObject the command encoded as a JsonObject
-     * @return a description of the Account encoded as a JsonObject
-     */
-    public CommandResponse execute(JsonObject jsonObject)
+    @Override
+    protected CommandResponse executeInternal(JsonObject input, Account
+            actingAccount)
             throws DatabaseException {
-        // extract parameters
-        CommandResponse parseResponse = parseParameters(jsonObject);
-        if (parseResponse != null) {
-            return parseResponse;
-        }
+        int id = input.getInt("id");
         // get the account
-        Account account = this.accountManager.getAccount(this.id);
+        Account account = this.accountManager.getAccount(id);
         if (account == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID,
-                    Json.createObjectBuilder().build());
+            return new CommandResponse(StatusCode.USERIDINVALID);
         }
         // get information
+        String username;
         Lock lock = account.getReadWriteLock().readLock();
         lock.lock();
         try {
             if (account.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID,
-                        Json.createObjectBuilder().build());
+                return new CommandResponse(StatusCode.USERIDINVALID);
             }
-            this.username = account.getUsername();
+            username = account.getUsername();
         } finally {
             lock.unlock();
         }
         // respond
         JsonObject response = Json.createObjectBuilder()
-                .add("type", "account").add("id", this.id)
-                .add("user", this.username).build();
-        return new CommandResponse(StatusCode.SUCESSFULL, response);
-    }
-
-    protected CommandResponse parseParameters(JsonObject jsonObject) {
-        return extractIntegerParameter(this.id, "id", jsonObject);
+                .add("type", "account")
+                .add("id", id)
+                .add("user", username)
+                .build();
+        return new CommandResponse(response);
     }
 }
