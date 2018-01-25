@@ -33,6 +33,11 @@
         <string name="drawer_nav_about">About us</string>
         <string name="drawer_nav_logout">Log out</string>
 
+
+    <!-- settings activity -->
+    <string name="settings_title">Settings</string>
+
+
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>
     <string name="error_username_taken">Username is already taken</string>

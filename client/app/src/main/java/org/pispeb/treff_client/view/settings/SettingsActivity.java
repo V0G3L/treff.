@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivitySettingsBinding;
 import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 
@@ -15,6 +16,8 @@ import org.pispeb.treff_client.view.ui_components.NavigationActivity;
  */
 
 public class SettingsActivity extends NavigationActivity {
+
+    private ActivitySettingsBinding binding;
 
     /**
      * Create intent to start this activity from another activity
@@ -38,12 +41,14 @@ public class SettingsActivity extends NavigationActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivitySettingsBinding binding = ActivitySettingsBinding.inflate
-                (getLayoutInflater(), frameBinding.contentFrame, false);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater(),
+                frameBinding.contentFrame, false);
         frameBinding.contentFrame.addView(binding.getRoot());
 
-        SettingsViewModel vm = ViewModelProviders.of(this).get
-                (SettingsViewModel.class);
-        binding.setVm(vm);
+        setupToolbar(binding.toolbarNavigation);
+        binding.toolbarNavigation.setTitle(R.string.settings_title);
+
+        getFragmentManager().beginTransaction().replace(R.id.fragment_frame, new SettingsFragment()).commit();
+
     }
 }
