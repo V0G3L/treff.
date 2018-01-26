@@ -25,11 +25,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- TODO add activities -->
-
         <activity
-            android:name=".view.login.LoginActivity"
-            android:label="@string/title_activity_login">
+            android:name=".view.login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,9 +46,7 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".view.settings.SettingsActivity"/>
         <activity android:name=".view.friend.FriendActivity"/>
-        <activity
-            android:name=".view.home.friendList.AddFriendActivity"
-            android:label="@string/add_contact"/>
+        <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity android:name=".view.home.groupList.AddGroupActivity"/>
         <activity android:name=".view.group.eventList.AddEventActivity"/>
         <activity android:name=".view.group.eventList.AddPollActivity"/>

@@ -22,19 +22,7 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class FriendActivity extends AppCompatActivity {
 
-    private static final String USER_INTENT = "userIntent";
-
-    public static void start(Activity activity, int userId) {
-        Intent intent = new Intent(activity, FriendActivity.class);
-        intent.putExtra(USER_INTENT, userId);
-        activity.startActivity(intent);
-    }
-
-    public static void start(Fragment fragment, int userId) {
-        Intent intent = new Intent(fragment.getContext(), FriendActivity.class);
-        intent.putExtra(USER_INTENT, userId);
-        fragment.startActivity(intent);
-    }
+    public static final String USER_INTENT = "userIntent";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

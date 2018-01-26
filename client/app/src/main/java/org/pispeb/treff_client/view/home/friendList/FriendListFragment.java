@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.view.home.friendList;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -52,10 +53,15 @@ public class FriendListFragment extends Fragment {
     private void callback(State state) {
         switch (state.call) {
             case DISPLAY_FRIEND_DETAILS:
-                FriendActivity.start(this, state.value);
+                int userId = state.value;
+                Intent friendIntent = new Intent(getContext(), FriendActivity.class);
+                friendIntent.putExtra(FriendActivity.USER_INTENT, userId);
+                startActivity(friendIntent);
                 break;
             case ADD_FRIEND:
-                AddFriendActivity.start(this);
+                Intent addFriendIntent = new Intent(getContext(),
+                        AddFriendActivity.class);
+                startActivity(addFriendIntent);
                 break;
             default:
                 Log.i("FriendList", "Illegal VM State");

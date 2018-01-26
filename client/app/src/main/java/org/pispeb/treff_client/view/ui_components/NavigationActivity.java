@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.view.ui_components;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -53,10 +54,14 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
                         //Replacing the main content with ContentFragment Which is our Inbox View;
                         case R.id.nav_home:
-                            HomeActivity.start(thisActivity);
+                            Intent homeIntent = new Intent(thisActivity,
+                                    HomeActivity.class);
+                            startActivity(homeIntent);
                             return true;
                         case R.id.nav_settings:
-                            SettingsActivity.start(thisActivity);
+                            Intent settingsIntent = new Intent(thisActivity,
+                                    SettingsActivity.class);
+                            startActivity(settingsIntent);
                             return true;
                         case R.id.nav_about:
                             // TODO About page

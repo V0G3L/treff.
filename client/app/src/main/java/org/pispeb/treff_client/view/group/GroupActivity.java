@@ -28,7 +28,7 @@ public class GroupActivity extends AppCompatActivity implements
         EoPDialogFragment.EoPDialogListener {
 
     // identifier for group id in starting intent
-    private static final String GRP_INTENT = "groupIntent";
+    public static final String GRP_INTENT = "groupIntent";
 
     // id of the group
     private int groupId;
@@ -36,18 +36,6 @@ public class GroupActivity extends AppCompatActivity implements
     private ActivityGroupBinding binding;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-
-    public static void start(Activity activity, int groupId) {
-        Intent intent = new Intent(activity, GroupActivity.class);
-        intent.putExtra(GRP_INTENT, groupId);
-        activity.startActivity(intent);
-    }
-
-    public static void start(Fragment fragment, int groupId) {
-        Intent intent = new Intent(fragment.getContext(), GroupActivity.class);
-        intent.putExtra(GRP_INTENT, groupId);
-        fragment.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

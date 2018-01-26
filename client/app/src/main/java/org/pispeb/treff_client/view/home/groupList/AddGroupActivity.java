@@ -24,15 +24,6 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
  */
 
 public class AddGroupActivity extends AppCompatActivity {
-    public static void start(Activity activity) {
-        Intent intent = new Intent(activity, AddGroupActivity.class);
-        activity.startActivity(intent);
-    }
-
-    public static void start(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), AddGroupActivity.class);
-        fragment.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.view.home.groupList;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,10 +58,16 @@ public class GroupListFragment extends Fragment {
         switch (state.call) {
             case IDLE: break;
             case DISPLAY_GROUP_DETAILS:
-                GroupActivity.start(this, state.value);
+                int groupID = state.value;
+                Intent groupIntent = new Intent(getContext(), GroupActivity
+                        .class);
+                groupIntent.putExtra(GroupActivity.GRP_INTENT, groupID);
+                startActivity(groupIntent);
                 break;
             case ADD_GROUP:
-                AddGroupActivity.start(this);
+                Intent addGroupIntent = new Intent(getContext(),
+                        AddGroupActivity.class);
+                startActivity(addGroupIntent);
                 break;
             default:
                 Log.i("GroupList", "Illegal VM State");

@@ -19,24 +19,6 @@ public class SettingsActivity extends NavigationActivity {
 
     private ActivitySettingsBinding binding;
 
-    /**
-     * Create intent to start this activity from another activity
-     * @param activity parent activity
-     */
-    public static void start(Activity activity) {
-        Intent intent = new Intent(activity, SettingsActivity.class);
-        activity.startActivity(intent);
-    }
-
-    /**
-     * Create intent to start this activity from a fragment
-     * @param fragment parent fragment
-     */
-    public static void start(Fragment fragment) {
-        Intent intent = new Intent(fragment.getContext(), SettingsActivity.class);
-        fragment.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

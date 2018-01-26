@@ -25,15 +25,6 @@ public class HomeActivity extends NavigationActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
-    /**
-     * Create intent to start this activity from another activity
-     * @param activity parent activity
-     */
-    public static void start(Activity activity) {
-        Intent intent = new Intent(activity, HomeActivity.class);
-        activity.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
