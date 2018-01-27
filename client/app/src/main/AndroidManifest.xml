@@ -26,7 +26,8 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".view.login.LoginActivity">
+            android:name=".view.login.LoginActivity"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -34,25 +35,28 @@
         </activity>
 
 
-
-
         <activity
-            android:name=".view.home.HomeActivity">
-
-        </activity>
+            android:name=".view.home.HomeActivity"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name=".view.group.GroupActivity"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".view.settings.SettingsActivity"/>
+        <activity
+            android:name=".view.settings.SettingsActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".view.friend.FriendActivity"/>
+
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity android:name=".view.home.groupList.AddGroupActivity"/>
         <activity android:name=".view.group.eventList.AddEventActivity"/>
         <activity android:name=".view.group.eventList.AddPollActivity"/>
 
 
-        <service android:name=".data.gps_handling.GPSProvider" />
+        <service
+            android:name=".data.gps_handling.GPSProvider"
+            android:exported="false"
+            android:description="@string/gps_service_description"/>
 
     </application>
 

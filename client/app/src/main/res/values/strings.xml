@@ -58,5 +58,7 @@
     <string name="poll">Poll</string>
     <string name="event">Event</string>
 
+    <!--Service description-->
+    <string name="gps_service_description">Provides GPS Location for the \"treff.\"-App</string>
 
 </resources>
