@@ -5,6 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Room {@link Entity} that represents a poll
@@ -12,15 +13,29 @@ import java.util.List;
 
 @Entity(tableName = "poll")
 public class Poll extends Occasion {
-    @PrimaryKey
-    private int pollID;
-    @Ignore //TODO options
-    private List<PollOption> options;
+    @PrimaryKey(autoGenerate = true)
+    private int pollId;
+    private Set<Integer> options;
 
-    public Poll(int pollID, String name) {
-        this.pollID = pollID;
+    public Poll(String name, Set<Integer> options) {
         this.name = name;
-        //this.options = options;
+        this.options = options;
+    }
+
+    public int getPollId() {
+        return pollId;
+    }
+
+    public void setPollId(int pollId) {
+        this.pollId = pollId;
+    }
+
+    public Set<Integer> getOptions() {
+        return options;
+    }
+
+    public void setOptions(Set<Integer> options) {
+        this.options = options;
     }
 
     @Override
@@ -30,30 +45,14 @@ public class Poll extends Occasion {
 
         Poll poll = (Poll) o;
 
-        if (pollID != poll.pollID) return false;
-        return options.equals(poll.options);
+        if (pollId != poll.pollId) return false;
+        return options != null ? options.equals(poll.options) : poll.options == null;
     }
 
     @Override
     public int hashCode() {
-        int result = pollID;
-        result = 31 * result + options.hashCode();
+        int result = pollId;
+        result = 31 * result + (options != null ? options.hashCode() : 0);
         return result;
-    }
-
-    public int getPollID() {
-        return pollID;
-    }
-
-    public void setPollID(int pollID) {
-        this.pollID = pollID;
-    }
-
-    public List<PollOption> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<PollOption> options) {
-        this.options = options;
     }
 }

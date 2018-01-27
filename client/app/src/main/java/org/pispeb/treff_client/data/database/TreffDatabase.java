@@ -7,8 +7,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import org.pispeb.treff_client.data.entities.*;
-import org.pispeb.treff_client.data.entities.converter.DateConverter;
-import org.pispeb.treff_client.data.entities.converter.PositionConverter;
+import org.pispeb.treff_client.data.entities.converter.*;
 
 /**
  * Local database storing all cached Data for entities.
@@ -23,8 +22,11 @@ import org.pispeb.treff_client.data.entities.converter.PositionConverter;
         PollOption.class,
         User.class,
         UserGroup.class
-        }, version = 9, exportSchema = false)
-@TypeConverters({DateConverter.class, PositionConverter.class})
+        }, version = 10, exportSchema = false)
+@TypeConverters({
+        DateConverter.class,
+        PositionConverter.class,
+        IntegerSetConverter.class})
 public abstract class TreffDatabase extends RoomDatabase {
 
     private static TreffDatabase INSTANCE;

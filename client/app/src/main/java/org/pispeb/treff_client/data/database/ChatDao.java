@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Dao
 public interface ChatDao {
-    //TODO chat and chatmessage entities (replace mockups)
 
     @Insert
     void save(ChatMessage message);

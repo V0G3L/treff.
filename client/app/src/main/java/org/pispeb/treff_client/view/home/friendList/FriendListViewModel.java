@@ -42,7 +42,7 @@ public class FriendListViewModel extends ViewModel
     @Override
     public void onItemClicked(int position, User user) {
         state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
-                user.getUserID()));
+                user.getUserId()));
     }
 
     public SingleLiveEvent<State> getState() {

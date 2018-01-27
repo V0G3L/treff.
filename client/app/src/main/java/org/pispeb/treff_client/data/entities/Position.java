@@ -1,7 +1,5 @@
 package org.pispeb.treff_client.data.entities;
 
-import java.time.LocalDateTime;
-
 /**
  * Pojo that represents a geopgraphical position
  */

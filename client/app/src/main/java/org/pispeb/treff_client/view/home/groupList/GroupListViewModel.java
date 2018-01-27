@@ -43,7 +43,7 @@ public class GroupListViewModel extends ViewModel
     @Override
     public void onItemClicked(int position, UserGroup group) {
         state.setValue(new State(ViewCall.DISPLAY_GROUP_DETAILS,
-                group.getGroupID()));
+                group.getGroupId()));
     }
 
     public SingleLiveEvent<State> getState() {

@@ -13,19 +13,58 @@ import java.util.Date;
 
 @Entity(tableName = "event")
 public class Event extends Occasion{
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private Date created;
     private Date start;
     private Position position;
     private int creator;
 
-    public Event(int id, String name, int creator) {
-        this.id = id;
+    public Event(String name, Date created, Date start, Position position, int creator) {
         this.name = name;
         this.created = created;
         this.start = start;
         this.position = position;
+        this.creator = creator;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getStart() {
+        return start;
+    }
+
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
+    public int getCreator() {
+        return creator;
+    }
+
+    public void setCreator(int creator) {
         this.creator = creator;
     }
 
@@ -38,59 +77,18 @@ public class Event extends Occasion{
 
         if (id != event.id) return false;
         if (creator != event.creator) return false;
-        if (!created.equals(event.created)) return false;
-        if (!start.equals(event.start)) return false;
-        return position.equals(event.position);
+        if (created != null ? !created.equals(event.created) : event.created != null) return false;
+        if (start != null ? !start.equals(event.start) : event.start != null) return false;
+        return position != null ? position.equals(event.position) : event.position == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + created.hashCode();
-        result = 31 * result + start.hashCode();
-        result = 31 * result + position.hashCode();
+        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (start != null ? start.hashCode() : 0);
+        result = 31 * result + (position != null ? position.hashCode() : 0);
         result = 31 * result + creator;
         return result;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getCreator() {
-        return creator;
-    }
-
-    public void setCreator(int creator) {
-        this.creator = creator;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public Date getStart() {
-        return start;
-    }
-
-    public Position getPosition(){
-        return position;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public void setStart(Date start) {
-        this.start = start;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
 }

@@ -3,6 +3,9 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Room {@link Entity} that represents a group of {@link User}s
  */
@@ -10,30 +13,23 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "usergroup")
 public class UserGroup {
     @PrimaryKey(autoGenerate = true)
-    private int groupID;
+    private int groupId;
     private String name;
-    //TODO replace
-    //private List<Integer> eventIDs;
+    private Set<Integer> events;
+    private Set<Integer> polls;
 
-    public UserGroup(String name) {
+    public UserGroup(String name, Set<Integer> events, Set<Integer> polls) {
         this.name = name;
+        this.events = events;
+        this.polls = polls;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        UserGroup userGroup = (UserGroup) o;
-
-        return groupID == userGroup.groupID;
+    public int getGroupId() {
+        return groupId;
     }
 
-    @Override
-    public int hashCode() {
-        int result = groupID;
-        result = 31 * result + name.hashCode();
-        return result;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getName() {
@@ -44,12 +40,42 @@ public class UserGroup {
         this.name = name;
     }
 
-    public int getGroupID() {
-        return groupID;
+    public Set<Integer> getEvents() {
+        return events;
     }
 
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
+    public void setEvents(Set<Integer> events) {
+        this.events = events;
     }
 
+    public Set<Integer> getPolls() {
+        return polls;
+    }
+
+    public void setPolls(Set<Integer> polls) {
+        this.polls = polls;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserGroup userGroup = (UserGroup) o;
+
+        if (groupId != userGroup.groupId) return false;
+        if (name != null ? !name.equals(userGroup.name) : userGroup.name != null) return false;
+        if (events != null ? !events.equals(userGroup.events) : userGroup.events != null)
+            return false;
+        return polls != null ? polls.equals(userGroup.polls) : userGroup.polls == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = groupId;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (events != null ? events.hashCode() : 0);
+        result = 31 * result + (polls != null ? polls.hashCode() : 0);
+        return result;
+    }
 }

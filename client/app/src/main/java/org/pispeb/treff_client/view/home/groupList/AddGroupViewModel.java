@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModel;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
+import java.util.HashSet;
+
 public class AddGroupViewModel extends ViewModel {
     private UserGroupRepository userGroupRepository;
     private String groupname;
@@ -32,7 +34,7 @@ public class AddGroupViewModel extends ViewModel {
 
     public void onOkClick() {
         if (!groupname.equals("")) {
-            userGroupRepository.add(new UserGroup(groupname));
+            userGroupRepository.add(new UserGroup(groupname, new HashSet<>(), new HashSet<>()));
             done.postValue(true);
         }
     }

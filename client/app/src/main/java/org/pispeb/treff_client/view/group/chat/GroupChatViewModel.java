@@ -7,6 +7,7 @@ import android.arch.paging.PagedList;
 import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public class GroupChatViewModel extends ViewModel {
@@ -27,7 +28,8 @@ public class GroupChatViewModel extends ViewModel {
 
     public void onSendClick() {
         if (!currentMessage.equals("")) {
-            chatRepository.add(new ChatMessage(currentMessage, groupId));
+            //TODO set the proper user ID e.g. by getting it from SharedPreferences
+            chatRepository.add(new ChatMessage(groupId, currentMessage, 1, new Date()));
             currentMessage = "";
         }
     }

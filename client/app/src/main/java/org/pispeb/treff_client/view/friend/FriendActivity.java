@@ -1,15 +1,11 @@
 package org.pispeb.treff_client.view.friend;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityFriendBinding;
@@ -38,13 +34,7 @@ public class FriendActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         int userId = (int) getIntent().getExtras().get(USER_INTENT);
 

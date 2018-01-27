@@ -3,8 +3,11 @@ package org.pispeb.treff_client.view.home.friendList;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserRepository;
+
+import java.util.Date;
 
 public class AddFriendViewModel extends ViewModel {
 
@@ -33,9 +36,9 @@ public class AddFriendViewModel extends ViewModel {
 
     public void onOkClick() {
         if (!username.equals("")) {
-            userRepository
-                    .add(new User((int) System.currentTimeMillis(), username,
-                            true, false));
+            //TODO set proper values
+            userRepository.add(new User(
+                username, true,false, new Position(0, 0), new Date()));
             done.postValue(true);
         }
     }

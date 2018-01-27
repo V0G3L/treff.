@@ -13,16 +13,15 @@ import java.util.Date;
 
 @Entity(tableName = "user")
 public class User {
-    @PrimaryKey
-    private int userID;
+    @PrimaryKey(autoGenerate = true)
+    private int userId;
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
     private Position position;
     private Date lastPositionUpdate;
 
-    public User(int userID, String username, boolean isFriend, boolean isBlocked) {
-        this.userID = userID;
+    public User(String username, boolean isFriend, boolean isBlocked, Position position, Date lastPositionUpdate) {
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
@@ -30,29 +29,12 @@ public class User {
         this.lastPositionUpdate = lastPositionUpdate;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        return userID == ((User) o).userID;
+    public int getUserId() {
+        return userId;
     }
 
-    @Override
-    public int hashCode() {
-        int result = userID;
-        result = 31 * result + username.hashCode();
-        result = 31 * result + (isFriend ? 1 : 0);
-        result = 31 * result + (isBlocked ? 1 : 0);
-        return result;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUsername() {
@@ -93,5 +75,33 @@ public class User {
 
     public void setLastPositionUpdate(Date lastPositionUpdate) {
         this.lastPositionUpdate = lastPositionUpdate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (userId != user.userId) return false;
+        if (isFriend != user.isFriend) return false;
+        if (isBlocked != user.isBlocked) return false;
+        if (username != null ? !username.equals(user.username) : user.username != null)
+            return false;
+        if (position != null ? !position.equals(user.position) : user.position != null)
+            return false;
+        return lastPositionUpdate != null ? lastPositionUpdate.equals(user.lastPositionUpdate) : user.lastPositionUpdate == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (isFriend ? 1 : 0);
+        result = 31 * result + (isBlocked ? 1 : 0);
+        result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (lastPositionUpdate != null ? lastPositionUpdate.hashCode() : 0);
+        return result;
     }
 }

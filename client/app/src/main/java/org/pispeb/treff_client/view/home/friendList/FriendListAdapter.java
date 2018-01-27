@@ -52,7 +52,7 @@ public class FriendListAdapter
                 @Override
                 public boolean areItemsTheSame(@NonNull User oldItem,
                                                @NonNull User newItem) {
-                    return oldItem.getUserID() == newItem.getUserID();
+                    return oldItem.getUserId() == newItem.getUserId();
                 }
 
                 @Override

@@ -7,17 +7,19 @@
             type="org.pispeb.treff_client.data.entities.ChatMessage"/>
     </data>
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@color/colorPrimary">
 
+        <!-- TODO add sender name -->
         <TextView
             android:id="@+id/sender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{message.sender.username}"
+            android:text=""
             android:layout_margin="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,15 +33,6 @@
             app:layout_constraintTop_toBottomOf="@+id/sender"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!--<TextView-->
-            <!--android:id="@+id/time"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@{message.timeSent}"-->
-            <!--android:layout_marginStart="@dimen/activity_vertical_margin"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="parent"-->
-            <!--app:layout_constraintStart_toEndOf="@id/sender"/>-->
 
     </android.support.constraint.ConstraintLayout>
 </layout>

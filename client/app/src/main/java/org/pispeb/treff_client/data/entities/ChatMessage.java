@@ -13,50 +13,33 @@ import java.util.Date;
 @Entity(tableName = "message")
 public class ChatMessage {
     @PrimaryKey(autoGenerate = true)
-    private int messageID;
-    private int groupID;
+    private int messageId;
+    private int groupId;
     private String content;
-    @Ignore //TODO user
-    private User sender;
+    private int userId;
     private Date timeSent;
 
-    public ChatMessage(String content, int groupID) {
+    public ChatMessage(int groupId, String content, int userId, Date timeSent) {
+        this.groupId = groupId;
         this.content = content;
-        this.groupID = groupID;
-        //this.sender = sender;
+        this.userId = userId;
         this.timeSent = timeSent;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ChatMessage that = (ChatMessage) o;
-
-        if (messageID != that.messageID) return false;
-        if (!content.equals(that.content)) return false;
-        //TODO set value; null causes runtime crashes when sending chat messages
-        //if (!sender.equals(that.sender)) return false;
-        //if (!timeSent.equals(that.timeSent)) return false;
-        return true;
+    public int getMessageId() {
+        return messageId;
     }
 
-    @Override
-    public int hashCode() {
-        int result = messageID;
-        result = 31 * result + content.hashCode();
-        result = 31 * result + (sender != null ? sender.hashCode() : 0);
-        result = 31 * result + (timeSent != null ? timeSent.hashCode() : 0);
-        return result;
+    public void setMessageId(int messageId) {
+        this.messageId = messageId;
     }
 
-    public int getMessageID() {
-        return messageID;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setMessageID(int messageID) {
-        this.messageID = messageID;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public String getContent() {
@@ -67,20 +50,12 @@ public class ChatMessage {
         this.content = content;
     }
 
-    public User getSender() {
-        return sender;
+    public int getUserId() {
+        return userId;
     }
 
-    public int getGroupID() {
-        return groupID;
-    }
-
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
-    }
-
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public Date getTimeSent() {
@@ -89,5 +64,29 @@ public class ChatMessage {
 
     public void setTimeSent(Date timeSent) {
         this.timeSent = timeSent;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChatMessage that = (ChatMessage) o;
+
+        if (messageId != that.messageId) return false;
+        if (groupId != that.groupId) return false;
+        if (userId != that.userId) return false;
+        if (content != null ? !content.equals(that.content) : that.content != null) return false;
+        return timeSent != null ? timeSent.equals(that.timeSent) : that.timeSent == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = messageId;
+        result = 31 * result + groupId;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + userId;
+        result = 31 * result + (timeSent != null ? timeSent.hashCode() : 0);
+        return result;
     }
 }

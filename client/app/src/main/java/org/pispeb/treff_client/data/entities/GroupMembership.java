@@ -10,8 +10,13 @@ import android.arch.persistence.room.PrimaryKey;
 public class GroupMembership {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private int userID;
-    private int groupID;
+    private int userId;
+    private int groupId;
+
+    public GroupMembership(int userId, int groupId) {
+        this.userId = userId;
+        this.groupId = groupId;
+    }
 
     public int getId() {
         return id;
@@ -21,19 +26,19 @@ public class GroupMembership {
         this.id = id;
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public int getGroupID() {
-        return groupID;
+    public int getGroupId() {
+        return groupId;
     }
 
-    public void setGroupID(int groupID) {
-        this.groupID = groupID;
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 }

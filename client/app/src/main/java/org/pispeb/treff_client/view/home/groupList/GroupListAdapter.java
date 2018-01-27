@@ -54,7 +54,7 @@ public class GroupListAdapter extends PagedListAdapter<UserGroup,
                 @Override
                 public boolean areItemsTheSame(@NonNull UserGroup oldItem,
                                                @NonNull UserGroup newItem) {
-                    return oldItem.getGroupID() == newItem.getGroupID();
+                    return oldItem.getGroupId() == newItem.getGroupId();
                 }
 
                 @Override
