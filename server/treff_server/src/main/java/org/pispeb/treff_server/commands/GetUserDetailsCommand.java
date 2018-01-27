@@ -28,7 +28,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
     @Override
     protected CommandResponse executeInternal(JsonObject input, Account
             actingAccount)
-            throws DatabaseException {
+             {
         int id = input.getInt("id");
         // get the account
         Account account = this.accountManager.getAccount(id);

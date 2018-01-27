@@ -181,6 +181,20 @@ public class SQLDatabase {
                                 config.getProperty(EVENT_TITLE_LENGTH_MAX
                                         .toString()))),
 
+                // eventparticipations
+                String.format("CREATE TABLE %s (" +
+                                "accountid INT NOT NULL," +
+                                "eventid INT NOT NULL," +
+                                "FOREIGN KEY (accountid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "FOREIGN KEY (eventid)" +
+                                "   REFERENCES events(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (accountid,eventid)" +
+                                ");",
+                        EVENTPARTICIPATIONS.toString()),
+
                 // polls
                 String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
@@ -212,6 +226,20 @@ public class SQLDatabase {
                                 "latitude DOUBLE NOT NULL" +
                                 ");",
                         POLLOPTIONS.toString()),
+
+                // pollvotes
+                String.format("CREATE TABLE %s (" +
+                                "accountid INT NOT NULL," +
+                                "polloptionid INT NOT NULL," +
+                                "FOREIGN KEY (accountid)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "FOREIGN KEY (polloptionid)" +
+                                "   REFERENCES polloptions(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (accountid,polloptions)" +
+                                ");",
+                        POLLVOTES.toString()),
 
                 // updates
                 String.format("CREATE TABLE %s (" +
@@ -258,7 +286,9 @@ public class SQLDatabase {
                 UPDATEAFFECTIONS.toString(),
                 UPDATES.toString(),
                 GROUPMEMBERSHIPS.toString(),
+                EVENTPARTICIPATIONS.toString(),
                 EVENTS.toString(),
+                POLLVOTES.toString(),
                 POLLOPTIONS.toString(),
                 POLLS.toString(),
                 ACCOUNTS.toString(),
@@ -283,8 +313,10 @@ public class SQLDatabase {
         USERGROUPS("usergroups"),
         GROUPMEMBERSHIPS("groupmemberships"),
         EVENTS("events"),
+        EVENTPARTICIPATIONS("eventparticipations"),
         POLLS("polls"),
         POLLOPTIONS("polloptions"),
+        POLLVOTES("pollvotes"),
         UPDATES("updates"),
         UPDATEAFFECTIONS("updateaffections");
 

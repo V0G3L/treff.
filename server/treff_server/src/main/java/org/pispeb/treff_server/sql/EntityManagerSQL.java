@@ -94,7 +94,7 @@ public class EntityManagerSQL implements AccountManager {
      * <code>false</code> otherwise
      */
     boolean usernameAvailable(String username)
-            throws DatabaseException {
+             {
         try {
             synchronized (usernameLock) {
                 return !database.getQueryRunner().query(
@@ -108,7 +108,7 @@ public class EntityManagerSQL implements AccountManager {
         }
     }
 
-    boolean emailAvailable(String email) throws DatabaseException {
+    boolean emailAvailable(String email)  {
         try {
             synchronized (emailLock) {
                 return !database.getQueryRunner().query(
@@ -123,18 +123,14 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getAccount(int id) throws DatabaseException {
-        try {
-            return getSQLObject(AccountSQL::new, id,
-                    loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+    public AccountSQL getAccount(int id)  {
+        return getSQLObject(AccountSQL::new, id,
+                loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
     }
 
     @Override
     public AccountSQL getAccountByUsername(String username)
-            throws DatabaseException {
+             {
         // get ID by username, then get Account by ID
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
@@ -153,7 +149,7 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getAccountByEmail(String email) throws DatabaseException {
+    public AccountSQL getAccountByEmail(String email)  {
         // get ID by email, then get Account by ID
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
@@ -173,7 +169,7 @@ public class EntityManagerSQL implements AccountManager {
 
     @Override
     public Account getAccountByLoginToken(String loginToken)
-            throws DatabaseException {
+             {
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
                     "SELECT id FROM ? WHERE logintoken=?",
@@ -193,7 +189,7 @@ public class EntityManagerSQL implements AccountManager {
 
     @Override
     public String generateNewLoginToken(Account account)
-            throws DatabaseException {
+             {
         SecureRandom secureRandom = new SecureRandom();
 
         int loginTokenByteSize = Integer.parseInt(config.getProperty(
@@ -214,27 +210,27 @@ public class EntityManagerSQL implements AccountManager {
     }
 
 
-    UsergroupSQL getUsergroup(int id) throws SQLException {
+    UsergroupSQL getUsergroup(int id) {
         return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,
                 TableName.USERGROUPS, usergroupFetchLock);
     }
 
-    EventSQL getEvent(int id) throws SQLException {
+    EventSQL getEvent(int id) {
         return getSQLObject(EventSQL::new, id, loadedEvents,
                 TableName.EVENTS, eventFetchLock);
     }
 
-    PollSQL getPoll(int id) throws SQLException {
+    PollSQL getPoll(int id) {
         return getSQLObject(PollSQL::new, id, loadedPolls,
                 TableName.POLLS, pollFetchLock);
     }
 
-    PollOptionSQL getPollOption(int id) throws SQLException {
+    PollOptionSQL getPollOption(int id) {
         return getSQLObject(PollOptionSQL::new, id, loadedPollOptions,
                 TableName.POLLOPTIONS, pollOptionFetchLock);
     }
 
-    UpdateSQL getUpdate(int id) throws SQLException {
+    UpdateSQL getUpdate(int id) {
         return getSQLObject(UpdateSQL::new, id, loadedUpdates,
                 TableName.UPDATES, updateFetchLock);
     }
@@ -277,21 +273,25 @@ public class EntityManagerSQL implements AccountManager {
                                                  int id,
                                                  Map<Integer, T> loadedMap,
                                                  TableName tableName,
-                                                 Object fetchLock)
-            throws SQLException {
-
+                                                 Object fetchLock) {
         if (loadedMap.containsKey(id)) {
             return loadedMap.get(id);
-        } else synchronized (fetchLock) {
+        }
+        synchronized (fetchLock) {
             // recheck after lock acquisition
             if (loadedMap.containsKey(id)) {
                 return loadedMap.get(id);
-            } else if (hasObjectInDB(tableName, id)) {
-                T obj = factory.create(id, database, config);
-                loadedMap.put(id, obj);
-                return obj;
-            } else {
-                return null;
+            }
+            try {
+                if (hasObjectInDB(tableName, id)) {
+                    T obj = factory.create(id, database, config);
+                    loadedMap.put(id, obj);
+                    return obj;
+                } else {
+                    return null;
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException(e);
             }
         }
     }

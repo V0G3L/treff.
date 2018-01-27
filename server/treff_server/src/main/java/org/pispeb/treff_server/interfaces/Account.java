@@ -14,12 +14,12 @@ import java.util.SortedSet;
  * and password. An account may only be represented by a single {@link Account}
  * object at a time.
  */
-public interface Account extends DataObject {
+public interface Account extends DataObject, Comparable<Account> {
 
     /**
      * Returns the username of this account.
      **/
-    String getUsername() throws DatabaseException;
+    String getUsername();
 
     /**
      * Sets the username of this account.
@@ -31,8 +31,7 @@ public interface Account extends DataObject {
      *                                    of this account is unchanged in
      *                                    this case.
      */
-    void setUsername(String username) throws DuplicateUsernameException,
-            DatabaseException;
+    void setUsername(String username) throws DuplicateUsernameException;
 
     /**
      * Checks whether the supplied password matches the password of this
@@ -42,19 +41,19 @@ public interface Account extends DataObject {
      * @return <code>true</code> if supplied password matches the password of
      * this account, <code>false</code> otherwise.
      */
-    boolean checkPassword(String password) throws DatabaseException;
+    boolean checkPassword(String password);
 
     /**
      * Sets the password of this account.
      *
      * @param password The new password
      */
-    void setPassword(String password) throws DatabaseException;
+    void setPassword(String password);
 
     /**
      * Returns the email of this account.
      **/
-    String getEmail() throws DatabaseException;
+    String getEmail();
 
     /**
      * Sets the email address of this account.
@@ -66,25 +65,36 @@ public interface Account extends DataObject {
      *                                 address of this account is unchanged in
      *                                 this case.
      */
-    void setEmail(String email) throws DuplicateEmailException,
-            DatabaseException;
+    void setEmail(String email) throws DuplicateEmailException;
 
     /**
      * @return ID to Usergroup mapping containing only groups that this
      * account is a member
      * of.
      */
-    Map<Integer, Usergroup> getAllGroups() throws DatabaseException;
+    Map<Integer, Usergroup> getAllGroups();
 
-    void addToGroup(Usergroup usergroup) throws DatabaseException;
+    void addToGroup(Usergroup usergroup);
 
-    void removeFromGroup(Usergroup usergroup) throws DatabaseException;
+    void removeFromGroup(Usergroup usergroup);
 
-    Position getLastPosition() throws DatabaseException;
+    void addContact(Account account);
 
-    Date getLastPositionTime() throws DatabaseException;
+    void removeContact(Account account);
 
-    void updatePosition(Position position) throws DatabaseException;
+    Map<Integer, Account> getAllContacts();
+
+    void addBlock(Account account);
+
+    void removeBlock(Account account);
+
+    Map<Integer, Account> getAllBlocks();
+
+    Position getLastPosition();
+
+    Date getLastPositionTime();
+
+    void updatePosition(Position position, Date timeMeasured);
 
     /**
      * Adds an {@link Update} that affects this {@link Account} to the set of
@@ -96,7 +106,7 @@ public interface Account extends DataObject {
      *
      * @param update The Update to add
      */
-    void addUpdate(Update update) throws DatabaseException;
+    void addUpdate(Update update);
 
     /**
      * Returns the set of {@link Update}s that affect this {@link Account}
@@ -106,14 +116,14 @@ public interface Account extends DataObject {
      * @return The set of undelivered Updates, sorted by time in ascending
      * order.
      */
-    SortedSet<Update> getUndeliveredUpdates() throws DatabaseException;
+    SortedSet<Update> getUndeliveredUpdates();
 
     /**
      * Marks an {@link Update} that affects this {@link Account} as
      * delivered, removing
      * it from the set returned by {@link #getUndeliveredUpdates()}.
      */
-    void markUpdateAsDelivered(Update update) throws DatabaseException;
+    void markUpdateAsDelivered(Update update);
 
     /**
      * Registers an {@link AccountUpdateListener} whose
@@ -136,7 +146,7 @@ public interface Account extends DataObject {
     /**
      * Deletes this account. TODO: specify further
      */
-    void delete() throws DatabaseException;
+    void delete();
 
     // TODO: GetAffectedAccounts-method to all interfaces
     // Will return a Set<Account> of affected accounts when a setter is

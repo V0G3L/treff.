@@ -61,7 +61,7 @@ public abstract class AbstractCommand {
      * command execution
      */
     public CommandResponse execute(JsonObject input)
-            throws DatabaseException {
+             {
         // For commands that require a login, check the token, if given,
         // and forward the Account object representing the account that the
         // user is logged into.
@@ -180,6 +180,6 @@ public abstract class AbstractCommand {
      */
     protected abstract CommandResponse executeInternal(JsonObject input,
                                                        Account actingAccount)
-            throws DatabaseException;
+          ;
 
 }

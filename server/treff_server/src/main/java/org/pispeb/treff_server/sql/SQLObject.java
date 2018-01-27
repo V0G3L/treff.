@@ -38,7 +38,7 @@ public abstract class SQLObject implements DataObject {
     }
 
     protected Map<String, Object> getProperties(String... keys)
-            throws DatabaseException {
+             {
         try {
             String keyList = Arrays.stream(keys)
                     .collect(Collectors.joining(","));
@@ -81,7 +81,7 @@ public abstract class SQLObject implements DataObject {
             params.add(id);
 
             database.getQueryRunner().update(
-                    "UPDATE ? " + assignmentList + " WHERE id=?",
+                    "UPDATE ? " + assignmentList + " WHERE id=?;",
                     params.toArray());
 
         } catch (SQLException e) {

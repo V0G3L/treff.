@@ -5,6 +5,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -23,13 +24,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.pispeb.treff_server.ConfigKeys.*;
@@ -37,8 +42,8 @@ import static org.pispeb.treff_server.ConfigKeys.*;
 public class AccountSQL extends SQLObject implements Account {
 
     private static final TableName TABLE_NAME = TableName.ACCOUNTS;
-
     private final Lock requestLock = new ReentrantLock();
+    private Set<AccountUpdateListener> listeners = new HashSet<>();
 
     AccountSQL(int id, SQLDatabase database, Properties config) {
         super(id, database, config, TABLE_NAME);
@@ -47,14 +52,14 @@ public class AccountSQL extends SQLObject implements Account {
     // TODO: write SQL statements
 
     @Override
-    public String getUsername() throws DatabaseException {
+    public String getUsername() {
         return (String) getProperties("username")
                 .get("username");
     }
 
     @Override
     public void setUsername(String username) throws
-            DuplicateUsernameException, DatabaseException {
+            DuplicateUsernameException {
         // have to acquire lock since username changes are not atomical
         EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.usernameLock) {
@@ -88,7 +93,7 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public boolean checkPassword(String password) throws DatabaseException {
+    public boolean checkPassword(String password) {
         // Retrieve salt and hash from DB
         // Then check against hash(supplied password + salt)
         Map<String, Object> result = getProperties("passwordsalt",
@@ -110,7 +115,7 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public void setPassword(String password) throws DatabaseException {
+    public void setPassword(String password) {
         // Generate a new salt with a cryptographically strong RNG
         SecureRandom secureRandom = new SecureRandom();
         byte[] salt = new byte[
@@ -126,14 +131,13 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public String getEmail() throws DatabaseException {
+    public String getEmail() {
         return (String) getProperties("email")
                 .get("email");
     }
 
     @Override
-    public void setEmail(String email) throws DuplicateEmailException,
-            DatabaseException {
+    public void setEmail(String email) throws DuplicateEmailException {
         // have to acquire lock since email address changes are not atomical
         EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.emailLock) {
@@ -148,119 +152,276 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Usergroup> getAllGroups() throws DatabaseException {
+    public Map<Integer, Usergroup> getAllGroups() {
         // get ID list
         try {
-            Map<Integer, Usergroup> usergroupMap = new HashMap<>();
-            List<Integer> idList = database.getQueryRunner()
+            return database.getQueryRunner()
                     .query(
-                            "SELECT usergroupid FROM ? WHERE accountid=?",
+                            "SELECT usergroupid FROM ? WHERE accountid=?;",
                             new MapListHandler(),
                             TableName.GROUPMEMBERSHIPS,
                             id)
                     .stream()
                     // for each membership, extract ID
                     .map((map) -> (Integer) map.get("id"))
-                    .collect(Collectors.toList());
-            // Java doesn't allow checked exceptions in streams
-            // so instead of simply mapping to
-            // EntityManagerSQL.getInstance()::getUsergroup
-            // a slight detour via a List is taken
-            for (int id : idList) {
-                usergroupMap.put(id,
-                        EntityManagerSQL.getInstance().getUsergroup(id));
-            }
-            return usergroupMap;
+                    // create ID -> UsergroupSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getUsergroup));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
 
     @Override
-    public void addToGroup(Usergroup usergroup) throws DatabaseException {
-        // generate placeholders for all permissions
-        String placeholders = String.join(",",
-                Collections.nCopies(Permission.values().length, "?"));
+    public void addToGroup(Usergroup usergroup) {
+        // actual joining is handled in UsergroupSQL
+        usergroup.addMember(this);
+    }
 
-        // generate values for placeholders
-        List<Object> values = new LinkedList<>();
-        values.add(TableName.GROUPMEMBERSHIPS.toString());
-        // permission column names
-        values.add(Arrays.stream(Permission.values())
-                .map(Permission::toString)
-                .collect(Collectors.joining(",")));
-        values.add(id);
-        values.add(usergroup.getID());
+    @Override
+    public void removeFromGroup(Usergroup usergroup) {
+        if (!usergroup.getAllMembers().contains(this)) {
+            throw new AccountNotInGroupException();
+        }
+
+        // actual removal is done in UsergroupSQL
+        usergroup.removeMember(this);
+    }
+
+    @Override
+    public void addContact(Account account) {
+        int lowID = Math.min(this.id, account.getID());
+        int highID = Math.max(this.id, account.getID());
+
         try {
-            // ignore resultset. If it doesn't simply state OK, an exception
-            // is thrown anyways
             database.getQueryRunner().insert(
-                    "INSERT INTO ?(accountid,usergroupid," +
-                            placeholders +
-                            ") VALUES (?,?," +
-                            placeholders +
-                            ")",
-                    (rs) -> null,
-                    values.toArray());
+                    "INSERT INTO ?(lowid,highid) VALUES (?,?);",
+                    (rs -> null),
+                    TableName.CONTACTS,
+                    lowID,
+                    highID);
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
 
     @Override
-    public void removeFromGroup(Usergroup usergroup) throws DatabaseException {
+    public void removeContact(Account account) {
+        int lowID = Math.min(this.id, account.getID());
+        int highID = Math.max(this.id, account.getID());
 
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE lowid=? AND highid=?;",
+                    TableName.CONTACTS,
+                    lowID,
+                    highID);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public Position getLastPosition() throws DatabaseException {
-        return null;
+    public Map<Integer, Account> getAllContacts() {
+        // get ID list
+        try {
+            return database.getQueryRunner()
+                    // get all contact relations that this account is a part of
+                    .query(
+                            "SELECT (lowid,highid) FROM ? WHERE lowid=? " +
+                                    "OR highid=?;;",
+                            new MapListHandler(),
+                            TableName.CONTACTS,
+                            id)
+                    .stream()
+                    // map to id of other account
+                    .map((rsMap) -> (this.id == (Integer) rsMap.get("lowid"))
+                                ? (Integer) rsMap.get("highid")
+                                : (Integer) rsMap.get("lowid"))
+                    // create ID -> AccountSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public Date getLastPositionTime() throws DatabaseException {
-        return null;
+    public void addBlock(Account account) {
+        try {
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(blocker,blocked) VALUES (?,?);",
+                    (rs -> null),
+                    TableName.BLOCKS,
+                    this.id,
+                    account.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void updatePosition(Position position) throws DatabaseException {
-        // not persistent
+    public void removeBlock(Account account) {
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE blocker=? AND blocked=?;",
+                    TableName.BLOCKS,
+                    this.id,
+                    account.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void addUpdate(Update update) throws DatabaseException {
-
+    public Map<Integer, Account> getAllBlocks() {
+        // get ID list
+        try {
+            return database.getQueryRunner()
+                    .query(
+                            "SELECT blocked FROM ? WHERE blocker=?;",
+                            new MapListHandler(),
+                            TableName.BLOCKS,
+                            id)
+                    .stream()
+                    // map to id of other account
+                    .map((rsMap) -> (Integer) rsMap.get("blocked"))
+                    // create ID -> AccountSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public SortedSet<Update> getUndeliveredUpdates() throws DatabaseException {
-        return null;
+    public Position getLastPosition() {
+        Map<String, Object> properties
+                = getProperties("latitude", "longitude");
+        return new Position(
+                (Double) properties.get("latitude"),
+                (Double) properties.get("longitude"));
     }
 
     @Override
-    public void markUpdateAsDelivered(Update update) throws DatabaseException {
+    public Date getLastPositionTime() {
+        return (Date) getProperties("timemeasured").get("timemeasured");
+    }
 
+    @Override
+    public void updatePosition(Position position, Date timeMeasured) {
+        setProperties(new AssignmentList()
+                .put("latitude", position.latitude)
+                .put("longitude", position.longitude)
+                .put("timemeasured", timeMeasured));
+    }
+
+    @Override
+    public void addUpdate(Update update) {
+        try {
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(updateid,accountid) VALUES (?,?);",
+                    (rs -> null),
+                    TableName.UPDATEAFFECTIONS.toString(),
+                    update.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        // inform updatelisteners
+        listeners.forEach(l -> l.onUpdateAdded(update));
+    }
+
+    @Override
+    public SortedSet<Update> getUndeliveredUpdates() {
+        Set<Integer> updateIDs;
+        try {
+            updateIDs = database.getQueryRunner().query(
+                    "SELECT updateid FROM ? WHERE accountid=?;",
+                    rs -> {
+                        Set<Integer> ids = new HashSet<>();
+                        while (rs.next())
+                            ids.add(rs.getInt(1));
+                        return ids;
+                    },
+                    TableName.UPDATEAFFECTIONS,
+                    this.id
+            );
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return updateIDs.stream()
+                .map(EntityManagerSQL.getInstance()::getUpdate)
+                .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    @Override
+    public void markUpdateAsDelivered(Update update) {
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE accountid=? AND updateid=?;",
+                    TableName.UPDATEAFFECTIONS,
+                    this.id,
+                    update.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void addUpdateListener(AccountUpdateListener updateListener) {
-
+        listeners.add(updateListener);
     }
 
     @Override
     public void removeUpdateListener(AccountUpdateListener updateListener) {
-
+        listeners.remove(updateListener);
     }
 
     @Override
-    public void delete() throws DatabaseException {
-        // removes itself from all groups
+    public void delete() {
+        // remove this from all groups
+        // it's a group's responsibility to remove the user from all
+        // events and polls
+        SortedSet<Usergroup> groups
+                = new TreeSet<>(this.getAllGroups().values());
+
+        groups.forEach(g -> g.getReadWriteLock().writeLock().lock());
+        try {
+            groups.forEach(g -> g.removeMember(this));
+        } finally {
+            groups.forEach(g -> g.getReadWriteLock().writeLock().unlock());
+        }
+
         // removes all contacts (will also removed them from the other sides)
+        SortedSet<Account> contacts
+                = new TreeSet<>(this.getAllContacts().values());
+
+        contacts.forEach(a -> a.getReadWriteLock().writeLock().lock());
+        try {
+            contacts.forEach(this::removeContact);
+        } finally {
+            contacts.forEach(a -> a.getReadWriteLock().writeLock().unlock());
+        }
+
         // clears its own blocklist
-        // clears itself from all other blocklists (somehow, unclear)
+        this.getAllBlocks().values().forEach(this::removeBlock);
+
+        // clears itself from all other blocklists
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE blocked=?;",
+                    TableName.BLOCKS,
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        // set deleted flag, signalling commands that still have a reference
+        // on this object to no longer use it
+        deleted = true;
+
         // events and polls have to be able to handle non-existent creators
-        if (true)
-            System.out.println();
     }
 
     public Lock getRequestLock() {
@@ -270,5 +431,10 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public int getID() {
         return id;
+    }
+
+    @Override
+    public int compareTo(Account o) {
+        return this.id - o.getID();
     }
 }

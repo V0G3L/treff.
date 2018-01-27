@@ -7,32 +7,32 @@ import org.pispeb.treff_server.Permission;
 import java.util.List;
 import java.util.Set;
 
-public interface Usergroup extends DataObject {
+public interface Usergroup extends DataObject, Comparable<Usergroup> {
 
-    void setName(String name) throws DatabaseException;
+    void setName(String name);
 
-    String getName() throws DatabaseException;
+    String getName();
 
-    void addMember(Account member) throws DatabaseException;
+    void addMember(Account member);
 
-    void removeMember(Account member) throws DatabaseException;
+    void removeMember(Account member);
 
-    Set<Account> getAllMembers() throws DatabaseException;
+    Set<Account> getAllMembers();
 
-    void addEvent() throws DatabaseException;
+    void addEvent();
 
-    List<Event> getAllEvents() throws DatabaseException;
+    List<Event> getAllEvents();
 
-    void addPoll(Poll poll) throws DatabaseException;
+    void addPoll(Poll poll);
 
-    List<Poll> getAllPolls() throws DatabaseException;
+    List<Poll> getAllPolls();
 
     boolean checkPermissionOfMember(Account member, Permission permission)
-            throws AccountNotInGroupException, DatabaseException;
+            throws AccountNotInGroupException;
 
     void setPermissionOfMember(Account member, Permission permission, boolean
             value)
-            throws AccountNotInGroupException, DatabaseException;
+            throws AccountNotInGroupException;
 
     // TODO: unload on inactivity
 

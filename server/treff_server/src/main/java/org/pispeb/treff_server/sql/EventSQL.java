@@ -20,68 +20,68 @@ public class EventSQL extends SQLObject implements Event {
     }
 
     @Override
-    public void setTitle(String title) throws DatabaseException {
+    public void setTitle(String title)  {
 
     }
 
     @Override
-    public String getTitle() throws DatabaseException {
+    public String getTitle()  {
         return null;
     }
 
     @Override
-    public void setPosition(Position position) throws DatabaseException {
+    public void setPosition(Position position)  {
 
     }
 
     @Override
-    public Position getPosition() throws DatabaseException {
+    public Position getPosition()  {
         return null;
     }
 
     @Override
-    public void setTimeStart() throws DatabaseException {
+    public void setTimeStart()  {
 
     }
 
     @Override
-    public Date getTimeStart() throws DatabaseException {
+    public Date getTimeStart()  {
         return null;
     }
 
     @Override
-    public void setTimeEnd() throws DatabaseException {
+    public void setTimeEnd()  {
 
     }
 
     @Override
-    public Date getTimeEnd() throws DatabaseException {
+    public Date getTimeEnd()  {
         return null;
     }
 
     @Override
-    public Date getTimeCreated() throws DatabaseException {
+    public Date getTimeCreated()  {
         return null;
     }
 
     @Override
-    public Account getCreator() throws DatabaseException {
+    public Account getCreator()  {
         return null;
     }
 
     @Override
-    public void addParticipant(Account participant) throws DatabaseException {
+    public void addParticipant(Account participant)  {
 
     }
 
     @Override
     public void removeParticipant(Account participant)
-            throws DatabaseException {
+             {
 
     }
 
     @Override
-    public Set<Account> getAllParticipants() throws DatabaseException {
+    public Set<Account> getAllParticipants()  {
         return null;
     }
 

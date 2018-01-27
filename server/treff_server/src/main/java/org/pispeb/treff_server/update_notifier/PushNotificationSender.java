@@ -21,13 +21,13 @@ public class PushNotificationSender implements AccountUpdateListener {
      * @param account The account to notify of {@link Update}s affecting
      *                it
      */
-    public PushNotificationSender(Account account) throws DatabaseException {
+    public PushNotificationSender(Account account)  {
         this.account = account;
         account.addUpdateListener(this);
     }
 
     @Override
-    public void onUpdateAdded(Update update) throws DatabaseException {
+    public void onUpdateAdded(Update update)  {
         // send push notification
     }
 }

@@ -27,7 +27,7 @@ public class GetUserIdCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input, Account actingAccount)
-            throws DatabaseException {
+             {
         // extract parameters
         CommandResponse parseResponse = parseParameters(input);
         if (parseResponse != null) {

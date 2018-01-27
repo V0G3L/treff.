@@ -14,5 +14,5 @@ public interface AccountUpdateListener {
      * {@link Account} is added.
      * @param update The Update that was added
      */
-    void onUpdateAdded(Update update)  throws DatabaseException;
+    void onUpdateAdded(Update update);
 }

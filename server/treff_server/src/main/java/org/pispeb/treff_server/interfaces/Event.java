@@ -6,32 +6,32 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import java.util.Date;
 import java.util.Set;
 
-public interface Event extends DataObject {
+public interface Event extends DataObject, Comparable<Event> {
 
-    void setTitle(String title) throws DatabaseException;
+    void setTitle(String title);
 
-    String getTitle() throws DatabaseException;
+    String getTitle();
 
-    void setPosition(Position position) throws DatabaseException;
+    void setPosition(Position position);
 
-    Position getPosition() throws DatabaseException;
+    Position getPosition();
 
-    void setTimeStart() throws DatabaseException;
+    void setTimeStart();
 
-    Date getTimeStart() throws DatabaseException;
+    Date getTimeStart();
 
-    void setTimeEnd() throws DatabaseException;
+    void setTimeEnd();
 
-    Date getTimeEnd() throws DatabaseException;
+    Date getTimeEnd();
 
-    Date getTimeCreated() throws DatabaseException;
+    Date getTimeCreated();
 
-    Account getCreator() throws DatabaseException;
+    Account getCreator();
 
-    void addParticipant(Account participant) throws DatabaseException;
+    void addParticipant(Account participant);
 
-    void removeParticipant(Account participant) throws DatabaseException;
+    void removeParticipant(Account participant);
 
-    Set<Account> getAllParticipants() throws DatabaseException;
+    Set<Account> getAllParticipants();
 
 }

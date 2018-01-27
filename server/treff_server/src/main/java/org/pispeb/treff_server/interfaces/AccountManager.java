@@ -23,7 +23,7 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied username or <code>null</code> if no such account exists.
      */
-    Account getAccountByUsername(String username) throws DatabaseException;
+    Account getAccountByUsername(String username);
 
     /**
      * Returns the account that is associated with the given email address.
@@ -32,7 +32,7 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied email address or <code>null</code> if no such account exists.
      */
-    Account getAccountByEmail(String email) throws DatabaseException;
+    Account getAccountByEmail(String email);
 
     /**
      * Returns the account that is associated with the given ID.
@@ -41,7 +41,7 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied ID or <code>null</code> if no such account exists.
      */
-    Account getAccount(int id) throws DatabaseException;
+    Account getAccount(int id);
 
     /**
      * Creates a new account with the supplied username, email address and
@@ -61,11 +61,10 @@ public interface AccountManager {
      *                                    created in this case.
      */
     String createAccount(String username, String email, String password)
-            throws DuplicateEmailException, DuplicateUsernameException,
-            DatabaseException;
+            throws DuplicateEmailException, DuplicateUsernameException;
 
-    Account getAccountByLoginToken(String token) throws DatabaseException;
+    Account getAccountByLoginToken(String token);
 
-    String generateNewLoginToken(Account account) throws DatabaseException;
+    String generateNewLoginToken(Account account);
 
 }

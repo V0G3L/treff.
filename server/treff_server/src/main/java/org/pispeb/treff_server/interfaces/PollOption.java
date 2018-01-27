@@ -3,14 +3,22 @@ package org.pispeb.treff_server.interfaces;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 
-public interface PollOption extends DataObject {
+import java.util.Set;
 
-    String getTitle() throws DatabaseException;
+public interface PollOption extends DataObject, Comparable<PollOption> {
 
-    void setTitle(String title) throws DatabaseException;
+    String getTitle();
 
-    Position getPosition() throws DatabaseException;
+    void setTitle(String title);
 
-    void setPosition(Position position) throws DatabaseException;
+    Position getPosition();
+
+    void setPosition(Position position);
+
+    void addVoter(Account voter);
+
+    void removeVoter(Account voter);
+
+    Set<Account> getVoters();
 
 }

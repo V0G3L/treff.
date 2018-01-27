@@ -26,14 +26,14 @@ public class PersistentConnection implements AccountUpdateListener {
      * @param out The {@link PrintWriter} of an active connection
      */
     public PersistentConnection(PrintWriter out, AccountManager accountManager,
-                                int userID) throws DatabaseException {
+                                int userID)  {
         this.out = out;
         this.observedAccount = accountManager.getAccount(userID);
         observedAccount.addUpdateListener(this);
     }
 
     @Override
-    public void onUpdateAdded(Update update) throws DatabaseException {
+    public void onUpdateAdded(Update update)  {
         int updateCount = observedAccount.getUndeliveredUpdates().size();
         JsonObject message = Json.createObjectBuilder()
                 .add("count",updateCount).build();

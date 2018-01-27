@@ -17,22 +17,22 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     }
 
     @Override
-    public String getTitle() throws DatabaseException {
+    public String getTitle()  {
         return null;
     }
 
     @Override
-    public void setTitle(String title) throws DatabaseException {
+    public void setTitle(String title)  {
 
     }
 
     @Override
-    public Position getPosition() throws DatabaseException {
+    public Position getPosition()  {
         return null;
     }
 
     @Override
-    public void setPosition(Position position) throws DatabaseException {
+    public void setPosition(Position position)  {
 
     }
 

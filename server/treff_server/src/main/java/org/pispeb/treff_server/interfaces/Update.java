@@ -23,16 +23,16 @@ import java.util.Set;
  * <p>
  * <p>Updates are naturally ordered from oldest to newest.</p>
  */
-public interface Update extends Comparable<Update> {
+public interface Update extends Comparable<Update>, DataObject {
 
     /**
      * Returns the time the {@link Update} was created, used for ordering
      *
      * @return The time the Update was created
      */
-    Date getTime() throws DatabaseException;
+    Date getTime();
 
-    UpdateType getType() throws DatabaseException;
+    UpdateType getType();
 
     /**
      * Returns the content of the Update.
@@ -48,7 +48,7 @@ public interface Update extends Comparable<Update> {
      * <p>For a {@link UpdateType#CHAT} Update, the format is as follows:</p>
      * <code>{ "group-id": id-of-group, "message": the-message }</code>
      */
-    JsonObject getUpdate() throws DatabaseException;
+    JsonObject getUpdate();
 
     /**
      * Adds an {@link Account} to the set of affected Accounts.
@@ -56,7 +56,7 @@ public interface Update extends Comparable<Update> {
      *
      * @param account The Account to be added
      */
-    void addAffectedAccount(Account account) throws DatabaseException;
+    void addAffectedAccount(Account account);
 
     /**
      * Removes an {@link Account} from the set of affected Accounts.
@@ -70,14 +70,14 @@ public interface Update extends Comparable<Update> {
      * @return <code>true</code> if the set of affected Accounts is
      * empty after removal, <code>false</code> otherwise.
      */
-    boolean removeAffectedAccount(Account account) throws DatabaseException;
+    boolean removeAffectedAccount(Account account);
 
     /**
      * Returns the set of affected {@link Account}.
      *
      * @return The set of affected Accounts
      */
-    Set<Account> getAffectedAccounts() throws DatabaseException;
+    Set<Account> getAffectedAccounts();
 
     /**
      * The type of an {@link Update}.

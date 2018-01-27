@@ -5,13 +5,13 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import java.util.List;
 
-public interface Poll extends DataObject {
+public interface Poll extends DataObject, Comparable<Poll> {
 
-    String getQuestion() throws DatabaseException;
+    String getQuestion();
 
-    void setQuestion(String question) throws DatabaseException;
+    void setQuestion(String question);
 
-    List<PollOption> getPollOptions() throws DatabaseException;
+    List<PollOption> getPollOptions();
 
     PollOption addPollOption(String title, Position position) throws
             DatabaseException;
@@ -25,11 +25,11 @@ public interface Poll extends DataObject {
      * anyways.
      */
     // TODO: phrasing
-    boolean removePollOption(PollOption pollOption) throws DatabaseException;
+    boolean removePollOption(PollOption pollOption);
 
-    boolean isMultiChoice() throws DatabaseException;
+    boolean isMultiChoice();
 
-    void setMultiChoice(boolean multiChoice) throws DatabaseException;
+    void setMultiChoice(boolean multiChoice);
 
     /**
      * Ends the poll, locking the voting and creating an {@link Event} based
@@ -37,11 +37,11 @@ public interface Poll extends DataObject {
      *
      * @return The created Event
      */
-    Event endPoll() throws DatabaseException;
+    Event endPoll();
 
     /**
      * Cancels the poll. Like {@link #endPoll()} but doesn't create an
      * {@link Event}.
      */
-    void cancelPoll() throws DatabaseException;
+    void cancelPoll();
 }

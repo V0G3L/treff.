@@ -19,28 +19,29 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public Date getTime() throws DatabaseException {
+    public Date getTime()  {
         return null;
     }
 
     @Override
-    public UpdateType getType() throws DatabaseException {
+    public UpdateType getType()  {
         return null;
     }
 
     @Override
-    public JsonObject getUpdate() throws DatabaseException {
+    public JsonObject getUpdate()  {
         // read from DB, assemble JsonObject
         return null;
     }
 
     @Override
-    public void addAffectedAccount(Account account) throws DatabaseException {
+    public void addAffectedAccount(Account account)  {
+        account.addUpdate(this);
     }
 
     @Override
     public boolean removeAffectedAccount(Account account)
-            throws DatabaseException {
+             {
         // remove user from set
         // if set is empty after removal, delete update from db
         //      and return true
@@ -50,7 +51,7 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public Set<Account> getAffectedAccounts() throws DatabaseException {
+    public Set<Account> getAffectedAccounts()  {
         return null;
     }
 

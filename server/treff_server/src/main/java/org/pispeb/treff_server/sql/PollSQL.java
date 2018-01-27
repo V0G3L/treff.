@@ -21,49 +21,49 @@ public class PollSQL extends SQLObject implements Poll {
     }
 
     @Override
-    public String getQuestion() throws DatabaseException {
+    public String getQuestion()  {
         return null;
     }
 
     @Override
-    public void setQuestion(String question) throws DatabaseException {
+    public void setQuestion(String question)  {
 
     }
 
     @Override
-    public List<PollOption> getPollOptions() throws DatabaseException {
+    public List<PollOption> getPollOptions()  {
         return null;
     }
 
     @Override
     public PollOption addPollOption(String title, Position position)
-            throws DatabaseException {
+             {
         return null;
     }
 
     @Override
     public boolean removePollOption(PollOption pollOption)
-            throws DatabaseException {
+             {
         return false;
     }
 
     @Override
-    public boolean isMultiChoice() throws DatabaseException {
+    public boolean isMultiChoice()  {
         return false;
     }
 
     @Override
-    public void setMultiChoice(boolean multiChoice) throws DatabaseException {
+    public void setMultiChoice(boolean multiChoice)  {
 
     }
 
     @Override
-    public Event endPoll() throws DatabaseException {
+    public Event endPoll()  {
         return null;
     }
 
     @Override
-    public void cancelPoll() throws DatabaseException {
+    public void cancelPoll()  {
 
     }
 
