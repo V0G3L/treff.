@@ -29,17 +29,8 @@ public class ChatRepository {
         });
     }
 
-    public LiveData<PagedList<ChatMessage>> getAllMessages() {
-        return new LivePagedListBuilder<>(chatDao.getAllMessages(), 30)
+    public LiveData<PagedList<ChatMessage>> getMessagesByGroupId(int groupId) {
+        return new LivePagedListBuilder<>(chatDao.getMessagesByGroupId(groupId), 30)
                 .build();
-    }
-
-    //    TODO implement
-    public LiveData<PagedList<ChatMessage>> getMessageByGroupId(int groupId) {
-        return new LivePagedListBuilder<>(chatDao.getAllMessages(), 30)
-                .build();
-//        return new LivePagedListBuilder<>(chatDao
-//                .getMessagesByGroupId(groupId),30)
-//                .build();
     }
 }

@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.view.group.chat;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FragmentGroupChatBinding;
+import org.pispeb.treff_client.view.group.GroupActivity;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
@@ -30,11 +32,17 @@ public class GroupChatFragment extends Fragment {
                 .get(GroupChatViewModel.class);
         final GroupChatAdapter adapter = new GroupChatAdapter();
 
+
+        //set groupID
+        vm.setGroupId(((GroupActivity) getActivity()).getGroupId());
+
         vm.getMessages().observe(this, messages -> {
             adapter.setList(messages);
         });
 
         binding.setVm(vm);
+
+
 
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));

@@ -18,9 +18,6 @@ public class User {
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
-
-
-
     private Position position;
     private Date lastPositionUpdate;
 

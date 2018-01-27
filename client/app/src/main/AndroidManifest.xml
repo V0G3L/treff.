@@ -27,14 +27,13 @@
 
         <activity
             android:name=".view.login.LoginActivity"
-            android:noHistory="true">
+            android:noHistory="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
         <activity
             android:name=".view.home.HomeActivity"
@@ -46,13 +45,12 @@
         <activity
             android:name=".view.settings.SettingsActivity"
             android:launchMode="singleTask"/>
-        <activity android:name=".view.friend.FriendActivity"/>
 
+        <activity android:name=".view.friend.FriendActivity"/>
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity android:name=".view.home.groupList.AddGroupActivity"/>
         <activity android:name=".view.group.eventList.AddEventActivity"/>
         <activity android:name=".view.group.eventList.AddPollActivity"/>
-
 
         <service
             android:name=".data.gps_handling.GPSProvider"

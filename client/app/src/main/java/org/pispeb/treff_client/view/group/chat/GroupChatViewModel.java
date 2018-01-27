@@ -9,19 +9,15 @@ import org.pispeb.treff_client.data.repositories.ChatRepository;
 
 import java.util.List;
 
-/**
- * Created by Lukas on 1/6/2018.
- */
-
 public class GroupChatViewModel extends ViewModel {
 
+    private int groupId;
     private LiveData<PagedList<ChatMessage>> messages;
     private final ChatRepository chatRepository;
     private String currentMessage;
 
     public GroupChatViewModel(ChatRepository chatRepository) {
         this.chatRepository = chatRepository;
-        this.messages = chatRepository.getAllMessages();
         currentMessage = "";
     }
 
@@ -31,7 +27,7 @@ public class GroupChatViewModel extends ViewModel {
 
     public void onSendClick() {
         if (!currentMessage.equals("")) {
-            chatRepository.add(new ChatMessage((int) System.currentTimeMillis(), currentMessage));
+            chatRepository.add(new ChatMessage(currentMessage, groupId));
             currentMessage = "";
         }
     }
@@ -42,5 +38,14 @@ public class GroupChatViewModel extends ViewModel {
 
     public void setCurrentMessage(String currentMessage) {
         this.currentMessage = currentMessage;
+    }
+
+    /**
+     * Sets the group ID and updates the messages
+     * @param groupId
+     */
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+        messages = chatRepository.getMessagesByGroupId(groupId);
     }
 }

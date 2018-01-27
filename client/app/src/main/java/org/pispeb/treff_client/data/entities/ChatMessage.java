@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
- * Room {@link Entity} that represents a single chat message in a {@link Chat}
+ * Room {@link Entity} that represents a single chat message
  */
 @Entity(tableName = "message")
 public class ChatMessage {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int messageID;
     private int groupID;
     private String content;
@@ -20,9 +20,9 @@ public class ChatMessage {
     private User sender;
     private Date timeSent;
 
-    public ChatMessage(int messageID, String content) {
-        this.messageID = messageID;
+    public ChatMessage(String content, int groupID) {
         this.content = content;
+        this.groupID = groupID;
         //this.sender = sender;
         this.timeSent = timeSent;
     }
@@ -36,7 +36,7 @@ public class ChatMessage {
 
         if (messageID != that.messageID) return false;
         if (!content.equals(that.content)) return false;
-        //TODO set these values; null causes runtime crashes when sending chat messages
+        //TODO set value; null causes runtime crashes when sending chat messages
         //if (!sender.equals(that.sender)) return false;
         //if (!timeSent.equals(that.timeSent)) return false;
         return true;

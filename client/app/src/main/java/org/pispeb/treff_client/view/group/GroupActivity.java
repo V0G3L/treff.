@@ -93,4 +93,7 @@ public class GroupActivity extends AppCompatActivity implements
         viewPager.setAdapter(adapter);
     }
 
+    public int getGroupId() {
+        return groupId;
+    }
 }

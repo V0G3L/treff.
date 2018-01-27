@@ -11,7 +11,7 @@ import org.pispeb.treff_client.data.entities.ChatMessage;
 import java.util.List;
 
 /**
- * {@link Dao} which provides access to {@link org.pispeb.treff_client.data.entities.Chat}s and {@link org.pispeb.treff_client.data.entities.ChatMessage}s
+ * {@link Dao} which provides access to {@link org.pispeb.treff_client.data.entities.ChatMessage}s
  */
 @Dao
 public interface ChatDao {
@@ -20,9 +20,6 @@ public interface ChatDao {
     @Insert
     void save(ChatMessage message);
 
-    @Query("SELECT * FROM message")
-    DataSource.Factory<Integer, ChatMessage> getAllMessages();
-
-//    @Query("SELECT * FROM message WHERE groupID = :groupId")
-//    DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
+    @Query("SELECT * FROM message WHERE groupID = :groupId")
+    DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
 }

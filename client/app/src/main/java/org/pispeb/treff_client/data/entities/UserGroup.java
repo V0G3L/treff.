@@ -9,15 +9,14 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "usergroup")
 public class UserGroup {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int groupID;
     private String name;
     //TODO replace
     //private List<Integer> eventIDs;
 
-    public UserGroup(String name, int groupID) {
+    public UserGroup(String name) {
         this.name = name;
-        this.groupID = groupID;
     }
 
     @Override
@@ -27,8 +26,7 @@ public class UserGroup {
 
         UserGroup userGroup = (UserGroup) o;
 
-        if (groupID != userGroup.groupID) return false;
-        return name.equals(userGroup.name);
+        return groupID == userGroup.groupID;
     }
 
     @Override

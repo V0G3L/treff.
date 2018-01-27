@@ -16,7 +16,6 @@ import org.pispeb.treff_client.data.entities.converter.PositionConverter;
  */
 
 @Database(entities = {
-        Chat.class,
         ChatMessage.class,
         Event.class,
         GroupMembership.class,
@@ -24,7 +23,7 @@ import org.pispeb.treff_client.data.entities.converter.PositionConverter;
         PollOption.class,
         User.class,
         UserGroup.class
-        }, version = 6, exportSchema = false)
+        }, version = 9, exportSchema = false)
 @TypeConverters({DateConverter.class, PositionConverter.class})
 public abstract class TreffDatabase extends RoomDatabase {
 

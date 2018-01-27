@@ -7,10 +7,6 @@ import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
-/**
- * Created by Lukas on 1/7/2018.
- */
-
 public class FriendViewModel extends ViewModel {
 
     private final UserGroupRepository userGroupRepository;
