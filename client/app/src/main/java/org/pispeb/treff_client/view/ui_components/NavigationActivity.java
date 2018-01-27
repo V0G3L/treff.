@@ -36,42 +36,38 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
         Activity thisActivity = this;
 
+        // This method will trigger on item Click of navigation menu
         frameBinding.navigation.setNavigationItemSelectedListener(
-            new NavigationView.OnNavigationItemSelectedListener() {
-                // This method will trigger on item Click of navigation menu
-                @Override
-                public boolean onNavigationItemSelected(MenuItem menuItem) {
+            menuItem -> {
+                //Checking if the item is in checked state or not, if not make it in checked state
+                if(menuItem.isChecked()) menuItem.setChecked(false);
+                else menuItem.setChecked(true);
 
-                    //Checking if the item is in checked state or not, if not make it in checked state
-                    if(menuItem.isChecked()) menuItem.setChecked(false);
-                    else menuItem.setChecked(true);
+                //Closing drawer on item click
+                drawer.closeDrawers();
 
-                    //Closing drawer on item click
-                    drawer.closeDrawers();
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()){
 
-                    //Check to see which item was being clicked and perform appropriate action
-                    switch (menuItem.getItemId()){
-
-                        //Replacing the main content with ContentFragment Which is our Inbox View;
-                        case R.id.nav_home:
-                            Intent homeIntent = new Intent(thisActivity,
-                                    HomeActivity.class);
-                            startActivity(homeIntent);
-                            return true;
-                        case R.id.nav_settings:
-                            Intent settingsIntent = new Intent(thisActivity,
-                                    SettingsActivity.class);
-                            startActivity(settingsIntent);
-                            return true;
-                        case R.id.nav_about:
-                            // TODO About page
-                            return true;
-                        case R.id.nav_logout:
-                            // TODO logout
-                            return true;
-                        default:
-                            return true;
-                    }
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.nav_home:
+                        Intent homeIntent = new Intent(thisActivity,
+                                HomeActivity.class);
+                        startActivity(homeIntent);
+                        return true;
+                    case R.id.nav_settings:
+                        Intent settingsIntent = new Intent(thisActivity,
+                                SettingsActivity.class);
+                        startActivity(settingsIntent);
+                        return true;
+                    case R.id.nav_about:
+                        // TODO About page
+                        return true;
+                    case R.id.nav_logout:
+                        // TODO logout
+                        return true;
+                    default:
+                        return true;
                 }
             }
         );

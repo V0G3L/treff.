@@ -23,8 +23,7 @@
             android:onClick="@{() -> vm.onAddClick()}"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_group_add_black_24dp"
             android:tint="@color/white"/>
 

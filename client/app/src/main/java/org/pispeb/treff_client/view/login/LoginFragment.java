@@ -15,10 +15,6 @@ import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
-/**
- * Created by matth on 25.01.2018.
- */
-
 public class LoginFragment extends Fragment{
 
     FragmentLoginBinding binding;
@@ -57,7 +53,7 @@ public class LoginFragment extends Fragment{
             case IDLE:
                 break;
             case LOGIN:Intent intent = new Intent(getActivity(), HomeActivity.class);
-                getActivity().startActivity(intent);
+                this.startActivity(intent);
                 break;
             case GO_TO_REGISTER:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new RegisterFragment()).commit();

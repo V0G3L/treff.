@@ -60,8 +60,7 @@ public class RegisterFragment extends Fragment {
                 break;
             case REGISTER:
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
-                getActivity().startActivity(intent);
-
+                this.startActivity(intent);
                 break;
             case GO_TO_LOGIN:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new LoginFragment()).commit();

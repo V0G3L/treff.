@@ -7,10 +7,6 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
-/**
- * Created by Lukas on 1/7/2018.
- */
-
 public class RegisterViewModel extends ViewModel {
 
     private SingleLiveEvent<State> state;
