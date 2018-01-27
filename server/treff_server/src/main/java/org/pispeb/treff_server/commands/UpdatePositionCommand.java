@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class UpdatePositionCommand extends AbstractCommand {
 
     public UpdatePositionCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

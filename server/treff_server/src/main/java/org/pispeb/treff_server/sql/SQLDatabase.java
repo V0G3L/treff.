@@ -237,7 +237,7 @@ public class SQLDatabase {
                                 "FOREIGN KEY (polloptionid)" +
                                 "   REFERENCES polloptions(id)" +
                                 "   ON DELETE CASCADE," +
-                                "PRIMARY KEY (accountid,polloptions)" +
+                                "PRIMARY KEY (accountid,polloptionid)" +
                                 ");",
                         POLLVOTES.toString()),
 

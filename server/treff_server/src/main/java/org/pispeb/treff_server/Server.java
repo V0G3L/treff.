@@ -60,7 +60,7 @@ public class Server {
             // TODO: error message and exit
             e.printStackTrace();
         }
-        //noinspection UnusedAssignment WTF IntelliJ?
+
         AccountManager accountManager = EntityManagerSQL.getInstance();
 
         try (ServerSocket socket = new ServerSocket(

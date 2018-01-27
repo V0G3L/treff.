@@ -1,14 +1,13 @@
 package org.pispeb.treff_server.sql;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import javax.json.JsonObject;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 public class UpdateSQL extends SQLObject implements Update {
 
@@ -51,7 +50,7 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public Set<Account> getAffectedAccounts()  {
+    public Map<Integer, Account> getAffectedAccounts()  {
         return null;
     }
 
@@ -62,7 +61,8 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public int getID() {
-        return id;
+    public void delete() {
+        throw new UnsupportedOperationException(); // TODO: implement
     }
+
 }

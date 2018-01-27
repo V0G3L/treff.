@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class EditPasswordCommand extends AbstractCommand {
 
     public EditPasswordCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

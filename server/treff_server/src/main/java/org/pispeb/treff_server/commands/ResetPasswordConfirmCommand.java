@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class ResetPasswordConfirmCommand extends AbstractCommand {
 
     public ResetPasswordConfirmCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

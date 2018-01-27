@@ -22,30 +22,24 @@ public class GetUserIdCommand extends AbstractCommand {
     private String username;
 
     public GetUserIdCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override
     protected CommandResponse executeInternal(JsonObject input, Account actingAccount)
              {
-        // extract parameters
-        CommandResponse parseResponse = parseParameters(input);
-        if (parseResponse != null) {
-            return parseResponse;
-        }
         // get the account
         Account account = this.accountManager.getAccount(this.id);
         if (account == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID,
-                    Json.createObjectBuilder().build());
+            return new CommandResponse(StatusCode.USERIDINVALID);
         }
         // get information
         Lock lock = account.getReadWriteLock().readLock();
         lock.lock();
         try {
             if (account.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID,
-                        Json.createObjectBuilder().build());
+                return new CommandResponse(StatusCode.USERIDINVALID);
             }
             this.id = account.getID();
         } finally {
@@ -55,10 +49,6 @@ public class GetUserIdCommand extends AbstractCommand {
         JsonObject response = Json.createObjectBuilder()
                 .add("type", "account").add("id", this.id)
                 .add("user", this.username).build();
-        return new CommandResponse(StatusCode.SUCCESSFUL, response);
-    }
-
-    protected CommandResponse parseParameters(JsonObject jsonObject) {
-        return extractStringParameter(this.username, "user", jsonObject);
+        return new CommandResponse(response);
     }
 }

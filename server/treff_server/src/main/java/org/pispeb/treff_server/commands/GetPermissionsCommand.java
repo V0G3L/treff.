@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class GetPermissionsCommand extends AbstractCommand {
 
     public GetPermissionsCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

@@ -14,7 +14,8 @@ import javax.json.JsonObject;
 public class PublishPositionCommand extends AbstractCommand {
 
     public PublishPositionCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

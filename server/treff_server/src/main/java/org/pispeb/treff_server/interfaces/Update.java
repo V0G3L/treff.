@@ -5,6 +5,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import javax.json.JsonObject;
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -77,7 +78,7 @@ public interface Update extends Comparable<Update>, DataObject {
      *
      * @return The set of affected Accounts
      */
-    Set<Account> getAffectedAccounts();
+    Map<Integer, Account> getAffectedAccounts();
 
     /**
      * The type of an {@link Update}.

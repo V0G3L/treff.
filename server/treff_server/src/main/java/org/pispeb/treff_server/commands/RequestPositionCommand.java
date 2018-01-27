@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class RequestPositionCommand extends AbstractCommand {
 
     public RequestPositionCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

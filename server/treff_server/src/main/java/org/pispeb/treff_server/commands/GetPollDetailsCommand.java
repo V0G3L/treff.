@@ -18,7 +18,8 @@ public class GetPollDetailsCommand extends AbstractCommand {
     private int groupId;
 
     public GetPollDetailsCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

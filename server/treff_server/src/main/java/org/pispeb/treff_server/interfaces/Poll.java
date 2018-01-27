@@ -3,7 +3,9 @@ package org.pispeb.treff_server.interfaces;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface Poll extends DataObject, Comparable<Poll> {
 
@@ -11,21 +13,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
 
     void setQuestion(String question);
 
-    List<PollOption> getPollOptions();
+    Map<Integer, PollOption> getPollOptions();
 
-    PollOption addPollOption(String title, Position position) throws
-            DatabaseException;
-
-    /**
-     * Removes the supplied {@link PollOption} from the poll.
-     *
-     * @return <code>true</code> if the {@link Poll} previously contained
-     * the supplied {@link PollOption} and it was removed, <code>false</code>
-     * if the supplied {@link PollOption} was not part of this {@link Poll}
-     * anyways.
-     */
-    // TODO: phrasing
-    boolean removePollOption(PollOption pollOption);
+    PollOption addPollOption(Position position, Date timeStart, Date timeEnd);
 
     boolean isMultiChoice();
 
@@ -38,10 +28,4 @@ public interface Poll extends DataObject, Comparable<Poll> {
      * @return The created Event
      */
     Event endPoll();
-
-    /**
-     * Cancels the poll. Like {@link #endPoll()} but doesn't create an
-     * {@link Event}.
-     */
-    void cancelPoll();
 }

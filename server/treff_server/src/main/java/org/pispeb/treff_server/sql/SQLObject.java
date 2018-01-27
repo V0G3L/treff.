@@ -98,4 +98,9 @@ public abstract class SQLObject implements DataObject {
     public boolean isDeleted() {
         return deleted;
     }
+
+    @Override
+    public int getID() {
+        return id;
+    }
 }

@@ -1,7 +1,6 @@
 package org.pispeb.treff_server.sql;
 
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
-import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
@@ -12,26 +11,21 @@ import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
 
     private static final TableName TABLE_NAME = TableName.USERGROUPS;
-
-    private Set<Account> members;
-    private Map<Account, Set<Permission>> memberPermissions;
 
     UsergroupSQL(int id, SQLDatabase database, Properties config) {
         super(id, database, config, TABLE_NAME);
@@ -81,31 +75,19 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void removeMember(Account member) {
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE accountid=? AND usergroupid=?;",
-                    TableName.GROUPMEMBERSHIPS.toString(),
-                    member.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-
         // clean up events, remove participation
+        // then, clean up polloptions, remove votes
         SortedSet<Event> events = new TreeSet<>(getAllEvents().values());
-        events.forEach(e -> e.getReadWriteLock().writeLock().lock());
-        try {
-            events.forEach(e -> e.removeParticipant(member));
-        } finally {
-            events.forEach(e -> e.getReadWriteLock().writeLock().unlock());
-        }
-
-        // clean up polloptions, remove votes
         SortedSet<Poll> polls = new TreeSet<>(getAllPolls().values());
+        events.forEach(e -> e.getReadWriteLock().writeLock().lock());
         polls.forEach(e -> e.getReadWriteLock().writeLock().lock());
         try {
+            // remove all event participations
+            events.forEach(e -> e.removeParticipant(member));
+            // go through all polloptions and remove votes
             for (Poll p : polls) {
-                List<PollOption> pollOptions = p.getPollOptions();
+                SortedSet<PollOption> pollOptions
+                        = new TreeSet<>(p.getPollOptions().values());
                 pollOptions.forEach(pO
                         -> pO.getReadWriteLock().writeLock().lock());
                 try {
@@ -117,6 +99,18 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
             }
         } finally {
             polls.forEach(e -> e.getReadWriteLock().writeLock().unlock());
+            events.forEach(e -> e.getReadWriteLock().writeLock().unlock());
+        }
+
+        // remove membership from DB
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE accountid=? AND usergroupid=?;",
+                    TableName.GROUPMEMBERSHIPS.toString(),
+                    member.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
         }
     }
 
@@ -221,26 +215,63 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public boolean checkPermissionOfMember(Account member, Permission
-            permission) throws AccountNotInGroupException, DatabaseException {
-        return memberPermissions.get(member).contains(permission);
+            permission) throws AccountNotInGroupException {
+        try {
+            return database.getQueryRunner().query(
+                    "SELECT ? FROM ? WHERE accountid=? AND groupid=?;",
+                    new ScalarHandler<Boolean>(),
+                    "permission_" + permission.toString(),
+                    TableName.GROUPMEMBERSHIPS,
+                    member.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void setPermissionOfMember(Account member, Permission permission,
                                       boolean value)
             throws AccountNotInGroupException, DatabaseException {
-
+        try {
+            database.getQueryRunner().update(
+                    "UPDATE ? SET ?=? WHERE accountid=? AND groupid=?;",
+                    TableName.GROUPMEMBERSHIPS,
+                    "permission_" + permission.toString(),
+                    value,
+                    member.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void delete() {
-        // TODO
-        // maybe throw exception when this still has members?
-    }
+        // delete is supposed to automatically be called when the last member
+        // is removed. If there are still members, remove them all but don't
+        // perform the actual deletion in this invocation. Removal of the last
+        // member will cause this method to be invoked again.
+        Collection<Account> members = getAllMembers().values();
+        if (members.size() > 0) {
+            members.forEach(this::removeMember);
+        } else {
+            // delete all events
+            // then, delete all polls
+            SortedSet<Event> events = new TreeSet<>(getAllEvents().values());
+            SortedSet<Poll> polls = new TreeSet<>(getAllPolls().values());
+            events.forEach(e -> e.getReadWriteLock().writeLock().lock());
+            polls.forEach(e -> e.getReadWriteLock().writeLock().lock());
+            try {
+                events.forEach(Event::delete);
+                polls.forEach(Poll::delete);
+            } finally {
+                polls.forEach(e -> e.getReadWriteLock().writeLock().unlock());
+                events.forEach(e -> e.getReadWriteLock().writeLock().unlock());
+            }
 
-    @Override
-    public int getID() {
-        return id;
+            deleted = true;
+        }
     }
 
     @Override

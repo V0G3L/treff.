@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
@@ -8,9 +9,11 @@ import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class EventSQL extends SQLObject implements Event {
 
@@ -21,80 +24,106 @@ public class EventSQL extends SQLObject implements Event {
     }
 
     @Override
-    public void setTitle(String title)  {
-
+    public void setTitle(String title) {
+        setProperties(new AssignmentList()
+                .put("title", title));
     }
 
     @Override
-    public String getTitle()  {
-        return null;
+    public String getTitle() {
+        return (String) getProperties("title").get("title");
     }
 
     @Override
-    public void setPosition(Position position)  {
-
+    public void setPosition(Position position) {
+        setProperties(new AssignmentList()
+                .put("latitude", position.latitude)
+                .put("longitude", position.longitude));
     }
 
     @Override
-    public Position getPosition()  {
-        return null;
+    public Position getPosition() {
+        Map<String, Object> properties
+                = getProperties("latitude", "longitude");
+        return new Position((Double) properties.get("latitude"),
+                (Double) properties.get("longitude"));
     }
 
     @Override
-    public void setTimeStart()  {
-
+    public void setTimeStart(Date timeStart) {
+        setProperties(new AssignmentList()
+                .put("timestart", timeStart));
     }
 
     @Override
-    public Date getTimeStart()  {
-        return null;
+    public Date getTimeStart() {
+        return (Date) getProperties("timestart").get("timestart");
     }
 
     @Override
-    public void setTimeEnd()  {
-
+    public void setTimeEnd(Date timeEnd) {
+        setProperties(new AssignmentList()
+                .put("timeend", timeEnd));
     }
 
     @Override
-    public Date getTimeEnd()  {
-        return null;
+    public Date getTimeEnd() {
+        return (Date) getProperties("timestart").get("timestart");
     }
 
     @Override
-    public Date getTimeCreated()  {
-        return null;
+    public Account getCreator() {
+        int id = (int) getProperties("creator").get("creator");
+        return EntityManagerSQL.getInstance().getAccount(id);
     }
 
     @Override
-    public Account getCreator()  {
-        return null;
+    public void addParticipant(Account participant) {
+        try {
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(accountid,eventid) VALUES (?,?);",
+                    (rs -> null),
+                    TableName.EVENTPARTICIPATIONS.toString(),
+                    participant.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void addParticipant(Account participant)  {
-
+    public void removeParticipant(Account participant) {
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE accountid=? AND eventid=?;",
+                    TableName.EVENTPARTICIPATIONS.toString(),
+                    participant.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void removeParticipant(Account participant)
-             {
-
-    }
-
-    @Override
-    public Set<Account> getAllParticipants()  {
-        return null;
-    }
-
-    @Override
-    public ReadWriteLock getReadWriteLock() {
-        return null;
+    public Map<Integer, Account> getAllParticipants() {
+        try {
+            return database.getQueryRunner().query(
+                    "SELECT accountid FROM ? WHERE eventid=?;",
+                    new ColumnListHandler<Integer>(),
+                    TableName.EVENTPARTICIPATIONS.toString(),
+                    this.id)
+                    .stream()
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void delete() {
         // remove all participants
-        getAllParticipants().forEach(this::removeParticipant);
+        getAllParticipants().values().forEach(this::removeParticipant);
         try {
             database.getQueryRunner().update(
                     "DELETE FROM ? WHERE id=?;",
@@ -104,11 +133,6 @@ public class EventSQL extends SQLObject implements Event {
             throw new DatabaseException(e);
         }
         deleted = true;
-    }
-
-    @Override
-    public int getID() {
-        return id;
     }
 
     @Override

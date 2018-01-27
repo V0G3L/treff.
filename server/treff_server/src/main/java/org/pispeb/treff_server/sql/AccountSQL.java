@@ -430,11 +430,6 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public int getID() {
-        return id;
-    }
-
-    @Override
     public int compareTo(Account o) {
         return this.id - o.getID();
     }

@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class EditEmailCommand extends AbstractCommand {
 
     public EditEmailCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

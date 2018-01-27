@@ -14,7 +14,8 @@ import javax.json.JsonObject;
 public class UnblockAccountCommand extends AbstractCommand {
 
     public UnblockAccountCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

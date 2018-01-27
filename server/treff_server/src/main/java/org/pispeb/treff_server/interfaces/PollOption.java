@@ -3,6 +3,7 @@ package org.pispeb.treff_server.interfaces;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface PollOption extends DataObject, Comparable<PollOption> {
@@ -19,6 +20,6 @@ public interface PollOption extends DataObject, Comparable<PollOption> {
 
     void removeVoter(Account voter);
 
-    Set<Account> getVoters();
+    Map<Integer, Account> getVoters();
 
 }

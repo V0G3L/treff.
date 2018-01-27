@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class EditEventCommand extends AbstractCommand {
 
     public EditEventCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

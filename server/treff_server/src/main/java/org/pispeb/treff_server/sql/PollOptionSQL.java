@@ -2,9 +2,11 @@ package org.pispeb.treff_server.sql;
 
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
 
@@ -37,12 +39,27 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     }
 
     @Override
-    public ReadWriteLock getReadWriteLock() {
-        return null;
+    public void addVoter(Account voter) {
+        throw new UnsupportedOperationException(); // TODO: implement
     }
 
     @Override
-    public int getID() {
-        return id;
+    public void removeVoter(Account voter) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    @Override
+    public Map<Integer, Account> getVoters() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    @Override
+    public void delete() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    @Override
+    public int compareTo(PollOption o) {
+        throw new UnsupportedOperationException(); // TODO: implement
     }
 }

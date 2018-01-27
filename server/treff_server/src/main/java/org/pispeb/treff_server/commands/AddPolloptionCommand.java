@@ -13,7 +13,8 @@ import javax.json.JsonObject;
 public class AddPolloptionCommand extends AbstractCommand {
 
     public AddPolloptionCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
     @Override

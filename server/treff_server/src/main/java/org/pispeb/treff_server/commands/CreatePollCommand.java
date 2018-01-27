@@ -13,10 +13,10 @@ import javax.json.JsonObject;
 public class CreatePollCommand extends AbstractCommand {
 
     public CreatePollCommand(AccountManager accountManager) {
-        super(accountManager, requiresLogin, expectedSyntax);
+        super(accountManager, false, null);
+		throw new UnsupportedOperationException();
     }
 
-     */
     @Override
     protected CommandResponse executeInternal(JsonObject input, Account actingAccount) throws
             DatabaseException {

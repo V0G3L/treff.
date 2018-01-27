@@ -1,9 +1,9 @@
 package org.pispeb.treff_server.interfaces;
 
 import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 public interface Event extends DataObject, Comparable<Event> {
@@ -16,15 +16,13 @@ public interface Event extends DataObject, Comparable<Event> {
 
     Position getPosition();
 
-    void setTimeStart();
+    void setTimeStart(Date timeStart);
 
     Date getTimeStart();
 
-    void setTimeEnd();
+    void setTimeEnd(Date timeEnd);
 
     Date getTimeEnd();
-
-    Date getTimeCreated();
 
     Account getCreator();
 
@@ -32,6 +30,6 @@ public interface Event extends DataObject, Comparable<Event> {
 
     void removeParticipant(Account participant);
 
-    Set<Account> getAllParticipants();
+    Map<Integer, Account> getAllParticipants();
 
 }
