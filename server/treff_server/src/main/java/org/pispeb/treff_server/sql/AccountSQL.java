@@ -329,8 +329,9 @@ public class AccountSQL extends SQLObject implements Account {
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-        // inform updatelisteners
-        listeners.forEach(l -> l.onUpdateAdded(update));
+        // inform updatelisteners asynchronously
+        listeners.forEach(
+                l -> new Thread(() -> l.onUpdateAdded(update)).start());
     }
 
     @Override

@@ -4,15 +4,20 @@ import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -84,8 +89,59 @@ public class PollSQL extends SQLObject implements Poll {
     }
 
     @Override
+    public Date getTimeVoteClose() {
+        return (Date) getProperties("timevoteclose").get("timevoteclose");
+    }
+
+    @Override
+    public void setTimeVoteClose(Date timeVoteClose) {
+        setProperties(new AssignmentList()
+                .put("timevoteclose", timeVoteClose));
+    }
+
+    @Override
+    public Account getCreator() {
+        int id = (int) getProperties("creator").get("creator");
+        return EntityManagerSQL.getInstance().getAccount(id);
+    }
+
+    @Override
     public Event endPoll() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        // if no polloptions were added before the poll ended,
+        // just delete and return null
+        if (getPollOptions().size() == 0) {
+            delete();
+            return null;
+        }
+
+        // lock all polloptions
+        SortedSet<PollOption> pollOptions
+                = new TreeSet<>(getPollOptions().values());
+        pollOptions.forEach(pO -> pO.getReadWriteLock().writeLock().lock());
+        try {
+            // collect properties of most supported polloption TODO: tie-breaker
+            PollOption bestOption = getPollOptions().values().stream()
+                    .max(Comparator.naturalOrder())
+                    .get();
+
+            // create event
+            int groupID = (int) getProperties("groupid").get("groupid");
+            Usergroup group = EntityManagerSQL.getInstance().getUsergroup(groupID);
+            Event event = group.createEvent(
+                    getQuestion(),
+                    bestOption.getPosition(),
+                    bestOption.getTimeStart(),
+                    bestOption.getTimeEnd(),
+                    getCreator());
+
+            // delete this poll
+            delete();
+
+            return event;
+        } finally {
+            pollOptions.forEach(pO
+                    -> pO.getReadWriteLock().writeLock().unlock());
+        }
     }
 
     @Override
@@ -95,7 +151,26 @@ public class PollSQL extends SQLObject implements Poll {
 
     @Override
     public void delete() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        // delete all polloptions
+        SortedSet<PollOption> pollOptions
+                = new TreeSet<>(getPollOptions().values());
+        pollOptions.forEach(pO -> pO.getReadWriteLock().writeLock().lock());
+        try {
+            pollOptions.forEach(PollOption::delete);
+        } finally {
+            pollOptions.forEach(pO
+                    -> pO.getReadWriteLock().writeLock().unlock());
+        }
+
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE id=?;",
+                    TableName.POLLS,
+                    id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        deleted = true;
     }
 
 }

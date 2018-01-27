@@ -37,8 +37,11 @@ public abstract class SQLObject implements DataObject {
         this.tableName = tableName;
     }
 
-    protected Map<String, Object> getProperties(String... keys)
-             {
+    protected Object getProperty(String key) {
+        return getProperties(key).get(key);
+    }
+
+    protected Map<String, Object> getProperties(String... keys) {
         try {
             String keyList = Arrays.stream(keys)
                     .collect(Collectors.joining(","));
@@ -53,6 +56,11 @@ public abstract class SQLObject implements DataObject {
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    protected void setProperty(String key, Object value) {
+        setProperties(new AssignmentList()
+                .put(key, value));
     }
 
     protected void setProperties(AssignmentList pairs) {

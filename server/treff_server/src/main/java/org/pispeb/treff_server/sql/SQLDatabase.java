@@ -204,6 +204,7 @@ public class SQLDatabase {
                                 "   ON DELETE CASCADE," +
                                 "question VARCHAR(%d) NOT NULL," +
                                 "creator INT NOT NULL," +
+                                "timevoteclose DATE NOT NULL," +
                                 "FOREIGN KEY (creator)" +
                                 "   REFERENCES accounts(id)," +
                                 "multichoice BIT NOT NULL" +
@@ -222,8 +223,8 @@ public class SQLDatabase {
                                 "   ON DELETE CASCADE," +
                                 "timestart DATETIME NOT NULL," +
                                 "timeend DATETIME NOT NULL," +
-                                "longitude DOUBLE NOT NULL," +
-                                "latitude DOUBLE NOT NULL" +
+                                "latitude DOUBLE NOT NULL," +
+                                "longitude DOUBLE NOT NULL" +
                                 ");",
                         POLLOPTIONS.toString()),
 
@@ -246,8 +247,7 @@ public class SQLDatabase {
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL," +
                                 "time DATETIME NOT NULL," +
-                                "type VARCHAR(%d) NOT NULL," +
-                                "latitude DOUBLE NOT NULL" +
+                                "type VARCHAR(%d) NOT NULL" +
                                 ");",
                         UPDATES.toString(),
                         // set max size of 'type' field to size of longest

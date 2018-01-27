@@ -4,6 +4,8 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
+import javax.json.JsonObject;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -70,5 +72,8 @@ public interface AccountManager {
     String generateNewLoginToken(Account account);
 
     void invalidateLoginToken(Account account);
+
+    void createUpdate(JsonObject updateContent, Date time,
+                      Update.UpdateType type, Account... affectedAccounts);
 
 }

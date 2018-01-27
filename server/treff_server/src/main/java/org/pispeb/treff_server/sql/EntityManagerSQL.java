@@ -15,11 +15,14 @@ import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Event;
+import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import javax.json.JsonObject;
 import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -236,13 +239,41 @@ public class EntityManagerSQL implements AccountManager {
         try {
             database.getQueryRunner().update(
                     "UPDATE ? SET logintoken=NULL WHERE id=?;",
-                    TableName.ACCOUNTS,
+                    TableName.ACCOUNTS.toString(),
                     account.getID());
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
     }
 
+    @Override
+    public void createUpdate(JsonObject updateContent, Date time,
+                          Update.UpdateType type, Account... affectedAccounts) {
+        int id;
+        try {
+            // create update itself
+            id = database.getQueryRunner().insert(
+                    "INSERT INTO ?(updatestring,time,type) VALUES (?,?,?);",
+                    new ScalarHandler<Integer>(),
+                    TableName.UPDATES.toString(),
+                    updateContent.toString(),
+                    time,
+                    type.toString());
+
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        Update update = getUpdate(id);
+        update.getReadWriteLock().writeLock().lock();
+        try {
+            // add all affected accounts
+            Arrays.stream(affectedAccounts).forEach(
+                    a-> a.addUpdate(update));
+        } finally {
+            update.getReadWriteLock().writeLock().unlock();
+        }
+    }
 
     UsergroupSQL getUsergroup(int id) {
         return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,

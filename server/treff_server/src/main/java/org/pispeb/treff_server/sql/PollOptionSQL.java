@@ -1,14 +1,18 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.locks.ReadWriteLock;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PollOptionSQL extends SQLObject implements PollOption {
 
@@ -19,47 +23,113 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     }
 
     @Override
-    public String getTitle()  {
-        return null;
+    public String getTitle() {
+        return (String) getProperty("title");
     }
 
     @Override
-    public void setTitle(String title)  {
-
+    public void setTitle(String title) {
+        setProperty("title", title);
     }
 
     @Override
-    public Position getPosition()  {
-        return null;
+    public Position getPosition() {
+        Map<String, Object> properties
+                = getProperties("latitude", "longitude");
+        return new Position(
+                (Double) properties.get("latitude"),
+                (Double) properties.get("longitude"));
     }
 
     @Override
-    public void setPosition(Position position)  {
+    public void setPosition(Position position) {
+        setProperties(new AssignmentList()
+                .put("latitude", position.latitude)
+                .put("longitude", position.longitude));
+    }
 
+    @Override
+    public void setTimeStart(Date timeStart) {
+        setProperty("timestart", timeStart);
+    }
+
+    @Override
+    public Date getTimeStart() {
+        return (Date) getProperty("timestart");
+    }
+
+    @Override
+    public void setTimeEnd(Date timeEnd) {
+        setProperty("timeend", timeEnd);
+    }
+
+    @Override
+    public Date getTimeEnd() {
+        return (Date) getProperty("timeend");
     }
 
     @Override
     public void addVoter(Account voter) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        try {
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(accountid,polloptionid) VALUES (?,?);",
+                    (rs -> null),
+                    TableName.POLLVOTES.toString(),
+                    voter.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void removeVoter(Account voter) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE accountid=? AND polloptionid=?;",
+                    TableName.POLLVOTES.toString(),
+                    voter.getID(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public Map<Integer, Account> getVoters() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        try {
+            return database.getQueryRunner().query(
+                    "SELECT FROM ? WHERE polloptionid=?;",
+                    new ColumnListHandler<Integer>(),
+                    TableName.POLLVOTES.toString(),
+                    this.id)
+                    .stream()
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     public void delete() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        // remove all votes
+        getVoters().values().forEach(this::removeVoter);
+
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE id=?;",
+                    TableName.POLLS.toString(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        deleted = true;
     }
 
     @Override
     public int compareTo(PollOption o) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return this.id - o.getID();
     }
 }

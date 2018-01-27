@@ -21,6 +21,12 @@ public interface Poll extends DataObject, Comparable<Poll> {
 
     void setMultiChoice(boolean multiChoice);
 
+    Date getTimeVoteClose();
+
+    void setTimeVoteClose(Date timeVoteClose);
+
+    Account getCreator();
+
     /**
      * Ends the poll, locking the voting and creating an {@link Event} based
      * on the most popular option.

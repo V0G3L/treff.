@@ -52,14 +52,6 @@ public interface Update extends Comparable<Update>, DataObject {
     JsonObject getUpdate();
 
     /**
-     * Adds an {@link Account} to the set of affected Accounts.
-     * Duplicate additions will be ignored.
-     *
-     * @param account The Account to be added
-     */
-    void addAffectedAccount(Account account);
-
-    /**
      * Removes an {@link Account} from the set of affected Accounts.
      * Should the set be empty after the removal, this method will
      * return true.
@@ -99,6 +91,13 @@ public interface Update extends Comparable<Update>, DataObject {
 
         UpdateType(String name) {
             this.name = name;
+        }
+
+        public static UpdateType fromString(String name) {
+            for (UpdateType ut : values())
+                if (ut.toString().equals(name ))
+                    return ut;
+            return null;
         }
 
         @Override

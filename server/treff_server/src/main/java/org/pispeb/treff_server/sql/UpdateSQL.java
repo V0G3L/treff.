@@ -1,10 +1,15 @@
 package org.pispeb.treff_server.sql;
 
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
+import java.io.StringReader;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -19,34 +24,32 @@ public class UpdateSQL extends SQLObject implements Update {
 
     @Override
     public Date getTime()  {
-        return null;
+        return (Date) getProperty("time");
     }
 
     @Override
     public UpdateType getType()  {
-        return null;
+        return UpdateType.fromString((String) getProperty("type"));
     }
 
     @Override
     public JsonObject getUpdate()  {
-        // read from DB, assemble JsonObject
-        return null;
+        String updatestring = (String) getProperty("updatestring");
+       try (JsonReader jsonReader
+                = Json.createReader(new StringReader(updatestring))) {
+           return jsonReader.readObject();
+       }
     }
 
     @Override
-    public void addAffectedAccount(Account account)  {
-        account.addUpdate(this);
-    }
-
-    @Override
-    public boolean removeAffectedAccount(Account account)
-             {
-        // remove user from set
-        // if set is empty after removal, delete update from db
-        //      and return true
-        //      Anything holding a reference to this should let go
-        //      of it when this returns true
-        return false;
+    public boolean removeAffectedAccount(Account account) {
+        account.markUpdateAsDelivered(this);
+        if (this.getAffectedAccounts().size() == 0) {
+            delete();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -56,13 +59,28 @@ public class UpdateSQL extends SQLObject implements Update {
 
     @Override
     public int compareTo(Update o) {
-        // oldest to newest
-        return 0;
+        return this.getTime().compareTo(o.getTime());
     }
 
+    /**
+     * Deletes this {@link Update}.
+     * Will automatically be called upon removal of the last affected Account.
+     * Should not be called manually!
+     */
     @Override
     public void delete() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        assert getAffectedAccounts().size() == 0;
+
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE id=?;",
+                    TableName.UPDATES.toString(),
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+
+        deleted = true;
     }
 
 }
