@@ -1,10 +1,13 @@
 package org.pispeb.treff_server.interfaces;
 
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.Permission;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface Usergroup extends DataObject, Comparable<Usergroup> {
@@ -17,21 +20,22 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
 
     void removeMember(Account member);
 
-    Set<Account> getAllMembers();
+    Map<Integer, Account> getAllMembers();
 
-    void addEvent();
+    Event createEvent(String title, Position position, Date timeStart,
+                      Date timeEnd, Account creator);
 
-    List<Event> getAllEvents();
+    Map<Integer, Event> getAllEvents();
 
-    void addPoll(Poll poll);
+    Poll createPoll(String question, Account creator, boolean multichoice);
 
-    List<Poll> getAllPolls();
+    Map<Integer, Poll> getAllPolls();
 
     boolean checkPermissionOfMember(Account member, Permission permission)
             throws AccountNotInGroupException;
 
-    void setPermissionOfMember(Account member, Permission permission, boolean
-            value)
+    void setPermissionOfMember(Account member, Permission permission,
+                               boolean valid)
             throws AccountNotInGroupException;
 
     // TODO: unload on inactivity

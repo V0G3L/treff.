@@ -2,7 +2,10 @@ package org.pispeb.treff_server.sql;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.MapHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.ConfigKeys;
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -11,14 +14,20 @@ import org.pispeb.treff_server.exceptions
 import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Event;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * The single entry-point for MySQL implementation of the database interfaces.
@@ -89,12 +98,12 @@ public class EntityManagerSQL implements AccountManager {
      * Check whether the specified username is available. The calling method
      * should acquire a lock on {@link #usernameLock} and hold it until the
      * username change is complete to avoid conflicts.
+     *
      * @param username The username to check
      * @return <code>true</code> if the username is available,
      * <code>false</code> otherwise
      */
-    boolean usernameAvailable(String username)
-             {
+    boolean usernameAvailable(String username) {
         try {
             synchronized (usernameLock) {
                 return !database.getQueryRunner().query(
@@ -108,7 +117,7 @@ public class EntityManagerSQL implements AccountManager {
         }
     }
 
-    boolean emailAvailable(String email)  {
+    boolean emailAvailable(String email) {
         try {
             synchronized (emailLock) {
                 return !database.getQueryRunner().query(
@@ -123,14 +132,29 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getAccount(int id)  {
+    public AccountSQL getAccount(int id) {
         return getSQLObject(AccountSQL::new, id,
                 loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
     }
 
     @Override
-    public AccountSQL getAccountByUsername(String username)
-             {
+    public Map<Integer, Account> getAllAccounts() {
+        try {
+            return database.getQueryRunner().query(
+                    "SELECT id FROM ?;",
+                    new MapListHandler(),
+                    TableName.ACCOUNTS)
+                    .stream()
+                    .map((rsMap) -> (Integer) rsMap.get("id"))
+                    .collect(Collectors.toMap(Function.identity(),
+                            this::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public AccountSQL getAccountByUsername(String username) {
         // get ID by username, then get Account by ID
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
@@ -139,7 +163,7 @@ public class EntityManagerSQL implements AccountManager {
                     TableName.ACCOUNTS.toString(),
                     username);
             if (resultMap.containsKey("id")) {
-                return getAccount((Integer)resultMap.get("id"));
+                return getAccount((Integer) resultMap.get("id"));
             } else {
                 return null;
             }
@@ -149,7 +173,7 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public AccountSQL getAccountByEmail(String email)  {
+    public AccountSQL getAccountByEmail(String email) {
         // get ID by email, then get Account by ID
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
@@ -158,7 +182,7 @@ public class EntityManagerSQL implements AccountManager {
                     TableName.ACCOUNTS.toString(),
                     email);
             if (resultMap.containsKey("id")) {
-                return getAccount((Integer)resultMap.get("id"));
+                return getAccount((Integer) resultMap.get("id"));
             } else {
                 return null;
             }
@@ -168,17 +192,16 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public Account getAccountByLoginToken(String loginToken)
-             {
+    public Account getAccountByLoginToken(String loginToken) {
         try {
             Map<String, Object> resultMap = database.getQueryRunner().query(
-                    "SELECT id FROM ? WHERE logintoken=?",
+                    "SELECT id FROM ? WHERE logintoken=?;",
                     new MapHandler(),
                     TableName.ACCOUNTS.toString(),
                     loginToken
-                    );
+            );
             if (resultMap.containsKey("id")) {
-                return getAccount((Integer)resultMap.get("id"));
+                return getAccount((Integer) resultMap.get("id"));
             } else {
                 return null;
             }
@@ -188,8 +211,7 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public String generateNewLoginToken(Account account)
-             {
+    public String generateNewLoginToken(Account account) {
         SecureRandom secureRandom = new SecureRandom();
 
         int loginTokenByteSize = Integer.parseInt(config.getProperty(
@@ -199,7 +221,7 @@ public class EntityManagerSQL implements AccountManager {
         String loginToken = Hex.encodeHexString(loginTokenBytes);
         try {
             database.getQueryRunner().update(
-                    "UPDATE ? SET logintoken=? WHERE id=?",
+                    "UPDATE ? SET logintoken=? WHERE id=?;",
                     TableName.ACCOUNTS.toString(),
                     loginToken,
                     account.getID());
@@ -207,6 +229,18 @@ public class EntityManagerSQL implements AccountManager {
             throw new DatabaseException(e);
         }
         return loginToken;
+    }
+
+    @Override
+    public void invalidateLoginToken(Account account) {
+        try {
+            database.getQueryRunner().update(
+                    "UPDATE ? SET logintoken=NULL WHERE id=?;",
+                    TableName.ACCOUNTS,
+                    account.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
 
@@ -236,10 +270,29 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public String createAccount(String username, String email, String
-            password)
+    public Account createAccount(String username, String password)
             throws DuplicateEmailException, DuplicateUsernameException {
-        return null;
+        String hashAlg = config.getProperty(
+                ConfigKeys.PASSWORD_HASH_ALG.toString());
+        int saltBytes = Integer.parseInt(config.getProperty(
+                ConfigKeys.PASSWORD_SALT_BYTES.toString()));
+        PasswordHash passwordHash
+                = AccountSQL.generatePasswordHash(password, hashAlg, saltBytes);
+
+        int id;
+        try {
+            id = database.getQueryRunner().insert(
+                    "INSERT INTO ?(username,passwordsalt,passwordhash) " +
+                            "VALUES (?,?,?);",
+                    new ScalarHandler<Integer>(),
+                    TableName.ACCOUNTS,
+                    username,
+                    passwordHash.salt,
+                    passwordHash.hash);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return getAccount(id);
     }
 
     private boolean hasObjectInDB(TableName tableName, int id) throws
@@ -254,9 +307,10 @@ public class EntityManagerSQL implements AccountManager {
     /**
      * Generic method for translating objects in the SQL database into their
      * respective Java {@link SQLObject}s.
-     * @param factory Factory that produces the SQLObject when supplied with
-     *                its ID, the {@link SQLDatabase} and {@link Properties}.
-     *                The SQLObject's constructor should suffice.
+     *
+     * @param factory   Factory that produces the SQLObject when supplied with
+     *                  its ID, the {@link SQLDatabase} and {@link Properties}.
+     *                  The SQLObject's constructor should suffice.
      * @param id        The ID of the object
      * @param loadedMap The map that holds already loaded objects of the
      *                  specified type
@@ -264,10 +318,9 @@ public class EntityManagerSQL implements AccountManager {
      *                  table that objects of the specified type are stored in
      * @param fetchLock The lock for the specified type with which fetch
      *                  operations for this type are synchronized
-     * @param <T> The type of SQLObject to be returned
+     * @param <T>       The type of SQLObject to be returned
      * @return The SQLObject with the specified type and ID. <code>null</code>
-     *         if no such object exists in the database.
-     * @throws SQLException if a database access error occurs
+     * if no such object exists in the database.
      */
     private <T extends SQLObject> T getSQLObject(SQLObjectFactory<T> factory,
                                                  int id,

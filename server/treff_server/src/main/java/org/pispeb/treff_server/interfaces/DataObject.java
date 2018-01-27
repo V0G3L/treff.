@@ -34,6 +34,8 @@ public interface DataObject {
      */
     ReadWriteLock getReadWriteLock();
 
+    void delete();
+
     /**
      * Returns whether this DataObject has been isDeleted and must no longer be
      * used.

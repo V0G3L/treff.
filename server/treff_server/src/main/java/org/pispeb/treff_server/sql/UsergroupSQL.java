@@ -1,6 +1,10 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
@@ -9,12 +13,17 @@ import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
@@ -30,12 +39,13 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void setName(String name) {
-
+        setProperties(new AssignmentList()
+                .put("name", name));
     }
 
     @Override
     public String getName() {
-        return null;
+        return (String) getProperties("name").get("name");
     }
 
     @Override
@@ -82,7 +92,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         }
 
         // clean up events, remove participation
-        List<Event> events = getAllEvents();
+        SortedSet<Event> events = new TreeSet<>(getAllEvents().values());
         events.forEach(e -> e.getReadWriteLock().writeLock().lock());
         try {
             events.forEach(e -> e.removeParticipant(member));
@@ -91,7 +101,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         }
 
         // clean up polloptions, remove votes
-        List<Poll> polls = getAllPolls();
+        SortedSet<Poll> polls = new TreeSet<>(getAllPolls().values());
         polls.forEach(e -> e.getReadWriteLock().writeLock().lock());
         try {
             for (Poll p : polls) {
@@ -111,28 +121,102 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Set<Account> getAllMembers() {
-        return null;
+    public Map<Integer, Account> getAllMembers() {
+        // get ID list
+        try {
+            return database.getQueryRunner()
+                    .query(
+                            "SELECT accountid FROM ? WHERE usergroupid=?;",
+                            new ColumnListHandler<Integer>(),
+                            TableName.GROUPMEMBERSHIPS,
+                            id)
+                    .stream()
+                    // create ID -> AccountSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void addEvent() {
-
+    public Event createEvent(String title, Position position, Date timeStart,
+                             Date timeEnd, Account creator) {
+        int id;
+        try {
+            id = database.getQueryRunner().insert(
+                    "INSERT INTO ?(title,latitude,longitude,timestart," +
+                            "timeend,creator,usergroupid) VALUES " +
+                            "(?,?,?,?,?,?,?);",
+                    new ScalarHandler<Integer>(),
+                    TableName.EVENTS,
+                    title,
+                    position.latitude,
+                    position.longitude,
+                    timeStart,
+                    timeEnd,
+                    creator,
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return EntityManagerSQL.getInstance().getEvent(id);
     }
 
     @Override
-    public List<Event> getAllEvents() {
-        return null;
+    public Map<Integer, Event> getAllEvents() {
+        try {
+            return database.getQueryRunner()
+                    .query(
+                            "SELECT id FROM ? WHERE usergroupid=?;",
+                            new ColumnListHandler<Integer>(),
+                            TableName.EVENTS,
+                            id)
+                    .stream()
+                    // create ID -> EventSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getEvent));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
-    public void addPoll(Poll poll) {
-
+    public Poll createPoll(String question, Account creator,
+                           boolean multichoice) {
+        int id;
+        try {
+            id = database.getQueryRunner().insert(
+                    "INSERT INTO ?(question,creator,multichoice," +
+                            "usergroupid) VALUES (?,?,?,?);",
+                    new ScalarHandler<Integer>(),
+                    TableName.POLLS,
+                    question,
+                    creator,
+                    multichoice,
+                    this.id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        return EntityManagerSQL.getInstance().getPoll(id);
     }
 
     @Override
-    public List<Poll> getAllPolls() {
-        return null;
+    public Map<Integer, Poll> getAllPolls() {
+        try {
+            return database.getQueryRunner()
+                    .query(
+                            "SELECT id FROM ? WHERE usergroupid=?;",
+                            new ColumnListHandler<Integer>(),
+                            TableName.POLLS,
+                            id)
+                    .stream()
+                    // create ID -> PollSQL map
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getPoll));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
@@ -149,8 +233,9 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public ReadWriteLock getReadWriteLock() {
-        return null;
+    public void delete() {
+        // TODO
+        // maybe throw exception when this still has members?
     }
 
     @Override

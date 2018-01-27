@@ -4,6 +4,8 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
+import java.util.Map;
+
 /**
  * <p>An interface for an underlying database. The user of this interface
  * can create accounts and supply a username or an email address to retrieve an
@@ -43,14 +45,14 @@ public interface AccountManager {
      */
     Account getAccount(int id);
 
+    Map<Integer, Account> getAllAccounts();
+
     /**
-     * Creates a new account with the supplied username, email address and
-     * password.
+     * Creates a new account with the supplied username and password.
      *
      * @param username The username for the new account
-     * @param email    The email of the new account
      * @param password The password of the new account
-     * @return The hex-encoded login token used for authentication
+     * @return The created {@link Account}
      * @throws DuplicateUsernameException if the supplied username is already
      * associated with
      *                                    another account. No account will be
@@ -60,11 +62,13 @@ public interface AccountManager {
      *                                    another account. No account will be
      *                                    created in this case.
      */
-    String createAccount(String username, String email, String password)
+    Account createAccount(String username, String password)
             throws DuplicateEmailException, DuplicateUsernameException;
 
     Account getAccountByLoginToken(String token);
 
     String generateNewLoginToken(Account account);
+
+    void invalidateLoginToken(Account account);
 
 }

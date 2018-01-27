@@ -2,8 +2,8 @@ package org.pispeb.treff_server.sql;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
@@ -21,12 +21,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -73,16 +69,26 @@ public class AccountSQL extends SQLObject implements Account {
         }
     }
 
-    private byte[] calculatePasswordHash(String password, byte[] salt) {
+    static PasswordHash generatePasswordHash(String password, String hashAlg,
+                                             int saltBytes) {
+        // Generate a new salt with a cryptographically strong RNG
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] salt = new byte[saltBytes];
+        secureRandom.nextBytes(salt);
+        return generatePasswordHash(password, hashAlg, salt);
+    }
+
+    private static PasswordHash generatePasswordHash(String password,
+                                                     String hashAlg,
+                                                     byte[] salt) {
         try {
             MessageDigest messageDigest = MessageDigest
-                    .getInstance(config.getProperty(
-                            PASSWORD_HASH_ALG.toString()));
+                    .getInstance(hashAlg);
             messageDigest.update(
                     password.getBytes(Charset.forName("UTF-8")));
             messageDigest.update(salt);
 
-            return messageDigest.digest();
+            return new PasswordHash(messageDigest.digest(), salt);
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
@@ -99,35 +105,34 @@ public class AccountSQL extends SQLObject implements Account {
         Map<String, Object> result = getProperties("passwordsalt",
                 "passwordhash");
 
-        byte[] correctHash;
-        byte[] salt;
+        PasswordHash correctHash;
         try {
-            correctHash = Hex.decodeHex(
-                    (String) result.get("passwordhash"));
-            salt = Hex.decodeHex(
-                    (String) result.get("passwordsalt"));
+            correctHash = new PasswordHash(
+                    Hex.decodeHex(
+                            (String) result.get("passwordhash")),
+                    Hex.decodeHex(
+                            (String) result.get("passwordsalt")));
         } catch (DecoderException e) {
             throw new DatabaseException(e);
         }
-        byte[] calculatedHash = calculatePasswordHash(password, salt);
+        String hashAlg = config.getProperty(PASSWORD_HASH_ALG.toString());
+        PasswordHash calculatedHash
+                = generatePasswordHash(password, hashAlg, correctHash.salt);
 
-        return Arrays.equals(calculatedHash, correctHash);
+        return Arrays.equals(calculatedHash.hash, correctHash.hash);
     }
 
     @Override
     public void setPassword(String password) {
-        // Generate a new salt with a cryptographically strong RNG
-        SecureRandom secureRandom = new SecureRandom();
-        byte[] salt = new byte[
-                Integer.parseInt(config.getProperty(
-                        PASSWORD_SALT_BYTES.toString()))];
-        secureRandom.nextBytes(salt);
-        byte[] newHash = calculatePasswordHash(password, salt);
-
+        String hashAlg = config.getProperty(PASSWORD_HASH_ALG.toString());
+        int saltBytes = Integer.parseInt(config.getProperty(
+                PASSWORD_SALT_BYTES.toString()));
+        PasswordHash passwordHash
+                = generatePasswordHash(password, hashAlg, saltBytes);
         // Store new salt and new hash in DB
         setProperties(new AssignmentList()
-                .put("passwordsalt", Hex.encodeHexString(salt))
-                .put("passwordhash", Hex.encodeHexString(newHash)));
+                .put("passwordsalt", Hex.encodeHexString(passwordHash.salt))
+                .put("passwordhash", Hex.encodeHexString(passwordHash.hash)));
     }
 
     @Override
@@ -158,12 +163,10 @@ public class AccountSQL extends SQLObject implements Account {
             return database.getQueryRunner()
                     .query(
                             "SELECT usergroupid FROM ? WHERE accountid=?;",
-                            new MapListHandler(),
+                            new ColumnListHandler<Integer>(),
                             TableName.GROUPMEMBERSHIPS,
                             id)
                     .stream()
-                    // for each membership, extract ID
-                    .map((map) -> (Integer) map.get("id"))
                     // create ID -> UsergroupSQL map
                     .collect(Collectors.toMap(Function.identity(),
                             EntityManagerSQL.getInstance()::getUsergroup));
@@ -180,7 +183,7 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public void removeFromGroup(Usergroup usergroup) {
-        if (!usergroup.getAllMembers().contains(this)) {
+        if (!usergroup.getAllMembers().containsKey(this.id)) {
             throw new AccountNotInGroupException();
         }
 
@@ -236,8 +239,8 @@ public class AccountSQL extends SQLObject implements Account {
                     .stream()
                     // map to id of other account
                     .map((rsMap) -> (this.id == (Integer) rsMap.get("lowid"))
-                                ? (Integer) rsMap.get("highid")
-                                : (Integer) rsMap.get("lowid"))
+                            ? (Integer) rsMap.get("highid")
+                            : (Integer) rsMap.get("lowid"))
                     // create ID -> AccountSQL map
                     .collect(Collectors.toMap(Function.identity(),
                             EntityManagerSQL.getInstance()::getAccount));
@@ -280,12 +283,10 @@ public class AccountSQL extends SQLObject implements Account {
             return database.getQueryRunner()
                     .query(
                             "SELECT blocked FROM ? WHERE blocker=?;",
-                            new MapListHandler(),
+                            new ColumnListHandler<Integer>(),
                             TableName.BLOCKS,
                             id)
                     .stream()
-                    // map to id of other account
-                    .map((rsMap) -> (Integer) rsMap.get("blocked"))
                     // create ID -> AccountSQL map
                     .collect(Collectors.toMap(Function.identity(),
                             EntityManagerSQL.getInstance()::getAccount));

@@ -6,6 +6,7 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Set;
@@ -91,7 +92,27 @@ public class EventSQL extends SQLObject implements Event {
     }
 
     @Override
+    public void delete() {
+        // remove all participants
+        getAllParticipants().forEach(this::removeParticipant);
+        try {
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE id=?;",
+                    TableName.EVENTS,
+                    id);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+        deleted = true;
+    }
+
+    @Override
     public int getID() {
         return id;
+    }
+
+    @Override
+    public int compareTo(Event o) {
+        return this.id - o.getID();
     }
 }
