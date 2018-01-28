@@ -10,7 +10,7 @@
 \usepackage{graphicx}
 \usepackage{csquotes}
 \usepackage{amsmath} % for $\text{}$
-\usepackage{entwurf}
+\usepackage{protocol} % local .sty file
 \usepackage{enumitem}
 \usepackage{algorithm}
 \usepackage{algorithmicx}
@@ -172,7 +172,7 @@ server, also encoded as a JSON object.
 A request is considered to be completely transferred to the server once the
 server receives the closing curly bracket for the top-level JSON object.
 
-The \textbf{cmd} property of those top-level JSON object of a request defines
+The \textbf{cmd} property of the top-level JSON object of a request defines
 which command the client is trying to execute.
 As such, the \textbf{cmd} property must always be included in a request.
 Parameters, return values and error codes are also encoded as properties of
@@ -185,7 +185,7 @@ These are to be encoded as strings.
 If an error occurs during command execution, possibly caused by invalid
 parameters, the response JSON object consists of only the single integer
 property \textbf{error}.
-The meaning of these error codes is specified in chapter \ref{sec:errorcode}.
+The meaning of these error codes is specified in chapter \ref{sec:errorcodes}.
 
 \section{Commands}\label{sec:commands}
 

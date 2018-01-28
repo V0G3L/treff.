@@ -7,7 +7,6 @@ import org.pispeb.treff_server.networking.StatusCode;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import java.util.concurrent.locks.Lock;
 
 /**
  * a command to add an Account to the contact-list of another Account
@@ -23,7 +22,7 @@ public class AddContactCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount) {
+                                              int actingAccountID) {
         int id = input.getInt("id");
         // get the account
         Account newContact = this.accountManager.getAccount(id);
@@ -31,33 +30,33 @@ public class AddContactCommand extends AbstractCommand {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
         // get the locks
-        if (actingAccount.compareTo(newContact) < 0) {
-            actingAccount.getReadWriteLock().writeLock().lock();
+        if (actingAccountID.compareTo(newContact) < 0) {
+            actingAccountID.getReadWriteLock().writeLock().lock();
             newContact.getReadWriteLock().writeLock().lock();
         } else {
             newContact.getReadWriteLock().writeLock().lock();
-            actingAccount.getReadWriteLock().writeLock().lock();
+            actingAccountID.getReadWriteLock().writeLock().lock();
         }
         try {
             // check if process is valid
-            if (actingAccount.isDeleted()) {
+            if (actingAccountID.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
             if (newContact.isDeleted()) {
                 return new CommandResponse(StatusCode.USERIDINVALID);
             }
-            if (actingAccount.getAllBlocks().containsKey(id)) {
+            if (actingAccountID.getAllBlocks().containsKey(id)) {
                 return new CommandResponse(StatusCode.BLOCKINGALREADY);
             }
-            if (newContact.getAllBlocks().containsKey(actingAccount.getID())) {
+            if (newContact.getAllBlocks().containsKey(actingAccountID.getID())) {
                 return new CommandResponse(StatusCode.BEINGBLOCKED);
             }
             // apply
             // TODO friend request instead of direct add
-            actingAccount.addContact(newContact);
-            newContact.addContact(actingAccount);
+            actingAccountID.addContact(newContact);
+            newContact.addContact(actingAccountID);
         } finally {
-            actingAccount.getReadWriteLock().writeLock().unlock();
+            actingAccountID.getReadWriteLock().writeLock().unlock();
             newContact.getReadWriteLock().writeLock().unlock();
         }
         // respond

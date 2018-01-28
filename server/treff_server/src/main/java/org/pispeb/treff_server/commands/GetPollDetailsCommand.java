@@ -29,12 +29,14 @@ public class GetPollDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount) {
+                                              int actingAccountID) {
         int pollID = input.getInt("id");
         int groupID = input.getInt("group-id");
 
         // check if account still exists
-        if (getSafeForReading(actingAccount) == null)
+        Account actingAccount = getSafeForReading(
+                accountManager.getAccount(actingAccountID));
+        if (actingAccount == null)
             return new CommandResponse(StatusCode.TOKENINVALID);
 
         // get group
@@ -65,7 +67,7 @@ public class GetPollDetailsCommand extends AbstractCommand {
             if (getSafeForReading(pO) == null)
                 continue;
 
-            // collection polloption properties
+            // collect polloption properties
             Position position = pO.getPosition();
             JsonObjectBuilder pollOptionDetails = Json.createObjectBuilder()
                     .add("type", "polloption")
@@ -84,6 +86,8 @@ public class GetPollDetailsCommand extends AbstractCommand {
             // add this polloption to the polls array
             pollOptionArray.add(pollOptionDetails);
         }
+
+        response.add("polloptions", pollOptionArray);
 
         return new CommandResponse(response.build());
     }

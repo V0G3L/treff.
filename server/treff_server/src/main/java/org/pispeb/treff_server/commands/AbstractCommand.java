@@ -35,7 +35,7 @@ public abstract class AbstractCommand {
      * <p>
      * <p>For commands that require a login, the {@link Account} into which the
      * user is logged into will be given as a parameter to
-     * {@link #executeInternal(JsonObject, Account)}. For commands that
+     * {@link #executeInternal(JsonObject, int)}. For commands that
      * don't require login, this parameter will instead be <code>null</code>.
      * </p>
      *
@@ -68,17 +68,25 @@ public abstract class AbstractCommand {
      */
     public CommandResponse execute(JsonObject input) {
         // For commands that require a login, check the token, if given,
-        // and forward the Account object representing the account that the
+        // and forward the Account id representing the account that the
         // user is logged into.
-        Account account = null;
+        // It is important to forward the ID and not the object so that the
+        // command can decide in which order to retrieve and lock the Account
+        // object that it wants to work with.
+        int accountID = -1;
         if (requiresLogin) {
             if (input.containsKey("token")
                     && input.get("token").getValueType() == ValueType.STRING) {
                 String loginToken = input.getString("token");
-                account = accountManager
-                        .getAccountByLoginToken(loginToken);
+                Account account = getSafeForReading(
+                        accountManager.getAccountByLoginToken(loginToken));
                 if (account == null)
                     return new CommandResponse(StatusCode.TOKENINVALID);
+                else {
+                    // extract account ID and release lock again
+                    accountID = account.getID();
+                    releaseAllLocks();
+                }
             } else {
                 return new CommandResponse(StatusCode.SYNTAXINVALID);
             }
@@ -89,7 +97,7 @@ public abstract class AbstractCommand {
 
         // make sure to release all locks after execution
         try {
-            return executeInternal(input, account);
+            return executeInternal(input, accountID);
         } finally {
             releaseAllLocks();
         }
@@ -192,12 +200,15 @@ public abstract class AbstractCommand {
      * executes the command
      *
      * @param input         TODO
-     * @param actingAccount TODO
+     * @param actingAccountID The ID of the account the the user who made the
+     *                        request is logged into.
+     *                        If a command does not require login,
+     *                        this is {@code -1}.
      * @return a CommandResponse with a status code and
      * the specific return value encoded as a JsonObject
      */
     protected abstract CommandResponse executeInternal(JsonObject input,
-                                                       Account actingAccount);
+                                                       int actingAccountID);
 
     protected void acquireLock(Lock lock) {
         if (!acquiredLocks.contains(lock)) {

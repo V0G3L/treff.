@@ -26,7 +26,7 @@ public class GetUserIdCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount) {
+                                              int actingAccountID) {
         String username = input.getString("user");
         int id;
         // get the account

@@ -2,7 +2,6 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
@@ -12,7 +11,6 @@ import org.pispeb.treff_server.networking.StatusCode;
 import javax.json.Json;
 import javax.json.JsonObject;
 import java.util.Date;
-import java.util.concurrent.locks.Lock;
 
 /**
  * a command to add an PollOption to a Poll
@@ -33,7 +31,7 @@ public class AddPolloptionCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount) {
+                                              int actingAccountID) {
         int groupId = input.getInt("group-id");
         int pollId = input.getInt("poll-id");
         double latitude = input.getInt("latitude");
@@ -46,16 +44,16 @@ public class AddPolloptionCommand extends AbstractCommand {
         }
         //TODO timeEnd-in-past-check
         // lock the account and get all the information
-        actingAccount.getReadWriteLock().readLock().lock();
+        actingAccountID.getReadWriteLock().readLock().lock();
         try {
-            if (actingAccount.isDeleted()) {
+            if (actingAccountID.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
             // get the group and its lock
-            if (!actingAccount.getAllGroups().containsKey(groupId)) {
+            if (!actingAccountID.getAllGroups().containsKey(groupId)) {
                 return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
-            Usergroup group = actingAccount.getAllGroups().get(groupId);
+            Usergroup group = actingAccountID.getAllGroups().get(groupId);
             group.getReadWriteLock().readLock().lock();
             try {
                 // get the poll and its lock
@@ -66,8 +64,8 @@ public class AddPolloptionCommand extends AbstractCommand {
                 poll.getReadWriteLock().writeLock().lock();
                 try {
                     // check permission
-                    if (poll.getCreator().getID() != actingAccount.getID() &&
-                            !group.checkPermissionOfMember(actingAccount,
+                    if (poll.getCreator().getID() != actingAccountID.getID() &&
+                            !group.checkPermissionOfMember(actingAccountID,
                             Permission.EDIT_ANY_POLL)) {
                         return new CommandResponse(StatusCode
                                 .NOPERMISSIONEDITANYPOLL);
@@ -82,7 +80,7 @@ public class AddPolloptionCommand extends AbstractCommand {
                 group.getReadWriteLock().readLock().unlock();
             }
         } finally {
-            actingAccount.getReadWriteLock().readLock().unlock();
+            actingAccountID.getReadWriteLock().readLock().unlock();
         }
         // respond
         return new CommandResponse(Json.createObjectBuilder().build());

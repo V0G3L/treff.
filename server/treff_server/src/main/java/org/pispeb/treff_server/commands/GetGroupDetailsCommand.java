@@ -24,7 +24,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount) {
+                                              int actingAccountID) {
         int id = input.getInt("id");
         String groupName;
         Map<Integer, Account> members;
@@ -34,20 +34,20 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         JsonArrayBuilder eventsArray = Json.createArrayBuilder();
         JsonArrayBuilder pollsArray = Json.createArrayBuilder();
         // get the the group
-        if (!actingAccount.getAllGroups().containsKey(id)) {
+        if (!actingAccountID.getAllGroups().containsKey(id)) {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
-        Usergroup group = actingAccount.getAllGroups().get(id);
+        Usergroup group = actingAccountID.getAllGroups().get(id);
         // get information
-        Lock accountLock = actingAccount.getReadWriteLock().readLock();
+        Lock accountLock = actingAccountID.getReadWriteLock().readLock();
         Lock groupLock = group.getReadWriteLock().readLock();
         accountLock.lock();
         groupLock.lock();
         try {
-            if (actingAccount.isDeleted()) {
+            if (actingAccountID.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
-            if (!actingAccount.getAllGroups().containsKey(id)) {
+            if (!actingAccountID.getAllGroups().containsKey(id)) {
                 return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
             groupName = group.getName();
