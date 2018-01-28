@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
@@ -27,16 +26,15 @@ public class GetUserDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input, Account
-            actingAccount)
-             {
+            actingAccount) {
         int id = input.getInt("id");
+        String username;
         // get the account
         Account account = this.accountManager.getAccount(id);
         if (account == null) {
             return new CommandResponse(StatusCode.USERIDINVALID);
         }
         // get information
-        String username;
         Lock lock = account.getReadWriteLock().readLock();
         lock.lock();
         try {

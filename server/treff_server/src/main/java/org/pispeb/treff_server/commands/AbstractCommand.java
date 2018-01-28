@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
@@ -26,7 +25,7 @@ public abstract class AbstractCommand {
      * the specified {@link AccountManager}. If <code>requiresLogin</code> is
      * set to <code>true</code>, invocation of {@link #execute(JsonObject)} will
      * check for a login token.
-     *
+     * <p>
      * <p>For commands that require a login, the {@link Account} into which the
      * user is logged into will be given as a parameter to
      * {@link #executeInternal(JsonObject, Account)}. For commands that
@@ -60,8 +59,7 @@ public abstract class AbstractCommand {
      * @return A {@link CommandResponse} object representing the outcome of the
      * command execution
      */
-    public CommandResponse execute(JsonObject input)
-             {
+    public CommandResponse execute(JsonObject input) {
         // For commands that require a login, check the token, if given,
         // and forward the Account object representing the account that the
         // user is logged into.
@@ -88,30 +86,30 @@ public abstract class AbstractCommand {
     /**
      * Performs a deep existence and type check on the specified input, using
      * the specified expected {@link JsonValue} as a template.
-     *
+     * <p>
      * <p>For JsonValues that are not {@link JsonObject} or {@link JsonArray},
      * this check returns <code>true</code> iff the
      * {@link ValueType} matches the template.
      * The ValueTypes {@link ValueType#TRUE} and {@link ValueType#FALSE} are
      * considered to match each other for this test.</p>
-     *
+     * <p>
      * <p>For {@link JsonObject}s, this check will return <code>true</code> iff
      * all attributes in the template are present in the input object and all
      * of them satisfy
      * {@link #checkSyntax(JsonValue, JsonValue)}.</p>
-     *
+     * <p>
      * <p>For {@link JsonArray}s, the first element in the template array
      * (index 0) is used as a template for all elements in the input array.
      * Using this template, this check will return <code>true</code> iff all
      * input elements satisfy
      * {@link #checkSyntax(JsonValue, JsonValue)}.
      * Empty input arrays will always return <code>true</code>.</p>
-     *
+     * <p>
      * <p>Note that the template represents a minimum requirement.
      * An input object containing additional JsonArray elements or JsonObject
      * attributes is still considered valid.</p>
      *
-     * @param input The input to be checked against the specifed template
+     * @param input    The input to be checked against the specifed template
      * @param expected The template to check the specified input against
      * @return <code>true</code> iff the input satisfies the above specified
      * relation to the template.
@@ -173,13 +171,12 @@ public abstract class AbstractCommand {
     /**
      * executes the command
      *
-     * @param input   TODO
-     * @param actingAccount
+     * @param input         TODO
+     * @param actingAccount TODO
      * @return a CommandResponse with a status code and
      * the specific return value encoded as a JsonObject
      */
     protected abstract CommandResponse executeInternal(JsonObject input,
-                                                       Account actingAccount)
-          ;
+                                                       Account actingAccount);
 
 }

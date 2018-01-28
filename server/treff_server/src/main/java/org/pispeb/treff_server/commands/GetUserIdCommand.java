@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.CommandResponse;
@@ -18,19 +17,20 @@ import java.util.concurrent.locks.Lock;
  */
 public class GetUserIdCommand extends AbstractCommand {
 
-    private int id;
-    private String username;
-
     public GetUserIdCommand(AccountManager accountManager) {
-        super(accountManager, false, null);
-		throw new UnsupportedOperationException();
+        super(accountManager, true,
+                Json.createObjectBuilder()
+                        .add("user", "")
+                        .build());
     }
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input, Account actingAccount)
-             {
+    protected CommandResponse executeInternal(JsonObject input,
+                                              Account actingAccount) {
+        String username = input.getString("user");
+        int id;
         // get the account
-        Account account = this.accountManager.getAccount(this.id);
+        Account account = this.accountManager.getAccountByUsername(username);
         if (account == null) {
             return new CommandResponse(StatusCode.USERIDINVALID);
         }
@@ -41,14 +41,14 @@ public class GetUserIdCommand extends AbstractCommand {
             if (account.isDeleted()) {
                 return new CommandResponse(StatusCode.USERIDINVALID);
             }
-            this.id = account.getID();
+            id = account.getID();
         } finally {
             lock.unlock();
         }
         // respond
         JsonObject response = Json.createObjectBuilder()
-                .add("type", "account").add("id", this.id)
-                .add("user", this.username).build();
+                .add("type", "account").add("id", id)
+                .add("user", username).build();
         return new CommandResponse(response);
     }
 }
