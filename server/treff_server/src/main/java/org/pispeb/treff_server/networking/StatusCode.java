@@ -13,12 +13,12 @@ public enum StatusCode {
     /**
      * error: parameter wasn't given or has a wrong format
      */
-    SYNTAX_INVALID(100),
+    SYNTAXINVALID(100),
 
     /**
      * error: authentication token invalid
      */
-    TOKEN_INVALID(110),
+    TOKENINVALID(110),
 
     /**
      * error: username/password combination invalid
@@ -88,7 +88,7 @@ public enum StatusCode {
     /**
      * error: account isn't part of the own contact list (not-in-contact)
      */
-    T(150),
+    NOTINCONTACT(150),
 
     /**
      * error: account can't be a contact of itself

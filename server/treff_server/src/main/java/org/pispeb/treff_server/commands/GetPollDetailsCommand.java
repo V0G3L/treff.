@@ -1,9 +1,6 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.interfaces.Account;
-import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Poll;
-import org.pispeb.treff_server.interfaces.PollOption;
+import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
 
@@ -39,16 +36,32 @@ public class GetPollDetailsCommand extends AbstractCommand {
         Map<Integer, Account> currentVoters;
         JsonArrayBuilder optionsArray = Json.createArrayBuilder();
         JsonArrayBuilder currentVotersArray = Json.createArrayBuilder();
-        // get the account and the poll
+        // get the account the group and the poll
         Account account = this.accountManager.getAccountByLoginToken(input
                 .getString("token"));
-        Poll poll = account.getAllGroups().get(groupId).getAllPolls().get(id);
+        if (account == null) {
+            return new CommandResponse(StatusCode.TOKENINVALID);
+        }
+        if (!account.getAllGroups().containsKey(groupId)) {
+            return new CommandResponse(StatusCode.GROUPIDINVALID);
+        }
+        Usergroup group = account.getAllGroups().get(groupId);
+        if (!group.getAllPolls().containsKey(id)) {
+            return new CommandResponse(StatusCode.POLLIDINVALID);
+        }
+        Poll poll = group.getAllPolls().get(id);
         // get information
         Lock lock = account.getReadWriteLock().readLock();
         lock.lock();
         try {
             if (account.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID);
+                return new CommandResponse(StatusCode.TOKENINVALID);
+            }
+            if (!account.getAllGroups().containsKey(groupId)) {
+                return new CommandResponse(StatusCode.GROUPIDINVALID);
+            }
+            if (!group.getAllPolls().containsKey(id)) {
+                return new CommandResponse(StatusCode.POLLIDINVALID);
             }
             question = poll.getQuestion();
             multiChoice = poll.isMultiChoice();

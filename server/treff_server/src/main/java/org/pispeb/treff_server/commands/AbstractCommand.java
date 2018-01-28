@@ -71,14 +71,14 @@ public abstract class AbstractCommand {
                 account = accountManager
                         .getAccountByLoginToken(loginToken);
                 if (account == null)
-                    return new CommandResponse(StatusCode.TOKEN_INVALID);
+                    return new CommandResponse(StatusCode.TOKENINVALID);
             } else {
-                return new CommandResponse(StatusCode.SYNTAX_INVALID);
+                return new CommandResponse(StatusCode.SYNTAXINVALID);
             }
         }
 
         if (!checkSyntax(input, expectedSyntax))
-            return new CommandResponse(StatusCode.SYNTAX_INVALID);
+            return new CommandResponse(StatusCode.SYNTAXINVALID);
 
         return executeInternal(input, account);
     }

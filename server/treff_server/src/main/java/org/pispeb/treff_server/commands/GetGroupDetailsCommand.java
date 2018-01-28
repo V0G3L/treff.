@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
@@ -20,7 +19,6 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         super(accountManager, true,
                 Json.createObjectBuilder()
                         .add("id", 0)
-                        .add("group-id", 0)
                         .build());
     }
 
@@ -38,13 +36,22 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         // get the account and the group
         Account account = this.accountManager.getAccountByLoginToken(input
                 .getString("token"));
+        if (account == null) {
+            return new CommandResponse(StatusCode.TOKENINVALID);
+        }
+        if (!account.getAllGroups().containsKey(id)) {
+            return new CommandResponse(StatusCode.GROUPIDINVALID);
+        }
         Usergroup group = account.getAllGroups().get(id);
         // get information
         Lock lock = account.getReadWriteLock().readLock();
         lock.lock();
         try {
             if (account.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID);
+                return new CommandResponse(StatusCode.TOKENINVALID);
+            }
+            if (!account.getAllGroups().containsKey(id)) {
+                return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
             groupName = group.getName();
             members = group.getAllMembers();
@@ -68,7 +75,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         }
         /* create a JsonArray 'pollsArray'
         representing all polls of this group */
-        for (int eventKey : events.keySet()) {
+        for (int pollKey : polls.keySet()) {
             //TODO oberflächliche Abstimmungsbeschribung ex. nicht
         }
         // respond
