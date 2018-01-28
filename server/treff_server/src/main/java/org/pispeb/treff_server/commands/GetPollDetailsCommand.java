@@ -36,28 +36,28 @@ public class GetPollDetailsCommand extends AbstractCommand {
         Map<Integer, Account> currentVoters;
         JsonArrayBuilder optionsArray = Json.createArrayBuilder();
         JsonArrayBuilder currentVotersArray = Json.createArrayBuilder();
-        // get the account the group and the poll
-        Account account = this.accountManager.getAccountByLoginToken(input
-                .getString("token"));
-        if (account == null) {
-            return new CommandResponse(StatusCode.TOKENINVALID);
-        }
-        if (!account.getAllGroups().containsKey(groupId)) {
+        // get the group and the poll
+        if (!actingAccount.getAllGroups().containsKey(groupId)) {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
-        Usergroup group = account.getAllGroups().get(groupId);
+        Usergroup group = actingAccount.getAllGroups().get(groupId);
         if (!group.getAllPolls().containsKey(id)) {
             return new CommandResponse(StatusCode.POLLIDINVALID);
         }
         Poll poll = group.getAllPolls().get(id);
         // get information
-        Lock lock = account.getReadWriteLock().readLock();
-        lock.lock();
+        //TODO polloption-locks missing
+        Lock accountLock = actingAccount.getReadWriteLock().readLock();
+        Lock groupLock = group.getReadWriteLock().readLock();
+        Lock pollLock = poll.getReadWriteLock().readLock();
+        accountLock.lock();
+        groupLock.lock();
+        pollLock.lock();
         try {
-            if (account.isDeleted()) {
+            if (actingAccount.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
-            if (!account.getAllGroups().containsKey(groupId)) {
+            if (!actingAccount.getAllGroups().containsKey(groupId)) {
                 return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
             if (!group.getAllPolls().containsKey(id)) {
@@ -66,33 +66,38 @@ public class GetPollDetailsCommand extends AbstractCommand {
             question = poll.getQuestion();
             multiChoice = poll.isMultiChoice();
             options = poll.getPollOptions();
-        } finally {
-            lock.unlock();
-        }
-        /* create a JsonArray 'optionsArray'
-        representing all options of this poll */
-        for (int optionKey : options.keySet()) {
-            currentVoters = options.get(optionKey).getVoters();
-            /* for each option: create another JsonArray 'currentVotersArray'
-            representing all supporters of the corresponding option*/
-            for (int SupporterKey : currentVoters.keySet()) {
-                currentVotersArray.add(currentVoters.get(SupporterKey).getID());
+            /* create a JsonArray 'optionsArray'
+            representing all options of this poll */
+            for (int optionKey : options.keySet()) {
+                currentVoters = options.get(optionKey).getVoters();
+                /* for each option: create another JsonArray
+                'currentVotersArray'
+                representing all supporters of the corresponding option*/
+                for (int SupporterKey : currentVoters.keySet()) {
+                    currentVotersArray.add(currentVoters.get(SupporterKey)
+                            .getID());
+                }
+                /* for each option: add a JsonObject that represents the
+                detailed
+                description of the corresponding option to optionsArray
+                */
+                optionsArray.add(Json.createObjectBuilder()
+                        .add("type", "poll-options")
+                        .add("id", options.get(optionKey).getID())
+                        .add("latitude",
+                                options.get(optionKey).getPosition().latitude)
+                        .add("longitude",
+                                options.get(optionKey).getPosition().longitude)
+                        .add("time-start", options.get(optionKey).getTimeStart()
+                                .getTime())
+                        .add("time-end", options.get(optionKey).getTimeEnd()
+                                .getTime())
+                        .add("supporters", currentVotersArray.build()));
             }
-            /* for each option: add a JsonObject that represents the detailed
-            description of the corresponding option to optionsArray
-            */
-            optionsArray.add(Json.createObjectBuilder()
-                    .add("type", "poll-options")
-                    .add("id", options.get(optionKey).getID())
-                    .add("latitude",
-                            options.get(optionKey).getPosition().latitude)
-                    .add("longitude",
-                            options.get(optionKey).getPosition().longitude)
-                    .add("time-start", options.get(optionKey).getTimeStart()
-                            .getTime())
-                    .add("time-end", options.get(optionKey).getTimeEnd()
-                            .getTime())
-                    .add("supporters", currentVotersArray.build()));
+        } finally {
+            accountLock.unlock();
+            groupLock.unlock();
+            pollLock.unlock();
         }
         // respond
         JsonObject response = Json.createObjectBuilder()

@@ -25,20 +25,15 @@ public class AddContactCommand extends AbstractCommand {
     protected CommandResponse executeInternal(JsonObject input,
                                               Account actingAccount) {
         int id = input.getInt("id");
-        // get the accounts
-        Account ownAccount = this.accountManager.getAccountByLoginToken(input
-                .getString("token"));
-        if (ownAccount == null) {
-            return new CommandResponse(StatusCode.TOKENINVALID);
-        }
+        // get the account
         Account newContact = this.accountManager.getAccount(id);
-        if (newContact== null) {
+        if (newContact == null) {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
         // check block-lists and apply changes
-        Lock ownLock = ownAccount.getReadWriteLock().readLock();
-        Lock contactLock = newContact.getReadWriteLock().readLock();
-        if (ownAccount.compareTo(newContact) < 0) {
+        Lock ownLock = actingAccount.getReadWriteLock().writeLock();
+        Lock contactLock = newContact.getReadWriteLock().writeLock();
+        if (actingAccount.compareTo(newContact) < 0) {
             ownLock.lock();
             contactLock.lock();
         } else {
@@ -46,21 +41,21 @@ public class AddContactCommand extends AbstractCommand {
             ownLock.lock();
         }
         try {
-            if (ownAccount.isDeleted()) {
+            if (actingAccount.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
             if (newContact.isDeleted()) {
                 return new CommandResponse(StatusCode.USERIDINVALID);
             }
-            if (ownAccount.getAllBlocks().containsKey(id)) {
-                return new CommandResponse(StatusCode.BEINGBLOCKED);
-            }
-            if (newContact.getAllBlocks().containsKey(ownAccount.getID())) {
+            if (actingAccount.getAllBlocks().containsKey(id)) {
                 return new CommandResponse(StatusCode.BLOCKINGALREADY);
             }
+            if (newContact.getAllBlocks().containsKey(actingAccount.getID())) {
+                return new CommandResponse(StatusCode.BEINGBLOCKED);
+            }
             // TODO friend request instead of direct add
-            ownAccount.addContact(newContact);
-            newContact.addContact(ownAccount);
+            actingAccount.addContact(newContact);
+            newContact.addContact(actingAccount);
         } finally {
             ownLock.unlock();
             contactLock.unlock();

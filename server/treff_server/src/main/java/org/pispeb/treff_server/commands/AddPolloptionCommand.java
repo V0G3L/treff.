@@ -24,8 +24,8 @@ public class AddPolloptionCommand extends AbstractCommand {
                 Json.createObjectBuilder()
                         .add("group-id", 0)
                         .add("poll-id", 0)
-                        .add("latitude", 0)
-                        .add("longitude", 0)
+                        .add("latitude", 0.0)
+                        .add("longitude", 0.0)
                         .add("time-start", 0)
                         .add("time-end", 0)
                         .build());
@@ -40,16 +40,11 @@ public class AddPolloptionCommand extends AbstractCommand {
         double longitude = input.getInt("longitude");
         long timeStart = input.getInt("time-start");
         long timeEnd = input.getInt("time-end");
-        // get the account the group and the poll
-        Account account = this.accountManager.getAccountByLoginToken(input
-                .getString("token"));
-        if (account == null) {
-            return new CommandResponse(StatusCode.TOKENINVALID);
-        }
-        if (!account.getAllGroups().containsKey(groupId)) {
+        // get the group and the poll
+        if (!actingAccount.getAllGroups().containsKey(groupId)) {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
-        Usergroup group = account.getAllGroups().get(groupId);
+        Usergroup group = actingAccount.getAllGroups().get(groupId);
         if (!group.getAllPolls().containsKey(pollId)) {
             return new CommandResponse(StatusCode.POLLIDINVALID);
         }
@@ -59,26 +54,26 @@ public class AddPolloptionCommand extends AbstractCommand {
             return new CommandResponse(StatusCode.TIMEENDSTARTCONFLICT);
         }
         //TODO timeEnd-in-past-check
-        // check permission and aplly changes
-        Lock accountLock = account.getReadWriteLock().readLock();
+        // check permission and apply changes
+        Lock accountLock = actingAccount.getReadWriteLock().readLock();
         Lock groupLock = group.getReadWriteLock().readLock();
         Lock pollLock = group.getReadWriteLock().writeLock();
         accountLock.lock();
         groupLock.lock();
         pollLock.lock();
         try {
-            if (account.isDeleted()) {
+            if (actingAccount.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
-            if (!account.getAllGroups().containsKey(groupId)) {
+            if (!actingAccount.getAllGroups().containsKey(groupId)) {
                 return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
             if (!group.getAllPolls().containsKey(pollId)) {
                 return new CommandResponse(StatusCode.POLLIDINVALID);
             }
-            if (!group.checkPermissionOfMember(account,
+            if (!group.checkPermissionOfMember(actingAccount,
                     Permission.EDIT_ANY_POLL)
-                    && !poll.getCreator().equals(account)) {
+                    && poll.getCreator().getID() != actingAccount.getID()) {
                 return new CommandResponse(StatusCode.NOPERMISSIONEDITANYPOLL);
             }
             poll.addPollOption(new Position(latitude, longitude),

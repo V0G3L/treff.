@@ -47,8 +47,10 @@ public class GetUserIdCommand extends AbstractCommand {
         }
         // respond
         JsonObject response = Json.createObjectBuilder()
-                .add("type", "account").add("id", id)
-                .add("user", username).build();
+                .add("type", "account")
+                .add("id", id)
+                .add("user", username)
+                .build();
         return new CommandResponse(response);
     }
 }
