@@ -36,12 +36,13 @@
 
             <!-- Username Label -->
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_log_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark">
-                <EditText android:id="@+id/input_log_username"
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
@@ -54,8 +55,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark">
-                <EditText android:id="@+id/input_log_password"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                android:id="@+id/input_log_password">
+                <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -82,6 +84,23 @@
                 android:gravity="center"
                 android:textSize="16dip"
                 android:onClick="@{v -> vm.onGoToRegister()}"
+                android:textColor="@color/white" />
+
+            <!-- Progressbar while connecting -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView android:id="@+id/authentification"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/Authentification"
+                android:gravity="center"
+                android:textSize="16dip"
                 android:textColor="@color/white" />
 
         </LinearLayout>

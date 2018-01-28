@@ -17,7 +17,8 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class LoginFragment extends Fragment{
 
-    FragmentLoginBinding binding;
+    private FragmentLoginBinding binding;
+    private LoginViewModel vm;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -35,7 +36,7 @@ public class LoginFragment extends Fragment{
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-        LoginViewModel vm = ViewModelProviders
+        vm = ViewModelProviders
                 .of(this, ViewModelFactory.getInstance(getContext()))
                 .get(LoginViewModel.class);
 
@@ -51,12 +52,28 @@ public class LoginFragment extends Fragment{
     private void callback(State state) {
         switch (state.call) {
             case IDLE:
+                binding.progressBar.setVisibility(View.GONE);
+                binding.authentification.setVisibility(View.GONE);
+                binding.inputLogPassword.setVisibility(View.VISIBLE);
+                binding.inputLogUsername.setVisibility(View.VISIBLE);
+                binding.signupLink.setVisibility(View.VISIBLE);
+                binding.loginButton.setVisibility(View.VISIBLE);
                 break;
-            case LOGIN:Intent intent = new Intent(getActivity(), HomeActivity.class);
-                this.startActivity(intent);
+            case LOGIN:
+                vm.setPasswort(binding.inputLogPassword.getEditText().getText().toString());
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.authentification.setVisibility(View.VISIBLE);
+                binding.inputLogPassword.setVisibility(View.GONE);
+                binding.inputLogUsername.setVisibility(View.GONE);
+                binding.signupLink.setVisibility(View.GONE);
+                binding.loginButton.setVisibility(View.GONE);
                 break;
             case GO_TO_REGISTER:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new RegisterFragment()).commit();
+                break;
+            case SUCCESS:
+                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                this.startActivity(intent);
                 break;
             default:
         }

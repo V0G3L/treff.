@@ -15,5 +15,6 @@ public enum ViewCall {
     LOGIN,
     REGISTER,
     GO_TO_LOGIN,
-    GO_TO_REGISTER
+    GO_TO_REGISTER,
+    SUCCESS
 }
