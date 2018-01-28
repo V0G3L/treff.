@@ -7,6 +7,7 @@ import org.pispeb.treff_server.networking.StatusCode;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.concurrent.locks.Lock;
 
 
@@ -28,29 +29,21 @@ public class GetUserIdCommand extends AbstractCommand {
     protected CommandResponse executeInternal(JsonObject input,
                                               int actingAccountID) {
         String username = input.getString("user");
-        int id;
-        // get the account
-        Account account = this.accountManager.getAccountByUsername(username);
+
+        // get account
+        Account account =
+                getSafeForReading(accountManager
+                        .getAccountByUsername(username));
         if (account == null) {
             return new CommandResponse(StatusCode.USERIDINVALID);
         }
-        // get information
-        Lock lock = account.getReadWriteLock().readLock();
-        lock.lock();
-        try {
-            if (account.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID);
-            }
-            id = account.getID();
-        } finally {
-            lock.unlock();
-        }
-        // respond
-        JsonObject response = Json.createObjectBuilder()
+
+        // collect account properties
+        JsonObjectBuilder response = Json.createObjectBuilder()
                 .add("type", "account")
-                .add("id", id)
-                .add("user", username)
-                .build();
-        return new CommandResponse(response);
+                .add("id", account.getID())
+                .add("user", username);
+
+        return new CommandResponse(response.build());
     }
 }

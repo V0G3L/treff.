@@ -2,6 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
@@ -38,51 +39,39 @@ public class AddPolloptionCommand extends AbstractCommand {
         double longitude = input.getInt("longitude");
         long timeStart = input.getInt("time-start");
         long timeEnd = input.getInt("time-end");
+
         // check times
         if (timeEnd < timeStart) {
             return new CommandResponse(StatusCode.TIMEENDSTARTCONFLICT);
         }
+
         //TODO timeEnd-in-past-check
-        // lock the account and get all the information
-        actingAccountID.getReadWriteLock().readLock().lock();
-        try {
-            if (actingAccountID.isDeleted()) {
-                return new CommandResponse(StatusCode.TOKENINVALID);
-            }
-            // get the group and its lock
-            if (!actingAccountID.getAllGroups().containsKey(groupId)) {
-                return new CommandResponse(StatusCode.GROUPIDINVALID);
-            }
-            Usergroup group = actingAccountID.getAllGroups().get(groupId);
-            group.getReadWriteLock().readLock().lock();
-            try {
-                // get the poll and its lock
-                if (!group.getAllPolls().containsKey(pollId)) {
-                    return new CommandResponse(StatusCode.POLLIDINVALID);
-                }
-                Poll poll = group.getAllPolls().get(pollId);
-                poll.getReadWriteLock().writeLock().lock();
-                try {
-                    // check permission
-                    if (poll.getCreator().getID() != actingAccountID.getID() &&
-                            !group.checkPermissionOfMember(actingAccountID,
-                            Permission.EDIT_ANY_POLL)) {
-                        return new CommandResponse(StatusCode
-                                .NOPERMISSIONEDITANYPOLL);
-                    }
-                    // add poll option
-                    poll.addPollOption(new Position(latitude, longitude),
-                            new Date(timeStart), new Date(timeEnd));
-                } finally {
-                    poll.getReadWriteLock().writeLock().lock();
-                }
-            } finally {
-                group.getReadWriteLock().readLock().unlock();
-            }
-        } finally {
-            actingAccountID.getReadWriteLock().readLock().unlock();
+
+        // get account
+        Account account =
+                getSafeForReading(accountManager.getAccount(actingAccountID));
+        if (account == null) {
+            return new CommandResponse(StatusCode.USERIDINVALID);
         }
-        // respond
+
+        // get group
+        Usergroup group =
+                getSafeForReading(account.getAllGroups().get(groupId));
+
+        // get poll
+        Poll poll = getSafeForWriting(group.getAllPolls().get(pollId));
+
+        // check permission
+        if (poll.getCreator().getID() != account.getID() &&
+                !group.checkPermissionOfMember(account,
+                        Permission.EDIT_ANY_POLL)) {
+            return new CommandResponse(StatusCode.NOPERMISSIONEDITANYPOLL);
+        }
+
+        // add poll option
+        poll.addPollOption(new Position(latitude, longitude),
+                new Date(timeStart), new Date(timeEnd));
+
         return new CommandResponse(Json.createObjectBuilder().build());
     }
 

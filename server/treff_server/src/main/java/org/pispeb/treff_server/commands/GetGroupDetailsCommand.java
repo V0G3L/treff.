@@ -7,6 +7,7 @@ import org.pispeb.treff_server.networking.StatusCode;
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
@@ -26,66 +27,49 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     protected CommandResponse executeInternal(JsonObject input,
                                               int actingAccountID) {
         int id = input.getInt("id");
-        String groupName;
-        Map<Integer, Account> members;
-        Map<Integer, Event> events;
-        Map<Integer, Poll> polls;
-        JsonArrayBuilder membersArray = Json.createArrayBuilder();
-        JsonArrayBuilder eventsArray = Json.createArrayBuilder();
-        JsonArrayBuilder pollsArray = Json.createArrayBuilder();
-        // get the the group
-        if (!actingAccountID.getAllGroups().containsKey(id)) {
+
+
+        // check if account still exists
+        Account actingAccount =
+                getSafeForReading(accountManager.getAccount(actingAccountID));
+        if (actingAccount == null)
+            return new CommandResponse(StatusCode.TOKENINVALID);
+
+        // get group
+        Usergroup group
+                = getSafeForReading(actingAccount.getAllGroups().get(id));
+        if (group == null)
             return new CommandResponse(StatusCode.GROUPIDINVALID);
-        }
-        Usergroup group = actingAccountID.getAllGroups().get(id);
-        // get information
-        Lock accountLock = actingAccountID.getReadWriteLock().readLock();
-        Lock groupLock = group.getReadWriteLock().readLock();
-        accountLock.lock();
-        groupLock.lock();
-        try {
-            if (actingAccountID.isDeleted()) {
-                return new CommandResponse(StatusCode.TOKENINVALID);
-            }
-            if (!actingAccountID.getAllGroups().containsKey(id)) {
-                return new CommandResponse(StatusCode.GROUPIDINVALID);
-            }
-            groupName = group.getName();
-            members = group.getAllMembers();
-            events = group.getAllEvents();
-            polls = group.getAllPolls();
-            /* create a JsonArray 'membersArray'
-            representing all members of this group */
-            for (int MemberKey : members.keySet()) {
-                membersArray.add(members.get(MemberKey).getID());
-            }
-            /* create a JsonArray 'eventsArray'
-            representing all events of this group */
-            for (int eventKey : events.keySet()) {
-                eventsArray.add(Json.createObjectBuilder()
-                        .add("type", "event")
-                        .add("id", events.get(eventKey).getID())
-                        .add("checksum", "" /* TODO checksum */));
-            }
-            /* create a JsonArray 'pollsArray'
-            representing all polls of this group */
-            for (int pollKey : polls.keySet()) {
-                //TODO oberflächliche Abstimmungsbeschribung ex. nicht
-            }
-        } finally {
-            accountLock.unlock();
-            groupLock.unlock();
-        }
-        // respond
-        JsonObject response = Json.createObjectBuilder()
+
+        // collect group properties
+        JsonObjectBuilder response = Json.createObjectBuilder()
                 .add("type", "group")
                 .add("id", id)
-                .add("name", groupName)
-                .add("members", membersArray.build())
-                .add("events", eventsArray.build())
-                .add("polls", pollsArray.build())
-                .build();
-        return new CommandResponse(response);
-    }
+                .add("name", group.getName());
+
+        // collect group members
+        JsonArrayBuilder membersArray = Json.createArrayBuilder();
+        group.getAllMembers().keySet().forEach(membersArray::add);
+        response.add("members", membersArray.build());
+
+        //collect group events
+        JsonArrayBuilder eventsArray = Json.createArrayBuilder();
+        for (int eventKey : group.getAllEvents().keySet()) {
+            eventsArray.add(Json.createObjectBuilder()
+                    .add("type", "event")
+                    .add("id", eventKey)
+                    .add("checksum", "" /* TODO checksum */));
+        }
+        response.add("eventss", eventsArray.build());
+
+        // collect group polls
+        JsonArrayBuilder pollsArray = Json.createArrayBuilder();
+        for (int pollKey : group.getAllPolls().keySet()) {
+            //TODO oberflächliche Abstimmungsbeschribung ex. nicht
+        }
+        response.add("polls", pollsArray.build());
+
+        return new CommandResponse(response.build());
+  }
 
 }
