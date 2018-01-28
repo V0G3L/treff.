@@ -8,6 +8,8 @@ import org.pispeb.treff_server.networking.StatusCode;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+// TODO needs to be tested
+
 /**
  * a command to add an Account to the contact-list of another Account
  */
@@ -24,41 +26,47 @@ public class AddContactCommand extends AbstractCommand {
     protected CommandResponse executeInternal(JsonObject input,
                                               int actingAccountID) {
         int id = input.getInt("id");
-        // get the account
-        Account newContact = this.accountManager.getAccount(id);
-        if (newContact == null) {
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
-        }
-        // get the locks
-        if (actingAccountID.compareTo(newContact) < 0) {
-            actingAccountID.getReadWriteLock().writeLock().lock();
-            newContact.getReadWriteLock().writeLock().lock();
-        } else {
-            newContact.getReadWriteLock().writeLock().lock();
-            actingAccountID.getReadWriteLock().writeLock().lock();
-        }
-        try {
-            // check if process is valid
-            if (actingAccountID.isDeleted()) {
+
+        // determine locking order of the accounts
+        Account actingAccount;
+        Account newContact;
+        if (actingAccountID < id) {
+            // check if the acting account still exists
+            actingAccount = getSafeForWriting(this.accountManager
+                    .getAccount(actingAccountID));
+            if (actingAccount == null)
                 return new CommandResponse(StatusCode.TOKENINVALID);
-            }
-            if (newContact.isDeleted()) {
-                return new CommandResponse(StatusCode.USERIDINVALID);
-            }
-            if (actingAccountID.getAllBlocks().containsKey(id)) {
-                return new CommandResponse(StatusCode.BLOCKINGALREADY);
-            }
-            if (newContact.getAllBlocks().containsKey(actingAccountID.getID())) {
-                return new CommandResponse(StatusCode.BEINGBLOCKED);
-            }
-            // apply
-            // TODO friend request instead of direct add
-            actingAccountID.addContact(newContact);
-            newContact.addContact(actingAccountID);
-        } finally {
-            actingAccountID.getReadWriteLock().writeLock().unlock();
-            newContact.getReadWriteLock().writeLock().unlock();
+
+            // check if the new contact is valid
+            newContact = getSafeForWriting(this.accountManager.getAccount(id));
+            if (newContact == null)
+                return new CommandResponse((StatusCode.USERIDINVALID));
+        } else {
+            // check if the new contact is valid
+            newContact = getSafeForWriting(this.accountManager.getAccount(id));
+            if (newContact == null)
+                return new CommandResponse((StatusCode.USERIDINVALID));
+
+            // check if the acting account still exists
+            actingAccount = getSafeForWriting(this.accountManager
+                    .getAccount(actingAccountID));
+            if (actingAccount == null)
+                return new CommandResponse(StatusCode.TOKENINVALID);
         }
+
+        // check block lists
+        if (actingAccount.getAllBlocks().containsKey(id)) {
+            return new CommandResponse(StatusCode.BLOCKINGALREADY);
+        }
+        if (newContact.getAllBlocks().containsKey(actingAccountID)) {
+            return new CommandResponse(StatusCode.BEINGBLOCKED);
+        }
+
+        // execute the command
+        // TODO friend request instead of direct add
+        actingAccount.addContact(newContact);
+        newContact.addContact(actingAccount);
+
         // respond
         return new CommandResponse(Json.createObjectBuilder().build());
     }

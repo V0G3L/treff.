@@ -8,8 +8,6 @@ import org.pispeb.treff_server.networking.StatusCode;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.concurrent.locks.Lock;
-
 
 //TODO needs to be tested
 

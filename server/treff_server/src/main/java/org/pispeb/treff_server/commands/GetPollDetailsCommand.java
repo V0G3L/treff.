@@ -52,9 +52,9 @@ public class GetPollDetailsCommand extends AbstractCommand {
 
         // collect poll properties
         JsonObjectBuilder response = Json.createObjectBuilder()
-            .add("type", "poll")
-            .add("question", poll.getQuestion())
-            .add("multichoice", poll.isMultiChoice());
+                .add("type", "poll")
+                .add("question", poll.getQuestion())
+                .add("multichoice", poll.isMultiChoice());
 
         // collect properties of polloptions
         JsonArrayBuilder pollOptionArray = Json.createArrayBuilder();

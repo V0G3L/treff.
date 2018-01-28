@@ -13,6 +13,8 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import java.util.Date;
 
+// TODO needs to be tested
+
 /**
  * a command to add an PollOption to a Poll
  */

@@ -8,8 +8,8 @@ import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
+
+// TODO needs to be tested
 
 /**
  * a command to get a detailed description of a Usergroup
@@ -70,6 +70,6 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         response.add("polls", pollsArray.build());
 
         return new CommandResponse(response.build());
-  }
+    }
 
 }

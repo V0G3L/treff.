@@ -129,7 +129,7 @@ public abstract class AbstractCommand {
      * An input object containing additional JsonArray elements or JsonObject
      * attributes is still considered valid.</p>
      *
-     * @param input    The input to be checked against the specifed template
+     * @param input    The input to be checked against the specified template
      * @param expected The template to check the specified input against
      * @return <code>true</code> iff the input satisfies the above specified
      * relation to the template.
@@ -199,7 +199,7 @@ public abstract class AbstractCommand {
     /**
      * executes the command
      *
-     * @param input         TODO
+     * @param input           TODO
      * @param actingAccountID The ID of the account the the user who made the
      *                        request is logged into.
      *                        If a command does not require login,
@@ -223,7 +223,7 @@ public abstract class AbstractCommand {
     }
 
     private <T extends DataObject> T getSafe(T obj,
-                                               Function<T, Lock> lockFunction) {
+                                             Function<T, Lock> lockFunction) {
         // make sure the object exists, i.e. it is not null
         if (obj == null)
             return null;
@@ -241,30 +241,32 @@ public abstract class AbstractCommand {
      * acquires its ReadLock and checks that the {@code DataObject} was not
      * deleted before the lock was acquired.
      * <p>
-     * Will return the supplied {@code DataObject} if all checks are successful or
+     * Will return the supplied {@code DataObject} if all checks are
+     * successful or
      * null otherwise.
      *
      * @param obj The {@code DataObject} for which the checks are to be made.
      *            May be null.
      * @param <T> A subclass of {@code DataObject}.
      * @return The supplied {@code DataObject} if all checks were successful
-     *         and the lock has been acquired, null otherwise.
+     * and the lock has been acquired, null otherwise.
      */
-    protected <T extends DataObject> T getSafeForReading (T obj){
+    protected <T extends DataObject> T getSafeForReading(T obj) {
         return getSafe(obj, t -> t.getReadWriteLock().readLock());
     }
 
     /**
      * Like {@link #getSafeForWriting(DataObject)} but acquires the WriteLock
      * instead.
+     *
      * @param obj The {@code DataObject} for which the checks are to be made.
      *            May be null.
      * @param <T> A subclass of {@code DataObject}.
      * @return The supplied {@code DataObject} if all checks were successful
-     *         and the lock has been acquired, null otherwise.
+     * and the lock has been acquired, null otherwise.
      * @see #getSafeForWriting(DataObject)
      */
-    protected <T extends DataObject> T getSafeForWriting (T obj){
+    protected <T extends DataObject> T getSafeForWriting(T obj) {
         return getSafe(obj, t -> t.getReadWriteLock().writeLock());
     }
 }
