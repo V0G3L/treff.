@@ -38,7 +38,7 @@
     <string name="login_email">Email</string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
-    <string name="Authentification">Authentificating...</string>
+    <string name="Authentication">Authenticating...</string>
 
     
     <!-- TODO more specific comments -->
