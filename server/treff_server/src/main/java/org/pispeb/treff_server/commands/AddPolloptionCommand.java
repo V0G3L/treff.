@@ -40,48 +40,49 @@ public class AddPolloptionCommand extends AbstractCommand {
         double longitude = input.getInt("longitude");
         long timeStart = input.getInt("time-start");
         long timeEnd = input.getInt("time-end");
-        // get the group and the poll
-        if (!actingAccount.getAllGroups().containsKey(groupId)) {
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
-        }
-        Usergroup group = actingAccount.getAllGroups().get(groupId);
-        if (!group.getAllPolls().containsKey(pollId)) {
-            return new CommandResponse(StatusCode.POLLIDINVALID);
-        }
-        Poll poll = group.getAllPolls().get(pollId);
         // check times
         if (timeEnd < timeStart) {
             return new CommandResponse(StatusCode.TIMEENDSTARTCONFLICT);
         }
         //TODO timeEnd-in-past-check
-        // check permission and apply changes
-        Lock accountLock = actingAccount.getReadWriteLock().readLock();
-        Lock groupLock = group.getReadWriteLock().readLock();
-        Lock pollLock = group.getReadWriteLock().writeLock();
-        accountLock.lock();
-        groupLock.lock();
-        pollLock.lock();
+        // lock the account and get all the information
+        actingAccount.getReadWriteLock().readLock().lock();
         try {
             if (actingAccount.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
+            // get the group and its lock
             if (!actingAccount.getAllGroups().containsKey(groupId)) {
                 return new CommandResponse(StatusCode.GROUPIDINVALID);
             }
-            if (!group.getAllPolls().containsKey(pollId)) {
-                return new CommandResponse(StatusCode.POLLIDINVALID);
+            Usergroup group = actingAccount.getAllGroups().get(groupId);
+            group.getReadWriteLock().readLock().lock();
+            try {
+                // get the poll and its lock
+                if (!group.getAllPolls().containsKey(pollId)) {
+                    return new CommandResponse(StatusCode.POLLIDINVALID);
+                }
+                Poll poll = group.getAllPolls().get(pollId);
+                poll.getReadWriteLock().writeLock().lock();
+                try {
+                    // check permission
+                    if (poll.getCreator().getID() != actingAccount.getID() &&
+                            !group.checkPermissionOfMember(actingAccount,
+                            Permission.EDIT_ANY_POLL)) {
+                        return new CommandResponse(StatusCode
+                                .NOPERMISSIONEDITANYPOLL);
+                    }
+                    // add poll option
+                    poll.addPollOption(new Position(latitude, longitude),
+                            new Date(timeStart), new Date(timeEnd));
+                } finally {
+                    poll.getReadWriteLock().writeLock().lock();
+                }
+            } finally {
+                group.getReadWriteLock().readLock().unlock();
             }
-            if (!group.checkPermissionOfMember(actingAccount,
-                    Permission.EDIT_ANY_POLL)
-                    && poll.getCreator().getID() != actingAccount.getID()) {
-                return new CommandResponse(StatusCode.NOPERMISSIONEDITANYPOLL);
-            }
-            poll.addPollOption(new Position(latitude, longitude),
-                    new Date(timeStart), new Date(timeEnd));
         } finally {
-            accountLock.unlock();
-            groupLock.unlock();
-            pollLock.unlock();
+            actingAccount.getReadWriteLock().readLock().unlock();
         }
         // respond
         return new CommandResponse(Json.createObjectBuilder().build());

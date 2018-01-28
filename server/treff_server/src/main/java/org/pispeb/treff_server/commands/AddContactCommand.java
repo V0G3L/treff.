@@ -30,17 +30,16 @@ public class AddContactCommand extends AbstractCommand {
         if (newContact == null) {
             return new CommandResponse(StatusCode.GROUPIDINVALID);
         }
-        // check block-lists and apply changes
-        Lock ownLock = actingAccount.getReadWriteLock().writeLock();
-        Lock contactLock = newContact.getReadWriteLock().writeLock();
+        // get the locks
         if (actingAccount.compareTo(newContact) < 0) {
-            ownLock.lock();
-            contactLock.lock();
+            actingAccount.getReadWriteLock().writeLock().lock();
+            newContact.getReadWriteLock().writeLock().lock();
         } else {
-            contactLock.lock();
-            ownLock.lock();
+            newContact.getReadWriteLock().writeLock().lock();
+            actingAccount.getReadWriteLock().writeLock().lock();
         }
         try {
+            // check if process is valid
             if (actingAccount.isDeleted()) {
                 return new CommandResponse(StatusCode.TOKENINVALID);
             }
@@ -53,12 +52,13 @@ public class AddContactCommand extends AbstractCommand {
             if (newContact.getAllBlocks().containsKey(actingAccount.getID())) {
                 return new CommandResponse(StatusCode.BEINGBLOCKED);
             }
+            // apply
             // TODO friend request instead of direct add
             actingAccount.addContact(newContact);
             newContact.addContact(actingAccount);
         } finally {
-            ownLock.unlock();
-            contactLock.unlock();
+            actingAccount.getReadWriteLock().writeLock().unlock();
+            newContact.getReadWriteLock().writeLock().unlock();
         }
         // respond
         return new CommandResponse(Json.createObjectBuilder().build());
