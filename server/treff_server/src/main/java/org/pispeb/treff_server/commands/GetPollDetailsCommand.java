@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
@@ -31,10 +30,9 @@ public class GetPollDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandResponse executeInternal(JsonObject input,
-                                              Account actingAccount)
-            throws DatabaseException {
+                                              Account actingAccount) {
         int id = input.getInt("id");
-        int groupId = input.getInt("id");
+        int groupId = input.getInt("group-id");
         String question;
         boolean multiChoice;
         Map<Integer, PollOption> options;
@@ -64,8 +62,8 @@ public class GetPollDetailsCommand extends AbstractCommand {
             currentVoters = options.get(optionKey).getVoters();
             /* for each option: create another JsonArray 'currentVotersArray'
             representing all supporters of the corresponding option*/
-            for (int VoterKey : currentVoters.keySet()) {
-                currentVotersArray.add(currentVoters.get(VoterKey).getID());
+            for (int SupporterKey : currentVoters.keySet()) {
+                currentVotersArray.add(currentVoters.get(SupporterKey).getID());
             }
             /* for each option: add a JsonObject that represents the detailed
             description of the corresponding option to optionsArray
