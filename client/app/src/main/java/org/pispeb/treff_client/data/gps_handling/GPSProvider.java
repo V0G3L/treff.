@@ -1,39 +1,117 @@
 package org.pispeb.treff_client.data.gps_handling;
 
-import android.app.IntentService;
+import android.Manifest;
+import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 
-import org.pispeb.treff_client.view.home.map.MapViewModel;
-import org.pispeb.treff_client.data.networking.RequestEncoder;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.PriorityQueue;
 
 /**
- * This class compares the positions given by the NETWORK_PROVIDER and the GPS_PROIDER.
- * The best position will be given to the listening mapViewModel and RequestEncoder.
+ * Receives updates about the users position, passes them to server.
+ * Receives requests for position until specified date via startService.
+ * Stops self once all requests are dealt with.
  */
 
-public class GPSProvider extends IntentService {
+public class GPSProvider extends Service implements LocationListener {
 
-    LocationManager locationManager;
-    LocationListener gpsListener;
-    LocationManager networkListener;
-    private RequestEncoder requestEncoder;
-    private MapViewModel mapViewModel;
-    private boolean isUpdating = false;
+    // Lock that all startService calls for this service synchronize to, to
+    // avoid conflicts when stopping the Service
+    public static final Object LOCK = new Object();
 
-    public GPSProvider() {
-        super("GPSProvider");
+    // most accurate and recent location
+    private Location currentBestLocation;
+
+    // queue of requests for the users position from different groups
+    private PriorityQueue<ListEntry> queue;
+
+    // indicator of noticeable delay to last location
+    private static final int TWO_MINUTES = 1000 * 60 * 2;
+
+    // keys for values passed in Intent
+    public static final String INTENT_CMD = "commandIntent";
+    public static final String INTENT_GRP = "groupIntent";
+    public static final String INTENT_TIME = "timeIntent";
+
+    // modes in which the queue can be changed
+    public static final int CMD_ADD = 1;
+    public static final int CMD_REMOVE = 2;
+
+
+    @Override
+    public void onCreate() {
+
+        queue = new PriorityQueue<>(0,
+                (o1, o2) -> o1.endOfTransmission.compareTo(o2.endOfTransmission));
+
+        String locationProvider = LocationManager.GPS_PROVIDER;
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+        // check if Permission to use GPS is granted
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager
+                .PERMISSION_GRANTED && ActivityCompat
+                .checkSelfPermission(this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode,
+            // String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See
+            // the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        // TODO define minimum update interval in config
+        locationManager.requestLocationUpdates(locationProvider, 5000, 0,
+                this);
     }
 
-    /**
-     * Updates the location until this method returns and the service stops
-     * @param intent the intent that started this service
-     */
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // Always synchronized to LOCK!!
 
+        int cmd = intent.getExtras().getInt(INTENT_CMD);
+        int groupId = intent.getExtras().getInt(INTENT_GRP);
+        Date end = (Date) intent.getExtras().get(INTENT_TIME);
+        ListEntry c = new ListEntry(groupId, end);
+        synchronized (queue) {
+            switch (cmd) {
+                case CMD_ADD:
+                    queue.add(c);
+                    break;
+                case CMD_REMOVE:
+                    while (queue.remove(c)) {
+                        // Do nothing, remove is true if an item equal to c is
+                        // found and removed. In case an event is added multiple
+                        // times, repeat
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown command");
+            }
+        }
+
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     /**
@@ -44,39 +122,136 @@ public class GPSProvider extends IntentService {
         super.onDestroy();
     }
 
-
-    /**
-     * @param mapViewModel Sets the mapViewModel to recieve the current positions
-     */
-    public void subscribe(MapViewModel mapViewModel) {
-        mapViewModel = mapViewModel;
+    @Override
+    public void onLocationChanged(Location location) {
+        // update location if needed
+        if (isBetterLocation(location)) {
+            currentBestLocation = location;
+        } else {
+            return;
+        }
+        // avoid racing conditions between this and startService by
+        // synchronizing to LOCK, which all startService calls should be
+        // synchronized to as well
+        synchronized (LOCK) {
+            // remove all items from queue that ended before current time
+            Date currentDate = Calendar.getInstance().getTime();
+            while (currentDate.after(queue.peek().endOfTransmission)) {
+                queue.poll();
+            }
+            if (queue.isEmpty()) {
+                stopSelf();
+            } else {
+                // TODO send update to server via RequestEncoder
+            }
+        }
     }
 
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
 
-    /**
-     * By calling this method the GroupMapViewModel won't get new positions.
-     * If no GroupMapViewModel ist listening, nothing happens.
-     */
-    public void dismissMap() {}
-
-
-
-
-    /**
-     *
-     * @param requestEncoder Sets the RequestEncoder to recieve the current positions
-     */
-    public void subscribe(RequestEncoder requestEncoder) {
-        requestEncoder = requestEncoder;
     }
 
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    // TODO add connect to RequestEncoder
 
     /**
-     * By calling this method the RequestEncoder won't get new positions.
-     * If no RequestEncoder is listening, nothing happens.
+     * Combination of group and date until which this group requests updates
+     * about the users position.
      */
-    public void dismissRequestEncoder() {}
+    private class ListEntry {
+        public int groupId;
+        public Date endOfTransmission;
 
+        public ListEntry(int groupId, Date endOfTransmission) {
+            this.groupId = groupId;
+            this.endOfTransmission = endOfTransmission;
+        }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
+            ListEntry listEntry = (ListEntry) o;
+
+            if (groupId != listEntry.groupId) return false;
+            return endOfTransmission.equals(listEntry.endOfTransmission);
+        }
+    }
+
+    /**
+     * Compares given location to current best location in terms of accuracy,
+     * delay and provider credibility.
+     * @param location new, alternative location
+     * @return true if given location is "better"
+     */
+    private boolean isBetterLocation(Location location) {
+        if (currentBestLocation == null) {
+            // A new location is always better than no location
+            return true;
+        }
+
+        // Check whether the new location fix is newer or older
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
+        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+        boolean isNewer = timeDelta > 0;
+
+        // If it's been more than two minutes since the current location,
+        // use
+        // the new location
+        // because the user has likely moved
+        if (isSignificantlyNewer) {
+            return true;
+            // If the new location is more than two minutes older, it
+            // must be
+            // worse
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        // Check whether the new location fix is more or less accurate
+        int accuracyDelta = (int) (location
+                .getAccuracy() - currentBestLocation
+                .getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        // Check if the old and new location are from the same provider
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
+
+        // Determine location quality using a combination of timeliness and
+        // accuracy
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else if (isNewer && !isSignificantlyLessAccurate &&
+                isFromSameProvider) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks whether two providers are the same
+     */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
+    }
 }
