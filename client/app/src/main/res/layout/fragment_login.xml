@@ -98,7 +98,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                android:text="@string/Authentification"
+                android:text="@string/Authentication"
                 android:gravity="center"
                 android:textSize="16dip"
                 android:textColor="@color/white" />
