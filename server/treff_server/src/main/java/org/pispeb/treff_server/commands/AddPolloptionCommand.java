@@ -57,9 +57,15 @@ public class AddPolloptionCommand extends AbstractCommand {
         // get group
         Usergroup group =
                 getSafeForReading(account.getAllGroups().get(groupId));
+        if (group == null) {
+            return new CommandResponse(StatusCode.GROUPIDINVALID);
+        }
 
         // get poll
         Poll poll = getSafeForWriting(group.getAllPolls().get(pollId));
+        if (poll == null) {
+            return new CommandResponse(StatusCode.POLLIDINVALID);
+        }
 
         // check permission
         if (poll.getCreator().getID() != account.getID() &&
