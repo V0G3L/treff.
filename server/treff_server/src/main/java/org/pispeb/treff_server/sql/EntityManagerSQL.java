@@ -146,7 +146,7 @@ public class EntityManagerSQL implements AccountManager {
             return database.getQueryRunner().query(
                     "SELECT id FROM ?;",
                     new MapListHandler(),
-                    TableName.ACCOUNTS)
+                    TableName.ACCOUNTS.toString())
                     .stream()
                     .map((rsMap) -> (Integer) rsMap.get("id"))
                     .collect(Collectors.toMap(Function.identity(),
@@ -316,7 +316,7 @@ public class EntityManagerSQL implements AccountManager {
                     "INSERT INTO ?(username,passwordsalt,passwordhash) " +
                             "VALUES (?,?,?);",
                     new ScalarHandler<Integer>(),
-                    TableName.ACCOUNTS,
+                    TableName.ACCOUNTS.toString(),
                     username,
                     passwordHash.salt,
                     passwordHash.hash);

@@ -2,6 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.DataObject;
 import org.pispeb.treff_server.networking.CommandResponse;
 import org.pispeb.treff_server.networking.StatusCode;
 
@@ -9,7 +10,11 @@ import javax.json.JsonValue.ValueType;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.function.Function;
 
 /**
  * TODO description
@@ -19,6 +24,8 @@ public abstract class AbstractCommand {
     protected AccountManager accountManager;
     private final boolean requiresLogin;
     private final JsonObject expectedSyntax;
+
+    private Set<Lock> acquiredLocks = new HashSet<>();
 
     /**
      * Constructs a new command that operates on the database represented by
@@ -80,7 +87,12 @@ public abstract class AbstractCommand {
         if (!checkSyntax(input, expectedSyntax))
             return new CommandResponse(StatusCode.SYNTAXINVALID);
 
-        return executeInternal(input, account);
+        // make sure to release all locks after execution
+        try {
+            return executeInternal(input, account);
+        } finally {
+            releaseAllLocks();
+        }
     }
 
     /**
@@ -121,14 +133,22 @@ public abstract class AbstractCommand {
             case ARRAY:
             case OBJECT:
             case STRING:
-            case NUMBER:
             case NULL:
                 if (expected.getValueType() != input.getValueType())
                     return false;
                 break;
 
-            // There is no ValueType.BOOLEAN, so TRUE and FALSE type checking
-            // has to be handled more leniently
+            // For numbers, check if both are integral
+            // If integral, check if either a long is expected or the input fits
+            // into an integer
+            // If not integral, skip checking for precision loss.
+            case NUMBER:
+                if (input.getValueType() == ValueType.NUMBER) {
+
+                }
+                // There is no ValueType.BOOLEAN, so TRUE and FALSE type
+                // checking
+                // has to be handled more leniently
             case TRUE:
             case FALSE:
                 if (input.getValueType() != JsonValue.ValueType.TRUE
@@ -179,4 +199,62 @@ public abstract class AbstractCommand {
     protected abstract CommandResponse executeInternal(JsonObject input,
                                                        Account actingAccount);
 
+    protected void acquireLock(Lock lock) {
+        if (!acquiredLocks.contains(lock)) {
+            acquiredLocks.add(lock);
+            lock.lock();
+        }
+    }
+
+    protected void releaseAllLocks() {
+        acquiredLocks.forEach(Lock::unlock);
+        acquiredLocks.clear();
+    }
+
+    private <T extends DataObject> T getSafe(T obj,
+                                               Function<T, Lock> lockFunction) {
+        // make sure the object exists, i.e. it is not null
+        if (obj == null)
+            return null;
+        // acquire the lock and make sure the object was not deleted (in the
+        // meantime)
+        acquireLock(lockFunction.apply(obj));
+        if (obj.isDeleted())
+            return null;
+        else
+            return obj;
+    }
+
+    /**
+     * Checks that the supplied {@link DataObject} is not equal to null,
+     * acquires its ReadLock and checks that the {@code DataObject} was not
+     * deleted before the lock was acquired.
+     * <p>
+     * Will return the supplied {@code DataObject} if all checks are successful or
+     * null otherwise.
+     *
+     * @param obj The {@code DataObject} for which the checks are to be made.
+     *            May be null.
+     * @param <T> A subclass of {@code DataObject}.
+     * @return The supplied {@code DataObject} if all checks were successful
+     *         and the lock has been acquired, null otherwise.
+     */
+    protected <T extends DataObject> T getSafeForReading (T obj){
+        return getSafe(obj, t -> t.getReadWriteLock().readLock());
+    }
+
+    /**
+     * Like {@link #getSafeForWriting(DataObject)} but acquires the WriteLock
+     * instead.
+     * @param obj The {@code DataObject} for which the checks are to be made.
+     *            May be null.
+     * @param <T> A subclass of {@code DataObject}.
+     * @return The supplied {@code DataObject} if all checks were successful
+     *         and the lock has been acquired, null otherwise.
+     * @see #getSafeForWriting(DataObject)
+     */
+    protected <T extends DataObject> T getSafeForWriting (T obj){
+        return getSafe(obj, t -> t.getReadWriteLock().writeLock());
+    }
 }
+
