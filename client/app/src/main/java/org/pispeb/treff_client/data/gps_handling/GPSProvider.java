@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -136,13 +137,15 @@ public class GPSProvider extends Service implements LocationListener {
         synchronized (LOCK) {
             // remove all items from queue that ended before current time
             Date currentDate = Calendar.getInstance().getTime();
-            while (currentDate.after(queue.peek().endOfTransmission)) {
+            while (!queue.isEmpty() && currentDate.after(queue.peek()
+                    .endOfTransmission)) {
                 queue.poll();
             }
             if (queue.isEmpty()) {
                 stopSelf();
             } else {
                 // TODO send update to server via RequestEncoder
+                Log.i("GPSProvider", currentBestLocation.toString());
             }
         }
     }
