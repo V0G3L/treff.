@@ -1,6 +1,5 @@
 package org.pispeb.treff_client.view.home.map;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.location.Location;
@@ -14,8 +13,6 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Keeps track of filter options etc.
@@ -26,13 +23,13 @@ public class MapViewModel extends ViewModel implements LocationListener {
     // indicator of noticeable delay to last location
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-    MutableLiveData<List<OverlayItem>> items;
+    MutableLiveData<Location> userLocation;
     Location currentBestLocation;
     SingleLiveEvent<State> state;
 
     public MapViewModel() {
         this.state = new SingleLiveEvent<>();
-        this.items = new MutableLiveData<>();
+        this.userLocation = new MutableLiveData<>();
     }
 
     public void onCenterClick() {
@@ -42,13 +39,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i("Map", "new Location");
+        // Log.i("Map", "new Location");
         if (isBetterLocation(currentBestLocation, location)) {
             currentBestLocation = location;
-            ArrayList<OverlayItem> newItems = new ArrayList<>();
-            newItems.add(new OverlayItem("User", "My Position", new
-                    GeoPoint(currentBestLocation)));
-            items.postValue(newItems);
+
+            userLocation.postValue(currentBestLocation);
         }
     }
 
@@ -75,8 +70,8 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return state;
     }
 
-    public MutableLiveData<List<OverlayItem>> getItems() {
-        return items;
+    public MutableLiveData<Location> getUserLocation() {
+        return userLocation;
     }
 
     /**

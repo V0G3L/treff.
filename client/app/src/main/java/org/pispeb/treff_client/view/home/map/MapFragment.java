@@ -1,13 +1,10 @@
 package org.pispeb.treff_client.view.home.map;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.graphics.Canvas;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -27,14 +24,13 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.Overlay;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.util.State;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 /**
  * Displaying the Map and other users position
@@ -53,7 +49,7 @@ public class MapFragment extends Fragment {
     String networkProvider;
     LocationManager locationManager;
 
-    private ItemizedOverlayWithFocus overlay;
+    private ItemizedOverlayWithFocus<OverlayItem> overlay;
 
     public MapFragment() {
         // Required empty public constructor
@@ -63,32 +59,19 @@ public class MapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.i("Map", "create");
+
         Context ctx = getActivity();
         //setting user agent to prevent getting banned from the osm servers
         Configuration.getInstance()
                 .load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-
-        overlay = new ItemizedOverlayWithFocus(
-                new ArrayList<OverlayItem>(),
-                new ItemizedIconOverlay.OnItemGestureListener() {
-                    @Override
-                    public boolean onItemSingleTapUp(int index,
-                                                     Object item) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onItemLongPress(int index, Object item) {
-                        return false;
-                    }
-                },
-                getContext());
-        overlay.setFocusItemsOnTap(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.i("Map", "create View");
 
         binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_map, container, false);
@@ -118,16 +101,47 @@ public class MapFragment extends Fragment {
         mapController.setZoom(15);
         GeoPoint startPoint = new GeoPoint(49.006889, 8.403653);
         mapController.setCenter(startPoint);
+
+        overlay = new ItemizedOverlayWithFocus<OverlayItem>(
+                new ArrayList<OverlayItem>(),
+                new ItemizedIconOverlay.OnItemGestureListener() {
+                    @Override
+                    public boolean onItemSingleTapUp(int index,
+                                                     Object item) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onItemLongPress(int index, Object item) {
+                        return false;
+                    }
+                },
+                getContext());
+        overlay.setFocusItemsOnTap(true);
+
+        map.getOverlays().clear();
         map.getOverlays().add(overlay);
 
-        // TODO get Overlay from vm
-        vm.getItems().observe(this, (List<OverlayItem> overlayItems) -> {
-            overlay.removeAllItems();
-            overlay.addItems(overlayItems);
-            map.invalidate();
+        vm.getUserLocation().observe(this, userLocation -> {
+            if (overlay != null) {
+                overlay.removeAllItems();
+                overlay.addItem(new OverlayItem(
+                        "User",
+                        new Date(userLocation.getTime()).toString(),
+                        new GeoPoint(userLocation)));
+                map.invalidate();
+            }
         });
 
         return binding.getRoot();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Log.i("Map", "destroy View");
+        super.onDestroyView();
+        locationManager.removeUpdates(vm);
+        vm.getUserLocation().removeObservers(this);
     }
 
     private void setLocationListener() {
@@ -143,7 +157,7 @@ public class MapFragment extends Fragment {
                     PERMISSIONS_LOCATION,
                     REQUEST_LOCATION);
         } else {
-            Log.i("Map", "LocationListener set");
+            // Log.i("Map", "LocationListener set");
             // TODO define minimum update interval in config
             locationManager.requestLocationUpdates(gpsProvider, 0, 0,
                     vm);
@@ -156,10 +170,10 @@ public class MapFragment extends Fragment {
             case IDLE:
                 break;
             case CENTER_MAP:
-                Log.i("Map", "Center on location");
+                // Log.i("Map", "Center on location");
                 Location location = vm.getCurrentBestLocation();
                 if (location != null) {
-                    Log.i("Map", "location not null");
+                    // Log.i("Map", "location not null");
                     GeoPoint currentPoint = new GeoPoint(location);
                     binding.map.getController().setCenter(currentPoint);
                 }
