@@ -8,9 +8,14 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Keeps track of filter options etc.
@@ -21,12 +26,13 @@ public class MapViewModel extends ViewModel implements LocationListener {
     // indicator of noticeable delay to last location
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-    MutableLiveData<Location> currentBestLocation;
+    MutableLiveData<List<OverlayItem>> items;
+    Location currentBestLocation;
     SingleLiveEvent<State> state;
 
     public MapViewModel() {
-        this.currentBestLocation = new MutableLiveData<>();
         this.state = new SingleLiveEvent<>();
+        this.items = new MutableLiveData<>();
     }
 
     public void onCenterClick() {
@@ -37,8 +43,12 @@ public class MapViewModel extends ViewModel implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         Log.i("Map", "new Location");
-        if (isBetterLocation(currentBestLocation.getValue(), location)) {
-            currentBestLocation.postValue(location);
+        if (isBetterLocation(currentBestLocation, location)) {
+            currentBestLocation = location;
+            ArrayList<OverlayItem> newItems = new ArrayList<>();
+            newItems.add(new OverlayItem("User", "My Position", new
+                    GeoPoint(currentBestLocation)));
+            items.postValue(newItems);
         }
     }
 
@@ -57,12 +67,16 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     }
 
-    public MutableLiveData<Location> getCurrentBestLocation() {
+    public Location getCurrentBestLocation() {
         return currentBestLocation;
     }
 
     public SingleLiveEvent<State> getState() {
         return state;
+    }
+
+    public MutableLiveData<List<OverlayItem>> getItems() {
+        return items;
     }
 
     /**
