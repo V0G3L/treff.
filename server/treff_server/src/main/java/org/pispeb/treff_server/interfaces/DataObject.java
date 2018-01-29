@@ -4,7 +4,13 @@ import java.util.concurrent.locks.ReadWriteLock;
 import org.pispeb.treff_server.commands.AbstractCommand;
 
 /**
- * @author tim
+ * TODO: ...
+ * <p>
+ * If an object has been deleted, in which case {@link #isDeleted()} returns
+ * true, only {@code #isDeleted()} and {@link #getID()} may be called on that
+ * object.
+ * The behaviour of a deleted {@code DataObject} is unspecified for all other
+ * methods.
  */
 public interface DataObject {
 
@@ -37,8 +43,10 @@ public interface DataObject {
     void delete();
 
     /**
-     * Returns whether this DataObject has been isDeleted and must no longer be
-     * used.
+     * Returns whether this DataObject has been deleted.
+     * This method and {@link #getID()} are the only methods that may be called
+     * on deleted objects.
+     *
      * @return <code>true</code> if the DataObject has been isDeleted,
      * <code>false</code> otherwise.
      */

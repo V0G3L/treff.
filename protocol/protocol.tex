@@ -15,8 +15,6 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage{algpseudocode}
-\usepackage{listings}
-\usepackage{bera}
 
 \setlist{nosep}
 
@@ -25,112 +23,14 @@
 \crefname{figure}{Abb}{Abb}
 
 \newcommand\producttitle{treff.}
+\newcommand\protocolversion{0.3}
 \hypersetup{
-	pdftitle={\producttitle Protocol Specification},
+	pdftitle={\producttitle Protocol Specification v\protocolversion},
 	bookmarks=true,
 }
 
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
-
-\colorlet{punct}{red!60!black}
-\definecolor{background}{HTML}{EEEEEE}
-\definecolor{delim}{RGB}{20,105,176}
-\colorlet{numb}{magenta!60!black}
-\lstdefinelanguage{json}{
-    basicstyle=\normalfont\ttfamily,
-    numbers=left,
-    numberstyle=\scriptsize,
-    stepnumber=1,
-    numbersep=8pt,
-    showstringspaces=false,
-    breaklines=true,
-    frame=lines,
-    backgroundcolor=\color{background},
-    literate=
-     *{0}{{{\color{numb}0}}}{1}
-      {1}{{{\color{numb}1}}}{1}
-      {2}{{{\color{numb}2}}}{1}
-      {3}{{{\color{numb}3}}}{1}
-      {4}{{{\color{numb}4}}}{1}
-      {5}{{{\color{numb}5}}}{1}
-      {6}{{{\color{numb}6}}}{1}
-      {7}{{{\color{numb}7}}}{1}
-      {8}{{{\color{numb}8}}}{1}
-      {9}{{{\color{numb}9}}}{1}
-      {:}{{{\color{punct}{:}}}}{1}
-      {,}{{{\color{punct}{,}}}}{1}
-      {\{}{{{\color{delim}{\{}}}}{1}
-      {\}}{{{\color{delim}{\}}}}}{1}
-      {[}{{{\color{delim}{[}}}}{1}
-      {]}{{{\color{delim}{]}}}}{1},
-}
-
-\lstdefinelanguage{norm}{
-    basicstyle=\normalfont\ttfamily,
-    escapeinside={(*}{*)},
-    showstringspaces=false,
-    breaklines=true,
-    frame=lines,
-    backgroundcolor=\color{background},
-    literate=
-     *{0}{{{\color{numb}0}}}{1}
-      {1}{{{\color{numb}1}}}{1}
-      {2}{{{\color{numb}2}}}{1}
-      {3}{{{\color{numb}3}}}{1}
-      {4}{{{\color{numb}4}}}{1}
-      {5}{{{\color{numb}5}}}{1}
-      {6}{{{\color{numb}6}}}{1}
-      {7}{{{\color{numb}7}}}{1}
-      {8}{{{\color{numb}8}}}{1}
-      {9}{{{\color{numb}9}}}{1}
-      {:}{{{\color{punct}{:}}}}{1}
-      {,}{{{\color{punct}{,}}}}{1}
-      {\{}{{{\color{delim}{\{}}}}{1}
-      {\}}{{{\color{delim}{\}}}}}{1}
-      {[}{{{\color{delim}{[}}}}{1}
-      {]}{{{\color{delim}{]}}}}{1},
-}
-
-% Default fixed font does not support bold face
-\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
-\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
-\definecolor{deepblue}{rgb}{0,0,0.5}
-\definecolor{deepred}{rgb}{0.6,0,0}
-\definecolor{deepgreen}{rgb}{0,0.5,0}
-
-% Python style for highlighting
-\newcommand\pythonstyle{\lstset{
-    language=Python,
-    basicstyle=\normalfont\ttfamily,
-    otherkeywords={self},
-    keywordstyle=\ttb\color{deepblue},
-    emph={normalize},
-    emphstyle=\ttb\color{deepred},
-    stringstyle=\color{deepgreen},
-    frame=tb,
-    showstringspaces=false,
-    backgroundcolor=\color{background},
-    numbers=left,
-    numberstyle=\scriptsize,
-    stepnumber=1,
-    numbersep=8pt,
-    escapeinside={(*}{*)},
-}}
-
-
-% Python environment
-\lstnewenvironment{python}[1][]
-{
-\pythonstyle
-\lstset{#1}
-}
-{}
-
-% Python for external files
-\newcommand\pythonexternal[2][]{{
-\pythonstyle
-\lstinputlisting[#1]{#2}}}
 
 % header & footer
 \usepackage{scrlayer-scrpage}
@@ -139,7 +39,8 @@
 \pagestyle{scrheadings}
 
 \title{\includegraphics[width = 80mm]{images/logo_crop.png}}
-\subtitle{\huge Protocol Specification}
+\subtitle{\huge Protocol Specification\\
+          v\protocolversion}
 \author{Lukas Dippon
         \and Jens Kienle
         \and Matthias Noll
@@ -186,6 +87,118 @@ If an error occurs during command execution, possibly caused by invalid
 parameters, the response JSON object consists of only the single integer
 property \textbf{error}.
 The meaning of these error codes is specified in chapter \ref{sec:errorcodes}.
+
+\section{Data types and restrictions}
+While JSON itself defines several data types, the property
+definitions in the following chapters use the conventional, more restrictive
+variants as used, for example, in the Java programming language.
+As such, mentions of \code{int} and \code{long} refer to the signed variants
+within the upper and lower bounds defined in the Java programming language.
+
+Strings may contain any Unicode symbol as long as they are properly escaped to
+match the restriction set by JSON specifications.
+
+The string properties defined in chapter \ref{sec:descriptions} might impose
+additional restrictions, such as maximum amount of characters, i.e. Unicode
+symbols, or a reduced set of symbols, e.g. only alphanumeric characters.
+In this document, the set of alphanumeric characters is defined to consist
+of arabic numbers and lower-case and upper-case letters of the ISO basic Latin
+alphabet (a-z, A-Z, 0-9).
+
+Properties of type \code{date} are to be represented as Unix time%
+\footnote{\enquote{Unix time}, Wikipedia, Version 822615863,
+\url{https://en.wikipedia.org/w/index.php?title=Unix_time&oldid=822615863}},
+and encoded as \code{long}s.
+
+Properties of type \code{decimal degree} must be valid decimal degrees
+representing either latitude or longitude and are to be encoded as
+\code{double}s.
+
+While JSON supports arrays of different data types, this protocol does not.
+All arrays defined here consist of elements of the same type.
+
+\section{Object descriptions}\label{sec:descriptions}
+In order to transmit information about domain model objects via JSON encoded
+requests and reponses, the encoding of the objects into \enquote{descriptions}
+is specified below.
+
+Each object can be encoded as a shallow, complete, or recursively
+complete description.
+While complete descriptions contain all properties of the object itself and
+may be requested from the server via the respective \textbf{get-*-details}
+commands, recursively complete descriptions contain the complete descriptions
+of certain types of referenced objects, e.g. a recursively complete description
+of a usergroup contains recursively complete descriptions of all events and
+polls.
+
+Recursively complete descriptions are not transferred in any of the
+commands specified in chapter \ref{sec:commands}.
+Instead, they are used to generate the checksums contained in shallow
+descriptions (see chapter \ref{sec:checksum}).
+
+The commands defined in chapter \ref{sec:commands} might not use all of the
+descriptions specified below.
+For the sake of consistency, they are listed here anyways.
+
+\apiDesc{Usergroup}{
+    name/string/Name of the group,
+    members/membership array/Complete descriptions of all memberships that are
+    part of this group,
+    events/int array/IDs of all events that are part of this group,
+    polls/int array/IDs of all polls that are part of this group
+}{
+    events/object array/Complete descriptions of all events,
+    polls/object array/Complete descriptions of all polls
+}{
+    name/Up to 64 characters
+}
+
+\apiDesc{Account}{
+    username/string/Username of the account
+}{}{
+    username/Alphanumeric{,} up to 32 characters
+}
+
+\apiDesc{Event}{
+    title/string/Title of the event,
+    creator/int/ID of the account that created this event,
+    time-start/date/Point in time at which the event starts,
+    time-end/date/Point in time at which the event ends,
+    latitude/decimal degree/Latitude of the position that the event is centered
+    on,
+    longitude/decimal degree/Longitude of the position that the event is
+    centered on,
+    participants/int array/IDs of all group members that are currently
+    participating or are planning to participate in the event
+}{}{
+    title/Up to 64 characters
+}
+
+\apiDesc{Poll}{
+    question/string/Question for which answered are supplied as poll options,
+    creator/int/ID of the account that created this poll,
+    multi-choice/boolean/True iff an account can vote for multiple poll options
+    simultaneously,
+    options/object array/Complete descriptions of the poll options that are
+    part of this poll
+}{}{
+    question/Up to 64 characters
+}
+
+\apiDesc{Poll option}{
+    latitude/decimal degree/Latitude of the suggested position,
+    longitude/decimal degree/Longitude of the suggested position,
+    time-start/date/Suggested point in time at which the resulting event should
+    start,
+    time-end/date/Suggested point in time at which the resulting event should
+    end,
+    supporters/int array/IDs of all account that are currently voting for this
+    poll option
+}{}{}
+
+% TODO: define this
+\subsection{Rechtebeschreibung}\label{sec:permdesc}
+\subsection{Änderungsbeschreibung}\label{sec:updatedesc}
 
 \section{Commands}\label{sec:commands}
 
@@ -689,111 +702,6 @@ Unixzeit)}
 
 \section{Error codes}\label{sec:errorcodes}
 \apiErrorTable
-
-\section{Object descriptions}
-In order to transmit information about objects via the JSON encoded requests
-and reponses, the encoding, called \enquote{description}, of the objects used
-in \producttitle is specified below.
-
-Each object can be encoded as a shallow, complete, or recursively
-complete description.
-While complete descriptions contain all properties of the object itself and
-may be requested from the server via the respective \textbf{get-*-details}
-commands, recursively complete descriptions contain the complete descriptions
-of all referenced objects, e.g. a recursively complete description of a
-usergroup contains complete descriptions of all member accounts.
-
-Recursively complete descriptions are not transferred in any of the above
-specified commands.
-Instead, they are used to generate the checksums contained in shallow
-descriptions (see chapter \ref{sec:checksum}).
-
-\subsection{Usergroup descriptions}\label{sec:usergroupdesc}
-
-\subsubsection{}
-\apiArgument{
-    type/\enquote{usergroup},
-    id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
-    weiteren Befehlen referenziert werden kann,
-    checksum/Prüfsumme der ausführlichen Beschreibung (siehe
-    \ref{sec:checksum})}
-
-\subsubsection{Ausführlich}
-\apiArgument{
-    type/\enquote{group},
-    id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
-    weiteren Befehlen referenziert werden kann,
-    name/Name der Gruppe,
-    members/Array an Identifikationsnummern aller Benutzerkonten{,} die
-    Mitglied der Gruppe sind,
-    events/Array an oberflächlich beschriebenen Verabredungen{,} die in der
-    Gruppe erstellt worden sind (siehe \ref{sec:eventdesc}),
-    polls/Array an oberflächlich beschriebenen Abstimmungen{,} die in der
-    Gruppe erstellt worden sind (siehe \ref{sec:polldesc})
-}
-
-\subsection{Benutzerkontobeschreibung}\label{sec:accountdesc}
-\apiArgument{type/\enquote{account},
-    id/Eindeutige Identifikationsnummer des Benutzerkontos{,} mit der
-    dieses in weiteren Befehlen referenziert werden kann,
-    user/Benutzername des Kontos
-}
-
-\subsection{Verabredungsbeschreibung}\label{sec:eventdesc}
-
-\subsubsection{Oberflächlich}
-\apiArgument{type/\enquote{event},
-    id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
-    diese in weiteren Befehlen referenziert werden kann,
-    checksum/Prüfsumme der ausführlichen Beschreibung (siehe
-    \ref{sec:checksum})
-}
-
-\subsubsection{Ausführlich}
-\apiArgument{type/\enquote{event},
-    id/Eindeutige Identifikationsnummer der Verabredung{,} mit der
-    diese in weiteren Befehlen referenziert werden kann,
-    title/Titel der Verabredung,
-    creator/Nutzername des Benutzerkontos{,} mit dem die Verabredung erstellt
-    wurde,
-    time-start/Startzeitpunkt,
-    time-end/Endzeitpunkt,
-    latitude/Breitengrad{,} auf dem die Verabredung stattfindet
-    (Gleitkommazahl),
-    longitude/Längengrad{,} auf dem die Verabredung stattfindet
-    (Gleitkommazahl),
-    participants/Array an Identifikationsnummern der Benutzerkonten{,} die an
-    der Verabredung teilnehmen
-}
-
-\subsection{Abstimmungsbeschreibung}\label{sec:polldesc}
-% TODO: Split in oberflächlich und ausführlich
-\apiArgument{
-    type/\enquote{poll},
-    id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
-    weiteren Befehlen referenziert werden kann,
-    question/Frage{,} über dessen Antwort abgestimmt wird,
-    multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
-    Optionen stimmen kann,
-    options/Array an Beschreibungen von Abstimmungsoptionen{,} die Teil dieser
-    Abstimmung sind
-}
-
-\subsection{Abstimmungsoptionsbeschreibung}\label{sec:polloptiondesc}
-\apiArgument{
-    type/\enquote{poll-option},
-    id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese
-    in weiteren Befehlen referenziert werden kann,
-    latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-    longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-    time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
-    time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit),
-    supporters/Array an Identifikationsnummern der Benutzerkonten{,} die
-    momentan für diese Options stimmen.
-}
-
-\subsection{Rechtebeschreibung}\label{sec:permdesc}
-\subsection{Änderungsbeschreibung}\label{sec:updatedesc}
 
 \subsection{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}

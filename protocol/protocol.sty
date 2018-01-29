@@ -7,6 +7,8 @@
 \RequirePackage{calc}
 \RequirePackage[framemethod=tikz]{mdframed}
 \RequirePackage{etoolbox}
+\RequirePackage{listings}
+\RequirePackage{bera}
 
 \parindent 0pt
 
@@ -16,6 +18,79 @@
 \newtoggle{apiCmdBG}
 \toggletrue{apiCmdBG}
 \newcommand{\apiCmdClr}{gray!20}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Defines a new object description
+% Params:
+%   1: Name of the object type
+%   2: Complete description
+%   - Each row: key / type / value
+%   - Rows seperated by comma
+%   - type and id will be auto-generated, do not supply them
+%   3: Changes in recursively complete description
+%   - Each row: key / new type / new value
+%   - Rows seperated by comma
+%   4: Additional restrictions imposed on string values
+%   - Each row: key / restriction
+%   - Rows seperated by comma
+\newcommand{\apiDesc}[4]{
+    \subsection{#1}%\label{subsec:\MakeLowercase{#1}-desc}
+    \subsubsection{Shallow description}
+    \apiDescTableHeader%
+    \apiTableEntry{%
+        type/string/\enquote{\MakeLowercase{#1}},
+        id/int/Unique identifier,
+        checksum/string/Checksum of the recursively complete description of
+        this object (see chapter \ref{sec:checksum}).}%
+        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+    %
+    \subsubsection{Complete description}
+    \apiDescTableHeader%
+    \apiTableEntry{%
+        type/string/\enquote{\MakeLowercase{#1}},
+        id/int/Unique identifier,
+        #2}%
+        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+    %
+    \subsubsection{Recursively complete description}
+    All properties not listed here are the same as in the complete description.
+
+    \apiDescTableHeader%
+    \ifstrempty{#3}{%
+        \apiTableEntry{---/---/No changes}%
+        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+    }{%
+        \apiTableEntry{#3}{\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+    }%
+    \\\ifstrempty{#4}{%
+        % dont print additional restrictions section
+    }{%
+        \subsubsection{Additional restrictions to string values}
+        \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                            p{\apiDescColRestr\textwidth} }
+            \textbf{Key} & \textbf{Restrictions} \\
+            \hline
+        \end{tabular}\\
+        \foreach \key/\restr in {#4} {
+            \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                                p{\apiDescColRestr\textwidth} }
+                \hfill\textbf{\key} & \restr
+            \end{tabular}\\
+        }%
+    }%
+}
+\newcommand{\apiDescTableHeader}{
+    \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                        p{\apiDescColType\textwidth}
+                        p{\apiDescColValue\textwidth} }
+        \textbf{Key} & \textbf{Type} & \textbf{Value} \\
+        \hline
+    \end{tabular}\\
+}
+\newcommand{\apiDescColKey}{0.2}
+\newcommand{\apiDescColType}{0.15}
+\newcommand{\apiDescColValue}{0.65}
+\newcommand{\apiDescColRestr}{0.8}
 
 % Defines a new API-command
 % Params:
@@ -65,7 +140,7 @@
 %   1: op-value and description,
 %      seperated by forward slash (/)
 \newcommand{\apiArgument}[2]{
-    \apiTableEntry{#1}{0.22}{0.73}
+    \apiTableEntry{#1}{0.2}{0.1}{0.7}
 }
 
 % Defines an error code for an API-command
@@ -114,15 +189,115 @@
 % Params:
 %   1: values for both cells in row,
 %      seperated by forward slash (/)
-%   2: Width of first column
-%   3: Width of second column
-\newcommand{\apiTableEntry}[3]{
-    \foreach \code/\desc in {#1} {
-        \begin{tabular}[t]{ p{#2\textwidth} p{#3\textwidth} }
-            \hfill\textbf{\code} & \desc
+%   2: Relative width of first column
+%   3: Relative width of second column
+%   4: Relative width of third column
+\newcommand{\apiTableEntry}[4]{
+    \foreach \key/\type/\value in {#1} {
+        \begin{tabular}[t]{ p{#2\textwidth} p{#3\textwidth} p{#4\textwidth} }
+            \hfill\textbf{\key} & \code{\type} & \value
         \end{tabular}\\
     }
     \vspace{4pt}
 }
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstdefinelanguage{norm}{
+    basicstyle=\normalfont\ttfamily,
+    escapeinside={(*}{*)},
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+    language=Python,
+    basicstyle=\normalfont\ttfamily,
+    otherkeywords={self},
+    keywordstyle=\ttb\color{deepblue},
+    emph={normalize},
+    emphstyle=\ttb\color{deepred},
+    stringstyle=\color{deepgreen},
+    frame=tb,
+    showstringspaces=false,
+    backgroundcolor=\color{background},
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    escapeinside={(*}{*)},
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
 
 %\ExplSyntaxOff

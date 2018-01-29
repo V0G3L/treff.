@@ -12,4 +12,6 @@ public class PasswordHash {
         this.hash = hash;
         this.salt = salt;
     }
+
+    // TODO: put hex-encoding here
 }
