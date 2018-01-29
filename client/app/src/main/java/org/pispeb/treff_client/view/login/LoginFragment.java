@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.FragmentLoginBinding;
 import org.pispeb.treff_client.view.home.HomeActivity;
-import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
@@ -60,7 +59,7 @@ public class LoginFragment extends Fragment{
                 binding.loginButton.setVisibility(View.VISIBLE);
                 break;
             case LOGIN:
-                vm.setPasswort(binding.inputLogPassword.getEditText().getText().toString());
+                vm.setPassword(binding.inputLogPassword.getEditText().getText().toString());
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.authentification.setVisibility(View.VISIBLE);
                 binding.inputLogPassword.setVisibility(View.GONE);

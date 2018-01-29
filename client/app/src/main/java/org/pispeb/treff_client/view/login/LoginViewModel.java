@@ -13,7 +13,6 @@ public class LoginViewModel extends ViewModel {
     private SingleLiveEvent<State> state;
     private String username;
     private String password;
-    private UserLoginTask userLoginTask;
 
 
     public LoginViewModel() {
@@ -35,7 +34,7 @@ public class LoginViewModel extends ViewModel {
         this.username = username;
     }
 
-    public void setPasswort(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -43,9 +42,10 @@ public class LoginViewModel extends ViewModel {
     public void onLogin() {
 
         state.setValue(new State(ViewCall.LOGIN, 0));
-        userLoginTask = new UserLoginTask(username, password);
-        userLoginTask.execute((Void) null);
 
+        //TODO Call RequestEncoder
+
+        state.setValue(new State(ViewCall.SUCCESS, 0));
 
     }
 
@@ -53,45 +53,4 @@ public class LoginViewModel extends ViewModel {
         state.setValue(new State(ViewCall.GO_TO_REGISTER, 0));
     }
 
-
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String username;
-        private final String password;
-
-        UserLoginTask(String username, String password) {
-            this.username = username;
-            this.password = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-
-            // TODO: send request to requestEncoder
-            //Dummy timer to simulate the connection
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            userLoginTask = null;
-
-            if (success) {
-                state.setValue(new State(ViewCall.SUCCESS, 0));
-            } else {
-                state.setValue(new State(ViewCall.IDLE, 0));
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            userLoginTask = null;
-            state.setValue(new State(ViewCall.IDLE, 0));
-        }
-    }
 }
