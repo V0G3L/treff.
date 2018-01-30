@@ -2,9 +2,6 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.networking.CommandResponse;
-
-import javax.json.JsonObject;
 
 /**
  * a command to add an Account to an Event of a Usergroup
@@ -12,13 +9,12 @@ import javax.json.JsonObject;
 public class JoinEventCommand extends AbstractCommand {
 
     public JoinEventCommand(AccountManager accountManager) {
-        super(accountManager, false, null);
+        super(accountManager, CommandInput.class);
 		throw new UnsupportedOperationException();
     }
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input, int
-            actingAccountID) throws
+    protected CommandOutput executeInternal(CommandInput commandInput) throws
             DatabaseException {
         return null; //TODO
     }

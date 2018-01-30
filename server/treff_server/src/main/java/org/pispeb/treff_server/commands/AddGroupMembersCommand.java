@@ -4,12 +4,9 @@ import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
+import org.pispeb.treff_server.networking.ErrorCode;
 
-import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedSet;
@@ -23,22 +20,17 @@ import java.util.TreeSet;
 public class AddGroupMembersCommand extends AbstractCommand {
 
     public AddGroupMembersCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("id", 0)
-                        .add("members", Json.createArrayBuilder()
-                                .add(0)
-                                .build())
-                        .build());
-    }
+        super(accountManager, CommandInput.class);
+		throw new UnsupportedOperationException();
+	}
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int id = input.getInt("id");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        int id = 0; //input.getInt("id");
+        int actingAccountID = 0; // TODO: migrate
 
         // get the IDs of all new members
-        JsonArray newMembersArray = input.getJsonArray("members");
+        JsonArray newMembersArray = null; //input.getJsonArray("members");
         SortedSet<Integer> sortedNewMemberIDs = new TreeSet<>();
         for (int n = 0; n < newMembersArray.size(); n++) {
             sortedNewMemberIDs.add(newMembersArray.getJsonNumber(n).intValue());
@@ -57,13 +49,13 @@ public class AddGroupMembersCommand extends AbstractCommand {
                         getSafeForReading(this.accountManager
                                 .getAccount(smallestNewMemberID)));
                 if (newMembersMap.get(smallestNewMemberID) == null)
-                    return new CommandResponse(StatusCode.USERIDINVALID);
+                    return new ErrorOutput(ErrorCode.USERIDINVALID);
             } else {
                 // check if the acting account still exists
                 actingAccount = getSafeForReading(this.accountManager
                         .getAccount(actingAccountID));
                 if (actingAccount == null)
-                    return new CommandResponse(StatusCode.TOKENINVALID);
+                    return new ErrorOutput(ErrorCode.TOKENINVALID);
                 actingAccountLocked = true;
             }
         }
@@ -72,18 +64,18 @@ public class AddGroupMembersCommand extends AbstractCommand {
         Usergroup usergroup
                 = getSafeForWriting(actingAccount.getAllGroups().get(id));
         if (usergroup == null)
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
         // check permission
         if (!usergroup.checkPermissionOfMember(actingAccount,
                 Permission.MANAGE_MEMBERS)) {
-            return new CommandResponse(StatusCode.NOPERMISSIONMANAGEMEMBERS);
+            return new ErrorOutput(ErrorCode.NOPERMISSIONMANAGEMEMBERS);
         }
 
         // check if a new member is already part of the group
         for (int memberID : usergroup.getAllMembers().keySet()) {
             if (sortedNewMemberIDs.contains(memberID))
-                return new CommandResponse(StatusCode.USERALREADYINGROUP);
+                return new ErrorOutput(ErrorCode.USERALREADYINGROUP);
         }
 
         // add all new members to the group
@@ -92,7 +84,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
         }
 
         //respond
-        return new CommandResponse(Json.createObjectBuilder().build());
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -1,19 +1,17 @@
 package org.pispeb.treff_server.networking;
 
 
-public enum StatusCode {
-
-
-
-    /**
-     * no errors
-     */
-    SUCCESSFUL(000),
+public enum ErrorCode {
 
     /**
      * error: parameter wasn't given or has a wrong format
      */
     SYNTAXINVALID(100),
+
+    /**
+     * error: unknown command
+     */
+    UNKNOWN_COMMAND(101),
 
     /**
      * error: authentication token invalid
@@ -192,7 +190,7 @@ public enum StatusCode {
 
     private final int code;
 
-    StatusCode(int code) {
+    ErrorCode(int code) {
         this.code = code;
     }
 

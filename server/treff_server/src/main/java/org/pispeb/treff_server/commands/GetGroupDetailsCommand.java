@@ -1,12 +1,10 @@
 package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.interfaces.*;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
+import org.pispeb.treff_server.networking.ErrorCode;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 // TODO needs to be tested
@@ -17,29 +15,27 @@ import javax.json.JsonObjectBuilder;
 public class GetGroupDetailsCommand extends AbstractCommand {
 
     public GetGroupDetailsCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("id", 0)
-                        .build());
-    }
+        super(accountManager, CommandInput.class);
+		throw new UnsupportedOperationException();
+	}
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int id = input.getInt("id");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        int id = 0; // input.getInt("id");
+        int actingAccountID = 0; // TODO: migrate
 
 
         // check if account still exists
         Account actingAccount =
                 getSafeForReading(accountManager.getAccount(actingAccountID));
         if (actingAccount == null)
-            return new CommandResponse(StatusCode.TOKENINVALID);
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get group
         Usergroup group
                 = getSafeForReading(actingAccount.getAllGroups().get(id));
         if (group == null)
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
         // collect group properties
         JsonObjectBuilder response = Json.createObjectBuilder()
@@ -69,7 +65,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         }
         response.add("polls", pollsArray.build());
 
-        return new CommandResponse(response.build());
+        throw new UnsupportedOperationException();
     }
 
 }

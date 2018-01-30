@@ -11,9 +11,12 @@ repositories {
 
 dependencies {
     implementation "javax.json:javax.json-api:1.0"
+    implementation "org.glassfish:javax.json:1.1"
     implementation "mysql:mysql-connector-java:8.0.8-dmr"
     implementation "commons-dbutils:commons-dbutils:1.7"
     implementation "commons-codec:commons-codec:1.11"
+    implementation "com.fasterxml.jackson.module:jackson-modules-java8:2.9.4"
     testImplementation "junit:junit:4.12"
     testImplementation "ch.vorburger.mariaDB4j:mariaDB4j:2.2.3"
+    testImplementation "org.mockito:mockito-all:1.10.19"
 }

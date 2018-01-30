@@ -1,50 +1,81 @@
 package org.pispeb.treff_server.networking;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.pispeb.treff_server.commands.AbstractCommand;
+import org.pispeb.treff_server.commands.CommandOutput;
+import org.pispeb.treff_server.commands.ErrorOutput;
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
+
+import java.io.IOException;
 
 /**
  * Class to decode and handle JSON-encoded requests
  */
 public class RequestHandler {
 
-    private final String request;
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private final String requestString;
     private final AccountManager accountManager;
     private final boolean didRun = false;
 
     /**
-     * Creates a RequestHandler for a JSON-encoded request.
+     * Creates a RequestHandler for a JSON-encoded requestString.
      *
-     * @param request        The JSON-encoded request
+     * @param requestString        The JSON-encoded requestString
      * @param accountManager The database entry-point
      */
-    public RequestHandler(String request, AccountManager accountManager) {
-        this.request = request;
+    public RequestHandler(String requestString, AccountManager accountManager) {
+        this.requestString = requestString;
         this.accountManager = accountManager;
     }
 
     /**
-     * Decodes and executes the request
+     * Decodes and executes the requestString
      * and returns either a JSON-encoded response or
      * {@link #PERSISTENT_CONNECTION_REQUEST_PREFIX} followed by the user id
-     * if a request for a
+     * if a requestString for a
      * {@link org.pispeb.treff_server.update_notifier.PersistentConnection}
      * was made.
      * May only be run once on the same {@link RequestHandler}.
      *
      * @return JSON-encoded response
-     * @throws RequestHandlerAlreadyRan if the request of this RequestHandler
+     * @throws RequestHandlerAlreadyRan if the requestString of this RequestHandler
      *                                  was handled via {@link #run()}
      */
-    public RequestHandlerResponse run() throws RequestHandlerAlreadyRan,
-            DatabaseException {
-        // decode (and check syntax)
-        // check permissions and compatibility with current state
-        // send request to Database
-        // encode return value
+    public Response run() throws RequestHandlerAlreadyRan {
+        // Do not fail on unknown properties. Important because we're only
+        // extracting the cmd for now.
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
+        Request request = null;
+        try {
+            request = mapper.readValue(this.requestString, Request.class);
+        } catch (IOException e) {
+            throw new AssertionError("This shouldn't happen."); // TODO: really?
+        }
 
-        return null;
+        AbstractCommand command = request.getCommandObject(accountManager);
+
+        // if no command object was created, command is unknown, return error
+        if (command == null) {
+            try {
+                return new Response(mapper.writeValueAsString(
+                        new ErrorOutput(ErrorCode.UNKNOWN_COMMAND)));
+            } catch (JsonProcessingException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        CommandOutput output = command.execute(requestString, mapper);
+        String outputString = null;
+        try {
+            outputString = mapper.writeValueAsString(output);
+        } catch (JsonProcessingException e) {
+            throw new AssertionError("This shouldn't happen."); // TODO: really?
+        }
+        return new Response(outputString);
     }
 }

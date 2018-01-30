@@ -1,14 +1,8 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
  * a command to block an Account for another Account
@@ -16,13 +10,14 @@ import javax.json.JsonObjectBuilder;
 public class BlockAccountCommand extends AbstractCommand {
 
     public BlockAccountCommand(AccountManager accountManager) {
-        super(accountManager, false, null);
-    }
+        super(accountManager, CommandInput.class);
+		throw new UnsupportedOperationException();
+	}
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int id = input.getInt("id");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        int id = 0; // input.getInt("id"); TODO: migrate
+        int actingAccountID = 0;
 
         Account blockingAccount;
         Account blockedAccount;
@@ -36,17 +31,17 @@ public class BlockAccountCommand extends AbstractCommand {
             blockedAccount = getSafeForWriting(accountManager.getAccount(id));
         }
         if (blockingAccount == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
         if (blockedAccount == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
         // block
         blockedAccount.removeContact(blockedAccount);
         blockingAccount.addBlock(blockedAccount);
 
-        return new CommandResponse(Json.createObjectBuilder().build());
+        throw new UnsupportedOperationException();
     }
 
 }

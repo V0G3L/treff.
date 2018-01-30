@@ -1,16 +1,10 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.Position;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.PollCompleteSerializer;
 import org.pispeb.treff_server.interfaces.*;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
-
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.pispeb.treff_server.networking.ErrorCode;
 
 //TODO needs to be tested
 
@@ -20,76 +14,55 @@ import java.util.TreeSet;
 public class GetPollDetailsCommand extends AbstractCommand {
 
     public GetPollDetailsCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("id", 0)
-                        .add("group-id", 0)
-                        .build());
+        super(accountManager, Input.class);
     }
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int pollID = input.getInt("id");
-        int groupID = input.getInt("group-id");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        Input input = (Input) commandInput;
 
         // check if account still exists
-        Account actingAccount = getSafeForReading(
-                accountManager.getAccount(actingAccountID));
+        Account actingAccount
+                = getSafeForReading(input.getActingAccount());
         if (actingAccount == null)
-            return new CommandResponse(StatusCode.TOKENINVALID);
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get group
-        Usergroup usergroup
-                = getSafeForReading(actingAccount.getAllGroups().get(groupID));
+        Usergroup usergroup = getSafeForReading(
+                actingAccount.getAllGroups().get(input.groupId));
         if (usergroup == null)
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
         // get poll
-        Poll poll = getSafeForReading(usergroup.getAllPolls().get(pollID));
+        Poll poll = getSafeForReading(
+                usergroup.getAllPolls().get(input.pollId));
         if (poll == null)
-            return new CommandResponse(StatusCode.POLLIDINVALID);
+            return new ErrorOutput(ErrorCode.POLLIDINVALID);
 
-        // collect poll properties
-        JsonObjectBuilder response = Json.createObjectBuilder()
-                .add("type", "poll")
-                .add("question", poll.getQuestion())
-                .add("multichoice", poll.isMultiChoice());
+        return new Output(poll);
+    }
 
-        // collect properties of polloptions
-        JsonArrayBuilder pollOptionArray = Json.createArrayBuilder();
-        SortedSet<PollOption> pollOptions
-                = new TreeSet<>(poll.getPollOptions().values());
+    public class Input extends CommandInputLoginRequired {
 
-        for (PollOption pO : pollOptions) {
-            // if polloption was deleted before we could acquire the readlock,
-            // skip that polloption
-            if (getSafeForReading(pO) == null)
-                continue;
+        @JsonProperty("id")
+        public int pollId;
+        @JsonProperty("group-id")
+        public int groupId;
 
-            // collect polloption properties
-            Position position = pO.getPosition();
-            JsonObjectBuilder pollOptionDetails = Json.createObjectBuilder()
-                    .add("type", "polloption")
-                    .add("latitude", position.latitude)
-                    .add("lonitude", position.longitude)
-                    .add("timestart",
-                            pO.getTimeStart().toInstant().getEpochSecond())
-                    .add("timeend",
-                            pO.getTimeEnd().toInstant().getEpochSecond());
-
-            // collect voter IDs and add to properties
-            JsonArrayBuilder voterArray = Json.createArrayBuilder();
-            pO.getVoters().keySet().forEach(voterArray::add);
-            pollOptionDetails.add("voters", voterArray);
-
-            // add this polloption to the polls array
-            pollOptionArray.add(pollOptionDetails);
+        @Override
+        boolean syntaxCheck() {
+            throw new UnsupportedOperationException(); // TODO: implement
         }
+    }
 
-        response.add("polloptions", pollOptionArray);
+    public class Output extends CommandOutput {
 
-        return new CommandResponse(response.build());
+        @JsonSerialize(using = PollCompleteSerializer.class)
+        public final Poll poll;
+
+        public Output(Poll poll) {
+            this.poll = poll;
+        }
     }
 
 }

@@ -6,11 +6,8 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
+import org.pispeb.treff_server.networking.ErrorCode;
 
-import javax.json.Json;
-import javax.json.JsonObject;
 import java.util.Date;
 
 // TODO needs to be tested
@@ -21,30 +18,23 @@ import java.util.Date;
 public class AddPolloptionCommand extends AbstractCommand {
 
     public AddPolloptionCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("group-id", 0)
-                        .add("poll-id", 0)
-                        .add("latitude", 0.0)
-                        .add("longitude", 0.0)
-                        .add("time-start", 0)
-                        .add("time-end", 0)
-                        .build());
-    }
+        super(accountManager, CommandInput.class);
+		throw new UnsupportedOperationException();
+	}
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int groupId = input.getInt("group-id");
-        int pollId = input.getInt("poll-id");
-        double latitude = input.getInt("latitude");
-        double longitude = input.getInt("longitude");
-        long timeStart = input.getInt("time-start");
-        long timeEnd = input.getInt("time-end");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        int groupId = 0; // input.getInt("group-id");
+        int pollId = 0; // input.getInt("poll-id");
+        double latitude = 0; // input.getInt("latitude");
+        double longitude = 0; // input.getInt("longitude");
+        long timeStart = 0; // input.getInt("time-start");
+        long timeEnd = 0; //input.getInt("time-end");
+        int actingAccountID = 0; // TODO: migrate
 
         // check times
         if (timeEnd < timeStart) {
-            return new CommandResponse(StatusCode.TIMEENDSTARTCONFLICT);
+            return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
         //TODO timeEnd-in-past-check
@@ -53,34 +43,34 @@ public class AddPolloptionCommand extends AbstractCommand {
         Account account =
                 getSafeForReading(accountManager.getAccount(actingAccountID));
         if (account == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
         // get group
         Usergroup group =
                 getSafeForReading(account.getAllGroups().get(groupId));
         if (group == null) {
-            return new CommandResponse(StatusCode.GROUPIDINVALID);
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // get poll
         Poll poll = getSafeForWriting(group.getAllPolls().get(pollId));
         if (poll == null) {
-            return new CommandResponse(StatusCode.POLLIDINVALID);
+            return new ErrorOutput(ErrorCode.POLLIDINVALID);
         }
 
         // check permission
         if (poll.getCreator().getID() != account.getID() &&
                 !group.checkPermissionOfMember(account,
                         Permission.EDIT_ANY_POLL)) {
-            return new CommandResponse(StatusCode.NOPERMISSIONEDITANYPOLL);
+            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
         // add poll option
         poll.addPollOption(new Position(latitude, longitude),
                 new Date(timeStart), new Date(timeEnd));
 
-        return new CommandResponse(Json.createObjectBuilder().build());
+        throw new UnsupportedOperationException();
     }
 
 }

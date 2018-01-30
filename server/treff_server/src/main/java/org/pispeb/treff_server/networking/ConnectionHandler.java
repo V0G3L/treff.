@@ -42,7 +42,7 @@ public class ConnectionHandler extends Thread {
                     break;
                 RequestHandler requestHandler
                         = new RequestHandler(request, accountManager);
-                RequestHandlerResponse response = requestHandler.run();
+                Response response = requestHandler.run();
                 if (!response.requestedPersistentConnection) {
                     out.println(response.responseString);
                 } else {

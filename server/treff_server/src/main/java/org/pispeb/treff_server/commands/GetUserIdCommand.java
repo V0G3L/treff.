@@ -2,11 +2,9 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
+import org.pispeb.treff_server.networking.ErrorCode;
 
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 //TODO needs to be tested
@@ -17,23 +15,20 @@ import javax.json.JsonObjectBuilder;
 public class GetUserIdCommand extends AbstractCommand {
 
     public GetUserIdCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("user", "")
-                        .build());
-    }
+        super(accountManager, CommandInput.class);
+		throw new UnsupportedOperationException();
+	}
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        String username = input.getString("user");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        String username = ""; // input.getString("user"); TODO: migrate
 
         // get account
         Account account =
                 getSafeForReading(accountManager
                         .getAccountByUsername(username));
         if (account == null) {
-            return new CommandResponse(StatusCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
         // collect account properties
@@ -42,6 +37,6 @@ public class GetUserIdCommand extends AbstractCommand {
                 .add("id", account.getID())
                 .add("user", username);
 
-        return new CommandResponse(response.build());
+        throw new UnsupportedOperationException();
     }
 }

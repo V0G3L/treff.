@@ -2,11 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.networking.CommandResponse;
-import org.pispeb.treff_server.networking.StatusCode;
-
-import javax.json.Json;
-import javax.json.JsonObject;
+import org.pispeb.treff_server.networking.ErrorCode;
 
 // TODO needs to be tested
 
@@ -16,16 +12,14 @@ import javax.json.JsonObject;
 public class AddContactCommand extends AbstractCommand {
 
     public AddContactCommand(AccountManager accountManager) {
-        super(accountManager, true,
-                Json.createObjectBuilder()
-                        .add("id", 0)
-                        .build());
+        super(accountManager, CommandInput.class);
+        throw new UnsupportedOperationException();
     }
 
     @Override
-    protected CommandResponse executeInternal(JsonObject input,
-                                              int actingAccountID) {
-        int id = input.getInt("id");
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+        int id = 0; //= input.getInt("id");
+        int actingAccountID = 0; // TODO: migrate to new format
 
         // determine locking order of the accounts
         Account actingAccount;
@@ -35,31 +29,31 @@ public class AddContactCommand extends AbstractCommand {
             actingAccount = getSafeForWriting(this.accountManager
                     .getAccount(actingAccountID));
             if (actingAccount == null)
-                return new CommandResponse(StatusCode.TOKENINVALID);
+                return new ErrorOutput(ErrorCode.TOKENINVALID);
 
             // check if the new contact is valid
             newContact = getSafeForWriting(this.accountManager.getAccount(id));
             if (newContact == null)
-                return new CommandResponse((StatusCode.USERIDINVALID));
+                return new ErrorOutput(ErrorCode.USERIDINVALID);
         } else {
             // check if the new contact is valid
             newContact = getSafeForWriting(this.accountManager.getAccount(id));
             if (newContact == null)
-                return new CommandResponse((StatusCode.USERIDINVALID));
+                return new ErrorOutput(ErrorCode.USERIDINVALID);
 
             // check if the acting account still exists
             actingAccount = getSafeForWriting(this.accountManager
                     .getAccount(actingAccountID));
             if (actingAccount == null)
-                return new CommandResponse(StatusCode.TOKENINVALID);
+                return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
         // check block lists
         if (actingAccount.getAllBlocks().containsKey(id)) {
-            return new CommandResponse(StatusCode.BLOCKINGALREADY);
+            return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
         }
         if (newContact.getAllBlocks().containsKey(actingAccountID)) {
-            return new CommandResponse(StatusCode.BEINGBLOCKED);
+            return new ErrorOutput(ErrorCode.BEINGBLOCKED);
         }
 
         // execute the command
@@ -68,7 +62,7 @@ public class AddContactCommand extends AbstractCommand {
         newContact.addContact(actingAccount);
 
         // respond
-        return new CommandResponse(Json.createObjectBuilder().build());
+        throw new UnsupportedOperationException();
     }
 
 }
