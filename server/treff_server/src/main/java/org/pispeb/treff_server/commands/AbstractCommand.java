@@ -137,6 +137,7 @@ public abstract class AbstractCommand {
     private static boolean checkSyntax(JsonValue input,
                                        JsonValue expected) {
         // type checking
+
         switch (expected.getValueType()) {
             case ARRAY:
             case OBJECT:

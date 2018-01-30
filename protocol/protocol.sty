@@ -9,6 +9,7 @@
 \RequirePackage{etoolbox}
 \RequirePackage{listings}
 \RequirePackage{bera}
+\RequirePackage{textpos}
 
 \parindent 0pt
 
@@ -34,50 +35,58 @@
 %   - Each row: key / restriction
 %   - Rows seperated by comma
 \newcommand{\apiDesc}[4]{
-    \subsection{#1}%\label{subsec:\MakeLowercase{#1}-desc}
-    \subsubsection{Shallow description}
-    \apiDescTableHeader%
-    \apiTableEntry{%
-        type/string/\enquote{\MakeLowercase{#1}},
-        id/int/Unique identifier,
-        checksum/string/Checksum of the recursively complete description of
-        this object (see chapter \ref{sec:checksum}).}%
-        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
-    %
-    \subsubsection{Complete description}
-    \apiDescTableHeader%
-    \apiTableEntry{%
-        type/string/\enquote{\MakeLowercase{#1}},
-        id/int/Unique identifier,
-        #2}%
-        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
-    %
-    \subsubsection{Recursively complete description}
-    All properties not listed here are the same as in the complete description.
+    \vbox{
+        \subsection{#1}%\label{subsec:\MakeLowercase{#1}-desc}
+        \apiDescSection{Shallow\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{#1}}},
+            id/int/Unique identifier,
+            checksum/string/Checksum of the recursively complete description of
+            this object (see chapter \ref{sec:checksum}).}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{
+        \apiDescSection{Complete\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{#1}}},
+            id/int/Unique identifier,
+            #2}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{%
+        \apiDescSection{Recursively\\complete\\Description}%
+        All properties not listed here are the same as in the complete description.
 
-    \apiDescTableHeader%
-    \ifstrempty{#3}{%
-        \apiTableEntry{---/---/No changes}%
-        {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
-    }{%
-        \apiTableEntry{#3}{\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
-    }%
-    \\\ifstrempty{#4}{%
-        % dont print additional restrictions section
-    }{%
-        \subsubsection{Additional restrictions to string values}
-        \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
-                            p{\apiDescColRestr\textwidth} }
-            \textbf{Key} & \textbf{Restrictions} \\
-            \hline
-        \end{tabular}\\
-        \foreach \key/\restr in {#4} {
+        \apiDescTableHeader%
+        \ifstrempty{#3}{%
+            \apiTableEntry{---/---/No changes}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        }{%
+            \apiTableEntry{#3}{\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        }%
+    }
+    \vbox{
+        \ifstrempty{#4}{%
+            % dont print additional restrictions section
+        }{%
+            \apiDescSection{Additional\\restrictions\\to string\\values}%
             \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
                                 p{\apiDescColRestr\textwidth} }
-                \hfill\textbf{\key} & \restr
+                \textbf{Key} & \textbf{Restrictions} \\
+                \hline
             \end{tabular}\\
+            \foreach \key/\restr in {#4} {
+                \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                                    p{\apiDescColRestr\textwidth} }
+                    \hfill\textbf{\key} & \restr
+                \end{tabular}\\
+            }%
         }%
-    }%
+    }
 }
 \newcommand{\apiDescTableHeader}{
     \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
@@ -86,6 +95,11 @@
         \textbf{Key} & \textbf{Type} & \textbf{Value} \\
         \hline
     \end{tabular}\\
+}
+\newcommand{\apiDescSection}[1]{%
+    \begin{textblock*}{25mm}(-25mm,7mm)%
+        {#1}%
+    \end{textblock*}%
 }
 \newcommand{\apiDescColKey}{0.2}
 \newcommand{\apiDescColType}{0.15}
@@ -99,34 +113,44 @@
 %   3: Arguments
 %   4: Return values
 %   5: Errorcodes
+%   6: Update produced (empty for getters)
+%   - Each row: key / type / value
+%   - Rows seperated by comma
 \newtoggle{apiErrorPrint}
-\newcommand{\apiCommand}[5]{
+\newcommand{\apiCommand}[6]{
     \iftoggle{apiCmdBG}{%
         \renewcommand{\apiCmdClr}{gray!20}
     }{%
-        \renewcommand{\apiCmdClr}{white}
+        \renewcommand{\apiCmdClr}{gray!10}
     }
     \begin{mdframed}[hidealllines=true,backgroundcolor=\apiCmdClr]%
     \vspace{8pt}
     \stepcounter{apiCommand}
-    Befehl~\arabic{apiCommand}:~\textbf{#1}
+    Command~\arabic{apiCommand}:~\textbf{#1}
     \\#2
-    \par Parameter:
-    \\\apiArgument{#3}
-    \par Rückgabewerte:
-    \\\apiArgument{#4}
-    \par Fehlercodes:
-    \togglefalse{apiErrorPrint}
+    \\\ifstrempty{#3}{%
+        \par No additional parameters.
+    }{%
+        \par Parameters:
+        \\\apiArgument{#3}
+    }
+    \par Return values:
+    \\\ifstrempty{#4}{%
+        \\\apiArgument{---/---/Empty JSON object}
+    }{%
+        \\\apiArgument{#4}
+    }
     \\\ifstrempty{#5}{%
-        \apiArgument{---/Keine weiteren Fehlercodes}A%
-        % some symbol here to work around some weird bug
-    }%
-    {%
-        \toggletrue{apiErrorPrint}%
-    }%
-    \iftoggle{apiErrorPrint}{%
-        \apiErrorPrint{#5}
-    }{}%
+        \par No additional error codes.
+    }{%
+        \par Error codes:
+        \\\apiErrorPrint{#5}
+    }
+    \\\ifstrempty{#6}{%
+        \par Produces no update.
+    }{%
+        \par Produces update of type \code{#6}.
+    }
     \end{mdframed}%
     \iftoggle{apiCmdBG}{%
         \togglefalse{apiCmdBG}%
@@ -135,12 +159,33 @@
     }%
 }
 
+\newcounter{updateType}
+\newtoggle{updateTypeBG}
+\newcommand{\updateTypeClr}{gray!20}
+\newcommand{\updateType}[2]{
+    \stepcounter{updateType}
+    \iftoggle{updateTypeBG}{%
+        \renewcommand{\updateTypeClr}{gray!20}
+    }{%
+        \renewcommand{\updateTypeClr}{gray!10}
+    }
+    \begin{mdframed}[hidealllines=true,backgroundcolor=\updateTypeClr]%
+    Type~\arabic{updateType}:~\code{#1}\\
+    {#2}
+    \end{mdframed}%
+    \iftoggle{updateTypeBG}{%
+        \togglefalse{updateTypeBG}%
+    }{%
+        \toggletrue{updateTypeBG}%
+    }%
+}
+
 % Defines an argument for an API-command
 % Params:
 %   1: op-value and description,
 %      seperated by forward slash (/)
-\newcommand{\apiArgument}[2]{
-    \apiTableEntry{#1}{0.2}{0.1}{0.7}
+\newcommand{\apiArgument}[1]{
+    \apiTableEntry{#1}{0.2}{0.1}{0.63}
 }
 
 % Defines an error code for an API-command
@@ -173,7 +218,7 @@
 \newcommand{\aETColSizeB}{0.8}
 \newcommand{\apiErrorTable}{
     \begin{tabular}[t]{ p{\aETColSizeA\textwidth} p{\aETColSizeB\textwidth} }
-        \textbf{Fehlercode} & \textbf{Beschreibung} \\
+        \textbf{Error code} & \textbf{Description} \\
         \hline
     \end{tabular}\\
     \Bind{?f}{api-error-defined}{yes}{%

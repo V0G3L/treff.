@@ -6,6 +6,7 @@
 \usepackage[pdfborderstyle={/S/U/W 0}]{hyperref}
 \usepackage[nameinlink]{cleveref}
 \usepackage[section]{placeins}
+\usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=3cm]{geometry}
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{csquotes}
@@ -25,18 +26,25 @@
 \newcommand\producttitle{treff.}
 \newcommand\protocolversion{0.3}
 \hypersetup{
-	pdftitle={\producttitle Protocol Specification v\protocolversion},
+	pdftitle={\producttitle~- Protocol Specification v\protocolversion},
 	bookmarks=true,
 }
 
 % section numbers in margins:
-\renewcommand\sectionlinesformat[4]{\makebox[0pt][r]{#3}#4}
+\renewcommand\sectionlinesformat[4]{%
+    \ifstr{#1}{subsubsection}{%
+        \makebox[0pt][r]{#4}%
+    }{%
+        \makebox[0pt][r]{#3}#4%
+    }%
+}%
 
 % header & footer
 \usepackage{scrlayer-scrpage}
 %\lofoot{\today}
 %\refoot{\today}
 \pagestyle{scrheadings}
+%\let\raggedsection\centering
 
 \title{\includegraphics[width = 80mm]{images/logo_crop.png}}
 \subtitle{\huge Protocol Specification\\
@@ -196,9 +204,15 @@ For the sake of consistency, they are listed here anyways.
     poll option
 }{}{}
 
-% TODO: define this
-\subsection{Rechtebeschreibung}\label{sec:permdesc}
-\subsection{Änderungsbeschreibung}\label{sec:updatedesc}
+\apiDesc{Membership}{
+    account-id/int/ID of the account that this membership belongs to,
+    permissions/object/Object holding a \code{permission-name -> boolean} pair
+    for each permission defined in chapter \ref{sec:permissions}.
+}{}{}
+
+\apiDesc{Update}{
+    TODO/TODO/TODO
+}{}{}
 
 \section{Commands}\label{sec:commands}
 
@@ -265,47 +279,47 @@ diese Abstimmung möglich}
 \apiErrorNew{not-voting-for-option}{432}{Das Benutzerkonto hat keine Stimme
 für dies Option abgegeben}
 
-Bis auf die Befehle \textbf{login}, \textbf{register} und
-\textbf{reset-password} erfordert jeder Befehl folgenden Parameter:\\
-\apiArgument{token/Authentifizierungtoken{,} welches beim Anmelden in das
-Benutzerkonto vom Server zurückgegeben wurde}
-\par\par Ist das übermittelte Token ungültig, wird der Befehl nicht
-ausgeführt und folgender Fehlercode zurückgegeben:\\
+All commands except for \textbf{login}, \textbf{register},
+\textbf{reset-password}, and \textbf{reset-password-confirm} require the
+following parameter:\\
+\apiArgument{token/String/Authentication token{,} produced by \textbf{login} or
+\textbf{register}}
+\par Transmission of an invalid token will produced the following error:\\
 \apiErrorPrint{token-invalid}
 
 \apiCommand{register}
-{Registrieren eines Nutzerkontos. Die Angabe einer E-Mail-Adresse ist nicht
-zwingend erforderlich, kann aber mit dem Befehl \textbf{edit-emai} hinzugefügt
-werden.}
-{user/Benutzername des Kontos,
-pass/Passwort des Kontos}
-{token/Authentifizierungstoken{,} welches in weiteren Befehlen
-als Eingabe verlangt wird}
+{Registers a new user account.
+Declaring an e-mail adress is optional.
+It may be set at a later time via the \textbf{edit-emai} command.}
+{user/string/Username of the account,
+pass/string/Password of the account}
+{token/string/Authentication token}
 {username-already-in-use}
+{}
 
 \apiCommand{login}
-{Anmelden in ein Nutzerkonto}
-{user/Benutzername des Kontos,
-pass/Passwort des Kontos}
-{token/Authentifizierungstoken{,} welches in weiteren Befehlen
-als Eingabe verlangt wird}
+{Produces an authentication token for the specified user account if the
+password is correct.}
+{user/string/Username of the account,
+pass/string/Password of the account}
+{token/string/Authentication token}
 {cred-wrong}
+{}
 
 \apiCommand{request-updates}
-{Anfragen der Updateliste vom Server}
-{user/Benutzername des Kontos}
-{updates/Ein Array an Änderungsbeschreibungen (Siehe Kapitel \ref{updatedesc}).
-Diese Updates sind in der Reihenfolge anzuwenden{,} in der sie im Array
-erscheinen.}
+{Requests the list of undelivered updates from the server.}
+{}
+{updates/object array/All undelivered updates for the calling account{,} sorted
+from oldest to youngest (see chapter \ref{updatedesc}).}
 {user-id-invalid}
+{}
 
 \apiCommand{edit-username}
-{Editieren des eigenen Benutzernamens}
-{id/Identifikationsnummer des eigenen Benutzerkontos,
-pass/Passwort des eigenen Kontos,
-name/vorgeschlagener{,} neuer Name}
-{---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid, username-already-in-use}
+{Changes own username.}
+{username/string/New username}
+{}
+{username-already-in-use}
+{account-change}
 
 \apiCommand{edit-email}
 {Editieren der eigenen E-Mail-Adresse}
@@ -313,7 +327,8 @@ name/vorgeschlagener{,} neuer Name}
 pass/Passwort des eigenen Kontos,
 email/vorgeschlagene{,} neue E-Mail}
 {---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid, invalid-email}\
+{cred-wrong, user-id-invalid, invalid-email}
+{}
 
 \apiCommand{edit-password}
 {Editieren des eigenen Passworts}
@@ -322,6 +337,7 @@ pass/aktuelles Passwort des eigenen Kontos,
 newpass/vorgeschlagenes{,} neues Passwort}
 {---/Leeres JSON-Objekt bei Erfolg}
 {cred-wrong, user-id-invalid}
+{}
 
 \apiCommand{reset-password}
 {Sendet eine Zurücksetzungsanfrage für ein Passwort.
@@ -336,6 +352,7 @@ Dies dient dem Schutz von E-Mail-Adressen vor Brute-Force-Angriffen.}
 soll}
 {---/Leeres JSON-Objekt bei Erfolg}
 {}
+{}
 
 \apiCommand{reset-password-confirm}
 {Führt die Passwortzurücksetzung durch.
@@ -346,6 +363,7 @@ an die dort angegebene E-Mail-Adresse gesandt wurde,
 pass/Neues Passwort}
 {---/Leeres JSON-Objekt bei Erfolg}
 {reset-code-invalid}
+{}
 
 \apiCommand{delete-account}
 {Löschen des eigenen Kontos. Dies führt wie erwartet dazu{,}
@@ -356,6 +374,7 @@ der App verliert.}
 pass/Passwort des eigenen Kontos}
 {---/Leeres JSON-Objekt bei Erfolg}
 {cred-wrong, user-id-invalid}
+{}
 
 \apiCommand{get-user-id}
 {Abrufen der Idenfikationsnummer eines anderen Benutzerkontos durch Übergeben
@@ -364,6 +383,7 @@ des Benutzernamens}
 {\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
 Benutzernamen gehört (siehe \ref{sec:accountdesc})}
 {username-invalid}
+{}
 
 \apiCommand{add-contact}
 {Hinzufügen eines anderen Benutzerkontos zur eigenen Kontaktliste.
@@ -373,6 +393,7 @@ Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
 {user-id-invalid,being-blocked,blocking-already}
+{}
 
 \apiCommand{remove-contact}
 {Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
@@ -380,11 +401,13 @@ Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
 {user-id-invalid,not-in-contacts}
+{}
 
 \apiCommand{list-contacts}
 {Auflisten aller Kontakte des Benutzerkonto}
 {---/Keine weiteren Parameter}
 {contacts/Ein Array von Indetifikationsnummern anderer Benutzerkonten}
+{}
 {user-id-invalid}
 
 \apiCommand{block-account}
@@ -396,6 +419,7 @@ Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
 {user-id-invalid,blocking-already}
+{}
 
 \apiCommand{unblock-account}
 {Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene
@@ -403,6 +427,7 @@ Benutzerkonto auf.}
 {id/Identifikationsnummer des anderen Benutzerkontos}
 {---/Leeres JSON-Objekt bei Erfolg}
 {user-id-invalid,not-blocking}
+{}
 
 \apiCommand{create-group}
 {Erstellen einer Gruppe}
@@ -417,6 +442,7 @@ nicht die eigene ist.}
 {id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
 {user-id-invalid,no-user-invited}
+{}
 
 \apiCommand{edit-group-name}
 {Editieren des Namens einer Gruppe, in der das Benutzerkonto Mitglied ist}
@@ -424,6 +450,7 @@ weiteren Befehlen referenziert werden kann}
 name/Neuer name der Gruppe}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,no-permission-group-edit}
+{}
 
 \apiCommand{add-group-members}
 {Hinzufügen eines oder mehrerer Benutzerkonten zu einer Gruppe, in der das
@@ -438,6 +465,7 @@ angegeben werden.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,%
 user-already-in-group}
+{}
 
 \apiCommand{remove-group-members}
 {Entfernen eines oder mehrerer Benutzerkonten von einer Gruppe, in der das
@@ -454,6 +482,7 @@ Werden durch diesen Befehl alle Mitglieder einer Gruppe entfernt{,} wird die
 Gruppe gelöscht.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,user-not-in-group}
+{}
 
 \apiCommand{get-permissions}
 {Abfragen der Rechte eines Benutzerkontos in einer Gruppe}
@@ -461,6 +490,7 @@ Gruppe gelöscht.}
 userid/Eindeutige Identifikationsnummer des Benutzerkontos}
 {permissions/Eine Rechtebeschreibung (Siehe Kapitel \ref{sec:permdesc})}
 {group-id-invalid}
+{}
 
 \apiCommand{edit-permissions}
 {Ändern der Rechte eines Benutzerkontos in einer Gruppe}
@@ -470,6 +500,7 @@ permissions/Eine partielle Rechtebeschreibung{,} die alle zu überschreibenden
 Wertepaare enthält (Siehe Kapitel \ref{sec:permdesc})}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid, no-permission-permissions-edit}
+{}
 
 \apiCommand{create-event}
 {Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -489,6 +520,7 @@ Dezimalgrad)}
 weiteren Befehlen referenziert werden kann}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-event-create}
+{}
 
 \apiCommand{edit-event}
 {Editieren einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -502,6 +534,7 @@ Die Schlüssel entsprechen denen einer ausführlichen Verabredungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-event-edit}
+{}
 
 \apiCommand{join-event}
 {Beitreten einer Verabredung einer Gruppe, in der das Benutzerkonto Mitglied
@@ -511,6 +544,7 @@ wurde,
 id/Identifikationsnummer der Verabredung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,event-id-invalid,already-participating-event}
+{}
 
 \apiCommand{leave-event}
 {Verlassen einer Verabredung, an welcher das Benutzerkonto teilnimmt}
@@ -519,6 +553,7 @@ wurde,
 id/Identifikationsnummer der Verabredung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,event-id-invalid,not-participating-event}
+{}
 
 \apiCommand{remove-event}
 {Entfernen einer Verabredung aus einer Gruppe, in der das Benutzerkonto
@@ -528,6 +563,7 @@ wurde,
 id/Identifikationsnummer der Verabredung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,event-id-invalid,no-permission-event-edit}
+{}
 
 \apiCommand{create-poll}
 {Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -546,6 +582,7 @@ Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
 Abstimmungsoptionen.}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-create}
+{}
 
 \apiCommand{edit-poll}
 {Editieren einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
@@ -558,6 +595,7 @@ Identifikationsnummer{,} die überschrieben werden sollen.
 Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+{}
 
 \apiCommand{add-poll-option}
 {Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
@@ -574,6 +612,7 @@ time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
 weiteren Befehlen referenziert werden kann}
 {group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-edit}
+{}
 
 % TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
@@ -588,6 +627,7 @@ Identifikationsnummer{,} die überschrieben werden sollen.
 Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,no-permission-poll-edit}
+{}
 
 \apiCommand{vote-for-option}
 {Stimmen für eine Abstimmungsoption in einer Abstimmung einer Gruppe,
@@ -599,6 +639,7 @@ id/Identifikationsnummer der Abstimmungsoption}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,poll-not-multichoice,
 already-voting-for-option}
+{}
 
 \apiCommand{withdraw-vote-for-option}
 {Stimme zurückziehen für eine Abstimmungsoption in einer Abstimmung
@@ -609,6 +650,7 @@ poll-id/Identifikationsnummer der Abstimmung,
 id/Identifikationsnummer der Abstimmungsoption}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,not-voting-for-option}
+{}
 
 \apiCommand{remove-poll-option}
 {Entfernen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
@@ -620,6 +662,7 @@ id/Identifikationsnummer der Abstimmungsoption}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
 poll-option-id-invalid,no-permission-poll-edit}
+{}
 
 \apiCommand{remove-poll}
 {Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
@@ -629,6 +672,7 @@ wurde,
 id/Identifikationsnummer der Abstimmung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
+{}
 
 \apiCommand{send-chat-message}
 {Senden einer Textnachricht an eine Gruppe, in der das Benutzerkonto Mitglied
@@ -637,12 +681,14 @@ ist}
 message/Textnachricht} % TODO: Länge beschränken (vllt. auch Gruppengröße etc)
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid}
+{}
 
 \apiCommand{list-groups}
 {Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
 {---/Keine weiteren Parameter}
 {groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
 Kapitel \ref{sec:groupdesc})}
+{}
 {}
 
 \apiCommand{get-group-details}
@@ -651,6 +697,7 @@ Kapitel \ref{sec:groupdesc})}
 {\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
 {group-id-invalid}
+{}
 
 \apiCommand{get-user-details}
 {Abrufen von Details eines Benutzerkontos}
@@ -658,6 +705,7 @@ Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
 {\dots/Eine Beschreibung eines Benutzerkontos{,} das zu der angegebenen
 ID gehört (siehe \ref{sec:accountdesc})}
 {user-id-invalid}
+{}
 
 % TODO: Definiere „aktive Verabredung“
 \apiCommand{get-event-details}
@@ -669,6 +717,7 @@ wurde}
 {\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
 {group-id-invalid,event-id-invalid}
+{}
 
 \apiCommand{get-poll-details}
 {Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
@@ -679,6 +728,7 @@ wurde}
 {\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
 Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
 {group-id-invalid,poll-id-invalid}
+{}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{request-position}
@@ -687,6 +737,7 @@ Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
 time/ Endzeit der Standortübertragung}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid}
+{}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
@@ -699,11 +750,39 @@ time-measured/Zeitpunkt{,} zu dem die Position gemessen wurde (Angabe in
 Unixzeit)}
 {---/Leeres JSON-Objekt bei Erfolg}
 {time-measured-future}
+{}
 
 \section{Error codes}\label{sec:errorcodes}
 \apiErrorTable
 
-\subsection{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
+\section{Updates}
+To inform users of changes that affect them, update objects are created with
+each successfully executed command that makes changes to domain model objects.
+
+These update objects are divided in several types. All of them hold at least
+the following properties:
+
+\apiArgument{
+    type/string/Type of the update object{,} see list below,
+    time-created/date/Point in time at which this update was created,
+    creator/int/ID of the account that caused the creation of this update
+}
+
+\updateType{account-change}{
+    \apiArgument{
+        account/object/Complete description of the account that changed{,}
+        omitting all properties that didn't change.
+    }
+}
+
+\updateType{chat}{
+    \apiArgument{
+        group-id/int/ID of the group to which the chat message was sent,
+        message/string/Content of the message
+    }
+}
+
+\section{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}
 Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächliche
 Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
@@ -798,7 +877,7 @@ als Python-Implementierung angegeben:
 
 \pythonexternal{scripts/normalize.py}
 
-\subsection{Abrufen von Aktualisierungen}\label{sec:get-updates}
+\section{Abrufen von Aktualisierungen}\label{sec:get-updates}
 Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
 
 \begin{itemize}
