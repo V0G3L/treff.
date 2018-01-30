@@ -15,10 +15,6 @@ import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.List;
 
-/**
- * Created by Lukas on 1/7/2018.
- */
-
 public class GroupEventListViewModel extends ViewModel {
 
     SingleLiveEvent<State> state;

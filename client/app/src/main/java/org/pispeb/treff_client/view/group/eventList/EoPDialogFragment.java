@@ -26,7 +26,7 @@ public class EoPDialogFragment extends DialogFragment {
         // define dialog builder
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // set message
-        builder.setMessage(R.string.poll_or_event);
+        builder.setMessage(R.string.group_dialog_add);
         // add buttons for poll and event option
         builder.setNegativeButton(R.string.poll,
                 (DialogInterface dialog, int which) -> {

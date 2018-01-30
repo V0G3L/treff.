@@ -15,6 +15,8 @@ import android.view.View;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
+import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
+import org.pispeb.treff_client.view.group.eventList.AddPollActivity;
 import org.pispeb.treff_client.view.group.eventList.EoPDialogFragment;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
@@ -77,12 +79,14 @@ public class GroupActivity extends AppCompatActivity implements
 
     @Override
     public void onPollClick() {
-//        AddPollActivity.start(this);
+        Intent intent = new Intent(this, AddPollActivity.class);
+        startActivity(intent);
     }
 
     @Override
     public void onEventClick() {
-//        AddEventActivity.start(this);
+        Intent intent = new Intent(this, AddEventActivity.class);
+        startActivity(intent);
     }
 
     private void setupViewPager(ViewPager viewPager) {

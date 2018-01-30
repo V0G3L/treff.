@@ -7,8 +7,11 @@
     <string name="tabtext_contacts">Contacts</string>
     <string name="tabtext_groups">Groups</string>
 
-    <!-- group activity tab titles -->
+    <!-- group activity -->
     <string name="tabtext_chat">Chat</string>
+    <string name="group_dialog_add">What do you want to add?</string>
+    <string name="group_toolbar_add_poll">Create a new poll</string>
+    <string name="group_toolbar_add_event">Create a new event</string>
 
 
     <!-- navigation drawer -->
@@ -25,7 +28,6 @@
     <!-- settings activity -->
     <string name="settings_title">Settings</string>
 
-
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>
     <string name="error_username_taken">Username is already taken</string>
@@ -38,7 +40,7 @@
     <string name="login_email">Email</string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
-    <string name="Authentication">Authenticating...</string>
+    <string name="login_auth">Authenticating...</string>
 
     
     <!-- TODO more specific comments -->
