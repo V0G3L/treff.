@@ -45,8 +45,6 @@ public class AccountSQL extends SQLObject implements Account {
         super(id, database, config, TABLE_NAME);
     }
 
-    // TODO: write SQL statements
-
     @Override
     public String getUsername() {
         return (String) getProperties("username")

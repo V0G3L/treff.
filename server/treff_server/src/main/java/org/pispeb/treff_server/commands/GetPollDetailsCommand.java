@@ -42,25 +42,26 @@ public class GetPollDetailsCommand extends AbstractCommand {
         return new Output(poll);
     }
 
-    public class Input extends CommandInputLoginRequired {
+    public static class Input extends CommandInputLoginRequired {
 
-        @JsonProperty("id")
-        public int pollId;
-        @JsonProperty("group-id")
-        public int groupId;
+        final int pollId;
+        final int groupId;
 
-        @Override
-        boolean syntaxCheck() {
-            throw new UnsupportedOperationException(); // TODO: implement
+        public Input(@JsonProperty("id") int pollId,
+                     @JsonProperty("group-id") int groupId,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.pollId = pollId;
+            this.groupId = groupId;
         }
     }
 
-    public class Output extends CommandOutput {
+    public static class Output extends CommandOutput {
 
         @JsonSerialize(using = PollCompleteSerializer.class)
-        public final Poll poll;
+        final Poll poll;
 
-        public Output(Poll poll) {
+        Output(Poll poll) {
             this.poll = poll;
         }
     }

@@ -11,7 +11,10 @@ abstract class CommandInput {
     private static final Pattern alphanumericPattern
             = Pattern.compile("[^a-zA-Z0-9]");
 
-    abstract boolean syntaxCheck();
+    boolean syntaxCheck() {
+        // by default, no syntax check is made
+        return true;
+    }
 
     static boolean stringMaxLength(String string, int maxLength) {
         return string.length() <= maxLength;

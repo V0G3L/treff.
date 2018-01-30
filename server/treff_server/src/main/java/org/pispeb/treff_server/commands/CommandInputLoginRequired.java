@@ -10,10 +10,10 @@ public abstract class CommandInputLoginRequired extends CommandInput {
 
     private Account actingAccount = null;
     private boolean tokenChecked = false;
-    private String token;
+    private final String token;
     private AccountManager accountManager = null;
 
-    public void setToken(String token) {
+    CommandInputLoginRequired(String token) {
         this.token = token;
     }
 

@@ -7,9 +7,13 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class ErrorOutput extends CommandOutput {
 
-    public final ErrorCode error;
+    private final ErrorCode error;
 
     public ErrorOutput(ErrorCode error) {
         this.error = error;
+    }
+
+    public int getError() {
+        return error.getCode();
     }
 }
