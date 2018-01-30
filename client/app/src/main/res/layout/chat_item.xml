@@ -11,16 +11,16 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:background="@color/colorPrimary">
+        android:padding="5dp"
+        android:elevation="5dp">
 
         <!-- TODO add sender name -->
         <TextView
             android:id="@+id/sender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_margin="5dp"
+            android:text="LukkyLukke"
+            android:textColor="@color/colorAccent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/time"/>
@@ -30,6 +30,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{message.content}"
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:background="@drawable/speech_bubble"
+            android:backgroundTint="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@+id/sender"
             app:layout_constraintStart_toStartOf="parent"/>
 
