@@ -22,15 +22,11 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
-import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.util.State;
 
-import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Displaying the Map and other users position
@@ -45,11 +41,11 @@ public class MapFragment extends Fragment {
     private static final String[] PERMISSIONS_LOCATION = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION};
-    String gpsProvider;
-    String networkProvider;
-    LocationManager locationManager;
 
-    private ItemizedOverlayWithFocus<OverlayItem> overlay;
+    private LocationManager locationManager;
+
+    private Marker userMarker;
+    private MapView map;
 
     public MapFragment() {
         // Required empty public constructor
@@ -81,57 +77,17 @@ public class MapFragment extends Fragment {
         Configuration.getInstance().load(getContext(),
                 PreferenceManager.getDefaultSharedPreferences(getContext()));
 
+        setLocationListener();
 
-        gpsProvider = LocationManager.GPS_PROVIDER;
-        networkProvider = LocationManager.NETWORK_PROVIDER;
-        locationManager = (LocationManager) getContext()
-                .getSystemService(Context.LOCATION_SERVICE);
+        configureMap();
+
+        configureUserMarker();
 
         vm.getState().observe(this, state -> callback(state));
 
-        setLocationListener();
+        vm.getUserLocation().observe(this, userLocation ->
+                updateUserLocation(userLocation));
 
-        //create map view and enable zooming
-        MapView map = binding.map;
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setMultiTouchControls(true);
-
-        //set default zoom level and location to show Karlsruhe, Germany
-        IMapController mapController = map.getController();
-        mapController.setZoom(15);
-        GeoPoint startPoint = new GeoPoint(49.006889, 8.403653);
-        mapController.setCenter(startPoint);
-
-        overlay = new ItemizedOverlayWithFocus<OverlayItem>(
-                new ArrayList<OverlayItem>(),
-                new ItemizedIconOverlay.OnItemGestureListener() {
-                    @Override
-                    public boolean onItemSingleTapUp(int index,
-                                                     Object item) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onItemLongPress(int index, Object item) {
-                        return false;
-                    }
-                },
-                getContext());
-        overlay.setFocusItemsOnTap(true);
-
-        map.getOverlays().clear();
-        map.getOverlays().add(overlay);
-
-        vm.getUserLocation().observe(this, userLocation -> {
-            if (overlay != null) {
-                overlay.removeAllItems();
-                overlay.addItem(new OverlayItem(
-                        "User",
-                        new Date(userLocation.getTime()).toString(),
-                        new GeoPoint(userLocation)));
-                map.invalidate();
-            }
-        });
 
         return binding.getRoot();
     }
@@ -145,6 +101,8 @@ public class MapFragment extends Fragment {
     }
 
     private void setLocationListener() {
+        locationManager = (LocationManager) getContext()
+                .getSystemService(Context.LOCATION_SERVICE);
         // check if Permission to use GPS is granted
         if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager
@@ -159,9 +117,10 @@ public class MapFragment extends Fragment {
         } else {
             // Log.i("Map", "LocationListener set");
             // TODO define minimum update interval in config
-            locationManager.requestLocationUpdates(gpsProvider, 0, 0,
-                    vm);
-            locationManager.requestLocationUpdates(networkProvider, 0, 0, vm);
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 0, 0, vm);
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 0,0, vm);
         }
     }
 
@@ -194,5 +153,32 @@ public class MapFragment extends Fragment {
                 setLocationListener();
             }
         }
+    }
+
+    private void configureMap() {
+        //create map view and enable zooming
+        map = binding.map;
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setMultiTouchControls(true);
+
+        //set default zoom level and location to show Karlsruhe, Germany
+        IMapController mapController = map.getController();
+        mapController.setZoom(15);
+        GeoPoint startPoint = new GeoPoint(49.006889, 8.403653);
+        mapController.setCenter(startPoint);
+    }
+
+    private void configureUserMarker() {
+        userMarker = new Marker(map);
+        userMarker.setIcon(getResources().getDrawable(R.drawable
+                .ic_marker_own, getContext().getTheme()));
+        userMarker.setTitle("Your only friend: You");
+        map.getOverlays().add(userMarker);
+    }
+
+    private void updateUserLocation(Location userLocation) {
+        userMarker.setPosition(new GeoPoint(userLocation));
+        // TODO rotate
+        map.invalidate();
     }
 }

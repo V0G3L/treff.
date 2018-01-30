@@ -5,10 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.util.Log;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
@@ -23,13 +20,17 @@ public class MapViewModel extends ViewModel implements LocationListener {
     // indicator of noticeable delay to last location
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
-    MutableLiveData<Location> userLocation;
-    Location currentBestLocation;
-    SingleLiveEvent<State> state;
+    private MutableLiveData<Location> userLocation;
+    private Location currentBestLocation;
+    private SingleLiveEvent<State> state;
+
+    private float orientation;
+
 
     public MapViewModel() {
         this.state = new SingleLiveEvent<>();
         this.userLocation = new MutableLiveData<>();
+        this.orientation = 0;
     }
 
     public void onCenterClick() {
