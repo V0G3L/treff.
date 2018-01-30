@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -98,9 +99,12 @@ public class MapFragment extends Fragment {
         vm.getUserLocation().observe(this, userLocation ->
                 updateUserLocation(userLocation));
 
+
         vm.getFriends().observe(this, friends ->
                 updateFriendLocations(friends));
 
+        //make sure the map catches lateral swipes instead of the viewpager
+        disableTouchTheft(binding.map);
 
         return binding.getRoot();
     }
@@ -205,4 +209,26 @@ public class MapFragment extends Fragment {
 
         }
     }
+
+    /**
+     * Ensures that a view correctly catches touch events
+     * by disabling their parent view's onInterceptTouchEvent
+     * @param target the view to catch touch events
+     */
+    private static void disableTouchTheft(View target) {
+        target.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+
+                if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+
+                return false;
+            }
+        });
+    }
+
 }
+
