@@ -18,5 +18,6 @@ public enum ViewCall {
     GO_TO_LOGIN,
     GO_TO_REGISTER,
     SUCCESS,
-    CENTER_MAP
+    CENTER_MAP,
+    UPDATE_VIEW
 }

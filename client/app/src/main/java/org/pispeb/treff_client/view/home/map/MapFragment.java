@@ -24,8 +24,13 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.entities.Position;
+import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.util.State;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -64,6 +69,13 @@ public class MapFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        setLocationListener();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -77,8 +89,6 @@ public class MapFragment extends Fragment {
         Configuration.getInstance().load(getContext(),
                 PreferenceManager.getDefaultSharedPreferences(getContext()));
 
-        setLocationListener();
-
         configureMap();
 
         configureUserMarker();
@@ -88,14 +98,16 @@ public class MapFragment extends Fragment {
         vm.getUserLocation().observe(this, userLocation ->
                 updateUserLocation(userLocation));
 
+        vm.getFriends().observe(this, friends ->
+                updateFriendLocations(friends));
+
 
         return binding.getRoot();
     }
 
     @Override
-    public void onDestroyView() {
-        Log.i("Map", "destroy View");
-        super.onDestroyView();
+    public void onStop() {
+        super.onStop();
         locationManager.removeUpdates(vm);
         vm.getUserLocation().removeObservers(this);
     }
@@ -120,7 +132,7 @@ public class MapFragment extends Fragment {
             locationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, 0, 0, vm);
             locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 0,0, vm);
+                    LocationManager.NETWORK_PROVIDER, 0, 0, vm);
         }
     }
 
@@ -130,7 +142,7 @@ public class MapFragment extends Fragment {
                 break;
             case CENTER_MAP:
                 // Log.i("Map", "Center on location");
-                Location location = vm.getCurrentBestLocation();
+                Location location = vm.getUserLocation().getValue();
                 if (location != null) {
                     // Log.i("Map", "location not null");
                     GeoPoint currentPoint = new GeoPoint(location);
@@ -174,11 +186,23 @@ public class MapFragment extends Fragment {
                 .ic_marker_own, getContext().getTheme()));
         userMarker.setTitle("Your only friend: You");
         map.getOverlays().add(userMarker);
+        UserMarker m = new UserMarker(map,
+                new User("Peter", true, false, new Position(49, 8.4),
+                        new Date(100000)));
+        m.setIcon(getResources().getDrawable(R.drawable.ic_marker_person,
+                getContext().getTheme()));
+        map.getOverlays().add(m);
     }
 
     private void updateUserLocation(Location userLocation) {
         userMarker.setPosition(new GeoPoint(userLocation));
         // TODO rotate
         map.invalidate();
+    }
+
+    private void updateFriendLocations(List<User> friendLocations) {
+        for (User u : friendLocations) {
+
+        }
     }
 }

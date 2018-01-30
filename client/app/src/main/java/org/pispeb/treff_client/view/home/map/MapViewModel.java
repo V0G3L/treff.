@@ -6,9 +6,15 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
+import org.pispeb.treff_client.data.entities.Position;
+import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -21,16 +27,21 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
     private MutableLiveData<Location> userLocation;
-    private Location currentBestLocation;
+    private MutableLiveData<List<User>> friends;
     private SingleLiveEvent<State> state;
-
-    private float orientation;
 
 
     public MapViewModel() {
         this.state = new SingleLiveEvent<>();
         this.userLocation = new MutableLiveData<>();
-        this.orientation = 0;
+        this.friends = new MutableLiveData<>();
+
+        //Test]
+        ArrayList<User> f = new ArrayList<>();
+        User u = new User("Peter", true, false, new Position(49, 8.4),
+                new Date(100000));
+        f.add(u);
+        friends.postValue(f);
     }
 
     public void onCenterClick() {
@@ -41,11 +52,21 @@ public class MapViewModel extends ViewModel implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         // Log.i("Map", "new Location");
-        if (isBetterLocation(currentBestLocation, location)) {
-            currentBestLocation = location;
-
-            userLocation.postValue(currentBestLocation);
+        if (isBetterLocation(userLocation.getValue(), location)) {
+            userLocation.postValue(location);
         }
+    }
+
+    public SingleLiveEvent<State> getState() {
+        return state;
+    }
+
+    public MutableLiveData<Location> getUserLocation() {
+        return userLocation;
+    }
+
+    public MutableLiveData<List<User>> getFriends() {
+        return friends;
     }
 
     @Override
@@ -61,18 +82,6 @@ public class MapViewModel extends ViewModel implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
-
-    public Location getCurrentBestLocation() {
-        return currentBestLocation;
-    }
-
-    public SingleLiveEvent<State> getState() {
-        return state;
-    }
-
-    public MutableLiveData<Location> getUserLocation() {
-        return userLocation;
     }
 
     /**
