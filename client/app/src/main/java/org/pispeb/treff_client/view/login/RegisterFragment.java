@@ -57,9 +57,23 @@ public class RegisterFragment extends Fragment {
     private void callback(State state) {
         switch (state.call) {
             case IDLE:
+                binding.progressBar.setVisibility(View.GONE);
+                binding.authentification.setVisibility(View.GONE);
+                binding.inputRegPassword.setVisibility(View.VISIBLE);
+                binding.inputRegUsername.setVisibility(View.VISIBLE);
+                binding.inputRegEmail.setVisibility(View.VISIBLE);
+                binding.gotoLogin.setVisibility(View.VISIBLE);
+                binding.loginButton.setVisibility(View.VISIBLE);
                 break;
             case REGISTER:
                 vm.setPassword(binding.inputRegPassword.getEditText().getText().toString());
+                binding.progressBar.setVisibility(View.VISIBLE);
+                binding.authentification.setVisibility(View.VISIBLE);
+                binding.inputRegPassword.setVisibility(View.GONE);
+                binding.inputRegUsername.setVisibility(View.GONE);
+                binding.inputRegEmail.setVisibility(View.GONE);
+                binding.gotoLogin.setVisibility(View.GONE);
+                binding.loginButton.setVisibility(View.GONE);
                 break;
             case SUCCESS:
                 SharedPreferences preferences = PreferenceManager
@@ -68,6 +82,7 @@ public class RegisterFragment extends Fragment {
                         vm.getUsername()).apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 this.startActivity(intent);
+                break;
             case GO_TO_LOGIN:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new LoginFragment()).commit();
                 break;

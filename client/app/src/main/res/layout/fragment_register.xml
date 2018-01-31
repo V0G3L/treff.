@@ -77,7 +77,7 @@
 
             <!-- Signup Button -->
             <android.support.v7.widget.AppCompatButton
-                android:id="@+id/signup_button"
+                android:id="@+id/login_button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -95,6 +95,24 @@
                 android:textSize="16dip"
                 android:onClick="@{v -> vm.onGoToLogin()}"
                 android:textColor="@color/white" />
+
+            <!-- Progressbar while connecting -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView android:id="@+id/authentification"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/login_auth"
+                android:gravity="center"
+                android:textSize="16dip"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
         </LinearLayout>
     </ScrollView>
