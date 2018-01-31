@@ -1,5 +1,8 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -16,27 +19,45 @@ public class GetUserIdCommand extends AbstractCommand {
 
     public GetUserIdCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
 	}
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        String username = ""; // input.getString("user"); TODO: migrate
+        Input input = (Input) commandInput;
+
+        // check if account still exists
+        Account actingAccount
+                = getSafeForReading(input.getActingAccount());
+        if (actingAccount == null)
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get account
-        Account account =
-                getSafeForReading(accountManager
-                        .getAccountByUsername(username));
-        if (account == null) {
+        Account account = getSafeForReading(
+                accountManager.getAccountByUsername(input.username));
+        if (account == null)
             return new ErrorOutput(ErrorCode.USERIDINVALID);
+
+        return new Output(account);
+    }
+
+    public static class Input extends CommandInputLoginRequired {
+
+        final String username;
+
+        public Input(@JsonProperty("username") String username,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.username = username;
         }
+    }
 
-        // collect account properties
-        JsonObjectBuilder response = Json.createObjectBuilder()
-                .add("type", "account")
-                .add("id", account.getID())
-                .add("user", username);
+    public static class Output extends CommandOutput {
 
-        throw new UnsupportedOperationException();
+        @JsonSerialize(using = AccountCompleteSerializer.class)
+        final Account account;
+
+        Output(Account account) {
+            this.account = account;
+        }
     }
 }

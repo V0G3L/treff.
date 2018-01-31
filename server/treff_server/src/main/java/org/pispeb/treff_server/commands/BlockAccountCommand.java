@@ -1,5 +1,8 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -16,19 +19,21 @@ public class BlockAccountCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int id = 0; // input.getInt("id"); TODO: migrate
-        int actingAccountID = 0;
-
+        Input input = (Input) commandInput;
         Account blockingAccount;
         Account blockedAccount;
 
         // get accounts
-        if (actingAccountID < id) {
-            blockingAccount = getSafeForWriting(accountManager.getAccount(id));
-            blockedAccount = getSafeForWriting(accountManager.getAccount(id));
+        if (input.getActingAccount().getID() < input.id) {
+            blockingAccount = getSafeForWriting(accountManager
+                    .getAccount(input.getActingAccount().getID()));
+            blockedAccount = getSafeForWriting(
+                    accountManager.getAccount(input.id));
         } else {
-            blockingAccount = getSafeForWriting(accountManager.getAccount(id));
-            blockedAccount = getSafeForWriting(accountManager.getAccount(id));
+            blockedAccount = getSafeForWriting(accountManager
+                    .getAccount(input.getActingAccount().getID()));
+            blockingAccount = getSafeForWriting(
+                    accountManager.getAccount(input.id));
         }
         if (blockingAccount == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
@@ -41,7 +46,22 @@ public class BlockAccountCommand extends AbstractCommand {
         blockedAccount.removeContact(blockedAccount);
         blockingAccount.addBlock(blockedAccount);
 
-        throw new UnsupportedOperationException();
+        return new Output();
     }
 
+    public static class Input extends CommandInputLoginRequired {
+
+        final int id;
+
+        public Input(@JsonProperty("id") int id,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.id = id;
+        }
+    }
+
+    public static class Output extends CommandOutput {
+        Output() {
+        }
+    }
 }

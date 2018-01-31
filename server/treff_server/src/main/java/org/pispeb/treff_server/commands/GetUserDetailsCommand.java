@@ -1,5 +1,8 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -16,26 +19,45 @@ public class GetUserDetailsCommand extends AbstractCommand {
 
     public GetUserDetailsCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
 	}
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int id = 0; // input.getInt("id"); TODO: migrate
+        Input input = (Input) commandInput;
 
-        // TODO: check for contact
+        // check if account still exists
+        Account actingAccount
+                = getSafeForReading(input.getActingAccount());
+        if (actingAccount == null)
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
+
         // get account
-        Account account = getSafeForReading(accountManager.getAccount(id));
-        if (account == null) {
+        Account account = getSafeForReading(
+                accountManager.getAccount(input.id));
+        if (account == null)
             return new ErrorOutput(ErrorCode.USERIDINVALID);
+
+        return new Output(account);
+    }
+
+    public static class Input extends CommandInputLoginRequired {
+
+        final int id;
+
+        public Input(@JsonProperty("id") int id,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.id = id;
         }
+    }
 
-        // collect account properties
-        JsonObjectBuilder response = Json.createObjectBuilder()
-                .add("type", "account")
-                .add("id", id)
-                .add("user", account.getUsername());
+    public static class Output extends CommandOutput {
 
-        throw new UnsupportedOperationException();
+        @JsonSerialize(using = AccountCompleteSerializer.class)
+        final Account account;
+
+        Output(Account account) {
+            this.account = account;
+        }
     }
 }
