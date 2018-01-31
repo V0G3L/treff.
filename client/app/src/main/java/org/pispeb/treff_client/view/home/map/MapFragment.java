@@ -23,13 +23,18 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
+import org.pispeb.treff_client.view.home.map.markers.EventMarker;
+import org.pispeb.treff_client.view.home.map.markers.UserMarker;
 import org.pispeb.treff_client.view.util.State;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,8 +55,18 @@ public class MapFragment extends Fragment {
 
     private LocationManager locationManager;
 
-    private Marker userMarker;
     private MapView map;
+    private FolderOverlay master;
+    private FolderOverlay pollOptionMarkers;
+    private FolderOverlay eventMarkers;
+    // TODO replace with RadiusMarkerClusterer
+    private FolderOverlay contactMarkers;
+    private Marker userMarker;
+
+    private final static int POLLS = 0;
+    private final static int EVENTS = 1;
+    private final static int CONTACTS = 2;
+    private final static int USER = 3;
 
     public MapFragment() {
         // Required empty public constructor
@@ -100,7 +115,7 @@ public class MapFragment extends Fragment {
 
 
         vm.getFriends().observe(this, friends ->
-                updateFriendLocations(friends));
+                updateContactLocations(friends));
 
         //make sure the map catches lateral swipes instead of the viewpager
         disableTouchTheft(binding.map);
@@ -181,20 +196,33 @@ public class MapFragment extends Fragment {
         mapController.setZoom(15);
         GeoPoint startPoint = new GeoPoint(49.006889, 8.403653);
         mapController.setCenter(startPoint);
+
+
+        master = new FolderOverlay();
+        pollOptionMarkers = new FolderOverlay();
+        eventMarkers = new FolderOverlay();
+        contactMarkers = new FolderOverlay();
+        userMarker = new Marker(map);
+
+        master.add(pollOptionMarkers);
+        master.add(eventMarkers);
+        master.add(contactMarkers);
+        master.add(userMarker);
+
+        map.getOverlays().add(master);
     }
 
     private void configureUserMarker() {
-        userMarker = new Marker(map);
         userMarker.setIcon(getResources().getDrawable(R.drawable
                 .ic_marker_own, getContext().getTheme()));
         userMarker.setTitle("Your only friend: You");
-        map.getOverlays().add(userMarker);
         UserMarker m = new UserMarker(map,
                 new User("Peter", true, false, new Position(49, 8.4),
                         new Date(100000)));
         m.setIcon(getResources().getDrawable(R.drawable.ic_marker_person,
                 getContext().getTheme()));
-        map.getOverlays().add(m);
+        contactMarkers.add(m);
+        map.invalidate();
     }
 
     private void updateUserLocation(Location userLocation) {
@@ -203,10 +231,32 @@ public class MapFragment extends Fragment {
         map.invalidate();
     }
 
-    private void updateFriendLocations(List<User> friendLocations) {
-        for (User u : friendLocations) {
-
+    private void updateContactLocations(List<User> contacts) {
+        // TODO replace with nicer update algorithm
+        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().clear();
+        List<UserMarker> markers = new ArrayList<>();
+        for (User u : contacts) {
+            UserMarker m = new UserMarker(map, u);
+            m.setIcon(getResources().getDrawable(R.drawable.ic_marker_person,
+                    getContext().getTheme()));
+            markers.add(m);
         }
+        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().addAll
+                (markers);
+    }
+
+    private void updateEventLocations(List<Event> events) {
+        // TODO replace with nicer update algorithm
+        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().clear();
+        List<EventMarker> markers = new ArrayList<>();
+        for (Event e : events) {
+            EventMarker m = new EventMarker(map, e);
+            m.setIcon(getResources().getDrawable(R.drawable.ic_marker_event,
+                    getContext().getTheme()));
+            markers.add(m);
+        }
+        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().addAll
+                (markers);
     }
 
     /**

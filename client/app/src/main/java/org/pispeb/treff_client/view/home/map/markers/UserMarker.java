@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.home.map;
+package org.pispeb.treff_client.view.home.map.markers;
 
 import android.content.Context;
 

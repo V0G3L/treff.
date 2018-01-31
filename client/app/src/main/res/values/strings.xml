@@ -59,5 +59,8 @@
 
     <!--Service description-->
     <string name="gps_service_description">Provides GPS Location for the \"treff.\"-App</string>
+    <string name="mute_chat_setting">Mute Chat</string>
+    <string name="mute_location_requests_settings">Mute location requests</string>
+    <string name="leave_group">Leave group</string>
 
 </resources>

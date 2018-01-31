@@ -10,6 +10,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import org.pispeb.treff_client.R;
@@ -62,6 +64,7 @@ public class GroupActivity extends AppCompatActivity implements
 
         //toolbar
         Toolbar toolbar = binding.toolbarGroup;
+        toolbar.inflateMenu(R.menu.group_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -75,6 +78,26 @@ public class GroupActivity extends AppCompatActivity implements
         //tab titles
         tabLayout = binding.groupTabs;
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.group_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.settings) {
+            // TODO Show Group Settings
+            GroupSettingsFragment f = new GroupSettingsFragment();
+            getFragmentManager()
+                    .beginTransaction()
+                    .replace(binding.getRoot().getId(), f)
+                    .commit();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -92,8 +115,10 @@ public class GroupActivity extends AppCompatActivity implements
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new GroupEventListFragment(), getString(R.string.tabtext_events));
-        adapter.addFragment(new GroupChatFragment(), getString(R.string.tabtext_chat));
+        adapter.addFragment(new GroupEventListFragment(),
+                getString(R.string.tabtext_events));
+        adapter.addFragment(new GroupChatFragment(),
+                getString(R.string.tabtext_chat));
         viewPager.setAdapter(adapter);
     }
 

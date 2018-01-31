@@ -3,6 +3,8 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.location.Location;
+import android.location.LocationManager;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -66,6 +68,14 @@ public class Event extends Occasion{
 
     public void setCreator(int creator) {
         this.creator = creator;
+    }
+
+    public Location getLocation() {
+        Location l = new Location(LocationManager.GPS_PROVIDER);
+        l.setLatitude(position.getLat());
+        l.setLongitude(position.getLon());
+        l.setTime(start.getTime());
+        return l;
     }
 
     @Override

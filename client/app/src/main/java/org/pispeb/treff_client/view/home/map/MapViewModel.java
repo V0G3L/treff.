@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 
+import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
@@ -28,6 +29,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     private MutableLiveData<Location> userLocation;
     private MutableLiveData<List<User>> friends;
+    private MutableLiveData<List<Event>> events;
     private SingleLiveEvent<State> state;
 
 
