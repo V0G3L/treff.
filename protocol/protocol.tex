@@ -323,19 +323,17 @@ from oldest to youngest (see chapter \ref{updatedesc}).}
 
 \apiCommand{edit-email}
 {Editieren der eigenen E-Mail-Adresse}
-{id/Identifikationsnummer des eigenen Benutzerkontos,
-pass/Passwort des eigenen Kontos,
-email/vorgeschlagene{,} neue E-Mail}
-{---/Leeres JSON-Objekt bei Erfolg}
+{pass/String/Passwort des eigenen Kontos,
+email/String/vorgeschlagene{,} neue E-Mail}
+{---//Leeres JSON-Objekt bei Erfolg}
 {cred-wrong, user-id-invalid, invalid-email}
 {}
 
 \apiCommand{edit-password}
 {Editieren des eigenen Passworts}
-{id/Identifikationsnummer des eigenen Benutzerkontos,
-pass/aktuelles Passwort des eigenen Kontos,
-newpass/vorgeschlagenes{,} neues Passwort}
-{---/Leeres JSON-Objekt bei Erfolg}
+{pass/String/aktuelles Passwort des eigenen Kontos,
+newpass/String/vorgeschlagenes{,} neues Passwort}
+{---//Leeres JSON-Objekt bei Erfolg}
 {cred-wrong, user-id-invalid}
 {}
 
@@ -370,10 +368,9 @@ pass/Neues Passwort}
 dass der Nutzer automatisch ausgeloggt wird und dadurch seinen
 Authentifizierungstoken und somit den weiteren Zugriff auf die Funktionalitäten
 der App verliert.}
-{id/Identifikationsnummer des eigenen Benutzerkontos,
-pass/Passwort des eigenen Kontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{cred-wrong, user-id-invalid}
+{pass/String/Passwort des eigenen Kontos}
+{---//Leeres JSON-Objekt bei Erfolg}
+{cred-wrong}
 {}
 
 \apiCommand{get-user-id}

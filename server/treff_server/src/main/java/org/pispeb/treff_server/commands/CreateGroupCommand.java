@@ -29,7 +29,7 @@ public class CreateGroupCommand extends AbstractCommand {
 
         // lock the accounts in the correct order and add them all to a set
         input.memberIds.add(actingAccountId);
-        final TreeSet<Account> memberAccounts = new TreeSet<>();
+        TreeSet<Account> memberAccounts = new TreeSet<>();
         for (int memberId : input.memberIds) {
             // lock the account with smallest id to the set,
             // check if it still exists and add it to the set

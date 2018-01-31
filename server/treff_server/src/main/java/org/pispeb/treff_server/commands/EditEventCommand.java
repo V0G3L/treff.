@@ -14,9 +14,7 @@ public class EditEventCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
-            DatabaseException {
+    protected CommandOutput executeInternal(CommandInput commandInput) {
         return null; //TODO
     }
-
 }
