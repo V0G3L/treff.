@@ -16,42 +16,52 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:fitsSystemWindows="true"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="@color/colorPrimary"
-            app:title="@string/add_contact"/>
+            android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:title="@string/add_contact" />
 
-        <EditText
-            android:id="@+id/username"
-            android:inputType="text"
-            android:hint="@string/username_contact"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@={vm.username}"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+            android:padding="@dimen/paddding_standard"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
+
+            <EditText
+                android:id="@+id/username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username_contact"
+                android:inputType="text"
+                android:text="@={vm.username}"/>
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/okButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/add_contact"
+            android:backgroundTint="@color/colorAccent"
             android:onClick="@{() -> vm.onOkClick()}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/username"
-            app:layout_constraintEnd_toStartOf="@id/cancelButton"
-            app:layout_constraintHorizontal_chainStyle="spread"/>
+            android:text="@string/add_contact"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@id/cancelButton"
+            app:layout_constraintTop_toBottomOf="@id/textlayout" />
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/cancel"
             android:onClick="@{() -> vm.onCancelClick()}"
-            app:layout_constraintTop_toBottomOf="@id/username"
-            app:layout_constraintStart_toEndOf="@id/okButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_chainStyle="spread"/>
+            android:text="@string/cancel"
+            android:backgroundTint="@color/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@id/okButton"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textlayout" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

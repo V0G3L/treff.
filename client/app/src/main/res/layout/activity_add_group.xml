@@ -22,14 +22,22 @@
             android:background="@color/colorPrimary"
             app:title="@string/create_group"/>
 
-        <EditText
-            android:id="@+id/groupname"
-            android:inputType="text"
-            android:hint="@string/groupname"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@={vm.groupname}"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:padding="@dimen/paddding_standard">
+            <EditText
+                android:id="@+id/groupname"
+                android:inputType="text"
+                android:hint="@string/groupname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={vm.groupname}"/>
+
+        </android.support.design.widget.TextInputLayout>
+
 
         <Button
             android:id="@+id/okButton"
@@ -37,9 +45,11 @@
             android:layout_height="wrap_content"
             android:text="@string/create_group"
             android:onClick="@{() -> vm.onOkClick()}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/groupname"
-            app:layout_constraintEnd_toStartOf="@id/cancelButton"
+            android:backgroundTint="@color/colorAccent"
+            android:padding="@dimen/paddding_standard"
+            app:layout_constraintTop_toBottomOf="@id/textlayout"
+            app:layout_constraintStart_toEndOf="@id/cancelButton"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"/>
 
         <Button
@@ -48,9 +58,11 @@
             android:layout_height="wrap_content"
             android:text="@string/cancel"
             android:onClick="@{() -> vm.onCancelClick()}"
-            app:layout_constraintTop_toBottomOf="@id/groupname"
-            app:layout_constraintStart_toEndOf="@id/okButton"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="@dimen/paddding_standard"
+            app:layout_constraintTop_toBottomOf="@id/textlayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/okButton"
             app:layout_constraintHorizontal_chainStyle="spread"/>
 
     </android.support.constraint.ConstraintLayout>

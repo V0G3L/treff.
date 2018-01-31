@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.home.groupList.GroupListViewModel"/>
+            type="org.pispeb.treff_client.view.home.groupList.GroupListViewModel" />
     </data>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/paddding_standard">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:onClick="@{() -> vm.onAddClick()}"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> vm.onAddClick()}"
             android:src="@drawable/ic_group_add_black_24dp"
-            android:tint="@color/white"/>
+            android:tint="@color/white" />
 
     </RelativeLayout>
 </layout>

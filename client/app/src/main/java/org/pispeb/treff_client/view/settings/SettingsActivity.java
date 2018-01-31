@@ -33,4 +33,9 @@ public class SettingsActivity extends NavigationActivity {
         getFragmentManager().beginTransaction().replace(R.id.fragment_frame, new SettingsFragment()).commit();
 
     }
+
+    protected void setDrawerSelected() {
+        frameBinding.navigation.getMenu().findItem(R.id.nav_settings).setChecked
+                (true);
+    }
 }

@@ -21,9 +21,10 @@
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:backgroundTint="@color/colorPrimary"
+            android:layout_margin="@dimen/fab_margin"
             android:onClick="@{() -> vm.onCenterClick()}"
+            android:src="@drawable/ic_center"
+            android:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

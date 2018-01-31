@@ -41,8 +41,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
         frameBinding.navigation.setNavigationItemSelectedListener(
             menuItem -> {
                 //Checking if the item is in checked state or not, if not make it in checked state
-                if(menuItem.isChecked()) menuItem.setChecked(false);
-                else menuItem.setChecked(true);
+//                if(menuItem.isChecked()) menuItem.setChecked(false);
+//                else menuItem.setChecked(true);
 
                 //Closing drawer on item click
                 drawer.closeDrawers();
@@ -75,6 +75,8 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     }
 
+    abstract protected void setDrawerSelected();
+
     protected void setupToolbar(Toolbar toolbar) {
         //set custom toolbar as action bar
         this.toolbar = toolbar;
@@ -85,6 +87,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
         drawer.addDrawerListener(drawerToggle);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setDrawerSelected();
+    }
 
     /**
      * Called after the activity's onStart(), this method ensures that the drawerToggle's state is restored correctly

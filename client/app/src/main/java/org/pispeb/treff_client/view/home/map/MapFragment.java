@@ -72,7 +72,6 @@ public class MapFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         setLocationListener();
     }
 
