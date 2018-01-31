@@ -1,10 +1,10 @@
 package org.pispeb.treff_client.view.login;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.FragmentRegisterBinding;
 import org.pispeb.treff_client.view.home.HomeActivity;
-import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
@@ -24,6 +23,7 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 public class RegisterFragment extends Fragment {
 
     FragmentRegisterBinding binding;
+    RegisterViewModel vm;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -41,7 +41,7 @@ public class RegisterFragment extends Fragment {
 
         binding = FragmentRegisterBinding.inflate(inflater, container, false);
 
-        RegisterViewModel vm = ViewModelProviders
+        vm = ViewModelProviders
                 .of(this, ViewModelFactory.getInstance(getContext()))
                 .get(RegisterViewModel.class);
 
@@ -59,9 +59,15 @@ public class RegisterFragment extends Fragment {
             case IDLE:
                 break;
             case REGISTER:
+                vm.setPassword(binding.inputRegPassword.getEditText().getText().toString());
+                break;
+            case SUCCESS:
+                SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(this.getContext());
+                preferences.edit().putString(getString(R.string.username_path),
+                        vm.getUsername()).apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 this.startActivity(intent);
-                break;
             case GO_TO_LOGIN:
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new LoginFragment()).commit();
                 break;

@@ -9,6 +9,10 @@ import org.pispeb.treff_client.view.util.ViewCall;
 
 public class RegisterViewModel extends ViewModel {
 
+    private String username;
+    private String email;
+    private String password;
+
     private SingleLiveEvent<State> state;
 
 
@@ -23,9 +27,33 @@ public class RegisterViewModel extends ViewModel {
 
     public void onRegister() {
         state.setValue(new State(ViewCall.REGISTER, 0));
+
+        //TODO Call RequestEncoder
+
+        state.setValue(new State(ViewCall.SUCCESS, 0));
     }
 
     public void onGoToLogin() {
         state.setValue(new State(ViewCall.GO_TO_LOGIN, 0));
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

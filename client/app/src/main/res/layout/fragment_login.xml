@@ -46,7 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords"
-                    android:hint="@string/login_username" />
+                    android:hint="@string/login_username"
+                    android:text="@={vm.username}"/>
             </android.support.design.widget.TextInputLayout>
 
             <!-- Password Label -->

@@ -2,7 +2,9 @@ package org.pispeb.treff_client.view.login;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +44,9 @@ public class LoginFragment extends Fragment{
         vm.getState().observe(this, state -> callback(state));
         binding.setVm(vm);
 
+        vm.setUsername(PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString(getString(R.string.username_path), ""));
+
         // Inflate the layout for this fragment
         return binding.getRoot();
 
@@ -68,9 +73,14 @@ public class LoginFragment extends Fragment{
                 binding.loginButton.setVisibility(View.GONE);
                 break;
             case GO_TO_REGISTER:
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new RegisterFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.activity_login, new RegisterFragment()).commit();
                 break;
             case SUCCESS:
+                SharedPreferences preferences = PreferenceManager
+                        .getDefaultSharedPreferences(getContext());
+                preferences.edit().putString(getString(R.string.username_path),
+                        vm.getUsername()).apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 this.startActivity(intent);
                 break;
