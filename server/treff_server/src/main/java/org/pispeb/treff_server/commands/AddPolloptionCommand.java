@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
@@ -24,37 +25,31 @@ public class AddPolloptionCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int groupId = 0; // input.getInt("group-id");
-        int pollId = 0; // input.getInt("poll-id");
-        double latitude = 0; // input.getInt("latitude");
-        double longitude = 0; // input.getInt("longitude");
-        long timeStart = 0; // input.getInt("time-start");
-        long timeEnd = 0; //input.getInt("time-end");
-        int actingAccountID = 0; // TODO: migrate
+        Input input = (Input) commandInput;
 
         // check times
-        if (timeEnd < timeStart) {
+        if (input.timeEnd < input.timeStart) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
         //TODO timeEnd-in-past-check
 
-        // get account
+        // get account and check if it still exist
         Account account =
-                getSafeForReading(accountManager.getAccount(actingAccountID));
+                getSafeForReading(input.getActingAccount());
         if (account == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
         // get group
         Usergroup group =
-                getSafeForReading(account.getAllGroups().get(groupId));
+                getSafeForReading(account.getAllGroups().get(input.groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // get poll
-        Poll poll = getSafeForWriting(group.getAllPolls().get(pollId));
+        Poll poll = getSafeForWriting(group.getAllPolls().get(input.pollId));
         if (poll == null) {
             return new ErrorOutput(ErrorCode.POLLIDINVALID);
         }
@@ -67,10 +62,37 @@ public class AddPolloptionCommand extends AbstractCommand {
         }
 
         // add poll option
-        poll.addPollOption(new Position(latitude, longitude),
-                new Date(timeStart), new Date(timeEnd));
+        poll.addPollOption(new Position(input.latitude, input.longitude),
+                new Date(input.timeStart), new Date(input.timeEnd));
 
-        throw new UnsupportedOperationException();
+        // respond TODO is this how it is supposed to be?
+        return null;
+    }
+
+    public static class Input extends CommandInputLoginRequired {
+
+        final int groupId;
+        final int pollId;
+        final double latitude;
+        final double longitude;
+        final long timeStart;
+        final long timeEnd;
+
+        public Input(@JsonProperty("group-id") int groupId,
+                     @JsonProperty("poll-id") int pollId,
+                     @JsonProperty("latitude") double latitude,
+                     @JsonProperty("longitude") double longitude,
+                     @JsonProperty("time-start") long timeStart,
+                     @JsonProperty("time-end") long timeEnd,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.groupId = groupId;
+            this.pollId = pollId;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.timeStart = timeStart;
+            this.timeEnd = timeEnd;
+        }
     }
 
 }

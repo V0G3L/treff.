@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -18,41 +19,41 @@ public class AddContactCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int id = 0; //= input.getInt("id");
-        int actingAccountID = 0; // TODO: migrate to new format
+        Input input = (Input) commandInput;
+        int actingAccountId = input.getActingAccount().getID();
 
         // determine locking order of the accounts
         Account actingAccount;
         Account newContact;
-        if (actingAccountID < id) {
+        if (actingAccountId < input.contactId) {
             // check if the acting account still exists
-            actingAccount = getSafeForWriting(this.accountManager
-                    .getAccount(actingAccountID));
+            actingAccount = getSafeForWriting(input.getActingAccount());
             if (actingAccount == null)
                 return new ErrorOutput(ErrorCode.TOKENINVALID);
 
             // check if the new contact is valid
-            newContact = getSafeForWriting(this.accountManager.getAccount(id));
+            newContact = getSafeForWriting(this.accountManager
+                    .getAccount(input.contactId));
             if (newContact == null)
                 return new ErrorOutput(ErrorCode.USERIDINVALID);
         } else {
             // check if the new contact is valid
-            newContact = getSafeForWriting(this.accountManager.getAccount(id));
+            newContact = getSafeForWriting(this.accountManager
+                    .getAccount(input.contactId));
             if (newContact == null)
                 return new ErrorOutput(ErrorCode.USERIDINVALID);
 
             // check if the acting account still exists
-            actingAccount = getSafeForWriting(this.accountManager
-                    .getAccount(actingAccountID));
+            actingAccount = getSafeForWriting(input.getActingAccount());
             if (actingAccount == null)
                 return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
         // check block lists
-        if (actingAccount.getAllBlocks().containsKey(id)) {
+        if (actingAccount.getAllBlocks().containsKey(input.contactId)) {
             return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
         }
-        if (newContact.getAllBlocks().containsKey(actingAccountID)) {
+        if (newContact.getAllBlocks().containsKey(actingAccountId)) {
             return new ErrorOutput(ErrorCode.BEINGBLOCKED);
         }
 
@@ -61,8 +62,19 @@ public class AddContactCommand extends AbstractCommand {
         actingAccount.addContact(newContact);
         newContact.addContact(actingAccount);
 
-        // respond
-        throw new UnsupportedOperationException();
+        // respond TODO is this how it is supposed to be?
+        return null;
+    }
+
+    public static class Input extends CommandInputLoginRequired {
+
+        final int contactId;
+
+        public Input(@JsonProperty("id") int contactId,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.contactId = contactId;
+        }
     }
 
 }

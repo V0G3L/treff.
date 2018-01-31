@@ -1,5 +1,9 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.PollCompleteSerializer;
+import org.pispeb.treff_server.commands.serializer.UsergroupCompleteSerializer;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
@@ -21,51 +25,43 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int id = 0; // input.getInt("id");
-        int actingAccountID = 0; // TODO: migrate
-
+        Input input = (Input) commandInput;
 
         // check if account still exists
         Account actingAccount =
-                getSafeForReading(accountManager.getAccount(actingAccountID));
+                getSafeForReading(input.getActingAccount());
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get group
         Usergroup group
-                = getSafeForReading(actingAccount.getAllGroups().get(id));
+                = getSafeForReading(actingAccount.getAllGroups()
+                .get(input.groupId));
         if (group == null)
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
-        // collect group properties
-        JsonObjectBuilder response = Json.createObjectBuilder()
-                .add("type", "group")
-                .add("id", id)
-                .add("name", group.getName());
+        return new Output(group);
+    }
 
-        // collect group members
-        JsonArrayBuilder membersArray = Json.createArrayBuilder();
-        group.getAllMembers().keySet().forEach(membersArray::add);
-        response.add("members", membersArray.build());
+    public static class Input extends CommandInputLoginRequired {
 
-        //collect group events
-        JsonArrayBuilder eventsArray = Json.createArrayBuilder();
-        for (int eventKey : group.getAllEvents().keySet()) {
-            eventsArray.add(Json.createObjectBuilder()
-                    .add("type", "event")
-                    .add("id", eventKey)
-                    .add("checksum", "" /* TODO checksum */));
+        final int groupId;
+
+        public Input(@JsonProperty("id") int groupId,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.groupId = groupId;
         }
-        response.add("eventss", eventsArray.build());
+    }
 
-        // collect group polls
-        JsonArrayBuilder pollsArray = Json.createArrayBuilder();
-        for (int pollKey : group.getAllPolls().keySet()) {
-            //TODO oberflächliche Abstimmungsbeschribung ex. nicht
+    public static class Output extends CommandOutput {
+
+        @JsonSerialize(using = UsergroupCompleteSerializer.class)
+        final Usergroup usergroup;
+
+        Output(Usergroup usergroup) {
+            this.usergroup = usergroup;
         }
-        response.add("polls", pollsArray.build());
-
-        throw new UnsupportedOperationException();
     }
 
 }
