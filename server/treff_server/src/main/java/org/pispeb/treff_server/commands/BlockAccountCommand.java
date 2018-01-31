@@ -14,7 +14,6 @@ public class BlockAccountCommand extends AbstractCommand {
 
     public BlockAccountCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
 	}
 
     @Override
