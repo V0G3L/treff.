@@ -13,8 +13,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 public class AddContactCommand extends AbstractCommand {
 
     public AddContactCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-        throw new UnsupportedOperationException();
+        super(accountManager, Input.class);
     }
 
     @Override
@@ -62,8 +61,8 @@ public class AddContactCommand extends AbstractCommand {
         actingAccount.addContact(newContact);
         newContact.addContact(actingAccount);
 
-        // respond TODO is this how it is supposed to be?
-        return null;
+        // respond
+        return new Output();
     }
 
     public static class Input extends CommandInputLoginRequired {
@@ -77,4 +76,5 @@ public class AddContactCommand extends AbstractCommand {
         }
     }
 
+    public static class Output extends CommandOutput { }
 }

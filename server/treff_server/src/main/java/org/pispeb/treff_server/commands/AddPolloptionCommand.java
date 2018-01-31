@@ -19,8 +19,7 @@ import java.util.Date;
 public class AddPolloptionCommand extends AbstractCommand {
 
     public AddPolloptionCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        super(accountManager, Input.class);
 	}
 
     @Override
@@ -61,12 +60,12 @@ public class AddPolloptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-        // add poll option
+        // add poll option TODO times multiplied by 1000 due to ms?
         poll.addPollOption(new Position(input.latitude, input.longitude),
-                new Date(input.timeStart), new Date(input.timeEnd));
+                new Date(input.timeStart*1000), new Date(input.timeEnd*1000));
 
-        // respond TODO is this how it is supposed to be?
-        return null;
+        // respond
+        return new Output();
     }
 
     public static class Input extends CommandInputLoginRequired {
@@ -94,5 +93,7 @@ public class AddPolloptionCommand extends AbstractCommand {
             this.timeEnd = timeEnd;
         }
     }
+
+    public static class Output extends CommandOutput { }
 
 }

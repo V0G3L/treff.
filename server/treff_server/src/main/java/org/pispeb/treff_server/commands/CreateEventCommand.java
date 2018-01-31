@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.*;
@@ -13,51 +14,81 @@ import java.util.Date;
 public class CreateEventCommand extends AbstractCommand {
 
     public CreateEventCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        super(accountManager, Input.class);
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-        int groupId = 0; // input.getInt("group-id");
-        String title = ""; // input.getString("title");
-        double latitude = 0; // input.getInt("latitude");
-        double longitude = 0; // input.getInt("longitude");
-        long timeStart = 0; // input.getInt("time-start");
-        long timeEnd = 0; // input.getInt("time-end");
-        int actingAccountID = 0; // TODO: migrate
+        Input input = (Input) commandInput;
 
         // check times
-        if (timeEnd < timeStart) {
+        if (input.timeEnd < input.timeStart) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
         //TODO timeEnd-in-past-check
 
-        // get account
-        Account account =
-                getSafeForReading(accountManager.getAccount(actingAccountID));
-        if (account == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+        // get account and check if it still exists
+        Account actingAccount =
+                getSafeForReading(input.getActingAccount());
+        if (actingAccount == null) {
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
         // get group
         Usergroup group =
-                getSafeForReading(account.getAllGroups().get(groupId));
+                getSafeForReading(actingAccount.getAllGroups().get(input.groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // check permission
-        if (!group.checkPermissionOfMember(account, Permission.CREATE_EVENT)) {
+        if (!group.checkPermissionOfMember(actingAccount, Permission.CREATE_EVENT)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEEVENT);
         }
 
-        // create event
-        group.createEvent(title, new Position(latitude, longitude),
-                new Date(timeStart*1000), new Date(timeEnd*1000), account);
+        // create event TODO times multiplied by 1000 due to ms?
+        Event event = group.createEvent(input.title,
+                new Position(input.latitude, input.longitude),
+                new Date(input.timeStart*1000),
+                new Date(input.timeEnd*1000), actingAccount);
 
-        throw new UnsupportedOperationException();
+        // respond
+        return new Output(event.getID());
     }
 
+    public static class Input extends CommandInputLoginRequired {
+
+        final int groupId;
+        final String title;
+        final double latitude;
+        final double longitude;
+        final long timeStart;
+        final long timeEnd;
+
+        public Input(@JsonProperty("group-id") int groupId,
+                     @JsonProperty("title") String title,
+                     @JsonProperty("latitude") double latitude,
+                     @JsonProperty("longitude") double longitude,
+                     @JsonProperty("time-start") long timeStart,
+                     @JsonProperty("time-end") long timeEnd,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.groupId = groupId;
+            this.title = title;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.timeStart = timeStart;
+            this.timeEnd = timeEnd;
+        }
+    }
+
+    public static class Output extends CommandOutput {
+
+        final int eventId;
+
+        Output(int eventId) {
+            this.eventId = eventId;
+        }
+    }
 }

@@ -19,8 +19,7 @@ import javax.json.JsonObjectBuilder;
 public class GetGroupDetailsCommand extends AbstractCommand {
 
     public GetGroupDetailsCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        super(accountManager, Input.class);
 	}
 
     @Override

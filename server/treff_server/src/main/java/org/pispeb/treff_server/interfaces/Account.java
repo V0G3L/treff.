@@ -74,6 +74,8 @@ public interface Account extends DataObject, Comparable<Account> {
      */
     Map<Integer, Usergroup> getAllGroups();
 
+    Usergroup createGroup(String name, Account... otherMembers);
+
     void addToGroup(Usergroup usergroup);
 
     void removeFromGroup(Usergroup usergroup);
