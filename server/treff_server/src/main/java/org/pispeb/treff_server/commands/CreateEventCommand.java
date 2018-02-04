@@ -8,6 +8,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
 
+// TODO needs to be tested
+
 /**
  * a command to create an Event
  */

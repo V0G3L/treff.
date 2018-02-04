@@ -1,7 +1,12 @@
 package org.pispeb.treff_server.commands;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
-import org.pispeb.treff_server.interfaces.AccountManager;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.pispeb.treff_server.commands.serializer.EventCompleteSerializer;
+import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.networking.ErrorCode;
+
+// TODO needs to be tested
 
 /**
  * a command to get a detailed description of an Event of a Usergroup
@@ -9,14 +14,56 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 public class GetEventDetailsCommand extends AbstractCommand {
 
     public GetEventDetailsCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        super(accountManager, Input.class);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
-            DatabaseException {
-        return null; //TODO
+    protected CommandOutput executeInternal(CommandInput commandInput) {
+    Input input = (Input) commandInput;
+
+    // check if account still exists
+    Account actingAccount
+            = getSafeForReading(input.getActingAccount());
+        if (actingAccount == null)
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
+
+    // get group
+    Usergroup usergroup = getSafeForReading(
+            actingAccount.getAllGroups().get(input.groupId));
+        if (usergroup == null)
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
+
+    // get event
+    Event event = getSafeForReading(
+            usergroup.getAllEvents().get(input.eventId));
+        if (event == null)
+            return new ErrorOutput(ErrorCode.EVENTIDINVALID);
+
+        return new Output(event);
+}
+
+public static class Input extends CommandInputLoginRequired {
+
+    final int eventId;
+    final int groupId;
+
+    public Input(@JsonProperty("id") int eventId,
+                 @JsonProperty("group-id") int groupId,
+                 @JsonProperty("token") String token) {
+        super(token);
+        this.eventId = eventId;
+        this.groupId = groupId;
     }
+}
+
+public static class Output extends CommandOutput {
+
+    @JsonSerialize(using = EventCompleteSerializer.class)
+    final Event event;
+
+    Output(Event event) {
+        this.event = event;
+    }
+}
 
 }

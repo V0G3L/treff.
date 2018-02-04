@@ -2,14 +2,9 @@ package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pispeb.treff_server.commands.serializer.PollCompleteSerializer;
 import org.pispeb.treff_server.commands.serializer.UsergroupCompleteSerializer;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
-
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
 
 // TODO needs to be tested
 

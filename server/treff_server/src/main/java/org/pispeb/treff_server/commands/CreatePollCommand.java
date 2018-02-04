@@ -2,11 +2,12 @@ package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+
+// TODO needs to be tested
 
 /**
  * a command to create a Poll in a Usergroup

@@ -7,10 +7,6 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import javax.json.JsonArray;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedSet;
 import java.util.TreeSet;
 
 // TODO needs to be tested

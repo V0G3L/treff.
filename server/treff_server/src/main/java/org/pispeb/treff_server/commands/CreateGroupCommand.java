@@ -1,17 +1,14 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pispeb.treff_server.commands.serializer.PollCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeSet;
+
+// TODO needs to be tested
 
 /**
  * a command to create a Usergroup
