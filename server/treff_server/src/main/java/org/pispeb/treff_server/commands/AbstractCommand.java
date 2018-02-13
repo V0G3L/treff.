@@ -75,6 +75,7 @@ public abstract class AbstractCommand {
 
         // make sure to release all locks after execution
         try {
+            // TODO: serialize before releasing locks
             return executeInternal(commandInput);
         } finally {
             releaseAllLocks();

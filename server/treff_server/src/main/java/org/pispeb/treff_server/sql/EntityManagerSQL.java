@@ -14,17 +14,22 @@ import org.pispeb.treff_server.exceptions
 import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.DataObject;
 import org.pispeb.treff_server.interfaces.Event;
+import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import javax.json.JsonObject;
+import java.lang.reflect.InvocationTargetException;
 import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.Lock;
@@ -42,31 +47,40 @@ import java.util.stream.Collectors;
  */
 public class EntityManagerSQL implements AccountManager {
 
+    private static EntityManagerSQL instance;
+
     public final Object usernameLock = new Object();
     public final Object emailLock = new Object();
 
-    private final Object accountFetchLock = new Object();
-    private final Object usergroupFetchLock = new Object();
-    private final Object eventFetchLock = new Object();
-    private final Object pollFetchLock = new Object();
-    private final Object pollOptionFetchLock = new Object();
-    private final Object updateFetchLock = new Object();
-
-    private static EntityManagerSQL instance;
+    private final Map<Class<? extends SQLObject>, Object> fetchLocks
+            = new HashMap<>();
 
     private final SQLDatabase database;
     private final Properties config;
-    private Map<Integer, AccountSQL> loadedAccounts = new HashMap<>();
-    private Map<Integer, UsergroupSQL> loadedUsergroups = new HashMap<>();
-    private Map<Integer, EventSQL> loadedEvents = new HashMap<>();
-    private Map<Integer, PollSQL> loadedPolls = new HashMap<>();
-    private Map<Integer, PollOptionSQL> loadedPollOptions = new HashMap<>();
-    private Map<Integer, UpdateSQL> loadedUpdates = new HashMap<>();
+    private final Map<Class<? extends SQLObject>,
+            Map<Integer, ? extends SQLObject>> loadedObjectMaps
+            = new HashMap<>();
+    private final Map<Class<? extends SQLObject>, TableName> tableNames
+            = new HashMap<>();
+
 
     // singleton
     private EntityManagerSQL(SQLDatabase database, Properties config) {
         this.database = database;
         this.config = config;
+
+        // This'd be so much easier if Java supported abstract static methods
+        tableNames.put(AccountSQL.class, TableName.ACCOUNTS);
+        tableNames.put(EventSQL.class, TableName.EVENTS);
+        tableNames.put(PollSQL.class, TableName.POLLS);
+        tableNames.put(PollOptionSQL.class, TableName.POLLOPTIONS);
+        tableNames.put(UpdateSQL.class, TableName.UPDATES);
+        tableNames.put(UsergroupSQL.class, TableName.USERGROUPS);
+
+        for (Class<? extends SQLObject> sqlClass : tableNames.keySet()) {
+            fetchLocks.put(sqlClass, new Object());
+            loadedObjectMaps.put(sqlClass, new HashMap<>());
+        }
     }
 
     /**
@@ -132,12 +146,6 @@ public class EntityManagerSQL implements AccountManager {
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-    }
-
-    @Override
-    public AccountSQL getAccount(int id) {
-        return getSQLObject(AccountSQL::new, id,
-                loadedAccounts, TableName.ACCOUNTS, accountFetchLock);
     }
 
     @Override
@@ -248,7 +256,8 @@ public class EntityManagerSQL implements AccountManager {
 
     @Override
     public void createUpdate(JsonObject updateContent, Date time,
-                          Update.UpdateType type, Account... affectedAccounts) {
+                             Update.UpdateType type, Account...
+                                     affectedAccounts) {
         int id;
         try {
             // create update itself
@@ -269,35 +278,36 @@ public class EntityManagerSQL implements AccountManager {
         try {
             // add all affected accounts
             Arrays.stream(affectedAccounts).forEach(
-                    a-> a.addUpdate(update));
+                    a -> a.addUpdate(update));
         } finally {
             update.getReadWriteLock().writeLock().unlock();
         }
     }
 
+
+    @Override
+    public AccountSQL getAccount(int id) {
+        return getSQLObject(id, AccountSQL.class);
+    }
+
     UsergroupSQL getUsergroup(int id) {
-        return getSQLObject(UsergroupSQL::new, id, loadedUsergroups,
-                TableName.USERGROUPS, usergroupFetchLock);
+        return getSQLObject(id, UsergroupSQL.class);
     }
 
     EventSQL getEvent(int id) {
-        return getSQLObject(EventSQL::new, id, loadedEvents,
-                TableName.EVENTS, eventFetchLock);
+        return getSQLObject(id, EventSQL.class);
     }
 
     PollSQL getPoll(int id) {
-        return getSQLObject(PollSQL::new, id, loadedPolls,
-                TableName.POLLS, pollFetchLock);
+        return getSQLObject(id, PollSQL.class);
     }
 
     PollOptionSQL getPollOption(int id) {
-        return getSQLObject(PollOptionSQL::new, id, loadedPollOptions,
-                TableName.POLLOPTIONS, pollOptionFetchLock);
+        return getSQLObject(id, PollOptionSQL.class);
     }
 
     UpdateSQL getUpdate(int id) {
-        return getSQLObject(UpdateSQL::new, id, loadedUpdates,
-                TableName.UPDATES, updateFetchLock);
+        return getSQLObject(id, UpdateSQL.class);
     }
 
     @Override
@@ -339,25 +349,17 @@ public class EntityManagerSQL implements AccountManager {
      * Generic method for translating objects in the SQL database into their
      * respective Java {@link SQLObject}s.
      *
-     * @param factory   Factory that produces the SQLObject when supplied with
-     *                  its ID, the {@link SQLDatabase} and {@link Properties}.
-     *                  The SQLObject's constructor should suffice.
      * @param id        The ID of the object
-     * @param loadedMap The map that holds already loaded objects of the
-     *                  specified type
-     * @param tableName The {@link TableName} value holding the name of the
-     *                  table that objects of the specified type are stored in
-     * @param fetchLock The lock for the specified type with which fetch
-     *                  operations for this type are synchronized
      * @param <T>       The type of SQLObject to be returned
      * @return The SQLObject with the specified type and ID. <code>null</code>
      * if no such object exists in the database.
      */
-    private <T extends SQLObject> T getSQLObject(SQLObjectFactory<T> factory,
-                                                 int id,
-                                                 Map<Integer, T> loadedMap,
-                                                 TableName tableName,
-                                                 Object fetchLock) {
+    <T extends SQLObject> T getSQLObject(int id, Class<T> sqlClass) {
+        @SuppressWarnings("unchecked")
+        Map<Integer, T> loadedMap
+                = (Map<Integer, T>) loadedObjectMaps.get(sqlClass);
+        Object fetchLock = fetchLocks.get(sqlClass);
+        TableName tableName = tableNames.get(sqlClass);
         if (loadedMap.containsKey(id)) {
             return loadedMap.get(id);
         }
@@ -368,7 +370,11 @@ public class EntityManagerSQL implements AccountManager {
             }
             try {
                 if (hasObjectInDB(tableName, id)) {
-                    T obj = factory.create(id, database, config);
+                    T obj = sqlClass
+                            .getConstructor(Integer.class,
+                                    SQLDatabase.class,
+                                    Properties.class)
+                            .newInstance(id, database, config);
                     loadedMap.put(id, obj);
                     return obj;
                 } else {
@@ -376,6 +382,11 @@ public class EntityManagerSQL implements AccountManager {
                 }
             } catch (SQLException e) {
                 throw new DatabaseException(e);
+            } catch (IllegalAccessException | InstantiationException |
+                    NoSuchMethodException | InvocationTargetException e) {
+                throw new AssertionError("One of the SQLObject classes " +
+                        "doesn't support the " +
+                        "(int, SQLDatabase, Properties)-constructor.");
             }
         }
     }

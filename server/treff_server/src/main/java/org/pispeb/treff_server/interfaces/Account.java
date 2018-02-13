@@ -80,7 +80,14 @@ public interface Account extends DataObject, Comparable<Account> {
 
     void removeFromGroup(Usergroup usergroup);
 
-    void addContact(Account account);
+    void sendContactRequest(Account receiver);
+
+    void acceptContactRequest(Account sender);
+
+    void rejectContactRequest(Account sender);
+
+    Map<Integer, Account> getAllIncomingContactRequests();
+    Map<Integer, Account> getAllOutgoingContactRequests();
 
     void removeContact(Account account);
 

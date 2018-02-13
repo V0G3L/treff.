@@ -6,6 +6,7 @@ import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
+import org.pispeb.treff_server.exceptions.ContactRequestNonexistantException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -174,6 +175,11 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
+    public Usergroup createGroup(String name, Account... otherMembers) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    @Override
     public void addToGroup(Usergroup usergroup) {
         // actual joining is handled in UsergroupSQL
         usergroup.addMember(this);
@@ -190,7 +196,83 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public void addContact(Account account) {
+    public void sendContactRequest(Account receiver) {
+        // if existing sent contact request is still pending,
+        // don't do anything
+        if (this.getAllOutgoingContactRequests()
+                .containsKey(receiver.getID()))
+            return;
+        // if this received a contact request from receiver, accept that
+        // one instead and return
+        if (this.getAllIncomingContactRequests()
+                .containsKey(receiver.getID())) {
+            acceptContactRequest(receiver);
+            return;
+        }
+
+        try {
+            database.getQueryRunner().insert(
+                    "INSERT INTO ?(sender,receiver) VALUES (?,?);",
+                    rs -> null,
+                    TableName.CONTACTREQUESTS.toString(),
+                    this.id,
+                    receiver.getID());
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    private void deleteContactRequestFrom(Account sender) {
+        if (!this.getAllIncomingContactRequests().containsKey(sender.getID()))
+            throw new ContactRequestNonexistantException();
+
+        try {
+            // delete contact request
+            database.getQueryRunner().update(
+                    "DELETE FROM ? WHERE sender=? AND receiver=?;",
+                    TableName.CONTACTREQUESTS.toString(),
+                    sender.getID(),
+                    this.id);
+
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void acceptContactRequest(Account sender) {
+        // delete contact request, then add to contacts
+        this.deleteContactRequestFrom(sender);
+        this.addContact(sender);
+    }
+
+    @Override
+    public void rejectContactRequest(Account sender) {
+        this.deleteContactRequestFrom(sender);
+    }
+
+    @Override
+    public Map<Integer, Account> getAllIncomingContactRequests() {
+        try {
+            return database.getQueryRunner().query(
+                    "SELECT sender FROM ? WHERE receiver=?;",
+                    new ColumnListHandler<Integer>(),
+                    TableName.CONTACTREQUESTS.toString(),
+                    this.id)
+                    .stream()
+                    .collect(Collectors.toMap(Function.identity(),
+                            EntityManagerSQL.getInstance()::getAccount));
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public Map<Integer, Account> getAllOutgoingContactRequests() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    private void addContact(Account account) {
         int lowID = Math.min(this.id, account.getID());
         int highID = Math.max(this.id, account.getID());
 

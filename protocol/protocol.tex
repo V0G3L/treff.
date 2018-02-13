@@ -504,15 +504,7 @@ Wertepaare enthält (Siehe Kapitel \ref{sec:permdesc})}
 ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
 werden soll,
-title/Titel der Verabredung,
-time-start/Startzeitpunkt (Angabe in Unixzeit%
-\footnote{Siehe \enquote{Unixzeit}, Version 172239469, Wikipedia,\\
-\url{https://de.wikipedia.org/w/index.php?title=Unixzeit&oldid=172239469}}),
-time-end/Endzeitpunkt (Angabe in Unixzeit),
-latitude/Breitengrad{,} auf dem die Verabredung stattfindet (Angabe als
-Dezimalgrad),
-longitude/Längengrad{,} auf dem die Verabredung stattfindet (Angabe als
-Dezimalgrad)}
+event/Complete description of the event but without ID and participants array}
 {id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in
 weiteren Befehlen referenziert werden kann}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
@@ -524,10 +516,7 @@ no-permission-event-create}
 ist}
 {group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
 wurde,
-id/Identifikationsnummer der Verabredung,
-\dots/Alle Eigenschaften{,} mit Ausnahme des Teilnehmerarrays und der
-Identifikationsnummer{,} die überschrieben werden sollen.
-Die Schlüssel entsprechen denen einer ausführlichen Verabredungsbeschreibung.}
+event/New complete description of the event without the participants array}
 {---/Leeres JSON-Objekt bei Erfolg}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-event-edit}

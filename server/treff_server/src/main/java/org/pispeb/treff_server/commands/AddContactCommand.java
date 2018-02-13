@@ -58,8 +58,8 @@ public class AddContactCommand extends AbstractCommand {
 
         // execute the command
         // TODO friend request instead of direct add
-        actingAccount.addContact(newContact);
-        newContact.addContact(actingAccount);
+        //actingAccount.addContact(newContact);
+        //newContact.addContact(actingAccount);
 
         // respond
         return new Output();

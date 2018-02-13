@@ -116,6 +116,20 @@ public class SQLDatabase {
                                 ");",
                         CONTACTS.toString()),
 
+                // contactrequests
+                String.format("CREATE TABLE %s (" +
+                                "sender INT NOT NULL," +
+                                "receiver INT NOT NULL," +
+                                "FOREIGN KEY (sender)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "FOREIGN KEY (receiver)" +
+                                "   REFERENCES accounts(id)" +
+                                "   ON DELETE CASCADE," +
+                                "PRIMARY KEY (sender,receiver)" +
+                                ");",
+                        CONTACTREQUESTS.toString()),
+
                 // blocks
                 String.format("CREATE TABLE %s (" +
                                 "blocker INT NOT NULL," +
@@ -309,6 +323,7 @@ public class SQLDatabase {
     enum TableName {
         ACCOUNTS("accounts"),
         CONTACTS("contacts"),
+        CONTACTREQUESTS("contactrequests"),
         BLOCKS("blocks"),
         USERGROUPS("usergroups"),
         GROUPMEMBERSHIPS("groupmemberships"),
