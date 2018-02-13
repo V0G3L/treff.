@@ -42,7 +42,7 @@ public class AddEventViewModel extends ViewModel {
         //automatically set to current time
         start = new Date();
         // one hour later
-        end = new Date(start.getTime() + 1000*60*60);
+        end = new Date(start.getTime() + 1000 * 60 * 60);
         location = new Location(LocationManager.GPS_PROVIDER);
         state = new SingleLiveEvent<>();
     }
@@ -55,20 +55,31 @@ public class AddEventViewModel extends ViewModel {
         return state;
     }
 
-    public void onDateClick() {}
+    public void onDateClick() {
+    }
 
-    public void onStartTimeClick() {}
+    public void onStartTimeClick() {
+    }
 
-    public void onEndTimeClick() {}
+    public void onEndTimeClick() {
+    }
 
-    public void onChooseLocationClick() {}
+    public void onChooseLocationClick() {
+    }
 
     public void onSaveClick() {
+        if (name.equals("")) return;
+
+        // Add Event to Database
         eventRepository.addEvent(
+//                new Event(name, new Date(), start,
+//                        new Position(location.getLatitude(),
+//                                location.getLongitude()),
+//                        0));
                 new Event(name, new Date(), start,
-                        new Position(location.getLatitude(),
-                                location.getLongitude()),
+                        new Position(49, 8.5),
                         0));
+
         state.setValue(new State(ViewCall.SUCCESS, 0));
     }
 

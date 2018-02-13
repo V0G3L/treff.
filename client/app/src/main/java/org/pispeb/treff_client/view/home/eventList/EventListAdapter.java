@@ -1,7 +1,9 @@
 package org.pispeb.treff_client.view.home.eventList;
 
 import android.arch.paging.PagedListAdapter;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
@@ -9,8 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.databinding.EventItemBinding;
+import org.pispeb.treff_client.view.home.map.MapFragment;
+import org.pispeb.treff_client.view.home.map.markers.EventMarker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,6 +86,7 @@ class EventListViewHolder extends RecyclerView.ViewHolder
 
     private final EventItemBinding binding;
     private final EventListAdapter.EventClickedListener listener;
+    private final IMapController controller;
 
     public EventListViewHolder(EventItemBinding binding,
                                EventListAdapter.EventClickedListener listener) {
@@ -83,10 +94,20 @@ class EventListViewHolder extends RecyclerView.ViewHolder
         this.binding = binding;
         this.listener = listener;
         binding.getRoot().setOnClickListener(this);
+
+        //binding.map.setEnabled(false);
+        binding.map.setTileSource(TileSourceFactory.MAPNIK);
+        controller = binding.map.getController();
+        controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
     }
 
     public void bindTo(Event event) {
         binding.setEvent(event);
+        EventMarker marker = new EventMarker(binding.map, event);
+        //marker.setIcon(Resources.getSystem().getDrawable(R.drawable
+        //        .ic_marker_event));
+        binding.map.getOverlays().add(marker);
+        controller.setCenter(new GeoPoint(event.getLocation()));
     }
 
     @Override

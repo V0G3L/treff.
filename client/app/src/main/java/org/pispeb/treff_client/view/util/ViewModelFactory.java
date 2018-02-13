@@ -30,6 +30,7 @@ import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
 import org.pispeb.treff_client.view.home.friendList.FriendListViewModel;
 import org.pispeb.treff_client.view.home.groupList.AddGroupViewModel;
 import org.pispeb.treff_client.view.home.groupList.GroupListViewModel;
+import org.pispeb.treff_client.view.home.map.MapViewModel;
 import org.pispeb.treff_client.view.login.LoginViewModel;
 import org.pispeb.treff_client.view.login.RegisterViewModel;
 
@@ -99,6 +100,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new AddFriendViewModel(userRepository);
         } else if (FriendViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new FriendViewModel(userGroupRepository, userRepository);
+        } else if (MapViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new MapViewModel(
+                    userGroupRepository,
+                    userRepository,
+                    eventRepository,
+                    pollRepository);
         } else if (AddGroupViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddGroupViewModel(userGroupRepository);
         } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {

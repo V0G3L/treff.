@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             android:onClick="@{() -> vm.onCenterClick()}"
-            android:src="@drawable/ic_center"
+            android:src="@drawable/ic_my_location_black_24dp"
             android:tint="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

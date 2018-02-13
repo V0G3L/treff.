@@ -33,6 +33,7 @@ import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
 import org.pispeb.treff_client.view.home.map.markers.UserMarker;
 import org.pispeb.treff_client.view.util.State;
+import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,7 @@ import java.util.List;
 
 public class MapFragment extends Fragment {
 
+    public static final int STANDARD_ZOOM_LEVEL = 15;
     private FragmentMapBinding binding;
     private MapViewModel vm;
 
@@ -98,7 +100,9 @@ public class MapFragment extends Fragment {
 
         binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_map, container, false);
-        vm = ViewModelProviders.of(this).get(MapViewModel.class);
+        vm = ViewModelProviders.of(this,
+                ViewModelFactory.getInstance(getContext()))
+                .get(MapViewModel.class);
         binding.setVm(vm);
 
         Configuration.getInstance().load(getContext(),
@@ -116,6 +120,9 @@ public class MapFragment extends Fragment {
 
         vm.getFriends().observe(this, friends ->
                 updateContactLocations(friends));
+
+        vm.getEvents().observe(this, events ->
+                updateEventLocations(events));
 
         //make sure the map catches lateral swipes instead of the viewpager
         disableTouchTheft(binding.map);
@@ -165,6 +172,7 @@ public class MapFragment extends Fragment {
                     // Log.i("Map", "location not null");
                     GeoPoint currentPoint = new GeoPoint(location);
                     binding.map.getController().setCenter(currentPoint);
+                    binding.map.getController().setZoom(STANDARD_ZOOM_LEVEL);
                 }
                 break;
             default:
@@ -193,7 +201,8 @@ public class MapFragment extends Fragment {
 
         //set default zoom level and location to show Karlsruhe, Germany
         IMapController mapController = map.getController();
-        mapController.setZoom(15);
+        mapController.setZoom(STANDARD_ZOOM_LEVEL);
+        map.setMinZoomLevel(4);
         GeoPoint startPoint = new GeoPoint(49.006889, 8.403653);
         mapController.setCenter(startPoint);
 

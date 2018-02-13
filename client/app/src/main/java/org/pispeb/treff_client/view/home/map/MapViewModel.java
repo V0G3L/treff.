@@ -1,7 +1,9 @@
 package org.pispeb.treff_client.view.home.map;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.arch.paging.PagedList;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -9,6 +11,10 @@ import android.os.Bundle;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.PollRepository;
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
@@ -27,23 +33,45 @@ public class MapViewModel extends ViewModel implements LocationListener {
     // indicator of noticeable delay to last location
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
+    // Repositories to fetch data from db
+    private UserGroupRepository userGroupRepository;
+    private UserRepository userRepository;
+    private EventRepository eventRepository;
+    private PollRepository pollRepository;
+
+    // Livedata objects to keep map up to date
     private MutableLiveData<Location> userLocation;
     private MutableLiveData<List<User>> friends;
-    private MutableLiveData<List<Event>> events;
+    private LiveData<PagedList<Event>> events;
     private SingleLiveEvent<State> state;
 
 
-    public MapViewModel() {
-        this.state = new SingleLiveEvent<>();
+    public MapViewModel(
+            UserGroupRepository userGroupRepository,
+            UserRepository userRepository,
+            EventRepository eventRepository,
+            PollRepository pollRepository) {
+
+        this.userGroupRepository = userGroupRepository;
+        this.userRepository = userRepository;
+        this.eventRepository = eventRepository;
+        this.pollRepository = pollRepository;
+
         this.userLocation = new MutableLiveData<>();
+        this.events = eventRepository.getEvents();
+        // set all to fetch from db
         this.friends = new MutableLiveData<>();
 
-        //Test]
+        this.state = new SingleLiveEvent<>();
+
+        //Test
         ArrayList<User> f = new ArrayList<>();
         User u = new User("Peter", true, false, new Position(49, 8.4),
                 new Date(100000));
         f.add(u);
         friends.postValue(f);
+
+
     }
 
     public void onCenterClick() {
@@ -69,6 +97,10 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     public MutableLiveData<List<User>> getFriends() {
         return friends;
+    }
+
+    public LiveData<PagedList<Event>> getEvents() {
+        return events;
     }
 
     @Override

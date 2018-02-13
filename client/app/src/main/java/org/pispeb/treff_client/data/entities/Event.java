@@ -70,6 +70,10 @@ public class Event extends Occasion{
         this.creator = creator;
     }
 
+    public String getStartString() {
+        return start.toString().substring(0, 17);
+    }
+
     public Location getLocation() {
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLatitude(position.getLat());
