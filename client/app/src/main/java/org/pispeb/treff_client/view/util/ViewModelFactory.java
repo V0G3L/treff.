@@ -22,6 +22,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
 import org.pispeb.treff_client.view.group.GroupViewModel;
 import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
+import org.pispeb.treff_client.view.group.eventList.AddEventViewModel;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
 import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
@@ -109,6 +110,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     pollRepository);
         }else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new LoginViewModel();
+        }else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new AddEventViewModel(eventRepository, userGroupRepository);
         } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new RegisterViewModel();
         }

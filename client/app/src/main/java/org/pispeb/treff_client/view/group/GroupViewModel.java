@@ -25,4 +25,8 @@ public class GroupViewModel extends ViewModel {
     public LiveData<UserGroup> getGroup() {
         return group;
     }
+
+    public void addMember() {
+
+    }
 }

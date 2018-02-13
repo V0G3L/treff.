@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="vm"
+            type="org.pispeb.treff_client.view.group.eventList.AddEventViewModel"/>
+    </data>
+
     <android.support.constraint.ConstraintLayout
          android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -16,6 +22,104 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:background="@color/colorPrimary"
             app:title="@string/group_toolbar_add_event"/>
+
+        <android.support.constraint.Guideline
+            android:id="@+id/vertGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="75dp"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/paddding_standard"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/event_title"
+                android:text="@={vm.name}"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_event_18px"
+            app:layout_constraintTop_toTopOf="@id/date"
+            app:layout_constraintBottom_toBottomOf="@id/date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{vm.dateString}"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:padding="@dimen/paddding_standard"/>
+
+
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_access_time_48px"
+            app:layout_constraintTop_toTopOf="@id/start"
+            app:layout_constraintBottom_toBottomOf="@id/start"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+
+        <TextView
+            android:id="@+id/start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{vm.startString}"
+            app:layout_constraintTop_toBottomOf="@id/date"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:padding="@dimen/paddding_standard"/>
+
+        <TextView
+            android:id="@+id/end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{vm.endString}"
+            app:layout_constraintTop_toBottomOf="@id/start"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:padding="@dimen/paddding_standard"/>
+
+
+
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_marker_event"
+            android:tint="@color/black"
+            app:layout_constraintTop_toTopOf="@id/location"
+            app:layout_constraintBottom_toBottomOf="@id/location"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/end"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:padding="@dimen/paddding_standard"/>
+
 
     </android.support.constraint.ConstraintLayout>
 

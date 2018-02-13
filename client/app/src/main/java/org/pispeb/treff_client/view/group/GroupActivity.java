@@ -109,6 +109,7 @@ public class GroupActivity extends AppCompatActivity implements
     @Override
     public void onEventClick() {
         Intent intent = new Intent(this, AddEventActivity.class);
+        intent.putExtra(AddEventActivity.INTENT_GRP, groupId);
         startActivity(intent);
     }
 

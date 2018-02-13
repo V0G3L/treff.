@@ -49,6 +49,7 @@
     <string name="username_contact">Contact\'s Username</string>
     <string name="add_contact">Add contact</string>
     <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
     <string name="block">Block</string>
     <string name="private_group">Private Group</string>
     <string name="groupname">Groupname</string>
@@ -62,5 +63,6 @@
     <string name="mute_chat_setting">Mute Chat</string>
     <string name="mute_location_requests_settings">Mute location requests</string>
     <string name="leave_group">Leave group</string>
+    <string name="event_title">Event Title</string>
 
 </resources>
