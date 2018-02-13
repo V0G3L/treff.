@@ -50,7 +50,6 @@
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity android:name=".view.home.groupList.AddGroupActivity"/>
         <activity android:name=".view.group.eventList.AddEventActivity"/>
-        <activity android:name=".view.group.eventList.AddPollActivity"/>
 
         <service
             android:name=".data.gps_handling.GPSProvider"

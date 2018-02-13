@@ -1,11 +1,9 @@
 package org.pispeb.treff_client.view.group;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,8 +16,6 @@ import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
 import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
-import org.pispeb.treff_client.view.group.eventList.AddPollActivity;
-import org.pispeb.treff_client.view.group.eventList.EoPDialogFragment;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
@@ -28,8 +24,7 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 /**
  * Group screen, hosting chat and event fragments in tabs
  */
-public class GroupActivity extends AppCompatActivity implements
-        EoPDialogFragment.EoPDialogListener {
+public class GroupActivity extends AppCompatActivity {
 
     // identifier for group id in starting intent
     public static final String GRP_INTENT = "groupIntent";
@@ -100,13 +95,6 @@ public class GroupActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onPollClick() {
-        Intent intent = new Intent(this, AddPollActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void onEventClick() {
         Intent intent = new Intent(this, AddEventActivity.class);
         intent.putExtra(AddEventActivity.INTENT_GRP, groupId);

@@ -1,11 +1,8 @@
 package org.pispeb.treff_client.data.networking;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Poll;
-import org.pispeb.treff_client.data.entities.PollOption;
 import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.UserGroup;
-import org.pispeb.treff_client.data.entities.Event;
 
 /**
  * This class provides methods to perform the known server requests.
@@ -150,54 +147,6 @@ public class RequestEncoder {
      */
     public boolean removeEvent(int groupId, int eventId) { return false; }
 
-    /**
-     * Method to perform a create-poll request
-     * @param groupId ID of the group
-     * @param question The question of the poll
-     * @param multichoice Defines if multiple answers are allowed
-     * @param options The Options of the poll
-     * @return The first value of the array is the ID of the poll. The following values are the IDs
-     * of the olloptions
-     */
-    public Integer[] createPoll(int groupId, String question,
-                                boolean multichoice, PollOption[] options) {
-        return null;
-    }
-
-    //public boolean editPoll() {}
-
-    /**
-     * Method to perform an add-poll-option request
-     * @param groupId ID of the group
-     * @param pollId ID of the poll
-     * @param lat Latitude of the event resulting in this option (decimal digit)
-     * @param lon Longitude of the event resulting in this option (decimal digit)
-     * @param start Starting time of the event resulting in this option (unix time)
-     * @param end End time of the event resulting in this option (unix time)
-     * @return The ID of the new polloption
-     */
-    public int addPollOption(int groupId, int pollId, float lat, float lon, int start, int end) {
-        return 0;
-    }
-
-    //public boolean editPollOption(int groupId, int pollId, int optionId, )
-
-    /**
-     * Method to perform a remove-poll-option request
-     * @param groupId ID of the group
-     * @param pollId ID of the poll
-     * @param optionId ID of the option to be removed
-     * @return true if the request was succesful, fale if not
-     */
-    public boolean removePollOption(int groupId, int pollId, int optionId) { return false; }
-
-    /**
-     * Method to perform a remove-poll request
-     * @param groupId ID of the group
-     * @param pollId ID of the poll to be removed
-     * @return true if the request was succesful, fale if not
-     */
-    public boolean removePoll(int groupId, int pollId) { return false; }
 
     /**
      * Method to perform a send-chat-message request
@@ -228,13 +177,6 @@ public class RequestEncoder {
      */
     public Event getEventDetails(int eventId, int groupId) { return null; }
 
-    /**
-     * Method to get all details of a poll
-     * @param pollId The ID of the poll
-     * @param groupId The ID of the group hosting the poll
-     * @return All details as a poll object
-     */
-    public Poll getPollDetails(int pollId, int groupId) { return null;}
 
     /**
      * Method to update the current position to the server

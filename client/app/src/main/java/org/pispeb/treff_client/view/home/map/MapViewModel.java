@@ -12,7 +12,6 @@ import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.EventRepository;
-import org.pispeb.treff_client.data.repositories.PollRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
@@ -37,7 +36,6 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private UserGroupRepository userGroupRepository;
     private UserRepository userRepository;
     private EventRepository eventRepository;
-    private PollRepository pollRepository;
 
     // Livedata objects to keep map up to date
     private MutableLiveData<Location> userLocation;
@@ -49,13 +47,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
     public MapViewModel(
             UserGroupRepository userGroupRepository,
             UserRepository userRepository,
-            EventRepository eventRepository,
-            PollRepository pollRepository) {
+            EventRepository eventRepository) {
 
         this.userGroupRepository = userGroupRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
-        this.pollRepository = pollRepository;
 
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();

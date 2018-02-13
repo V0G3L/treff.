@@ -9,14 +9,12 @@ import android.support.annotation.NonNull;
 
 import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
-import org.pispeb.treff_client.data.database.PollDao;
 import org.pispeb.treff_client.data.database.TreffDatabase;
 import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
-import org.pispeb.treff_client.data.repositories.PollRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
@@ -25,7 +23,6 @@ import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
 import org.pispeb.treff_client.view.group.eventList.AddEventViewModel;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
-import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
 import org.pispeb.treff_client.view.home.friendList.FriendListViewModel;
 import org.pispeb.treff_client.view.home.groupList.AddGroupViewModel;
@@ -47,13 +44,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final UserGroupDao userGroupDao;
     private final EventDao eventDao;
     private final ChatDao chatDao;
-    private final PollDao pollDao;
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final EventRepository eventRepository;
     private final ChatRepository chatRepository;
-    private final PollRepository pollRepository;
 
     private final RequestEncoder encoder;
 
@@ -70,7 +65,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         userGroupDao = database.getUserGroupDao();
         eventDao = database.getEventDao();
         chatDao = database.getChatDao();
-        pollDao = database.getPollDao();
 
 
         encoder = new RequestEncoder();
@@ -84,7 +78,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
-        pollRepository = new PollRepository(pollDao, encoder, handler);
     }
 
     @NonNull
@@ -104,8 +97,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MapViewModel(
                     userGroupRepository,
                     userRepository,
-                    eventRepository,
-                    pollRepository);
+                    eventRepository);
         } else if (AddGroupViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddGroupViewModel(userGroupRepository);
         } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {
@@ -113,8 +105,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (GroupViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupViewModel(userGroupRepository);
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new GroupEventListViewModel(eventRepository,
-                    pollRepository);
+            return (T) new GroupEventListViewModel(eventRepository);
         }else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new LoginViewModel();
         }else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
