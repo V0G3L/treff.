@@ -310,159 +310,187 @@ from oldest to youngest (see chapter \ref{updatedesc}).}
 {}
 
 \apiCommand{edit-username}
-{Changes own username.}
+{Changes the executing user's username.}
 {username/string/New username}
 {}
 {username-already-in-use}
 {account-change}
 
 \apiCommand{edit-email}
-{Editieren der eigenen E-Mail-Adresse}
-{pass/String/Passwort des eigenen Kontos,
-email/String/vorgeschlagene{,} neue E-Mail}
-{---//Leeres JSON-Objekt bei Erfolg}
+{Changes the executing user's email address.}
+{email/string/New email address.
+Must be a valid email address according to
+RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.}
+{}
 {cred-wrong, user-id-invalid, invalid-email}
 {}
 
 \apiCommand{edit-password}
-{Editieren des eigenen Passworts}
-{pass/String/aktuelles Passwort des eigenen Kontos,
-newpass/String/vorgeschlagenes{,} neues Passwort}
-{---//Leeres JSON-Objekt bei Erfolg}
+{Changes the executing user's password.
+Requires submission of the current password.}
+{pass/string/Current password,
+new-pass/string/New password}
+{}
 {cred-wrong, user-id-invalid}
 {}
 
 \apiCommand{reset-password}
-{Sendet eine Zurücksetzungsanfrage für ein Passwort.
-Falls die angegebene E-Mail-Adresse einem Benutzerkonto zugewiesen ist, wird
-eine E-Mail mit einem Zeichencode an die E-Mail-Adresse gesandt, der mit dem
-\textbf{reset-password-confirm}-Befehl genutzt werden kann, um das Passwort des
-entsprechenden Benutzerkontos zurückzusetzen.
-Ist die E-Mail-Adresse keinem Benutzerkonto zugewiesen, wird \textbf{kein}
-Fehler ausgegeben.
-Dies dient dem Schutz von E-Mail-Adressen vor Brute-Force-Angriffen.}
-{email/E-Mail-Adresse des Benutzerkontos{,} dessen Passwort zurückgesetzt werden
-soll}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Requests a password reset code.
+If the supplied email address is associated with a user account, then a
+randomly generated sequence of 64 alphanumerical symbols, the password reset
+code, is emailed to that address.
+This sequence can be used as a paremeter in the \textbf{reset-password-confirm}
+command to overwrite the current password.
+The password reset code must be unique among all user accounts and should not
+be reused.
+If the supplied email address is not associated with any account, \textbf{no}
+error is returned.
+This prevents leaking information about users' email addresses.}
+{email/string/The email address associated with the user account for which the
+password reset request is to be made.
+Must be a valid email address according to
+RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.}
+{}
 {}
 {}
 
 \apiCommand{reset-password-confirm}
-{Führt die Passwortzurücksetzung durch.
-Der verwendete Bestätigungscode ist nach Ausführung ungültig und kann
-verworfen werden.}
-{code/Bestätigungscode{,} der nach Ausführung des \textbf{reset-password}-Befehls
-an die dort angegebene E-Mail-Adresse gesandt wurde,
-pass/Neues Passwort}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Resets the password of the account associated with the supplied passwort reset
+code.
+After invocation of this command, the password reset code is invalidated and
+should be discarded.}
+{code/string/Password reset code{,} as received via email after invocation of
+    the \textbf{reset-password} command,
+new-pass/string/New password}
+{}
 {reset-code-invalid}
 {}
 
 \apiCommand{delete-account}
-{Löschen des eigenen Kontos. Dies führt wie erwartet dazu{,}
-dass der Nutzer automatisch ausgeloggt wird und dadurch seinen
-Authentifizierungstoken und somit den weiteren Zugriff auf die Funktionalitäten
-der App verliert.}
+{Deletes the executing user's account.
+This will also invalidate a user's login token, hence preventing execution of
+any further commands that require authentication.}
 {pass/String/Passwort des eigenen Kontos}
-{---//Leeres JSON-Objekt bei Erfolg}
+{}
 {cred-wrong}
 {}
 
 \apiCommand{get-user-id}
-{Abrufen der Idenfikationsnummer eines anderen Benutzerkontos durch Übergeben
-des Benutzernamens}
-{user/Benutzername des Benutzerkontos}
-{\dots/Eine Beschreibung eines Benutzerkontos{,} das zu dem angegebenen
-Benutzernamen gehört (siehe \ref{sec:accountdesc})}
+{Queries the the user account ID associated with the supplied username.}
+{user/string/Username of the account}
+{id/int/ID of the account associated with the supplied username}
 {username-invalid}
 {}
 
-\apiCommand{add-contact}
-{Hinzufügen eines anderen Benutzerkontos zur eigenen Kontaktliste.
-Fügt ebenfalls das eigene Benutzerkonto zur Kontaktliste des anderen
-Benutzerkontos hinzu.
-Dies schlägt fehl, wenn eines der zwei Benutzerkonten das andere blockiert.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
-{user-id-invalid,being-blocked,blocking-already}
+\apiCommand{send-contact-request}
+{Sends a contact request to the specified user.
+This will fail if either the specified user is already part of the executing
+user's contact list or one of the users is blocking the other.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,being-blocked,blocking-already,contact-request-pending}
+{}
+
+\apiCommand{cancel-contact-request}
+{Cancels a previously sent and still pending contact request that was issued
+by the executing user.}
+{id/int/ID of the account to which the request was sent}
+{}
+{user-id-invalid,no-contact-request}
+{}
+
+\apiCommand{accept-contact-request}
+{Accepts the contact request of the specified user.
+This adds the users to the contact list of each other.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,no-contact-request}
+{}
+
+\apiCommand{reject-contact-request}
+{Rejects the contact request of the specified user.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,no-contact-request}
 {}
 
 \apiCommand{remove-contact}
-{Entfernen eines anderen Benutzerkontos von der eigenen Kontaktliste.
-Entfernt ebenfalls das eigene Benutzerkonto von der Kontaktliste des anderen.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Removes a user from the executing user's contact list.
+Will also remove the executing user from the specified user's contact list.}
+{id/int/ID of the account}
+{}
 {user-id-invalid,not-in-contacts}
 {}
 
-\apiCommand{list-contacts}
-{Auflisten aller Kontakte des Benutzerkonto}
-{---/Keine weiteren Parameter}
-{contacts/Ein Array von Indetifikationsnummern anderer Benutzerkonten}
+\apiCommand{get-contact-list}
+{Lists all contacts and all incoming and outgoing contact requests of the
+executing user.}
+{}
+{contacts/int array/IDs of all accounts in contact list,
+incoming-requests/int array/IDs all accounts that have sent a still pending
+contact request to the executing user,
+outgoing-requests/int array/IDs all accounts to which the executing user has
+sent a still pending contact request}
 {}
 {user-id-invalid}
 
 \apiCommand{block-account}
-{Blockiert das angegebene Benutzerkonto.
-Bis dies aufgehoben wird, können das eigene und das angegebene
-Benutzerkonto sich nicht gegenseitig zur ihrer Kontaktliste hinzufügen.
-Sind die beiden Benutzerkonten bereits Kontakte, werden diese vorher aus der
-Kontaktliste des jeweils anderen Benutzerkontos entfernt.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Blocks a user.
+Until the block is lifted, neither the executing user nor the blocked user can
+send contact request to the other party.
+If the users are in each other's contact list, they are removed from the
+contact lists, just as if one of them had executed the \textbf{remove-contact}
+command, before the block is applied.
+Any pending contact requests are automatically rejected.}
+{id/int/ID of the account}
+{}
 {user-id-invalid,blocking-already}
 {}
 
 \apiCommand{unblock-account}
-{Hebt die Blockierung des angegebenen Benutzerkontos durch das eigene
-Benutzerkonto auf.}
-{id/Identifikationsnummer des anderen Benutzerkontos}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Lifts the block of the specified user that was previously issued by the
+executing user.
+This does not lift any block that was issued against the executing user.}
+{id/int/ID of the blocked user's account}
+{}
 {user-id-invalid,not-blocking}
 {}
 
 \apiCommand{create-group}
-{Erstellen einer Gruppe}
-{name/Name der Gruppe,
-members/Array an Identifikationsnummern aller Benutzerkonten{,} die nach
-Erstellung der Gruppe dieser hinzugefügt werden sollen.
-Die Identifikationsnummer des eigenen Benutzerkontos muss nicht angegeben
-werden.
-Falls dennoch vorhanden{,} wird diese ignoriert.
-Das Array muss mindestens eine gültige Identifikationsnummer beinhalten{,} die
-nicht die eigene ist.}
-{id/Eindeutige Identifikationsnummer der Gruppe{,} mit der diese in
-weiteren Befehlen referenziert werden kann}
+{Creates a new user group.}
+{group/object/Complete description of the new user group{,} omitting the ID.
+The members array must contain both the executing user's account ID and at
+least one other account ID.}
+{id/int/ID of the newly created user group}
 {user-id-invalid,no-user-invited}
 {}
 
-\apiCommand{edit-group-name}
-{Editieren des Namens einer Gruppe, in der das Benutzerkonto Mitglied ist}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-name/Neuer name der Gruppe}
-{---/Leeres JSON-Objekt bei Erfolg}
+\apiCommand{edit-group}
+{Edits a user group of which the executing user is a member.}
+{group/object/New complete description of the group{,} omitting the members
+array.}
+{}
 {group-id-invalid,no-permission-group-edit}
 {}
 
 \apiCommand{add-group-members}
-{Hinzufügen eines oder mehrerer Benutzerkonten zu einer Gruppe, in der das
-Benutzerkonto Mitglied ist}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-members/Array an Identifikationsnummern aller Benutzerkonten{,} die der Gruppe
-hinzugefügt werden sollen.
-Es dürfen keine Identifikationsnummern von Benutzerkonten angegeben werden{,}
-die bereits Teil der Gruppe ist.
-Insbesondere darf nicht die Identifikationsnummer des eigenen Benutzerkontos
-angegeben werden.}
-{---/Leeres JSON-Objekt bei Erfolg}
+{Adds one or more members to a user group of which the executing user is a
+member.}
+{group-id/int/ID of the user group,
+members/int array/ID of all user accounts that are to be added to the user
+group.
+No account may be specified that is already part of the user group.
+In particular{,} the executing user's account ID may not be specified.}
+{}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,%
 user-already-in-group}
 {}
 
 \apiCommand{remove-group-members}
-{remove one or more accounts from a user group of the acting account}
-{id/int/the ID of the group,
-members/account array/array of the IDs of all members to remove from the user
+{Removes one or more accounts from a user group of which the executing user is
+a member.}
+{id/int/The ID of the group,
+members/account array/Array of the IDs of all members to remove from the user
 group. It may not contain one or more IDs of Account that are no member of that
 user group. It may contain the ID of the acting Account. Obviously this results
 in removing the own account and accordingly losing further access to the user
@@ -473,211 +501,222 @@ then the user group will be deleted.}
 {}
 
 \apiCommand{get-permissions}
-{get the permissions of an account in a user group of the acting account}
-{id/int/the ID of the user group,
-user-id/int/the ID of the account}
-{permissions/object/the complete description of the permissions
+{Gets the permissions of an account in a user group of which the executing user is
+a member.}
+{id/int/The ID of the user group,
+user-id/int/The ID of the account}
+{permissions/object/The complete description of the permissions
 (\ref{sec:permdesc})}
 {group-id-invalid}
 {}
 
 \apiCommand{edit-permissions}
-{edit the permissions of an account in a user group}
-{id/int/the ID of the user group,
-user-id/int/the ID of the account,
-permissions/object/a new complete description of the permissions
+{Edits the permissions of an account in a user groupof which the executing user
+is a member.}
+{id/int/The ID of the user group,
+user-id/int/The ID of the account,
+permissions/object/A new complete description of the permissions
 (\ref{sec:permdesc})}
 {}
 {group-id-invalid, no-permission-permissions-edit}
 {}
 
 \apiCommand{create-event}
-{creates an event in a user group of the acting account}
-{group-id/int/the ID of the user group,
-event/object/a new complete description of the event
+{Creates an event in a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+event/object/A new complete description of the event
 without the ID and the participants array}
-{id/int/the ID of the event}
+{id/int/The ID of the event}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-event-create}
 {}
 
 \apiCommand{edit-event}
-{edit an event of a user group of the acting account}
-{group-id/int/the ID of the user group,
-event/object/new complete description of the event without the participants array}
+{Edits an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+event/object/New complete description of the event without the participants
+array}
 {}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-event-edit}
 {}
 
 \apiCommand{join-event}
-{join an event of a user group of the acting account}
-{group-id/int/the ID of the user group,
-id/int/the ID of the event}
+{Joins an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
 {}
 {group-id-invalid,event-id-invalid,already-participating-event}
 {}
 
 \apiCommand{leave-event}
-{leave an event of a user group of the acting account}
-{group-id/int/the ID of the user group,
-id/int/the ID of the event}
+{Leaves an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
 {}
 {group-id-invalid,event-id-invalid,not-participating-event}
 {}
 
 \apiCommand{remove-event}
-{remove an event from a user group of the acting account}
-{group-id/int/the ID of the user group,
-id/int/the ID of the event}
+{Removes an event from a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
 {}
 {group-id-invalid,event-id-invalid,no-permission-event-edit}
 {}
 
 \apiCommand{create-poll}
-{create a new poll in a user group of the acting account}
-{group-id/int/the ID of the user group,
-poll/object/a new complete description of the poll without the ID}
-{id/int/the ID of the poll}
+{Creates a new poll in a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+poll/object/A new complete description of the poll without the ID}
+{id/int/The ID of the poll}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-create}
 {}
 
 \apiCommand{edit-poll}
-{edit a poll of a user group of the acting account}
-{group-id/int/the ID of the user group,
-id/int/the ID of the poll,
-poll/object/a new complete description of the poll option without
+{Edits a poll of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the poll,
+poll/object/A new complete description of the poll option without
 the options array and the creator}
 {}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{add-poll-option}
-{add a poll option to a poll of a user group of the acting account}
-{group-id/int/the ID of the user group,
-poll-id/int/the ID of the poll,
-latitude/decimal degree/the suggested latitude of the position,
-longitude/decimal degree/the suggested longitude of the position,
-time-start/date/the suggested start time,
-time-end/date/the suggested end time}
-{id/int/the ID of the poll option}
+{Adds a poll option to a poll of a user group of which the executing user is a
+member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+poll/object/Complete description of the new poll option without the ID and the
+supporters array.}
+{id/int/The ID of the poll option}
 {group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-edit}
 {}
 
 % TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
-{edit a poll option of a poll of a user group of the acting account}
-{group-id/int/the ID of the user group,
-poll-id/int/the ID of the poll,
-id/int/the ID of the poll option,
-poll/object/a new complete description of the poll option without
-the supporters array}
+{Edits a poll option of a poll of a user group of which the executing user is
+a member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option,
+poll/object/A new complete description of the poll option without the
+supporters array}
 {}
-{group-id-invalid,poll-id-invalid,poll-option-id-invalid,no-permission-poll-edit}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,%
+no-permission-poll-edit}
 {}
 
 \apiCommand{vote-for-option}
-{vote for a poll option of a poll of a user group of the acting account}
-{group-id/int/the ID of the user group,
-poll-id/int/the ID of the poll,
-id/int/the ID of the poll option}
+{Votes for a poll option of a poll of a user group of which the executing user
+is a member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
 {}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,poll-not-multichoice,
 already-voting-for-option}
 {}
 
 \apiCommand{withdraw-vote-for-option}
-{withdraw the vote of the acting account from a poll option it has voted for}
-{group-id/int/the ID of the user group,
-poll-id/int/the ID of the poll,
-id/int/the ID of the poll option}
+{Withdraws the vote of the executing user from a poll option.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
 {}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,not-voting-for-option}
 {}
 
 \apiCommand{remove-poll-option}
-{remove a poll option from a poll of a user group of the acting account}
-{group-id/int/the ID of the group,
-poll-id/int/the ID of the poll,
-id/int/the ID of the poll option}
+{Removes a poll option from a poll of a user group of which the executing user
+is a member.}
+{group-id/int/The ID of the group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
 {}
 {group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
 poll-option-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{remove-poll}
-{remove a poll from a user group of the acting account}
-{group-id/int/the ID of the group,
-id/int/the ID of the poll}
+{Removes a poll from a user group of which the executing user is a member.}
+{group-id/int/The ID of the group,
+id/int/The ID of the poll}
 {}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{send-chat-message}
-{send a chat message to a group of the acting account}
+{Sends a chat message to a user group of which the executing user is a member.}
 {group-id/int/the ID of the user group,
-message/string/the chat message}
+message/string/The chat message}
 % TODO: Länge beschränken (vllt. auch Gruppengröße etc)
 {}
 {group-id-invalid}
 {}
 
 \apiCommand{list-groups}
-{list all group of the acting account}
+{Lists all groups of which the executing user is a member.}
 {}
-{groups/user group array/an array of shallow descriptions of every user group
-\ref{sec:groupdesc})}
+{groups/user group array/An array of shallow descriptions of every user group
+(see \ref{sec:groupdesc})}
 {}
 {}
 
 \apiCommand{get-group-details}
-{get the details of a user group of the acting account}
-{id/int/the ID of the user group}
-{user group/object/the complete description of the user group (\ref{sec:groupdesc})}
+{Gets the details of a user group of which the executing user is a member.}
+{id/int/The ID of the user group}
+{user-group/object/The complete description of the user group
+(\ref{sec:groupdesc})}
 {group-id-invalid}
 {}
 
 \apiCommand{get-user-details}
-{get the details of an account}
+{Gets the details of an account.}
 {id/int/the ID of the account}
-{account/object/the complete description of the account (\ref{sec:accountdesc})}
+{account/object/The complete description of the account
+(\ref{sec:accountdesc})}
 {user-id-invalid}
 {}
 
 % TODO: Definiere „aktive Verabredung“
 \apiCommand{get-event-details}
-{get the details of an event in a user group of the acting account}
-{id/int/the ID of the event,
-group-id/int/the ID of the group}
-{event/object/the complete description of the event (\ref{sec:eventdesc})}
+{Gets the details of an event in a user group of which the executing user is
+a member.}
+{id/int/The ID of the event,
+group-id/int/The ID of the group}
+{event/object/The complete description of the event (see \ref{sec:eventdesc})}
 {group-id-invalid,event-id-invalid}
 {}
 
 \apiCommand{get-poll-details}
-{get the details of a poll in a user group of the acting account}
-{id/int/the ID of the poll,
-group-id/int/the ID of the group}
-{poll/object/the complete description of the poll (\ref{sec:polldesc})}
+{Gets the details of a poll in a user group of which the executing user is
+a member.}
+{id/int/The ID of the poll,
+group-id/int/The ID of the group}
+{poll/object/The complete description of the poll (see \ref{sec:polldesc})}
 {group-id-invalid,poll-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{request-position}
-{send a position-request to all members of a specific group}
-{id/int/the ID of the group,
-time/date/the time the location transmission ends}
+{Sends a position request to all members of a user group of which the executing
+user is a member.}
+{id/int/The ID of the group,
+time/date/The time the location transmission ends}
 {}
 {group-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
-{update the position of the account}
-{latitude/decimal degree/the latitude of the position,
-longitude/decimal degree/the longitude of the position,
-time-measured/date/the moment of the measurement}
+{Updates the position of executing user.}
+{latitude/decimal degree/The latitude of the position,
+longitude/decimal degree/The longitude of the position,
+time-measured/date/The moment of the measurement}
 {}
 {time-measured-future}
 {}
