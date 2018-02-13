@@ -29,6 +29,9 @@ public class CreateEventCommand extends AbstractCommand {
         }
 
         //TODO timeEnd-in-past-check
+        if (input.timeEnd < System.currentTimeMillis()) {
+            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+        }
 
         // get account and check if it still exists
         Account actingAccount =
