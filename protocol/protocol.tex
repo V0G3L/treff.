@@ -216,68 +216,63 @@ For the sake of consistency, they are listed here anyways.
 
 \section{Commands}\label{sec:commands}
 
-\apiErrorNew{username-already-in-use}{000}{Username already in use}
-\apiErrorNew{invalid-email}{010}{Email invalid}
-\apiErrorNew{token-invalid}{020}{Authentication token invalid}
-\apiErrorNew{cred-wrong}{030}{Unknown username/password combination}
-\apiErrorNew{reset-code-invalid}{040}{Password reset code invalid}
-
-\apiErrorNew{no-permission-group-edit}{100}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Gruppe zu editieren}
-\apiErrorNew{no-permission-members-edit}{101}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Liste an Gruppenmitgliedern zu editieren}
-\apiErrorNew{no-permission-event-create}{110}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um in der angegebenen Gruppe Verabredungen zu erstellen}
-\apiErrorNew{no-permission-event-edit}{111}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Verabredung zu editieren}
-\apiErrorNew{no-permission-poll-create}{120}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um in der angegebenen Gruppe Abstimmung zu erstellen}
-\apiErrorNew{no-permission-poll-edit}{121}{Das Benutzerkonto besitzt nicht
-die nötigen Rechte, um die Abstimmung zu editieren}
-\apiErrorNew{no-permission-permissions-edit}{122}{Das Benutzerkonto besitzt
-nicht die nötigen Rechte, um die Berechtigungen zu editieren}
-
-\apiErrorNew{username-invalid}{200}{Nutzername ungültig}
-\apiErrorNew{user-id-invalid}{201}{Mindestens eine
-Benutzerkonto-Identifikationsnummer ungültig}
-\apiErrorNew{group-id-invalid}{210}{Gruppen-Identifikationsnummer ungültig
-oder Benutzerkonto nicht Teil der Gruppe}
-\apiErrorNew{event-id-invalid}{220}{Verabredungs-Identifikationsnummer ungültig}
-\apiErrorNew{poll-id-invalid}{230}{Abstimmungs-Identifikationsnummer ungültig}
-\apiErrorNew{poll-option-id-invalid}{240}
-{Abstimmungsoptions-Identifikationsnummer ungültig}
-
-\apiErrorNew{time-end-in-past}{300}{Mindestens ein Endzeitpunkt liegt
-in der Vergangenheit}
-\apiErrorNew{time-end-start-conflict}{301}{Mindestens ein Endzeitpunkt liegt
-nicht nach dem dazugehörigen Startzeitpunkt}
-\apiErrorNew{time-measured-future}{310}{Messzeitpunkt liegt zu weit in der
-Zukunft}
-
-\apiErrorNew{not-in-contacts}{400}{Benutzerkonto nicht in
-der eigenen Kontaktliste}
-\apiErrorNew{being-blocked}{401}{Benutzerkonto wird vom angegeben
-Benutzerkonto blockiert}
-\apiErrorNew{blocking-already}{402}{Benutzerkonto wird durch
-das eigene Benutzerkonto blockiert}
-\apiErrorNew{not-blocking}{403}{Benutzerkonto wird nicht durch
-das eigene Benutzerkonto blockiert}
-\apiErrorNew{no-user-invited}{410}{Kein Benutzerkonto eingeladen,
-das nicht das eigene ist}
-\apiErrorNew{user-already-in-group}{411}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches bereits Teil der Gruppe ist}
-\apiErrorNew{user-not-in-group}{412}{Mindestens eine Identifikationsnummer
-gehört zu einem Benutzerkonto, welches nicht Teil der Gruppe ist}
-\apiErrorNew{already-participating-event}{420}{Das Benutzerkonto ist bereits
-Teil dieser Verabredung}
-\apiErrorNew{not-participating-event}{421}{Das Benutzerkonto ist kein Teil
-dieser Verabredung}
-\apiErrorNew{already-voting-for-option}{430}{Das Benutzerkonto hat bereits
-eine Stimme für diese Option abgegeben}
-\apiErrorNew{poll-not-multichoice}{431}{Es ist keine Mehrfachauswahl für
-diese Abstimmung möglich}
-\apiErrorNew{not-voting-for-option}{432}{Das Benutzerkonto hat keine Stimme
-für dies Option abgegeben}
+\apiErrorNew{syntax}{1000}{parameter wasn't given or has a wrong format}
+\apiErrorNew{unkown-command}{1001}{unknown command}
+\apiErrorNew{token-invalid}{1100}{authentication token invalid}
+\apiErrorNew{cred-wrong}{1101}{username/password combination invalid}
+\apiErrorNew{reset-code-invalid}{1102}{password reset code invalid}
+\apiErrorNew{user-id-invalid}{1200}
+{at least one account identification number is invalid}
+\apiErrorNew{group-id-invalid}{1201}
+{group identification number is invalid or account not part of the group}
+\apiErrorNew{event-id-invalid}{1202}{event identification number invalid}
+\apiErrorNew{poll-id-invalid}{1203}{poll identification number invalid}
+\apiErrorNew{poll-option-id-invalid}{1204}
+{poll option identification number invalid}
+\apiErrorNew{username-already-in-use}{1300}{username already in use}
+\apiErrorNew{email-invalid}{1301}{email is invalid}
+\apiErrorNew{username-invalid}{1302}{username is invalid}
+\apiErrorNew{time-end-in-past}{1400}{at least one end time is in the past}
+\apiErrorNew{time-end-start-conflict}{1401}
+{at least one end time is not after the corresponding start time}
+\apiErrorNew{time-measured-future}{1402}
+{the time of measurement is to far in the future}
+\apiErrorNew{already-in-contacts}{1500}{account already in contact list}
+\apiErrorNew{not-in-contact}{1501}{account isn't part of the own contact list}
+\apiErrorNew{reflexive-contact}{1502}{account can't be a contact of itself}
+\apiErrorNew{being-blocked}{1503}{this account was blocked by the given account}
+\apiErrorNew{blocking-already}{1504}
+{the given account was blocked by this account}
+\apiErrorNew{not-blocking}{1505}
+{the given account wasn't blocked by this account}
+\apiErrorNew{reflexive-block}{1506}{account can't block itself}
+\apiErrorNew{no-user-invited}{1507}{no account invited except the own account}
+\apiErrorNew{user-already-in-group}{1508}
+{at least one account is already part of the group}
+\apiErrorNew{user-not-in-group}{1509}
+{at least one account is not part of the group}
+\apiErrorNew{already-participating-event}{1510}
+{account already part of this event}
+\apiErrorNew{not-participating-event}{1511}{account no part of this event}
+\apiErrorNew{already-voting-for-option}{1512}
+{account already voted for this option}
+\apiErrorNew{poll-not-multichoice}{1513}
+{multi-choice is not available for this poll}
+\apiErrorNew{not-voting-for-option}{1514}{account didn't vote for this option}
+\apiErrorNew{no-permission-edit-permissions}{2000}
+{account doesn't possess the permission to edit permissions}
+\apiErrorNew{no-permission-edit-group}{2100}
+{account doesn't possess the permission to edit the group}
+\apiErrorNew{no-permission manage-members}{2101}
+{account doesn't possess the permission to edit the list of group members}
+\apiErrorNew{no-permission-create-event}{2200}
+{account doesn't possess the permission to create events in this group}
+\apiErrorNew{no-permission-permissions-edit-any-event}{2201}
+{account doesn't possess the permission to edit the event}
+\apiErrorNew{no-permission-create-poll}{2300}
+{account doesn't possess the permission to create polls in this group}
+\apiErrorNew{no-permission-edit-any-poll}{2301}
+{account doesn't possess the permission to edit the poll}
 
 All commands except for \textbf{login}, \textbf{register},
 \textbf{reset-password}, and \textbf{reset-password-confirm} require the
@@ -290,7 +285,7 @@ following parameter:\\
 \apiCommand{register}
 {Registers a new user account.
 Declaring an e-mail adress is optional.
-It may be set at a later time via the \textbf{edit-emai} command.}
+It may be set at a later time via the \textbf{edit-email} command.}
 {user/string/Username of the account,
 pass/string/Password of the account}
 {token/string/Authentication token}
@@ -465,276 +460,225 @@ user-already-in-group}
 {}
 
 \apiCommand{remove-group-members}
-{Entfernen eines oder mehrerer Benutzerkonten von einer Gruppe, in der das
-Benutzerkonto Mitglied ist}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-members/Array an Identifikationsnummern aller Benutzerkonten{,} die aus der
-Gruppe entfernt werden sollen.
-Es dürfen keine Identifikationsnummern von Benutzerkonten angegeben werden{,}
-die nicht Teil der Gruppe sind.
-Es darf die Identifikationsnummer des eigenen Benutzerkontos angegeben werden.
-Dies führt wie erwartet dazu{,} dass das eigene Benutzerkonto den weiteren
-Zugriff auf die Gruppe verliert.
-Werden durch diesen Befehl alle Mitglieder einer Gruppe entfernt{,} wird die
-Gruppe gelöscht.}
-{---/Leeres JSON-Objekt bei Erfolg}
+{remove one or more accounts from a user group of the acting account}
+{id/int/the ID of the group,
+members/account array/array of the IDs of all members to remove from the user
+group. It may not contain one or more IDs of Account that are no member of that
+user group. It may contain the ID of the acting Account. Obviously this results
+in removing the own account and accordingly losing further access to the user
+group. If all remaining members of the user group are removed by this command
+then the user group will be deleted.}
+{}
 {group-id-invalid,user-id-invalid,no-permission-members-edit,user-not-in-group}
 {}
 
 \apiCommand{get-permissions}
-{Abfragen der Rechte eines Benutzerkontos in einer Gruppe}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-userid/Eindeutige Identifikationsnummer des Benutzerkontos}
-{permissions/Eine Rechtebeschreibung (Siehe Kapitel \ref{sec:permdesc})}
+{get the permissions of an account in a user group of the acting account}
+{id/int/the ID of the user group,
+user-id/int/the ID of the account}
+{permissions/object/the complete description of the permissions
+(\ref{sec:permdesc})}
 {group-id-invalid}
 {}
 
 \apiCommand{edit-permissions}
-{Ändern der Rechte eines Benutzerkontos in einer Gruppe}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-userid/Eindeutige Identifikationsnummer des Benutzerkontos,
-permissions/Eine partielle Rechtebeschreibung{,} die alle zu überschreibenden
-Wertepaare enthält (Siehe Kapitel \ref{sec:permdesc})}
-{---/Leeres JSON-Objekt bei Erfolg}
+{edit the permissions of an account in a user group}
+{id/int/the ID of the user group,
+user-id/int/the ID of the account,
+permissions/object/a new complete description of the permissions
+(\ref{sec:permdesc})}
+{}
 {group-id-invalid, no-permission-permissions-edit}
 {}
 
 \apiCommand{create-event}
-{Erstellen einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-werden soll,
-event/Complete description of the event but without ID and participants array}
-{id/Eindeutige Identifikationsnummer der Verabredung{,} mit der diese in
-weiteren Befehlen referenziert werden kann}
+{creates an event in a user group of the acting account}
+{group-id/int/the ID of the user group,
+event/object/a new complete description of the event
+without the ID and the participants array}
+{id/int/the ID of the event}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-event-create}
 {}
 
 \apiCommand{edit-event}
-{Editieren einer Verabredung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-event/New complete description of the event without the participants array}
-{---/Leeres JSON-Objekt bei Erfolg}
+{edit an event of a user group of the acting account}
+{group-id/int/the ID of the user group,
+event/object/new complete description of the event without the participants array}
+{}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-event-edit}
 {}
 
 \apiCommand{join-event}
-{Beitreten einer Verabredung einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Verabredung}
-{---/Leeres JSON-Objekt bei Erfolg}
+{join an event of a user group of the acting account}
+{group-id/int/the ID of the user group,
+id/int/the ID of the event}
+{}
 {group-id-invalid,event-id-invalid,already-participating-event}
 {}
 
 \apiCommand{leave-event}
-{Verlassen einer Verabredung, an welcher das Benutzerkonto teilnimmt}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Verabredung}
-{---/Leeres JSON-Objekt bei Erfolg}
+{leave an event of a user group of the acting account}
+{group-id/int/the ID of the user group,
+id/int/the ID of the event}
+{}
 {group-id-invalid,event-id-invalid,not-participating-event}
 {}
 
 \apiCommand{remove-event}
-{Entfernen einer Verabredung aus einer Gruppe, in der das Benutzerkonto
-Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Verabredung}
-{---/Leeres JSON-Objekt bei Erfolg}
+{remove an event from a user group of the acting account}
+{group-id/int/the ID of the user group,
+id/int/the ID of the event}
+{}
 {group-id-invalid,event-id-invalid,no-permission-event-edit}
 {}
 
 \apiCommand{create-poll}
-{Erstellen einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-werden soll,
-question/Frage{,} über dessen Antwort abgestimmt wird,
-multi-choice/Boolscher Wert{,} der angibt{,} ob ein Nutzer für mehrere
-Optionen stimmen kann,
-options/Array an Beschreibungen von Abstimmungsoptionen{,} die nach der
-Erstellung der Abstimmung hinzugefügt werden sollen}
-{id/Eindeutige Identifikationsnummer der Abstimmung{,} mit der diese in
-weiteren Befehlen referenziert werden kann,
-option-ids/Array an Identifikationsnummern der Abstimmungsoptionen. Die
-Reihenfolge dieser IDs entspricht genau der Reihenfolge der angegebenen
-Abstimmungsoptionen.}
+{create a new poll in a user group of the acting account}
+{group-id/int/the ID of the user group,
+poll/object/a new complete description of the poll without the ID}
+{id/int/the ID of the poll}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-create}
 {}
 
 \apiCommand{edit-poll}
-{Editieren einer Abstimmung in einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Abstimmung,
-\dots/Alle Eigenschaften{,} mit Ausnahme des Abstimmungsoptionsarrays und der
-Identifikationsnummer{,} die überschrieben werden sollen.
-Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
-{---/Leeres JSON-Objekt bei Erfolg}
+{edit a poll of a user group of the acting account}
+{group-id/int/the ID of the user group,
+id/int/the ID of the poll,
+poll/object/a new complete description of the poll option without
+the options array and the creator}
+{}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{add-poll-option}
-{Hinzufügen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
-Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung{,} zu der die Abstimmungsoption
-hinzugefügt werden soll,
-latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-time-start/Vorgeschlagener Startzeitpunkt (Angabe in Unixzeit),
-time-end/Vorgeschlagener Endzeitpunkt (Angabe in Unixzeit)}
-{id/Eindeutige Identifikationsnummer der Abstimmungsoption{,} mit der diese in
-weiteren Befehlen referenziert werden kann}
+{add a poll option to a poll of a user group of the acting account}
+{group-id/int/the ID of the user group,
+poll-id/int/the ID of the poll,
+latitude/decimal degree/the suggested latitude of the position,
+longitude/decimal degree/the suggested longitude of the position,
+time-start/date/the suggested start time,
+time-end/date/the suggested end time}
+{id/int/the ID of the poll option}
 {group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-poll-edit}
 {}
 
 % TODO: „Wählerarray“ besser formulieren
 \apiCommand{edit-poll-option}
-{Editieren einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
-Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung,
-id/Identifikationsnummer der Abstimmungsoption,
-\dots/Alle Eigenschaften{,} mit Ausnahme des Wählerarrays und der
-Identifikationsnummer{,} die überschrieben werden sollen.
-Die Schlüssel entsprechen denen einer ausführlichen Abstimmungsbeschreibung.}
-{---/Leeres JSON-Objekt bei Erfolg}
+{edit a poll option of a poll of a user group of the acting account}
+{group-id/int/the ID of the user group,
+poll-id/int/the ID of the poll,
+id/int/the ID of the poll option,
+poll/object/a new complete description of the poll option without
+the supporters array}
+{}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{vote-for-option}
-{Stimmen für eine Abstimmungsoption in einer Abstimmung einer Gruppe,
-in der das Benutzerkonto Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung,
-id/Identifikationsnummer der Abstimmungsoption}
-{---/Leeres JSON-Objekt bei Erfolg}
+{vote for a poll option of a poll of a user group of the acting account}
+{group-id/int/the ID of the user group,
+poll-id/int/the ID of the poll,
+id/int/the ID of the poll option}
+{}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,poll-not-multichoice,
 already-voting-for-option}
 {}
 
 \apiCommand{withdraw-vote-for-option}
-{Stimme zurückziehen für eine Abstimmungsoption in einer Abstimmung
-einer Gruppe, in der das Benutzerkonto Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung,
-id/Identifikationsnummer der Abstimmungsoption}
-{---/Leeres JSON-Objekt bei Erfolg}
+{withdraw the vote of the acting account from a poll option it has voted for}
+{group-id/int/the ID of the user group,
+poll-id/int/the ID of the poll,
+id/int/the ID of the poll option}
+{}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,not-voting-for-option}
 {}
 
 \apiCommand{remove-poll-option}
-{Entfernen einer Abstimmungsoption in einer Gruppe, in der das Benutzerkonto
-Mitglied ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde,
-poll-id/Identifikationsnummer der Abstimmung,
-id/Identifikationsnummer der Abstimmungsoption}
-{---/Leeres JSON-Objekt bei Erfolg}
+{remove a poll option from a poll of a user group of the acting account}
+{group-id/int/the ID of the group,
+poll-id/int/the ID of the poll,
+id/int/the ID of the poll option}
+{}
 {group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
 poll-option-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{remove-poll}
-{Entfernen einer Abstimmung aus einer Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde,
-id/Identifikationsnummer der Abstimmung}
-{---/Leeres JSON-Objekt bei Erfolg}
+{remove a poll from a user group of the acting account}
+{group-id/int/the ID of the group,
+id/int/the ID of the poll}
+{}
 {group-id-invalid,poll-id-invalid,no-permission-poll-edit}
 {}
 
 \apiCommand{send-chat-message}
-{Senden einer Textnachricht an eine Gruppe, in der das Benutzerkonto Mitglied
-ist}
-{group-id/Identifikationsnummer der Gruppe,
-message/Textnachricht} % TODO: Länge beschränken (vllt. auch Gruppengröße etc)
-{---/Leeres JSON-Objekt bei Erfolg}
+{send a chat message to a group of the acting account}
+{group-id/int/the ID of the user group,
+message/string/the chat message}
+% TODO: Länge beschränken (vllt. auch Gruppengröße etc)
+{}
 {group-id-invalid}
 {}
 
 \apiCommand{list-groups}
-{Auflisten der Gruppen, in denen das Benutzerkonto Mitglied ist}
-{---/Keine weiteren Parameter}
-{groups/Ein Array an oberflächlich beschriebenen Gruppen (siehe
-Kapitel \ref{sec:groupdesc})}
+{list all group of the acting account}
+{}
+{groups/user group array/an array of shallow descriptions of every user group
+\ref{sec:groupdesc})}
 {}
 {}
 
 \apiCommand{get-group-details}
-{Abrufen von Details einer Gruppe, in denen das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Gruppe}
-{\dots/Eine ausführliche Beschreibung der Gruppe{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:groupdesc})}
+{get the details of a user group of the acting account}
+{id/int/the ID of the user group}
+{user group/object/the complete description of the user group (\ref{sec:groupdesc})}
 {group-id-invalid}
 {}
 
 \apiCommand{get-user-details}
-{Abrufen von Details eines Benutzerkontos}
-{id/Identifikationsnummer des Benutzerkontos}
-{\dots/Eine Beschreibung eines Benutzerkontos{,} das zu der angegebenen
-ID gehört (siehe \ref{sec:accountdesc})}
+{get the details of an account}
+{id/int/the ID of the account}
+{account/object/the complete description of the account (\ref{sec:accountdesc})}
 {user-id-invalid}
 {}
 
 % TODO: Definiere „aktive Verabredung“
 \apiCommand{get-event-details}
-{Abrufen von Details einer aktiven Verabredung, die in einer Gruppe erstellt
-wurde, in der das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Verabredung,
-group-id/Identifikationsnummer der Gruppe{,} in der die Verabredung erstellt
-wurde}
-{\dots/Eine ausführliche Beschreibung der Verabredung{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:eventdesc})}
+{get the details of an event in a user group of the acting account}
+{id/int/the ID of the event,
+group-id/int/the ID of the group}
+{event/object/the complete description of the event (\ref{sec:eventdesc})}
 {group-id-invalid,event-id-invalid}
 {}
 
 \apiCommand{get-poll-details}
-{Abrufen von Details einer aktiven Abstimmung, die in einer Gruppe erstellt
-wurde, in der das Benutzerkonto Mitglied ist}
-{id/Identifikationsnummer der Abstimmung,
-group-id/Identifikationsnummer der Gruppe{,} in der die Abstimmung erstellt
-wurde}
-{\dots/Eine ausführliche Beschreibung der Abstimmung{,} die zu der angegebenen
-Identifikationsnummer gehört (siehe \ref{sec:polldesc})}
+{get the details of a poll in a user group of the acting account}
+{id/int/the ID of the poll,
+group-id/int/the ID of the group}
+{poll/object/the complete description of the poll (\ref{sec:polldesc})}
 {group-id-invalid,poll-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{request-position}
-{Sendet eine Standortanfrage an eine Gruppe}
-{id/Eindeutige Identifikationsnummer der Gruppe,
-time/ Endzeit der Standortübertragung}
-{---/Leeres JSON-Objekt bei Erfolg}
+{send a position-request to all members of a specific group}
+{id/int/the ID of the group,
+time/date/the time the location transmission ends}
+{}
 {group-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
-{Aktualisiert die Position des Benutzerkontos.
-Der Messzeitpunkt darf aus Sicht der Servers maximal 30 Sekunden in der Zukunft
-liegen.}
-{latitude/Breitengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-longitude/Längengrad der vorgeschlagenen Position (Angabe als Dezimalgrad),
-time-measured/Zeitpunkt{,} zu dem die Position gemessen wurde (Angabe in
-Unixzeit)}
-{---/Leeres JSON-Objekt bei Erfolg}
+{update the position of the account}
+{latitude/decimal degree/the latitude of the position,
+longitude/decimal degree/the longitude of the position,
+time-measured/date/the moment of the measurement}
+{}
 {time-measured-future}
 {}
 
