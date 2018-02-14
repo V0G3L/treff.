@@ -14,18 +14,20 @@ import java.util.Date;
  */
 
 @Entity(tableName = "event")
-public class Event extends Occasion{
+public class Event extends Occasion {
     @PrimaryKey(autoGenerate = true)
     private int id;
-    private Date created;
+    //    private Date created;
     private Date start;
+    private Date end;
     private Location location;
     private int creator;
 
-    public Event(String name, Date created, Date start, Location location, int creator) {
+    public Event(String name, Date start, Date end, Location location,
+                 int creator) {
         this.name = name;
-        this.created = created;
         this.start = start;
+        this.end = end;
         this.location = location;
         this.creator = creator;
     }
@@ -38,12 +40,12 @@ public class Event extends Occasion{
         this.id = id;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getEnd() {
+        return end;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
     public Date getStart() {
@@ -83,15 +85,20 @@ public class Event extends Occasion{
 
         if (id != event.id) return false;
         if (creator != event.creator) return false;
-        if (created != null ? !created.equals(event.created) : event.created != null) return false;
-        if (start != null ? !start.equals(event.start) : event.start != null) return false;
-        return location != null ? location.equals(event.location) : event.location == null;
+        if (end != null ? !end.equals(event.end) : event.end !=null) {
+            return false;
+        }
+        if (start != null ? !start.equals(event.start) : event.start != null) {
+            return false;
+        }
+        return location != null ? location
+                .equals(event.location) : event.location == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
         result = 31 * result + (start != null ? start.hashCode() : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + creator;

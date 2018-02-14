@@ -1,10 +1,13 @@
 package org.pispeb.treff_client.view.home.map;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -28,6 +33,7 @@ import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
 import org.pispeb.treff_client.view.home.map.markers.UserMarker;
@@ -174,6 +180,9 @@ public class MapFragment extends Fragment {
                     binding.map.getController().setZoom(STANDARD_ZOOM_LEVEL);
                 }
                 break;
+            case SHOW_FILTER_DIALOG:
+                showFilterDialog();
+                break;
             default:
                 Log.i("Map", "Illegal VM State");
         }
@@ -262,6 +271,48 @@ public class MapFragment extends Fragment {
         ((FolderOverlay) master.getItems().get(EVENTS)).getItems().addAll
                 (markers);
     }
+
+
+    private void showFilterDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setIcon(R.drawable.ic_layers_black_24dp);
+        builder.setTitle("Displayed Groups:");
+
+        ArrayAdapter<UserGroup> adapterGroup =
+                new ArrayAdapter<>(getContext(), R.layout.select_dialog,
+                        R.id.text);
+        if (vm.getGroups() != null) {
+            if (vm.getGroups().getValue() != null) {
+                adapterGroup.addAll(vm.getGroups().getValue());
+            }
+        }
+        adapterGroup.add(new UserGroup("DialogTest1", null, null));
+        adapterGroup.add(new UserGroup("DialogTest2", null, null));
+        adapterGroup.add(new UserGroup("DialogTest3", null, null));
+        adapterGroup.add(new UserGroup("DialogTest4", null, null));
+
+
+        builder.setPositiveButton(R.string.ok,
+                (dialog, which) -> {
+
+                    dialog.dismiss();
+                });
+
+        // TODO onclick not working at all
+        builder.setAdapter(adapterGroup,
+                (dialog, which) -> {
+            //TODO add items to list
+            UserGroup g = adapterGroup.getItem(which);
+            Log.i("Map", g.getName());
+            View item = adapterGroup.getView(which, View.inflate(getContext(),
+                    R.layout.select_dialog, binding.frame), binding.frame);
+        });
+
+        builder.show();
+
+
+    }
+
 
     /**
      * Ensures that a view correctly catches touch events

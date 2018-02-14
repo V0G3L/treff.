@@ -19,5 +19,8 @@ public enum ViewCall {
     GO_TO_REGISTER,
     SUCCESS,
     CENTER_MAP,
-    UPDATE_VIEW
+    UPDATE_VIEW,
+    SHOW_FILTER_DIALOG,
+    SHOW_DATE_DIALOG,
+    SHOW_TIME_DIALOG
 }

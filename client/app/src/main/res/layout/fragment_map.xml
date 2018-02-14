@@ -10,13 +10,53 @@
 
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.constraint.Guideline
+            android:id="@+id/vertGuide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="75dp"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="@{() -> vm.onFilterClick()}"
+            app:layout_constraintTop_toTopOf="@id/filterText"
+            app:layout_constraintBottom_toBottomOf="@id/filterText"/>
+
+        <ImageView
+            android:id="@+id/filterIcon"
+            android:src="@drawable/ic_layers_black_24dp"
+            android:tint="@color/colorAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/filterText"
+            app:layout_constraintBottom_toBottomOf="@+id/filterText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+
+        <TextView
+            android:id="@+id/filterText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/title_text"
+            android:text="@string/manage_groups"
+            android:onClick="@{() -> vm.onFilterClick()}"
+            android:padding="@dimen/activity_vertical_margin"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"/>
 
         <org.osmdroid.views.MapView
             android:id="@+id/map"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/filterText"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"

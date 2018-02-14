@@ -8,9 +8,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
@@ -20,7 +22,9 @@ import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -41,6 +45,10 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private MutableLiveData<Location> userLocation;
     private MutableLiveData<List<User>> friends;
     private LiveData<PagedList<Event>> events;
+    private LiveData<PagedList<UserGroup>> groups;
+
+    private Set<UserGroup> activeGroups;
+
     private SingleLiveEvent<State> state;
 
 
@@ -55,8 +63,12 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();
+        this.groups = userGroupRepository.getGroups();
         // set all to fetch from db
         this.friends = new MutableLiveData<>();
+
+
+        this.activeGroups = new HashSet<>();
 
         this.state = new SingleLiveEvent<>();
 
@@ -69,13 +81,16 @@ public class MapViewModel extends ViewModel implements LocationListener {
                 new Date(100000));
         f.add(u);
         friends.postValue(f);
-
-
     }
 
     public void onCenterClick() {
         // set map center to current best location
         state.setValue(new State(ViewCall.CENTER_MAP, 0));
+    }
+
+    public void onFilterClick() {
+        state.setValue(new State(ViewCall.SHOW_FILTER_DIALOG, 0));
+        Log.i("Map", "Filter clicked");
     }
 
     @Override
@@ -100,6 +115,10 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     public LiveData<PagedList<Event>> getEvents() {
         return events;
+    }
+
+    public LiveData<PagedList<UserGroup>> getGroups() {
+        return groups;
     }
 
     @Override

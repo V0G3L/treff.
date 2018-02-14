@@ -67,6 +67,7 @@
     <string name="event">Event</string>
     <string name="leave_group">Leave group</string>
     <string name="event_title">Event Title</string>
+    <string name="manage_groups">Manage Groups</string>
 
 
 </resources>

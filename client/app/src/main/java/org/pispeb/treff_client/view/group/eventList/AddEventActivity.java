@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.view.group.eventList;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.location.Location;
@@ -23,6 +25,8 @@ import org.pispeb.treff_client.databinding.ActivityAddEventBinding;
 import org.pispeb.treff_client.view.home.map.MapFragment;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
+import java.util.Calendar;
+
 
 /**
  * Lets the user create a new event inside a group
@@ -101,9 +105,36 @@ public class AddEventActivity extends AppCompatActivity {
             case SUCCESS:
                 finish();
                 break;
+            case SHOW_TIME_DIALOG:
+                showTimeDialog();
+                break;
+            case SHOW_DATE_DIALOG:
+                showDateDialog();
+                break;
             default:
                 Log.i("Add Event", "Illegal VM State");
         }
+    }
+
+    private void showDateDialog() {
+        Calendar c = Calendar.getInstance();
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                this, vm,
+                c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH));
+        dialog.show();
+    }
+
+    private void showTimeDialog() {
+        Calendar c = Calendar.getInstance();
+        TimePickerDialog dialog = new TimePickerDialog(
+                this, vm,
+                c.get(Calendar.HOUR),
+                c.get(Calendar.MINUTE),
+                true);
+        dialog.show();
     }
 
 }
