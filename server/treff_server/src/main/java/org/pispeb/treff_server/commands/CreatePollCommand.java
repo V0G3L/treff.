@@ -91,6 +91,7 @@ public class CreatePollCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
+        @JsonProperty("id")
         final int pollId;
 
         Output(int pollId) {

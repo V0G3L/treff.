@@ -55,6 +55,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = AccountCompleteSerializer.class)
+        @JsonProperty("account")
         final Account account;
 
         Output(Account account) {

@@ -78,6 +78,7 @@ public class CreateGroupCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
+        @JsonProperty("id")
         final int groupId;
 
         Output(int groupId) {

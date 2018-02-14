@@ -63,6 +63,7 @@ public class GetEventDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = EventCompleteSerializer.class)
+        @JsonProperty("event")
         final Event event;
 
         Output(Event event) {

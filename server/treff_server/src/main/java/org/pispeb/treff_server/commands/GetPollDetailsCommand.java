@@ -63,6 +63,7 @@ public class GetPollDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = PollCompleteSerializer.class)
+        @JsonProperty("poll")
         final Poll poll;
 
         Output(Poll poll) {

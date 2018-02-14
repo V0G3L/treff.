@@ -62,8 +62,7 @@ public class EditGroupCommand extends AbstractCommand {
         public Input(
                 @JsonDeserialize(using
                         = UsergroupWithoutMembersDeserializer.class)
-                @JsonProperty("group")
-                        UsergroupComplete group,
+                @JsonProperty("group") UsergroupComplete group,
                 @JsonProperty("token") String token) {
             super(token);
             this.group = group;

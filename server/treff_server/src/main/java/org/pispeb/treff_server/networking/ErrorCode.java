@@ -6,187 +6,205 @@ public enum ErrorCode {
     /**
      * error: parameter wasn't given or has a wrong format
      */
-    SYNTAXINVALID(100),
+    SYNTAXINVALID(1000),
 
     /**
      * error: unknown command
      */
-    UNKNOWN_COMMAND(101),
+    UNKNOWN_COMMAND(1001),
 
     /**
      * error: authentication token invalid
      */
-    TOKENINVALID(110),
+    TOKENINVALID(1100),
 
     /**
      * error: username/password combination invalid
      */
-    CREDWRONG(111),
+    CREDWRONG(1101),
 
     /**
      * error: password reset code invalid
      */
-    RESETCODEINVALID(112),
+    RESETCODEINVALID(1102),
 
     /**
      * error: at least one account identification number is invalid
      */
-    USERIDINVALID(120),
+    USERIDINVALID(1200),
 
     /**
      * error: group identification number is invalid or account not part of the group
      */
-    GROUPIDINVALID(121),
+    GROUPIDINVALID(1201),
 
     /**
      * error: event identification number invalid
      */
-    EVENTIDINVALID(122),
+    EVENTIDINVALID(1202),
 
     /**
      * error: poll identification number invalid
      */
-    POLLIDINVALID(123),
+    POLLIDINVALID(1203),
 
     /**
      * error: poll option identification number invalid
      */
-    POLLOPTIONIDINVALID(124),
+    POLLOPTIONIDINVALID(1204),
 
     /**
      * error: username already in use
      */
-    USERNAMEALREADYINUSE(130),
+    USERNAMEALREADYINUSE(1300),
 
     /**
      * error: email is invalid
      */
-    EMAILINVALID(131),
+    EMAILINVALID(1301),
 
     /**
      * error: username is invalid
      */
-    USERNAMEINVALID(132),
+    USERNAMEINVALID(1302),
 
     /**
      * error: at least one end time is in the past
      */
-    TIMEENDINPAST(140),
+    TIMEENDINPAST(1400),
 
     /**
      * error: at least one end time is not after the corresponding start time
      */
-    TIMEENDSTARTCONFLICT(141),
+    TIMEENDSTARTCONFLICT(1401),
 
     /**
      * error: the time of measurement is to far in the future
      */
-    TIMEMEASUREDFUTURE(142),
+    TIMEMEASUREDFUTURE(1402),
+
+    /**
+     * error: account already in contact list
+     */
+    ALREADYINCONTACT(1500),
 
     /**
      * error: account isn't part of the own contact list (not-in-contact)
      */
-    NOTINCONTACT(150),
+    NOTINCONTACT(1501),
 
     /**
      * error: account can't be a contact of itself
      */
-    REFLEXIVCONTACT(151),
+    REFLEXIVCONTACT(1502),
+
+    /**
+     * error: contact request already sent and still pending
+     */
+    CONTACTREQUESTPENDING(1503),
+
+    /**
+     * error: no contact request from specified user
+     */
+    NOCONTACTREQUEST(1504),
 
     /**
      * error: this account was blocked by the given account
      */
-    BEINGBLOCKED(152),
+    BEINGBLOCKED(1505),
 
     /**
      * error: the given account was blocked by this account
      */
-    BLOCKINGALREADY(153),
+    BLOCKINGALREADY(1506),
 
     /**
      * error: the given account wasn't blocked by this account
      */
-    NOTBLOCKING(154),
+    NOTBLOCKING(1507),
 
     /**
      * error: account can't block itself
      */
-    REFLEXIVBLOCK(155),
+    REFLEXIVBLOCK(1508),
 
     /**
      * error: no account invited except the own account
      */
-    NOUSERINVITED(156),
+    NOUSERINVITED(1509),
 
     /**
      * error: at least one account is already part of the group
      */
-    USERALREADYINGROUP(157),
+    USERALREADYINGROUP(1510),
 
     /**
      * error: at least one account is not part of the group
      */
-    USERNOTINGROUP(158),
+    USERNOTINGROUP(1511),
 
     /**
      * error: account already part of this event
      */
-    ALREADYPARTICIPATINGEVENT(159),
+    ALREADYPARTICIPATINGEVENT(1512),
 
     /**
      * error: account no part of this event
      */
-    NOTPARTICIPATINGEVENT(161),
+    NOTPARTICIPATINGEVENT(1513),
 
     /**
      * error: account already voted for this option
      */
-    ALREADYVOTINGFOROPTION(162),
+    ALREADYVOTINGFOROPTION(1514),
 
     /**
      * error: multi-choice is not available for this poll
      */
-    POLLNOTMULTICHOICE(163),
+    POLLNOTMULTICHOICE(1515),
 
     /**
      * error: account didn't vote for this option
      */
-    NOTVOTINGFOROPTION(164),
+    NOTVOTINGFOROPTION(1516),
 
     /**
      * error: account doesn't possess the permission to edit permissions
      */
-    NOPERMISSIONEDITPERMISSION(200),
+    NOPERMISSIONEDITPERMISSION(2000),
 
     /**
      * error: account doesn't possess the permission to edit the group
      */
-    NOPERMISSIONEDITGROUP(210),
+    NOPERMISSIONEDITGROUP(2100),
 
     /**
-     * error: account doesn't possess the permission to edit the list of group members
+     * error: account doesn't possess the permission to edit the list
+     * of group members
      */
-    NOPERMISSIONMANAGEMEMBERS(211),
+    NOPERMISSIONMANAGEMEMBERS(2101),
 
     /**
-     * error: account doesn't possess the permission to create events in this group
+     * error: account doesn't possess the permission to create events
+     * in this group
      */
-    NOPERMISSIONCREATEEVENT(220),
+    NOPERMISSIONCREATEEVENT(2200),
 
     /**
      * error: account doesn't possess the permission to edit the event
      */
-    NOPERMISSIONEDITANYEVENT(221),
+    NOPERMISSIONEDITANYEVENT(2201),
 
     /**
-     * error: account doesn't possess the permission to create polls in this group
+     * error: account doesn't possess the permission to create polls
+     * in this group
      */
-    NOPERMISSIONCREATEPOLL(230),
+    NOPERMISSIONCREATEPOLL(2300),
 
     /**
      * error: account doesn't possess the permission to edit the poll
      */
-    NOPERMISSIONEDITANYPOLL(231);
+    NOPERMISSIONEDITANYPOLL(2301);
 
     private final int code;
 

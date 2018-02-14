@@ -55,6 +55,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = UsergroupCompleteSerializer.class)
+        @JsonProperty("user-group")
         final Usergroup usergroup;
 
         Output(Usergroup usergroup) {

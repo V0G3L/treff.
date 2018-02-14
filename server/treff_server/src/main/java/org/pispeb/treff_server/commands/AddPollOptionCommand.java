@@ -23,9 +23,9 @@ import java.util.Date;
 /**
  * a command to add an PollOption to a Poll
  */
-public class AddPolloptionCommand extends AbstractCommand {
+public class AddPollOptionCommand extends AbstractCommand {
 
-    public AddPolloptionCommand(AccountManager accountManager) {
+    public AddPollOptionCommand(AccountManager accountManager) {
         super(accountManager, Input.class);
     }
 
@@ -89,7 +89,7 @@ public class AddPolloptionCommand extends AbstractCommand {
                      @JsonProperty("poll-id") int pollId,
                      @JsonDeserialize(using
                              = PollOptionWithoutIDDeserializer.class)
-                     @JsonProperty("poll") PollOptionComplete polloption,
+                     @JsonProperty("poll-option") PollOptionComplete polloption,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
