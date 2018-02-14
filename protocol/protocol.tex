@@ -485,7 +485,7 @@ member.}
 {group-id/int/ID of the user group,
 members/int array/ID of all user accounts that are to be added to the user
 group.
-No account may be specified that is already part of the user group.
+No account may be specified that is already a member of the group.
 In particular{,} the executing user's account ID may not be specified.}
 {}
 {group-id-invalid,user-id-invalid,no-permission-manage-members,%
@@ -496,12 +496,15 @@ user-already-in-group}
 {Removes one or more accounts from a user group of which the executing user is
 a member.}
 {id/int/The ID of the group,
-members/account array/Array of the IDs of all members to remove from the user
-group. It may not contain one or more IDs of Account that are no member of that
-user group. It may contain the ID of the acting Account. Obviously this results
-in removing the own account and accordingly losing further access to the user
-group. If all remaining members of the user group are removed by this command
-then the user group will be deleted.}
+members/account array/Array of IDs of all members to remove from the user
+group.
+No account may be specified that is not a member of the group.
+The executing user's account may be specified as well.
+This will remove the executing user's account and therefore prevent any further
+interaction of the executing user with the group unless a remaining member adds
+him to the group again.
+If all remaining members of the user group are removed by this command then the
+user group will be deleted.}
 {}
 {group-id-invalid,user-id-invalid,no-permission-manage-members,
 user-not-in-group}
@@ -718,19 +721,43 @@ group-id/int/The ID of the group}
 {Sends a position request to all members of a user group of which the executing
 user is a member.}
 {id/int/The ID of the group,
-time/date/The time the location transmission ends}
+time/date/Point in time until which a location transmission is requested}
 {}
 {group-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{update-position}
-{Updates the position of executing user.}
+{Updates the position of the executing user.
+This will notify all members of all user groups for which the executing user
+has enabled location sharing.
+Executing this command while the executing user has not enabled location
+sharing with any groups has no effect.}
 {latitude/decimal degree/The latitude of the position,
 longitude/decimal degree/The longitude of the position,
-time-measured/date/The moment of the measurement}
+time-measured/date/Point in time at which the measurement was taken}
 {}
 {time-measured-future}
+{}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{publish-position}
+{Enables sharing of the executing user's position with a user group that he is
+a member of.
+All members of the specified group will gain access to the executing user's
+location while sharing is active.
+Location sharing will be active until the specified point in time.
+Specifying a point in time that lies in the past will immediately stop location
+sharing with the specified group.
+Note that \textbf{update-position} should be called immediately after this
+command returns, as group member do not have access to locations updated before
+sharing was active.
+}
+{group-id/int/ID of the user group with which to share the location,
+time-end/date/Point in time at which the location sharing ends.
+May lie in the past.}
+{}
+{group-id-invalid}
 {}
 
 \section{Error codes}\label{sec:errorcodes}

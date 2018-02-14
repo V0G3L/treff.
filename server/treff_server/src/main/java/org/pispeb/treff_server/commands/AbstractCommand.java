@@ -145,7 +145,7 @@ public abstract class AbstractCommand {
     }
 
     /**
-     * Like {@link #getSafeForWriting(DataObject)} but acquires the WriteLock
+     * Like {@link #getSafeForReading(DataObject)} but acquires the WriteLock
      * instead.
      *
      * @param obj The {@code DataObject} for which the checks are to be made.
@@ -153,7 +153,7 @@ public abstract class AbstractCommand {
      * @param <T> A subclass of {@code DataObject}.
      * @return The supplied {@code DataObject} if all checks were successful
      * and the lock has been acquired, null otherwise.
-     * @see #getSafeForWriting(DataObject)
+     * @see #getSafeForReading(DataObject)
      */
     protected <T extends DataObject> T getSafeForWriting(T obj) {
         return getSafe(obj, t -> t.getReadWriteLock().writeLock());
