@@ -1,5 +1,6 @@
-package org.pispeb.treff_server.commands;
+package org.pispeb.treff_server.commands.io;
 
+import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**

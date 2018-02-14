@@ -1,15 +1,12 @@
-package org.pispeb.treff_server.commands.serializer;
+package org.pispeb.treff_server.commands.serializers;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
-import org.pispeb.treff_server.JsonDependentTest;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
-
-import javax.json.Json;
 
 import java.io.IOException;
 import java.io.StringWriter;

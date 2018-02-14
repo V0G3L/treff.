@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.commands;
+package org.pispeb.treff_server.commands.io;
 
 /**
  * @author tim

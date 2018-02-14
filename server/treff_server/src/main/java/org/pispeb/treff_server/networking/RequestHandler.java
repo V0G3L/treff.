@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.AbstractCommand;
-import org.pispeb.treff_server.commands.CommandOutput;
-import org.pispeb.treff_server.commands.ErrorOutput;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
 

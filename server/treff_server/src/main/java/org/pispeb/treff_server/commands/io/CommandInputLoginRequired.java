@@ -1,5 +1,6 @@
-package org.pispeb.treff_server.commands;
+package org.pispeb.treff_server.commands.io;
 
+import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
@@ -13,17 +14,17 @@ public abstract class CommandInputLoginRequired extends CommandInput {
     private final String token;
     private AccountManager accountManager = null;
 
-    CommandInputLoginRequired(String token) {
+    protected CommandInputLoginRequired(String token) {
         this.token = token;
     }
 
-    protected void setAccountManager(AccountManager accountManager) {
+    public void setAccountManager(AccountManager accountManager) {
         if (this.accountManager != null)
             throw new IllegalStateException("AccountManager already set.");
         this.accountManager = accountManager;
     }
 
-    protected Account getActingAccount() {
+    public Account getActingAccount() {
         // only try retrieving the acting account if token wasn't checked before
         if (!tokenChecked) {
             actingAccount = accountManager.getAccountByLoginToken(token);
