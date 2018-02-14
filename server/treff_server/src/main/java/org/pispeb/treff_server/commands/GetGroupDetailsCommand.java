@@ -19,7 +19,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
     public GetGroupDetailsCommand(AccountManager accountManager) {
         super(accountManager, Input.class);
-	}
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {

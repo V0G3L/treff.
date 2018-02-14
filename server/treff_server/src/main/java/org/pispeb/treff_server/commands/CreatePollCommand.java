@@ -1,7 +1,11 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.commands.descriptions.PollComplete;
+import org.pispeb.treff_server.commands.deserializers
+        .PollOptionWithoutIDDeserializer;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -34,20 +38,22 @@ public class CreatePollCommand extends AbstractCommand {
 
         // get group
         Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input.groupId));
+                getSafeForReading(actingAccount.getAllGroups().get(input
+                        .groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission.CREATE_POLL)) {
+        if (!group.checkPermissionOfMember(actingAccount, Permission
+                .CREATE_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEPOLL);
         }
 
         // TODO check if all the parameters of all options are valid/existent
 
         // check times for each poll option
-        for (PollOption option : input.options) {
+        for (PollOption option : input.poll.getPollOptions().values()) {
             if (option.getTimeEnd().getTime()
                     < option.getTimeStart().getTime()) {
                 return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
@@ -57,8 +63,8 @@ public class CreatePollCommand extends AbstractCommand {
         }
 
         // create poll
-        Poll poll = group.createPoll(input.question,
-                actingAccount, input.multiChoice);
+        Poll poll = group.createPoll(input.poll.getQuestion(),
+                actingAccount, input.poll.isMultiChoice());
 
 
         // respond
@@ -68,21 +74,18 @@ public class CreatePollCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final String question;
-        final boolean multiChoice;
-        final PollOption[] options;
+        final PollComplete poll;
 
         //TODO options parameter
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("question") String question,
-                     @JsonProperty("multi-choice") boolean multiChoice,
-                     @JsonProperty("options") PollOption[] options,
+                     @JsonDeserialize(using
+                             = PollOptionWithoutIDDeserializer.class)
+                     @JsonProperty("poll")
+                             PollComplete poll,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
-            this.question = question;
-            this.multiChoice = multiChoice;
-            this.options = options;
+            this.poll = poll;
         }
     }
 

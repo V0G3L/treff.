@@ -18,7 +18,7 @@ public class EditPasswordCommand extends AbstractCommand {
 
     public EditPasswordCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override

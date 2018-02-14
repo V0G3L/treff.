@@ -23,51 +23,51 @@ public class GetEventDetailsCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
-    Input input = (Input) commandInput;
+        Input input = (Input) commandInput;
 
-    // check if account still exists
-    Account actingAccount
-            = getSafeForReading(input.getActingAccount());
+        // check if account still exists
+        Account actingAccount
+                = getSafeForReading(input.getActingAccount());
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
-    // get group
-    Usergroup usergroup = getSafeForReading(
-            actingAccount.getAllGroups().get(input.groupId));
+        // get group
+        Usergroup usergroup = getSafeForReading(
+                actingAccount.getAllGroups().get(input.groupId));
         if (usergroup == null)
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
-    // get event
-    Event event = getSafeForReading(
-            usergroup.getAllEvents().get(input.eventId));
+        // get event
+        Event event = getSafeForReading(
+                usergroup.getAllEvents().get(input.eventId));
         if (event == null)
             return new ErrorOutput(ErrorCode.EVENTIDINVALID);
 
         return new Output(event);
-}
-
-public static class Input extends CommandInputLoginRequired {
-
-    final int eventId;
-    final int groupId;
-
-    public Input(@JsonProperty("id") int eventId,
-                 @JsonProperty("group-id") int groupId,
-                 @JsonProperty("token") String token) {
-        super(token);
-        this.eventId = eventId;
-        this.groupId = groupId;
     }
-}
 
-public static class Output extends CommandOutput {
+    public static class Input extends CommandInputLoginRequired {
 
-    @JsonSerialize(using = EventCompleteSerializer.class)
-    final Event event;
+        final int eventId;
+        final int groupId;
 
-    Output(Event event) {
-        this.event = event;
+        public Input(@JsonProperty("id") int eventId,
+                     @JsonProperty("group-id") int groupId,
+                     @JsonProperty("token") String token) {
+            super(token);
+            this.eventId = eventId;
+            this.groupId = groupId;
+        }
     }
-}
+
+    public static class Output extends CommandOutput {
+
+        @JsonSerialize(using = EventCompleteSerializer.class)
+        final Event event;
+
+        Output(Event event) {
+            this.event = event;
+        }
+    }
 
 }

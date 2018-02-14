@@ -12,13 +12,13 @@ public class EditEventCommand extends AbstractCommand {
 
     public EditEventCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-		throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-
+        //TODO
         // respond
         return new Output();
     }

@@ -20,7 +20,7 @@ public class GetUserIdCommand extends AbstractCommand {
 
     public GetUserIdCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-	}
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {

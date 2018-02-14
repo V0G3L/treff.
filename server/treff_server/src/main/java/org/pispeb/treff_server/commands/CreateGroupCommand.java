@@ -1,6 +1,10 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.pispeb.treff_server.commands.descriptions.UsergroupComplete;
+import org.pispeb.treff_server.commands.deserializers
+        .UsergroupWithoutIDDeserializer;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -10,6 +14,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Set;
 import java.util.TreeSet;
 
 // TODO needs to be tested
@@ -28,10 +33,12 @@ public class CreateGroupCommand extends AbstractCommand {
         Input input = (Input) commandInput;
         int actingAccountId = input.getActingAccount().getID();
 
+
+        Set<Integer> members = input.group.getAllMembers().keySet();
+        members.add(actingAccountId);
         // lock the accounts in the correct order and add them all to a set
-        input.memberIds.add(actingAccountId);
         TreeSet<Account> memberAccounts = new TreeSet<>();
-        for (int memberId : input.memberIds) {
+        for (int memberId : members) {
             // lock the account with smallest id to the set,
             // check if it still exists and add it to the set
             Account currentAccount = getSafeForReading(this.accountManager
@@ -50,7 +57,7 @@ public class CreateGroupCommand extends AbstractCommand {
 
         // create the group
         Usergroup usergroup = input.getActingAccount()
-                .createGroup(input.name, memberArray);
+                .createGroup(input.group.getName(), memberArray);
 
         // respond
         return new Output(usergroup.getID());
@@ -58,18 +65,14 @@ public class CreateGroupCommand extends AbstractCommand {
 
     public static class Input extends CommandInputLoginRequired {
 
-        final String name;
-        final TreeSet<Integer> memberIds;
+        final UsergroupComplete group;
 
-        public Input(@JsonProperty("name") String name,
-                     @JsonProperty("members") int[] memberIds,
+        public Input(@JsonDeserialize(using
+                = UsergroupWithoutIDDeserializer.class)
+                     @JsonProperty("group") UsergroupComplete group,
                      @JsonProperty("token") String token) {
             super(token);
-            this.name = name;
-            this.memberIds = new TreeSet<>();
-            for (int memberId : memberIds) {
-                this.memberIds.add(memberId);
-            }
+            this.group = group;
         }
     }
 

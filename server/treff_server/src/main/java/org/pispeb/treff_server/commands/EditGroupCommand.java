@@ -1,7 +1,12 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.commands.descriptions.UsergroupComplete;
+import org.pispeb.treff_server.commands.deserializers
+        .UsergroupWithoutMembersDeserializer;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -16,9 +21,9 @@ import org.pispeb.treff_server.networking.ErrorCode;
 /**
  * a command to edit the name of a Usergroup
  */
-public class EditGroupNameCommand extends AbstractCommand {
+public class EditGroupCommand extends AbstractCommand {
 
-    public EditGroupNameCommand(AccountManager accountManager) {
+    public EditGroupCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
     }
 
@@ -34,7 +39,8 @@ public class EditGroupNameCommand extends AbstractCommand {
 
         // get the group
         Usergroup group
-                = getSafeForWriting(actingAccount.getAllGroups().get(input.id));
+                = getSafeForWriting(
+                actingAccount.getAllGroups().get(input.group.getID()));
         if (group == null)
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
@@ -44,22 +50,23 @@ public class EditGroupNameCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITGROUP);
 
         // edit name
-        group.setName(input.name);
+        group.setName(input.group.getName());
 
         return new Output();
     }
 
     public static class Input extends CommandInputLoginRequired {
 
-        final int id;
-        final String name;
+        final UsergroupComplete group;
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("name") String name,
-                     @JsonProperty("token") String token) {
+        public Input(
+                @JsonDeserialize(using
+                        = UsergroupWithoutMembersDeserializer.class)
+                @JsonProperty("group")
+                        UsergroupComplete group,
+                @JsonProperty("token") String token) {
             super(token);
-            this.id = id;
-            this.name = name;
+            this.group = group;
         }
     }
 
