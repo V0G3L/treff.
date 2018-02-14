@@ -27,8 +27,7 @@ public class SettingsActivity extends NavigationActivity {
                 frameBinding.contentFrame, false);
         frameBinding.contentFrame.addView(binding.getRoot());
 
-        setupToolbar(binding.toolbarNavigation);
-        binding.toolbarNavigation.setTitle(R.string.settings_title);
+        setupToolbar(binding.toolbarNavigation, R.string.settings_title);
 
         getFragmentManager().beginTransaction().replace(R.id.fragment_frame, new SettingsFragment()).commit();
 

@@ -37,7 +37,7 @@ public class HomeActivity extends NavigationActivity {
                 frameBinding.contentFrame, false);
         frameBinding.contentFrame.addView(binding.getRoot());
 
-        setupToolbar(binding.toolbarNavigation);
+        setupToolbar(binding.toolbarNavigation, R.string.app_name);
 
         //actual tabs
         viewPager = binding.homeViewpager;

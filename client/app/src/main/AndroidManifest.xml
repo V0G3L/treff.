@@ -46,6 +46,10 @@
             android:name=".view.settings.SettingsActivity"
             android:launchMode="singleTask"/>
 
+        <activity
+            android:name=".view.about.AboutActivity"
+            android:launchMode="singleTask"/>
+
         <activity android:name=".view.friend.FriendActivity"/>
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity android:name=".view.home.groupList.AddGroupActivity"/>

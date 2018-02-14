@@ -17,6 +17,7 @@ import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityNavigationBinding;
+import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
 
@@ -62,7 +63,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         startActivity(settingsIntent);
                         return true;
                     case R.id.nav_about:
-                        // TODO About page
+                        Intent aboutIntent = new Intent(thisActivity,
+                                AboutActivity.class);
+                        startActivity(aboutIntent);
                         return true;
                     case R.id.nav_logout:
                         // TODO logout
@@ -77,9 +80,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     abstract protected void setDrawerSelected();
 
-    protected void setupToolbar(Toolbar toolbar) {
+    protected void setupToolbar(Toolbar toolbar, int title) {
         //set custom toolbar as action bar
         this.toolbar = toolbar;
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         //drawer toggle
