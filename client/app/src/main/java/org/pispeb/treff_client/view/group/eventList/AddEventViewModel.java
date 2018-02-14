@@ -67,7 +67,7 @@ public class AddEventViewModel extends ViewModel {
     public void onChooseLocationClick() {
     }
 
-    public void onSaveClick() {
+    public void onSaveClick(Location location) {
         if (name.equals("")) return;
 
         // Add Event to Database
@@ -77,7 +77,7 @@ public class AddEventViewModel extends ViewModel {
 //                                location.getLongitude()),
 //                        0));
                 new Event(name, new Date(), start,
-                        new Position(49, 8.5),
+                        new Position(location.getLatitude(), location.getLongitude()),
                         0));
 
         state.setValue(new State(ViewCall.SUCCESS, 0));

@@ -2,19 +2,41 @@ package org.pispeb.treff_client.view.group.eventList;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.api.IMapView;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.FolderOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Overlay;
+import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.UserGroup;
+import org.pispeb.treff_client.data.gps_handling.GPSProvider;
 import org.pispeb.treff_client.databinding.ActivityAddEventBinding;
 import org.pispeb.treff_client.view.group.GroupSettingsFragment;
+import org.pispeb.treff_client.view.home.map.MapFragment;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
+
+import java.util.ArrayList;
 
 /**
  * Lets the user create a new event inside a group
@@ -26,6 +48,7 @@ public class AddEventActivity extends AppCompatActivity {
     private ActivityAddEventBinding binding;
 
     public static final String INTENT_GRP = "intentGroup";
+    private MapView map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +71,13 @@ public class AddEventActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.inflateMenu(R.menu.ok_bar);
 
+        map = binding.map;
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setMultiTouchControls(true);
+        IMapController controller = map.getController();
+        controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
+        controller.setCenter(new GeoPoint(45d, 9d));
+
         binding.setVm(vm);
     }
 
@@ -60,7 +90,12 @@ public class AddEventActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.done) {
-            vm.onSaveClick();
+            IGeoPoint g = map.getMapCenter();
+            Location l = new Location(LocationManager.GPS_PROVIDER);
+            l.setLongitude(g.getLongitude());
+            l.setLatitude(g.getLatitude());
+
+            vm.onSaveClick(l);
             return true;
         }
         return super.onOptionsItemSelected(item);

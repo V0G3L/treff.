@@ -6,4 +6,7 @@
 
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="paddding_standard">5dp</dimen>
+
+
+    <dimen name="title_text">20sp</dimen>
 </resources>

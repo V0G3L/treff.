@@ -71,7 +71,7 @@ public class Event extends Occasion{
     }
 
     public String getStartString() {
-        return start.toString().substring(0, 17);
+        return start.toString().substring(0, 16);
     }
 
     public Location getLocation() {

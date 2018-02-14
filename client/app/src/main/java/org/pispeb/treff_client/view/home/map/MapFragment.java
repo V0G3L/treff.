@@ -262,6 +262,7 @@ public class MapFragment extends Fragment {
             EventMarker m = new EventMarker(map, e);
             m.setIcon(getResources().getDrawable(R.drawable.ic_marker_event,
                     getContext().getTheme()));
+            m.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
             markers.add(m);
         }
         ((FolderOverlay)master.getItems().get(EVENTS)).getItems().addAll

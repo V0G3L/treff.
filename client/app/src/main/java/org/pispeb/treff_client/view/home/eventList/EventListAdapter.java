@@ -95,7 +95,7 @@ class EventListViewHolder extends RecyclerView.ViewHolder
         this.listener = listener;
         binding.getRoot().setOnClickListener(this);
 
-        //binding.map.setEnabled(false);
+        binding.map.setEnabled(false);
         binding.map.setTileSource(TileSourceFactory.MAPNIK);
         controller = binding.map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
@@ -104,8 +104,8 @@ class EventListViewHolder extends RecyclerView.ViewHolder
     public void bindTo(Event event) {
         binding.setEvent(event);
         EventMarker marker = new EventMarker(binding.map, event);
-        //marker.setIcon(Resources.getSystem().getDrawable(R.drawable
-        //        .ic_marker_event));
+//        marker.setIcon(Resources.getSystem().getDrawable(R.drawable
+//                .ic_marker_event));
         binding.map.getOverlays().add(marker);
         controller.setCenter(new GeoPoint(event.getLocation()));
     }
