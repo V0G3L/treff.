@@ -39,7 +39,6 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_group);
 
         groupId = (int) getIntent().getExtras().get(GRP_INTENT);
@@ -63,12 +62,7 @@ public class GroupActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         //tab titles
         tabLayout = binding.groupTabs;
@@ -84,12 +78,11 @@ public class GroupActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.settings) {
-            // TODO Show Group Settings
-            GroupSettingsFragment f = new GroupSettingsFragment();
-            getFragmentManager()
-                    .beginTransaction()
-                    .replace(binding.getRoot().getId(), f)
-                    .commit();
+
+            Intent groupSettingsIntent = new Intent(this, GroupSettingsActivity.class);
+            groupSettingsIntent.putExtra(GroupActivity.GRP_INTENT, groupId);
+            startActivity(groupSettingsIntent);
+
             return true;
         }
         return super.onOptionsItemSelected(item);

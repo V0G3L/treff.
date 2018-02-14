@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
+<layout
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
@@ -7,25 +7,39 @@
             type="org.pispeb.treff_client.view.group.GroupViewModel"/>
     </data>
     <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar_group_settings"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="?attr/colorPrimary">
+        </android.support.v7.widget.Toolbar>
 
         <android.support.constraint.Guideline
             android:id="@+id/vertGuide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="75dp"/>
+            app:layout_constraintGuide_begin="75dp" />
+
+        <!-- TODO: bigger/consistent vertical padding for all the menu items -->
 
         <Switch
             android:id="@+id/switchMuteChat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:showText="false"
-            android:padding="@dimen/paddding_standard"
+            android:padding="@dimen/padding_standard"
+            app:layout_constraintEnd_toStartOf="@id/vertGuide"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar_group_settings"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -40,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:showText="false"
-            android:padding="@dimen/paddding_standard"
+            android:padding="@dimen/padding_standard"
             app:layout_constraintTop_toBottomOf="@id/switchMuteChat"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
@@ -56,7 +70,7 @@
         <Space
             android:id="@+id/separator"
             android:layout_width="0dp"
-            android:layout_height="@dimen/paddding_standard"
+            android:layout_height="@dimen/padding_standard"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/switchMutePos"/>
@@ -80,7 +94,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/vertGuide"
             app:layout_constraintTop_toBottomOf="@id/separator"
-            android:padding="@dimen/paddding_standard"/>
+            android:padding="@dimen/padding_standard"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -109,6 +123,7 @@
             app:layout_constraintBottom_toBottomOf="@id/friendIcon"
             android:onClick="@{() -> vm.addMember()}"/>
 
+        <!-- TODO: replace with remove button -->
         <ImageView
             android:id="@+id/delete"
             android:layout_width="wrap_content"
@@ -117,8 +132,8 @@
             android:contentDescription="@string/add_contact"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/vertGuide"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:padding="@dimen/paddding_standard"/>
+            app:layout_constraintTop_toBottomOf="@id/leaveGroup"
+            android:padding="@dimen/padding_standard"/>
 
         <TextView
             android:layout_width="wrap_content"

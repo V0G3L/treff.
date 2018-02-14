@@ -42,6 +42,10 @@
         <activity
             android:name=".view.group.GroupActivity"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name=".view.group.GroupSettingsActivity"/>
+
         <activity
             android:name=".view.settings.SettingsActivity"
             android:launchMode="singleTask"/>
