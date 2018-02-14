@@ -22,8 +22,7 @@ public class LeaveEventCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
-            DatabaseException {
+    protected CommandOutput executeInternal(CommandInput commandInput) {
         JoinEventCommand.Input input = (JoinEventCommand.Input) commandInput;
 
         // get account and check if it still exists

@@ -241,7 +241,8 @@ For the sake of consistency, they are listed here anyways.
 \apiErrorNew{already-in-contacts}{1500}{account already in contact list}
 \apiErrorNew{not-in-contacts}{1501}{account isn't part of the own contact list}
 \apiErrorNew{reflexive-contact}{1502}{account can't be a contact of itself}
-\apiErrorNew{contact-request-pending}{1503}{contact-request-pending}
+\apiErrorNew{contact-request-pending}{1503}{contact request already sent and
+still pending}
 \apiErrorNew{no-contact-request}{1504}{no contact request from specified user}
 \apiErrorNew{being-blocked}{1505}{this account was blocked by the given account}
 \apiErrorNew{blocking-already}{1506}
@@ -586,7 +587,6 @@ no-permission-create-poll}
 \apiCommand{edit-poll}
 {Edits a poll of a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
-id/int/The ID of the poll,
 poll/object/A new complete description of the poll option without
 the options array and the creator.
 The ID specified in the description must match the ID of the poll that

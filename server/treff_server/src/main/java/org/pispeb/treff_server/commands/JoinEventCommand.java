@@ -22,8 +22,7 @@ public class JoinEventCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
-            DatabaseException {
+    protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
         // get account and check if it still exists
