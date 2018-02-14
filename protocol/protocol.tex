@@ -185,6 +185,7 @@ For the sake of consistency, they are listed here anyways.
 \apiDesc{Poll}{
     question/string/Question for which answered are supplied as poll options,
     creator/int/ID of the account that created this poll,
+    time-close/date/Point in time at which voting closes,
     multi-choice/boolean/True iff an account can vote for multiple poll options
     simultaneously,
     options/object array/Complete descriptions of the poll options that are
@@ -470,7 +471,9 @@ least one other account ID.}
 \apiCommand{edit-group}
 {Edits a user group of which the executing user is a member.}
 {group/object/New complete description of the group{,} omitting the members
-array.}
+array.
+The ID specified in the description must match the ID of the group that
+is to be edited.}
 {}
 {group-id-invalid,no-permission-edit-group}
 {}
@@ -538,7 +541,9 @@ no-permission-create-event}
 {Edits an event of a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
 event/object/New complete description of the event without the participants
-array}
+array.
+The ID specified in the description must match the ID of the event that
+is to be edited.}
 {}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
 no-permission-edit-any-event}
@@ -583,7 +588,9 @@ no-permission-create-poll}
 {group-id/int/The ID of the user group,
 id/int/The ID of the poll,
 poll/object/A new complete description of the poll option without
-the options array and the creator}
+the options array and the creator.
+The ID specified in the description must match the ID of the poll that
+is to be edited.}
 {}
 {group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
 {}
@@ -593,9 +600,9 @@ the options array and the creator}
 member.}
 {group-id/int/The ID of the user group,
 poll-id/int/The ID of the poll,
-poll/object/Complete description of the new poll option without the ID and the
+poll-option/object/Complete description of the new poll option without the ID and the
 supporters array.}
-{id/int/The ID of the poll option}
+{id/int/The ID of the new poll option}
 {group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-edit-any-poll}
 {}
@@ -606,9 +613,10 @@ no-permission-edit-any-poll}
 a member.}
 {group-id/int/The ID of the user group,
 poll-id/int/The ID of the poll,
-id/int/The ID of the poll option,
-poll/object/A new complete description of the poll option without the
-supporters array}
+poll-option/object/A new complete description of the poll option without the
+supporters array.
+The ID specified in the description must match the ID of the poll option that
+is to be edited.}
 {}
 {group-id-invalid,poll-id-invalid,poll-option-id-invalid,%
 no-permission-edit-any-poll}
