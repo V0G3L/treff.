@@ -1,8 +1,11 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.commands.descriptions.EventComplete;
+import org.pispeb.treff_server.commands.deserializers
+        .EventWithoutIDDeserializer;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -28,12 +31,12 @@ public class CreateEventCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.timeEnd < input.timeStart) {
+        if (input.event.getTimeEnd().before(input.event.getTimeStart())) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO timeEnd-in-past-check
-        if (input.timeEnd < System.currentTimeMillis()) {
+        //TODO is this working?
+        if (input.event.getTimeEnd().before(new Date())) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -46,21 +49,23 @@ public class CreateEventCommand extends AbstractCommand {
 
         // get group
         Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input.groupId));
+                getSafeForReading(actingAccount.getAllGroups().get(input
+                        .groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission.CREATE_EVENT)) {
+        if (!group.checkPermissionOfMember(actingAccount, Permission
+                .CREATE_EVENT)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEEVENT);
         }
 
-        // create event TODO times multiplied by 1000 due to ms?
-        Event event = group.createEvent(input.title,
-                new Position(input.latitude, input.longitude),
-                new Date(input.timeStart*1000),
-                new Date(input.timeEnd*1000), actingAccount);
+        // create event
+        Event event = group.createEvent(input.event.getTitle(),
+                input.event.getPosition(),
+                input.event.getTimeStart(), input.event.getTimeEnd(),
+                input.getActingAccount());
 
         // respond
         return new Output(event.getID());
@@ -69,26 +74,16 @@ public class CreateEventCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final String title;
-        final double latitude;
-        final double longitude;
-        final long timeStart;
-        final long timeEnd;
+        final EventComplete event;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("title") String title,
-                     @JsonProperty("latitude") double latitude,
-                     @JsonProperty("longitude") double longitude,
-                     @JsonProperty("time-start") long timeStart,
-                     @JsonProperty("time-end") long timeEnd,
+                     @JsonDeserialize(using
+                             = EventWithoutIDDeserializer.class)
+                     @JsonProperty("event") EventComplete event,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
-            this.title = title;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
+            this.event = event;
         }
     }
 

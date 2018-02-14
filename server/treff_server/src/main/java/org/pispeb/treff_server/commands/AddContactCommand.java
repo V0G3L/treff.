@@ -9,7 +9,7 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-// TODO needs to be tested
+// TODO outworn design
 
 /**
  * a command to add an Account to the contact-list of another Account
@@ -80,5 +80,6 @@ public class AddContactCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput { }
+    public static class Output extends CommandOutput {
+    }
 }

@@ -22,7 +22,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
 
     public AddGroupMembersCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-	}
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {

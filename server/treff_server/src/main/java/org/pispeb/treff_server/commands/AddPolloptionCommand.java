@@ -1,8 +1,11 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.commands.descriptions.PollOptionComplete;
+import org.pispeb.treff_server.commands.deserializers
+        .PollOptionWithoutIDDeserializer;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -24,18 +27,22 @@ public class AddPolloptionCommand extends AbstractCommand {
 
     public AddPolloptionCommand(AccountManager accountManager) {
         super(accountManager, Input.class);
-	}
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.timeEnd < input.timeStart) {
+        if (input.polloption.getTimeEnd()
+                .before(input.polloption.getTimeStart())) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO timeEnd-in-past-check
+        //TODO is this working?
+        if (input.polloption.getTimeEnd().before(new Date())) {
+            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+        }
 
         // get account and check if it still exist
         Account account =
@@ -64,9 +71,9 @@ public class AddPolloptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-        // add poll option TODO times multiplied by 1000 due to ms?
-        poll.addPollOption(new Position(input.latitude, input.longitude),
-                new Date(input.timeStart*1000), new Date(input.timeEnd*1000));
+        // add poll option
+        poll.addPollOption(input.polloption.getPosition(),
+                input.polloption.getTimeStart(), input.polloption.getTimeEnd());
 
         // respond
         return new Output();
@@ -76,28 +83,22 @@ public class AddPolloptionCommand extends AbstractCommand {
 
         final int groupId;
         final int pollId;
-        final double latitude;
-        final double longitude;
-        final long timeStart;
-        final long timeEnd;
+        final PollOptionComplete polloption;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
-                     @JsonProperty("latitude") double latitude,
-                     @JsonProperty("longitude") double longitude,
-                     @JsonProperty("time-start") long timeStart,
-                     @JsonProperty("time-end") long timeEnd,
+                     @JsonDeserialize(using
+                             = PollOptionWithoutIDDeserializer.class)
+                     @JsonProperty("poll") PollOptionComplete polloption,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
             this.pollId = pollId;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
+            this.polloption = polloption;
         }
     }
 
-    public static class Output extends CommandOutput { }
+    public static class Output extends CommandOutput {
+    }
 
 }

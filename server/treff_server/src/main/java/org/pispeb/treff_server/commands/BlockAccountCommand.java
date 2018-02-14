@@ -18,7 +18,7 @@ public class BlockAccountCommand extends AbstractCommand {
 
     public BlockAccountCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
-	}
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
