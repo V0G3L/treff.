@@ -56,7 +56,8 @@ public class AddEventViewModel extends ViewModel
         Date end = new Date(start.getTime() + 1000 * 60 * 60);
         Location location = new Location(LocationManager.GPS_PROVIDER);
         event = new MutableLiveData<>();
-        event.postValue(new Event("", start, end, location, 0));
+        //TODO creator
+        event.setValue(new Event("", start, end, location, 0));
 
         state = new SingleLiveEvent<>();
     }
