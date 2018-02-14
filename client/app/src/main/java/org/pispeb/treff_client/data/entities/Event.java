@@ -19,14 +19,14 @@ public class Event extends Occasion{
     private int id;
     private Date created;
     private Date start;
-    private Position position;
+    private Location location;
     private int creator;
 
-    public Event(String name, Date created, Date start, Position position, int creator) {
+    public Event(String name, Date created, Date start, Location location, int creator) {
         this.name = name;
         this.created = created;
         this.start = start;
-        this.position = position;
+        this.location = location;
         this.creator = creator;
     }
 
@@ -54,14 +54,6 @@ public class Event extends Occasion{
         this.start = start;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public int getCreator() {
         return creator;
     }
@@ -75,11 +67,11 @@ public class Event extends Occasion{
     }
 
     public Location getLocation() {
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLatitude(position.getLat());
-        l.setLongitude(position.getLon());
-        l.setTime(start.getTime());
-        return l;
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
@@ -93,7 +85,7 @@ public class Event extends Occasion{
         if (creator != event.creator) return false;
         if (created != null ? !created.equals(event.created) : event.created != null) return false;
         if (start != null ? !start.equals(event.start) : event.start != null) return false;
-        return position != null ? position.equals(event.position) : event.position == null;
+        return location != null ? location.equals(event.location) : event.location == null;
     }
 
     @Override
@@ -101,7 +93,7 @@ public class Event extends Occasion{
         int result = id;
         result = 31 * result + (created != null ? created.hashCode() : 0);
         result = 31 * result + (start != null ? start.hashCode() : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + creator;
         return result;
     }

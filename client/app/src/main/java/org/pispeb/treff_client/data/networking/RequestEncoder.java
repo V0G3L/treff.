@@ -1,7 +1,8 @@
 package org.pispeb.treff_client.data.networking;
 
+import android.location.Location;
+
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.UserGroup;
 
 /**
@@ -180,8 +181,8 @@ public class RequestEncoder {
 
     /**
      * Method to update the current position to the server
-     * @param position The Position to be updated
-     * @return true if the request was succesful, fale if not
+     * @param location The Position to be updated
+     * @return true if the request was succesful, false if not
      */
-    public boolean updatePosition(Position position) { return false; }
+    public boolean updateLocation(Location location) { return false; }
 }

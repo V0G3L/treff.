@@ -20,15 +20,19 @@ public class User {
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
-    private Position position;
-    private Date lastPositionUpdate;
+    private Location location;
 
-    public User(String username, boolean isFriend, boolean isBlocked, Position position, Date lastPositionUpdate) {
+    @Deprecated
+    public User(String username, boolean isFriend, boolean isBlocked, Location location, Date lastPositionUpdate) {
+        this(username, isFriend, isBlocked, location);
+        this.location.setTime(lastPositionUpdate.getTime());
+    }
+
+    public User(String username, boolean isFriend, boolean isBlocked, Location location) {
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
-        this.position = position;
-        this.lastPositionUpdate = lastPositionUpdate;
+        this.location = location;
     }
 
     public int getUserId() {
@@ -63,28 +67,12 @@ public class User {
         isBlocked = blocked;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Date getLastPositionUpdate() {
-        return lastPositionUpdate;
-    }
-
-    public void setLastPositionUpdate(Date lastPositionUpdate) {
-        this.lastPositionUpdate = lastPositionUpdate;
-    }
-
     public Location getLocation() {
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLatitude(position.getLat());
-        l.setLongitude(position.getLon());
-        l.setTime(lastPositionUpdate.getTime());
-        return l;
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
@@ -96,12 +84,11 @@ public class User {
 
         if (userId != user.userId) return false;
         if (isFriend != user.isFriend) return false;
-        if (isBlocked != user.isBlocked) return false;
         if (username != null ? !username.equals(user.username) : user.username != null)
             return false;
-        if (position != null ? !position.equals(user.position) : user.position != null)
+        if (location != null ? !location.equals(user.location) : user.location != null)
             return false;
-        return lastPositionUpdate != null ? lastPositionUpdate.equals(user.lastPositionUpdate) : user.lastPositionUpdate == null;
+        return isBlocked == user.isBlocked;
     }
 
     @Override
@@ -110,8 +97,7 @@ public class User {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (isFriend ? 1 : 0);
         result = 31 * result + (isBlocked ? 1 : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
-        result = 31 * result + (lastPositionUpdate != null ? lastPositionUpdate.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
         return result;
     }
 }

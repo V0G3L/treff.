@@ -5,7 +5,6 @@ import android.location.Location;
 import android.location.LocationManager;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
@@ -77,7 +76,7 @@ public class AddEventViewModel extends ViewModel {
 //                                location.getLongitude()),
 //                        0));
                 new Event(name, new Date(), start,
-                        new Position(location.getLatitude(), location.getLongitude()),
+                        location,
                         0));
 
         state.setValue(new State(ViewCall.SUCCESS, 0));

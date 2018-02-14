@@ -27,7 +27,6 @@ import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
@@ -226,12 +225,6 @@ public class MapFragment extends Fragment {
         userMarker.setIcon(getResources().getDrawable(R.drawable
                 .ic_marker_own, getContext().getTheme()));
         userMarker.setTitle("Your only friend: You");
-        UserMarker m = new UserMarker(map,
-                new User("Peter", true, false, new Position(49, 8.4),
-                        new Date(100000)));
-        m.setIcon(getResources().getDrawable(R.drawable.ic_marker_person,
-                getContext().getTheme()));
-        contactMarkers.add(m);
         map.invalidate();
     }
 
@@ -243,7 +236,7 @@ public class MapFragment extends Fragment {
 
     private void updateContactLocations(List<User> contacts) {
         // TODO replace with nicer update algorithm
-        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().clear();
+        ((FolderOverlay) master.getItems().get(CONTACTS)).getItems().clear();
         List<UserMarker> markers = new ArrayList<>();
         for (User u : contacts) {
             UserMarker m = new UserMarker(map, u);
@@ -251,13 +244,13 @@ public class MapFragment extends Fragment {
                     getContext().getTheme()));
             markers.add(m);
         }
-        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().addAll
+        ((FolderOverlay) master.getItems().get(CONTACTS)).getItems().addAll
                 (markers);
     }
 
     private void updateEventLocations(List<Event> events) {
         // TODO replace with nicer update algorithm
-        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().clear();
+        ((FolderOverlay) master.getItems().get(EVENTS)).getItems().clear();
         List<EventMarker> markers = new ArrayList<>();
         for (Event e : events) {
             EventMarker m = new EventMarker(map, e);
@@ -266,13 +259,14 @@ public class MapFragment extends Fragment {
             m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             markers.add(m);
         }
-        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().addAll
+        ((FolderOverlay) master.getItems().get(EVENTS)).getItems().addAll
                 (markers);
     }
 
     /**
      * Ensures that a view correctly catches touch events
      * by disabling their parent view's onInterceptTouchEvent
+     *
      * @param target the view to catch touch events
      */
     private static void disableTouchTheft(View target) {
@@ -281,7 +275,9 @@ public class MapFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 view.getParent().requestDisallowInterceptTouchEvent(true);
 
-                if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                if ((motionEvent
+                        .getAction() & MotionEvent.ACTION_MASK) ==
+                        MotionEvent.ACTION_UP) {
                     view.getParent().requestDisallowInterceptTouchEvent(false);
                 }
 

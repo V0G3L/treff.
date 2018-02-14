@@ -6,10 +6,10 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
@@ -62,7 +62,10 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
         //Test
         ArrayList<User> f = new ArrayList<>();
-        User u = new User("Peter", true, false, new Position(49, 8.4),
+        Location l = new Location(LocationManager.GPS_PROVIDER);
+        l.setLatitude(49);
+        l.setLongitude(8.4);
+        User u = new User("Peter", true, false, l,
                 new Date(100000));
         f.add(u);
         friends.postValue(f);

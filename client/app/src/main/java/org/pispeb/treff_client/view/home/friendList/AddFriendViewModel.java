@@ -2,8 +2,9 @@ package org.pispeb.treff_client.view.home.friendList;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.location.Location;
+import android.location.LocationManager;
 
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
@@ -38,7 +39,8 @@ public class AddFriendViewModel extends ViewModel {
         if (!username.equals("")) {
             //TODO set proper values
             userRepository.add(new User(
-                username, true,false, new Position(0, 0), new Date()));
+                    username, true, false,
+                    new Location(LocationManager.GPS_PROVIDER), new Date()));
             done.postValue(true);
         }
     }
