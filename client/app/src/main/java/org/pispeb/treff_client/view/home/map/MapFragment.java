@@ -198,6 +198,7 @@ public class MapFragment extends Fragment {
         map = binding.map;
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+        map.setTilesScaledToDpi(true);
 
         //set default zoom level and location to show Karlsruhe, Germany
         IMapController mapController = map.getController();
@@ -262,7 +263,7 @@ public class MapFragment extends Fragment {
             EventMarker m = new EventMarker(map, e);
             m.setIcon(getResources().getDrawable(R.drawable.ic_marker_event,
                     getContext().getTheme()));
-            m.setAnchor(Marker.ANCHOR_BOTTOM, Marker.ANCHOR_CENTER);
+            m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             markers.add(m);
         }
         ((FolderOverlay)master.getItems().get(EVENTS)).getItems().addAll

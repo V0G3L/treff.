@@ -79,6 +79,7 @@ public class AddEventActivity extends AppCompatActivity {
         map = binding.map;
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+        map.setTilesScaledToDpi(true);
         IMapController controller = map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
         controller.setCenter(new GeoPoint(45d, 9d));

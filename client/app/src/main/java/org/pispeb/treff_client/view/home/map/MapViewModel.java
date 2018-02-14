@@ -134,14 +134,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location,
-        // use
-        // the new location
-        // because the user has likely moved
+        // use the new location because the user has likely moved
         if (isSignificantlyNewer) {
             return true;
             // If the new location is more than two minutes older, it
-            // must be
-            // worse
+            // must be worse
         } else if (isSignificantlyOlder) {
             return false;
         }

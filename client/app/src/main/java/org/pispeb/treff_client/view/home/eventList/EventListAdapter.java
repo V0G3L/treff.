@@ -15,6 +15,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
@@ -95,10 +96,12 @@ class EventListViewHolder extends RecyclerView.ViewHolder
         this.listener = listener;
         binding.getRoot().setOnClickListener(this);
 
-        binding.map.setEnabled(false);
-        binding.map.setTileSource(TileSourceFactory.MAPNIK);
-        binding.map.setHasTransientState(true);
-        controller = binding.map.getController();
+        MapView map = binding.map;
+        map.setEnabled(false);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.setHasTransientState(true);
+        map.setTilesScaledToDpi(true);
+        controller = map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
     }
 

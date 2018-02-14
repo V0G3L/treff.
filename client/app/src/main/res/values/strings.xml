@@ -3,7 +3,7 @@
     <string name="username_path" translatable="false">org_pispeb_treff_client_username</string>
 
     <!-- home activity tab titles -->
-    <string name="tabtext_events">Events &amp; Polls</string>
+    <string name="tabtext_events">Events</string>
     <string name="tabtext_map">Map</string>
     <string name="tabtext_contacts">Contacts</string>
     <string name="tabtext_groups">Groups</string>
