@@ -97,6 +97,7 @@ class EventListViewHolder extends RecyclerView.ViewHolder
 
         binding.map.setEnabled(false);
         binding.map.setTileSource(TileSourceFactory.MAPNIK);
+        binding.map.setHasTransientState(true);
         controller = binding.map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
     }

@@ -7,6 +7,7 @@ import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.MotionEvent;
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.api.IMapView;
+import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -70,6 +72,9 @@ public class AddEventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.inflateMenu(R.menu.ok_bar);
+
+        Configuration.getInstance().load(this,
+                PreferenceManager.getDefaultSharedPreferences(this));
 
         map = binding.map;
         map.setTileSource(TileSourceFactory.MAPNIK);

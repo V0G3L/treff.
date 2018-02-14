@@ -2,12 +2,14 @@ package org.pispeb.treff_client.view.home.eventList;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.osmdroid.config.Configuration;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.databinding.FragmentEventListBinding;
@@ -40,6 +42,9 @@ public class EventListFragment extends Fragment {
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
+
+        Configuration.getInstance().load(getContext(),
+                PreferenceManager.getDefaultSharedPreferences(getContext()));
 
         vm.getEvents().observe(this, events -> {
             adapter.setList(events);
