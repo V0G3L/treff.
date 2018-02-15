@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.database;
 import android.arch.lifecycle.LiveData;
 import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -44,4 +45,7 @@ public interface UserGroupDao {
             "ON groupmembership.userID = user.userID " +
             "WHERE groupmembership.groupID = :groupID")
     DataSource.Factory<Integer, User> getUsersByGroup(int groupID);
+
+    @Delete
+    void deleteGroups(UserGroup... userGroups);
 }

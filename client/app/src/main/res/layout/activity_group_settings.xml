@@ -6,10 +6,11 @@
             name="vm"
             type="org.pispeb.treff_client.view.group.GroupViewModel"/>
     </data>
-    <android.support.constraint.ConstraintLayout
+    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,127 +23,81 @@
             android:background="?attr/colorPrimary">
         </android.support.v7.widget.Toolbar>
 
-        <android.support.constraint.Guideline
-            android:id="@+id/vertGuide"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="75dp" />
-
-        <!-- TODO: bigger/consistent vertical padding for all the menu items -->
-
-        <Switch
+        <LinearLayout
             android:id="@+id/switchMuteChat"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:showText="false"
-            android:padding="@dimen/padding_standard"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_group_settings"/>
+            android:layout_margin="@dimen/activity_padding">
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:showText="false"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mute_chat_setting"/>
+        </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mute_chat_setting"
-            app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toTopOf="@id/switchMuteChat"
-            app:layout_constraintBottom_toBottomOf="@id/switchMuteChat"/>
-
-        <Switch
+        <LinearLayout
             android:id="@+id/switchMutePos"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:showText="false"
-            android:padding="@dimen/padding_standard"
-            app:layout_constraintTop_toBottomOf="@id/switchMuteChat"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"/>
+            android:layout_margin="@dimen/activity_padding">
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:showText="false"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/mute_location_requests_settings"
-            app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toTopOf="@id/switchMutePos"
-            app:layout_constraintBottom_toBottomOf="@id/switchMutePos"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mute_location_requests_settings"/>
+        </LinearLayout>
 
-        <Space
-            android:id="@+id/separator"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/padding_standard"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switchMutePos"/>
-
-        <Space
-            android:id="@+id/addContact"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/friendIcon"
-            app:layout_constraintBottom_toBottomOf="@id/friendIcon"
-            android:onClick="@{() -> vm.addMember()}"/>
-
-        <ImageView
-            android:id="@+id/friendIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_person_add_black_24dp"
-            android:contentDescription="@string/add_contact"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"
-            app:layout_constraintTop_toBottomOf="@id/separator"
-            android:padding="@dimen/padding_standard"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_contact"
-            app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toTopOf="@id/friendIcon"
-            app:layout_constraintBottom_toBottomOf="@id/friendIcon"/>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/memberList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/friendIcon"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/delete"/>
+            android:layout_margin="@dimen/activity_padding"/>
 
+        <LinearLayout
+            android:id="@+id/addFriend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_padding">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_person_add_black_24dp"
+                android:contentDescription="@string/add_contact"
+                android:onClick="@{() -> vm.addMember()}"/>
 
-        <Space
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_contact"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/leaveGroup"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/friendIcon"
-            app:layout_constraintBottom_toBottomOf="@id/friendIcon"
-            android:onClick="@{() -> vm.addMember()}"/>
-
-        <!-- TODO: replace with remove button -->
-        <ImageView
-            android:id="@+id/delete"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_person_add_black_24dp"
-            android:contentDescription="@string/add_contact"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"
-            app:layout_constraintTop_toBottomOf="@id/leaveGroup"
-            android:padding="@dimen/padding_standard"/>
+            android:layout_margin="@dimen/activity_padding">
+            <!-- TODO: replace with remove button -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_person_add_black_24dp"
+                android:contentDescription="@string/add_contact"
+                android:onClick="@{() -> vm.leave()}"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/leave_group"
-            app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toTopOf="@id/delete"
-            app:layout_constraintBottom_toBottomOf="@id/delete"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/leave_group"/>
 
+        </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </layout>

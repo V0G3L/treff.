@@ -43,4 +43,9 @@ public class UserGroupRepository {
             userGroupDao.save(group);
         });
     }
+
+    public void remove(UserGroup group) {
+        //TODO: network call
+        userGroupDao.deleteGroups(group);
+    }
 }

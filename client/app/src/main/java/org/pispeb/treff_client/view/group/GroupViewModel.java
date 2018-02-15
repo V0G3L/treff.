@@ -2,6 +2,7 @@ package org.pispeb.treff_client.view.group;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
@@ -27,6 +28,12 @@ public class GroupViewModel extends ViewModel {
     }
 
     public void addMember() {
+        //TODO add member dialog (?)
+        Log.i("groupviewmodel", "add member");
+    }
 
+    public void leave() {
+        Log.i("groupviewmodel", "group leave");
+        //userGroupRepository.remove(group.getValue());
     }
 }
