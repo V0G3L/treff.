@@ -5,6 +5,7 @@ import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import org.pispeb.treff_client.data.entities.User;
 import java.util.List;
@@ -22,7 +23,10 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE userID = :userID")
     LiveData<User> getUserByID(int userID);
 
-    @Query("SELECT * FROM user WHERE isFriend = 1")
+    @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
     DataSource.Factory<Integer, User> getFriends();
+
+    @Query("UPDATE user SET isBlocked = 1 WHERE userId = :userId")
+    void block(int userId);
 
 }

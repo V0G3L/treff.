@@ -33,8 +33,9 @@ public class EventRepository {
 
 
     public LiveData<PagedList<Event>> getEventsFromGroups(Set<UserGroup> g) {
-        return new LivePagedListBuilder<>(eventDao.getEventsFromGroups(g),
-                30).build();
+        return null;//new LivePagedListBuilder<>(eventDao.getEventsFromGroups
+        // (g),
+//                30).build();
     }
 
     public LiveData<Event> getEvent(int eventID) {

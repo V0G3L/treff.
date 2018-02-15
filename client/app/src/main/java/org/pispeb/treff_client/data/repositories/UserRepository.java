@@ -34,6 +34,12 @@ public class UserRepository {
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
     }
 
+    public void blockUser(int userId) {
+        backgroundHandler.post(() -> {
+            userDao.block(userId);
+        });
+    }
+
     public void add(User user) {
         backgroundHandler.post(() -> {
             userDao.save(user);

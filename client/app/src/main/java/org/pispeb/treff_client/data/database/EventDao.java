@@ -27,9 +27,9 @@ public interface EventDao {
     @Query("SELECT * FROM event")
     DataSource.Factory<Integer, Event> getAllEvents();
 
-    @Query("SELECT * FROM event INNER JOIN usergroup ON" +
-            "usergroup.event = usergroup.event " +
-            "WHERE usergroup.groupID = :g.groupID")
-    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<UserGroup> g);
+//    @Query("SELECT * FROM event INNER JOIN usergroup ON" +
+//            "usergroup.event = usergroup.event " +
+//            "WHERE usergroup.groupID = :g.groupID")
+//    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<UserGroup> g);
 
 }
