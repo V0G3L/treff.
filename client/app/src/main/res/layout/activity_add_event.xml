@@ -49,55 +49,71 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_event_18px"
-            app:layout_constraintBottom_toBottomOf="@id/date"
+            app:layout_constraintBottom_toBottomOf="@id/startDate"
             app:layout_constraintEnd_toStartOf="@id/vertGuide"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/date" />
+            app:layout_constraintTop_toTopOf="@id/startDate" />
 
         <TextView
-            android:id="@+id/date"
+            android:id="@+id/startDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:padding="@dimen/padding_standard"
-            android:text="@{vm.dateString}"
-            android:onClick="@{() -> vm.onDateClick()}"
+            android:text="1.1.2000"
+            android:onClick="@{() -> vm.onStartDateClick()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/vertGuide"
             app:layout_constraintTop_toBottomOf="@id/title" />
 
-
-        <ImageView
+        <TextView
+            android:id="@+id/startTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_access_time_48px"
-            app:layout_constraintBottom_toBottomOf="@id/start"
-            app:layout_constraintEnd_toStartOf="@id/vertGuide"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/start" />
+            android:padding="@dimen/padding_standard"
+            android:paddingEnd="@dimen/activity_vertical_margin"
+            android:text="12:00"
+            android:onClick="@{() -> vm.onStartTimeClick()}"
+            android:gravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintTop_toTopOf="@id/startDate" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:backgroundTint="@color/black"
+            app:layout_constraintStart_toEndOf="@id/vertGuide"
+            app:layout_constraintTop_toBottomOf="@id/startDate"/>
+
 
         <TextView
-            android:id="@+id/start"
+            android:id="@+id/endDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:padding="@dimen/padding_standard"
-            android:text="@{vm.startString}"
-            android:onClick="@{() -> vm.onStartTimeClick()}"
+            android:text="1.1.2000"
+            android:onClick="@{() -> vm.onEndDateClick()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toBottomOf="@id/date" />
+            app:layout_constraintTop_toBottomOf="@id/startDate" />
 
         <TextView
-            android:id="@+id/end"
+            android:id="@+id/endTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_standard"
-            android:text="@{vm.endString}"
+            android:paddingEnd="@dimen/activity_vertical_margin"
+            android:text="13:00"
             android:onClick="@{() -> vm.onEndTimeClick()}"
+            android:gravity="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toBottomOf="@id/start" />
+            app:layout_constraintTop_toTopOf="@id/endDate"/>
+
+
+
 
 
         <ImageView
@@ -105,10 +121,11 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_marker_event"
             android:elevation="@dimen/padding_standard"
+            android:paddingBottom="24dp"
             app:layout_constraintBottom_toBottomOf="@id/map"
             app:layout_constraintEnd_toEndOf="@id/map"
             app:layout_constraintStart_toStartOf="@id/map"
-            app:layout_constraintTop_toTopOf="@id/map" />
+            app:layout_constraintTop_toTopOf="@id/map"/>
 
         <org.osmdroid.views.MapView
             android:id="@+id/map"
@@ -118,7 +135,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/end" />
+            app:layout_constraintTop_toBottomOf="@+id/endDate" />
 
 
     </android.support.constraint.ConstraintLayout>

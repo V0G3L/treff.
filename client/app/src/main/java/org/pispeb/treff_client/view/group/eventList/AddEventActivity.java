@@ -53,6 +53,28 @@ public class AddEventActivity extends AppCompatActivity {
 
         vm.getState().observe(this, state -> callback(state));
 
+        vm.getStart().observe(this, c -> {
+            int year, month, day, hour, minute;
+            year = c.get(Calendar.YEAR);
+            month = c.get(Calendar.MONTH);
+            day = c.get(Calendar.DAY_OF_MONTH);
+            hour = c.get(Calendar.HOUR_OF_DAY);
+            minute = c.get(Calendar.MINUTE);
+            binding.startDate.setText(day + "." + (month+1) + "." + year);
+            binding.startTime.setText(hour + ":" + minute);
+        });
+
+        vm.getEnd().observe(this, c -> {
+            int year, month, day, hour, minute;
+            year = c.get(Calendar.YEAR);
+            month = c.get(Calendar.MONTH);
+            day = c.get(Calendar.DAY_OF_MONTH);
+            hour = c.get(Calendar.HOUR_OF_DAY);
+            minute = c.get(Calendar.MINUTE);
+            binding.endDate.setText(day + "." + (month+1) + "." + year);
+            binding.endTime.setText(hour + ":" + minute);
+        });
+
         //toolbar
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);

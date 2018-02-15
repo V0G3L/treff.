@@ -31,15 +31,15 @@ public class AddEventViewModel extends ViewModel
     private EventRepository eventRepository;
     private UserGroupRepository userGroupRepository;
 
-    MutableLiveData<Event> event;
+    Event event;
 
     private SingleLiveEvent<State> state;
 
-    int year, month, dayOfMonth;
-    int startHour, startMin;
-    int endHour, endMin;
+    MutableLiveData<Calendar> start;
+    MutableLiveData<Calendar> end;
 
-    private int lastDialog = NO_DIALOG;
+    private int lastTimeDialog = NO_DIALOG;
+    private int lastDateDialog = NO_DIALOG;
     private final static int NO_DIALOG = 0;
     private final static int START_DIALOG = 1;
     private final static int END_DIALOG = 2;
@@ -50,107 +50,116 @@ public class AddEventViewModel extends ViewModel
         this.eventRepository = eventRepository;
         this.userGroupRepository = userGroupRepository;
 
-        //automatically set to current time
-        Date start = new Date();
-        // one hour later
-        Date end = new Date(start.getTime() + 1000 * 60 * 60);
+        start = new MutableLiveData<>();
+        end = new MutableLiveData<>();
+        start.setValue(Calendar.getInstance());
+        end.setValue(Calendar.getInstance());
+        end.getValue().add(Calendar.HOUR, 1);
+
         Location location = new Location(LocationManager.GPS_PROVIDER);
-        event = new MutableLiveData<>();
-        //TODO creator
-        event.setValue(new Event("", start, end, location, 0));
+        event = new Event("", start.getValue().getTime(), end.getValue().getTime(),
+                location, 0);
 
         state = new SingleLiveEvent<>();
     }
 
+    public MutableLiveData<Calendar> getStart() {
+        return start;
+    }
+
+    public MutableLiveData<Calendar> getEnd() {
+        return end;
+    }
+
     public void setGroup(int groupId) {
-//        this.event.getValue().getGroupId = userGroupRepository.getGroup(groupId)
-//                .getValue();
     }
 
     public SingleLiveEvent<State> getState() {
         return state;
     }
 
-    public void onDateClick() {
+    public void onStartDateClick() {
+        lastDateDialog = START_DIALOG;
+        state.setValue(new State(ViewCall.SHOW_DATE_DIALOG, 0));
+    }
+
+
+    public void onEndDateClick() {
+        lastDateDialog = END_DIALOG;
         state.setValue(new State(ViewCall.SHOW_DATE_DIALOG, 0));
     }
 
     public void onStartTimeClick() {
-        lastDialog = START_DIALOG;
+        lastTimeDialog = START_DIALOG;
         state.setValue(new State(ViewCall.SHOW_TIME_DIALOG, 0));
     }
 
     public void onEndTimeClick() {
-        lastDialog = END_DIALOG;
+        lastTimeDialog = END_DIALOG;
         state.setValue(new State(ViewCall.SHOW_TIME_DIALOG, 0));
     }
 
     public void onSaveClick(Location location) {
-        if (event.getValue().getName().equals("")) return;
+        if (event.getName().equals("")) return;
 
         // Add Event to Database
-        eventRepository.addEvent(event.getValue());
+        eventRepository.addEvent(event);
 
         state.setValue(new State(ViewCall.SUCCESS, 0));
     }
 
     public String getName() {
-        return event.getValue().getName();
-    }
-
-    public String getStartString() {
-        return event.getValue().getStart().toString();//.substring(11);
-    }
-
-    public String getEndString() {
-        return event.getValue().getEnd().toString();//.substring(11);
-    }
-
-    public String getDateString() {
-        return event.getValue().getStart().toString();//.substring(0, 10);
+        return event.getName();
     }
 
     public Location getLocation() {
-        return event.getValue().getLocation();
+        return event.getLocation();
     }
 
     public void setName(String name) {
-        event.getValue().setName(name);
+        event.setName(name);
     }
 
 
     @Override
     public void onDateSet(DatePicker view, int year, int month,
                           int dayOfMonth) {
-        this.year = year;
-        this.month = month;
-        this.dayOfMonth = dayOfMonth;
-        updateTimes();
+        switch (lastDateDialog) {
+            case START_DIALOG:
+                start.getValue().set(Calendar.YEAR, year);
+                start.getValue().set(Calendar.MONTH, month);
+                start.getValue().set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                event.setStart(start.getValue().getTime());
+                start.postValue(start.getValue());
+                break;
+            case END_DIALOG:
+                end.getValue().set(Calendar.YEAR, year);
+                end.getValue().set(Calendar.MONTH, month);
+                end.getValue().set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                event.setEnd(end.getValue().getTime());
+                end.postValue(end.getValue());
+                break;
+        }
+
+        lastDateDialog = NO_DIALOG;
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        switch (lastDialog) {
+        switch (lastTimeDialog) {
             case START_DIALOG:
-                startHour = hourOfDay;
-                startMin = minute;
+                start.getValue().set(Calendar.HOUR_OF_DAY, hourOfDay);
+                start.getValue().set(Calendar.MINUTE, minute);
+                event.setStart(start.getValue().getTime());
+                start.postValue(start.getValue());
                 break;
             case END_DIALOG:
-                endHour = hourOfDay;
-                endMin = minute;
+                end.getValue().set(Calendar.HOUR_OF_DAY, hourOfDay);
+                end.getValue().set(Calendar.MINUTE, minute);
+                event.setEnd(end.getValue().getTime());
+                end.postValue(end.getValue());
                 break;
         }
-
-        updateTimes();
-        lastDialog = NO_DIALOG;
-    }
-
-
-    private void updateTimes() {
-        Calendar c = Calendar.getInstance();
-        c.set(year, month, dayOfMonth, startHour, startMin);
-        event.getValue().setStart(c.getTime());
-        c.set(year, month, dayOfMonth, endHour, endMin);
-        event.getValue().setEnd(c.getTime());
+        lastTimeDialog = NO_DIALOG;
     }
 }
