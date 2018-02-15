@@ -21,7 +21,7 @@ public class BlockAccountCommand extends ManageBlockCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        ErrorOutput response = checkParameters(input, true);
+        ErrorOutput response = checkParameters(input, 0);
         if (response != null) return response;
 
         Account actingAccount = input.getActingAccount();

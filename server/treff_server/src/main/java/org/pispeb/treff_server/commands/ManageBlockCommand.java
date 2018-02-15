@@ -27,7 +27,7 @@ public abstract class ManageBlockCommand extends AbstractCommand {
      * @param command 0 if blocking account, 1 if unblocking account
      * @return the error code if an error occurred, null if not
      */
-    private ErrorOutput checkParameters(Input input, int command) {
+    protected ErrorOutput checkParameters(Input input, int command) {
         Account blockingAccount;
         Account blockedAccount;
 

@@ -20,7 +20,7 @@ public class UnblockAccountCommand extends ManageBlockCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        ErrorOutput response = checkParameters(input, false);
+        ErrorOutput response = checkParameters(input, 1);
         if (response != null) return response;
 
         Account actingAccount = input.getActingAccount();
