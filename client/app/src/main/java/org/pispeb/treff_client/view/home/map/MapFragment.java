@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -41,8 +38,9 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -74,6 +72,7 @@ public class MapFragment extends Fragment {
     private final static int EVENTS = 1;
     private final static int CONTACTS = 2;
     private final static int USER = 3;
+    private List<UserGroup> groupList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -128,6 +127,11 @@ public class MapFragment extends Fragment {
 
         vm.getEvents().observe(this, events ->
                 updateEventLocations(events));
+
+        groupList = new ArrayList<>();
+        vm.getGroups().observe(this, groups -> {
+            groupList = groups;
+        });
 
         //make sure the map catches lateral swipes instead of the viewpager
         disableTouchTheft(binding.map);
@@ -275,42 +279,54 @@ public class MapFragment extends Fragment {
 
     private void showFilterDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setIcon(R.drawable.ic_layers_black_24dp);
-        builder.setTitle("Displayed Groups:");
 
-        ArrayAdapter<UserGroup> adapterGroup =
-                new ArrayAdapter<>(getContext(), R.layout.select_dialog,
-                        R.id.text);
-        if (vm.getGroups() != null) {
-            if (vm.getGroups().getValue() != null) {
-                adapterGroup.addAll(vm.getGroups().getValue());
+        // Array of all groups
+        UserGroup[] groups = new UserGroup[groupList.size()];
+        groupList.toArray(groups);
+        // Set of active groups
+        Set<UserGroup> activeGroups = vm.getActiveGroups();
+        // Groupnames displayed in dialog
+        String[] names = new String[groupList.size()];
+        // boolean for which groups are currently shown
+        boolean[] checkedGroups = new boolean[groupList.size()];
+
+        // set names and booleans
+        for (int i = 0; i < groups.length; i++) {
+            names[i] = groups[i].getName();
+            if (activeGroups.contains(groups[i])) {
+                checkedGroups[i] = true;
             }
         }
-        //TODO real groups
-        adapterGroup.add(new UserGroup("DialogTest1", null, null));
-        adapterGroup.add(new UserGroup("DialogTest2", null, null));
-        adapterGroup.add(new UserGroup("DialogTest3", null, null));
-        adapterGroup.add(new UserGroup("DialogTest4", null, null));
 
-
-        builder.setPositiveButton(R.string.ok,
-                (dialog, which) -> {
-
-                    dialog.dismiss();
+        builder.setMultiChoiceItems(names, checkedGroups,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which,
+                                        boolean isChecked) {
+                        // check/uncheck item
+                        checkedGroups[which] = isChecked;
+                        //TODO does not handle changing groups during dialog
+                        UserGroup group = groups[which];
+                        // set corresponding group to be (un)active
+                        if (isChecked) {
+                            activeGroups.add(group);
+                        } else {
+                            activeGroups.remove(group);
+                        }
+                    }
                 });
 
-        // TODO onclick not working at all
-        builder.setAdapter(adapterGroup,
-                (dialog, which) -> {
-            //TODO add items to list
-            UserGroup g = adapterGroup.getItem(which);
-            Log.i("Map", g.getName());
-            View item = adapterGroup.getView(which, View.inflate(getContext(),
-                    R.layout.select_dialog, binding.frame), binding.frame);
+        builder.setTitle("Displayed Groups:");
+
+        // ok button closes dialog and saves changes to vm
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            vm.setActiveGroups(activeGroups);
+            dialog.dismiss();
         });
 
-        builder.show();
-
+        // display the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 

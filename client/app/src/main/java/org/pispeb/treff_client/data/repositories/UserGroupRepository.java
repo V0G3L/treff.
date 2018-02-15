@@ -34,6 +34,10 @@ public class UserGroupRepository {
                 .build();
     }
 
+    public LiveData<List<UserGroup>> getGroupsInList() {
+        return userGroupDao.getAllGroupsInList();
+    }
+
     public void add(UserGroup group) {
         backgroundHandler.post(() -> {
             userGroupDao.save(group);

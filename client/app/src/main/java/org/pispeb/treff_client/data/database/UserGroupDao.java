@@ -27,6 +27,9 @@ public interface UserGroupDao {
     @Query("SELECT * FROM usergroup")
     DataSource.Factory<Integer, UserGroup> getAllGroups();
 
+    @Query("SELECT * FROM usergroup")
+    LiveData<List<UserGroup>> getAllGroupsInList();
+
     @Insert
     void save(GroupMembership groupMembership);
 

@@ -2,6 +2,7 @@ package org.pispeb.treff_client.data.repositories;
 
 import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.entities.Event;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import android.arch.lifecycle.LiveData;
@@ -10,6 +11,7 @@ import android.arch.paging.PagedList;
 import android.os.Handler;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class EventRepository {
@@ -27,6 +29,12 @@ public class EventRepository {
     public LiveData<PagedList<Event>> getEvents() {
         return new LivePagedListBuilder<>(eventDao.getAllEvents(), 30)
                 .build();
+    }
+
+
+    public LiveData<PagedList<Event>> getEventsFromGroups(Set<UserGroup> g) {
+        return new LivePagedListBuilder<>(eventDao.getEventsFromGroups(g),
+                30).build();
     }
 
     public LiveData<Event> getEvent(int eventID) {

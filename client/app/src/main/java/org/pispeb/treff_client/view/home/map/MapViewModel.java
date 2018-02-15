@@ -21,7 +21,6 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +44,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private MutableLiveData<Location> userLocation;
     private MutableLiveData<List<User>> friends;
     private LiveData<PagedList<Event>> events;
-    private LiveData<PagedList<UserGroup>> groups;
+    private LiveData<List<UserGroup>> groups;
 
     private Set<UserGroup> activeGroups;
 
@@ -63,10 +62,9 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();
-        this.groups = userGroupRepository.getGroups();
+        this.groups = userGroupRepository.getGroupsInList();
         // set all to fetch from db
         this.friends = new MutableLiveData<>();
-
 
         this.activeGroups = new HashSet<>();
 
@@ -77,8 +75,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLatitude(49);
         l.setLongitude(8.4);
-        User u = new User("Peter", true, false, l,
-                new Date(100000));
+        User u = new User("Peter", true, false, l);
         f.add(u);
         friends.postValue(f);
     }
@@ -90,12 +87,10 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     public void onFilterClick() {
         state.setValue(new State(ViewCall.SHOW_FILTER_DIALOG, 0));
-        Log.i("Map", "Filter clicked");
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        // Log.i("Map", "new Location");
         if (isBetterLocation(userLocation.getValue(), location)) {
             userLocation.postValue(location);
         }
@@ -117,8 +112,17 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return events;
     }
 
-    public LiveData<PagedList<UserGroup>> getGroups() {
+    public LiveData<List<UserGroup>> getGroups() {
         return groups;
+    }
+
+    public Set<UserGroup> getActiveGroups() {
+        return activeGroups;
+    }
+
+    public void setActiveGroups(Set<UserGroup> activeGroups) {
+        this.activeGroups = activeGroups;
+        events = eventRepository.getEventsFromGroups(activeGroups);
     }
 
     @Override
