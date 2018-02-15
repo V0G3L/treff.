@@ -15,6 +15,7 @@ import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Date;
 import java.util.Map;
 
 // TODO needs to be tested
@@ -47,6 +48,13 @@ public class EditPollCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
+        // get poll
+        Poll poll = getSafeForWriting(group.getAllPolls()
+                .get(input.poll.getID()));
+        if (poll == null) {
+            return new ErrorOutput(ErrorCode.POLLIDINVALID);
+        }
+
         // check permission
         if (!group.checkPermissionOfMember(actingAccount,
                 Permission.EDIT_ANY_EVENT) ||
@@ -54,21 +62,7 @@ public class EditPollCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-        // TODO check if all the parameters of all options are valid/existent
-
-        // check times for each poll option
-        for (PollOption option : input.poll.getPollOptions().values()) {
-            if (option.getTimeEnd().getTime()
-                    < option.getTimeStart().getTime()) {
-                return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
-            }
-
-            //TODO timeEnd-in-past-check
-        }
-
         // edit poll
-        Poll poll = getSafeForWriting(group.getAllPolls()
-                .get(input.poll.getID()));
         poll.setQuestion(input.poll.getQuestion());
         poll.setMultiChoice(input.poll.isMultiChoice());
         poll.setTimeVoteClose(input.poll.getTimeVoteClose());

@@ -1,20 +1,17 @@
 package org.pispeb.treff_server.commands;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.commands.io.CommandInput;
-import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.networking.ErrorCode;
 
 // TODO needs to be tested
 
 /**
  * a command to block an Account for another Account
  */
-public class BlockAccountCommand extends AbstractCommand {
+public class BlockAccountCommand extends ManageBlockCommand {
 
     public BlockAccountCommand(AccountManager accountManager) {
         super(accountManager, CommandInput.class);
@@ -23,53 +20,17 @@ public class BlockAccountCommand extends AbstractCommand {
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account blockingAccount;
-        Account blockedAccount;
 
-        // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            blockingAccount = getSafeForWriting(input.getActingAccount());
-            blockedAccount = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        } else {
-            blockedAccount = getSafeForWriting(input.getActingAccount());
-            blockingAccount = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        }
-        if (blockingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-        if (blockedAccount == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
-        }
+        ErrorOutput response = checkParameters(input, true);
+        if (response != null) return response;
 
-        // check block list
-        if (blockingAccount.getAllBlocks().containsKey(input.id)) {
-            return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
+        Account actingAccount = input.getActingAccount();
+        Account blockAccount = accountManager.getAccount(input.accountId);
+        if (actingAccount.getAllContacts().containsKey(input.accountId)) {
+            actingAccount.removeContact(blockAccount);
         }
-
-        // block
-        if (blockingAccount.getAllContacts().containsKey(input.id)) {
-            blockedAccount.removeContact(blockedAccount);
-        }
-        blockingAccount.addBlock(blockedAccount);
+        actingAccount.addBlock(blockAccount);
 
         return new Output();
-    }
-
-    public static class Input extends CommandInputLoginRequired {
-
-        final int id;
-
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("token") String token) {
-            super(token);
-            this.id = id;
-        }
-    }
-
-    public static class Output extends CommandOutput {
-        Output() {
-        }
     }
 }

@@ -13,6 +13,8 @@ import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Date;
+
 // TODO needs to be tested
 
 /**
@@ -50,18 +52,6 @@ public class CreatePollCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEPOLL);
         }
 
-        // TODO check if all the parameters of all options are valid/existent
-
-        // check times for each poll option
-        for (PollOption option : input.poll.getPollOptions().values()) {
-            if (option.getTimeEnd().getTime()
-                    < option.getTimeStart().getTime()) {
-                return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
-            }
-
-            //TODO timeEnd-in-past-check
-        }
-
         // create poll
         Poll poll = group.createPoll(input.poll.getQuestion(),
                 actingAccount, input.poll.isMultiChoice());
@@ -76,7 +66,6 @@ public class CreatePollCommand extends AbstractCommand {
         final int groupId;
         final PollComplete poll;
 
-        //TODO options parameter
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonDeserialize(using
                              = PollOptionWithoutIDDeserializer.class)

@@ -52,7 +52,7 @@ public class RemovePollCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-        // remove the event
+        // remove the poll
         poll.delete();
 
         // respond
