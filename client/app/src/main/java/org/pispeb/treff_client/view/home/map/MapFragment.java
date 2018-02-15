@@ -286,6 +286,7 @@ public class MapFragment extends Fragment {
                 adapterGroup.addAll(vm.getGroups().getValue());
             }
         }
+        //TODO real groups
         adapterGroup.add(new UserGroup("DialogTest1", null, null));
         adapterGroup.add(new UserGroup("DialogTest2", null, null));
         adapterGroup.add(new UserGroup("DialogTest3", null, null));

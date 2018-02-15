@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!-- TODO: where is this even used? remove? -->
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"

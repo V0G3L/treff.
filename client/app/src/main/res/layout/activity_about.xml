@@ -27,6 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/fragment_frame"
+            android:padding="@dimen/activity_padding"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
         </FrameLayout>
 

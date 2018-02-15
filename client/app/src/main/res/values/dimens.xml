@@ -6,6 +6,7 @@
 
     <dimen name="fab_margin">24dp</dimen>
     <dimen name="padding_standard">5dp</dimen>
+    <dimen name="activity_padding">8dp</dimen>
 
 
     <dimen name="title_text">20sp</dimen>

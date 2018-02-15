@@ -33,7 +33,7 @@
         <ImageView
             android:id="@+id/filterIcon"
             android:src="@drawable/ic_layers_black_24dp"
-            android:tint="@color/colorAccent"
+            android:alpha="0.5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/filterText"
