@@ -12,6 +12,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 
 import javax.json.JsonObject;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
@@ -157,6 +158,24 @@ public abstract class AbstractCommand {
      */
     protected <T extends DataObject> T getSafeForWriting(T obj) {
         return getSafe(obj, t -> t.getReadWriteLock().writeLock());
+    }
+
+    // TODO is this even working?
+    /**
+     * compares a given time to the system time with a tolerance
+     * @param time the time to compare with the system time
+     * @return -1   , if time < SysTime - tolerance;
+     *          0   , if SysTime - tolerance <= time <= SysTime + tolerance;
+     *          1   , if time > SysTime + tolerance;
+     */
+    protected int checkTime(Date time) {
+        long tolerance = 0; //TODO need a tolerance
+        long SysTime = System.currentTimeMillis();
+        Date plusTolerance = new Date(SysTime + tolerance);
+        Date minusTolerance = new Date(SysTime - tolerance);
+        if (time.before(minusTolerance)) return -1;
+        else if (plusTolerance.before(time)) return 1;
+        return 0;
     }
 }
 

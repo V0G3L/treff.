@@ -39,8 +39,7 @@ public class AddPollOptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO is this working?
-        if (input.pollOption.getTimeEnd().before(new Date())) {
+        if (checkTime(input.pollOption.getTimeEnd()) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 

@@ -35,8 +35,7 @@ public class CreateEventCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO is this working?
-        if (input.event.getTimeEnd().before(new Date())) {
+        if (checkTime(input.event.getTimeEnd()) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
