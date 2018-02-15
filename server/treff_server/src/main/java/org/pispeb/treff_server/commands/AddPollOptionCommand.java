@@ -34,26 +34,26 @@ public class AddPollOptionCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.polloption.getTimeEnd()
-                .before(input.polloption.getTimeStart())) {
+        if (input.pollOption.getTimeEnd()
+                .before(input.pollOption.getTimeStart())) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
         //TODO is this working?
-        if (input.polloption.getTimeEnd().before(new Date())) {
+        if (input.pollOption.getTimeEnd().before(new Date())) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
         // get account and check if it still exist
-        Account account =
+        Account actingAccount =
                 getSafeForReading(input.getActingAccount());
-        if (account == null) {
+        if (actingAccount == null) {
             return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
         // get group
-        Usergroup group =
-                getSafeForReading(account.getAllGroups().get(input.groupId));
+        Usergroup group = getSafeForReading(actingAccount
+                .getAllGroups().get(input.groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
@@ -65,15 +65,15 @@ public class AddPollOptionCommand extends AbstractCommand {
         }
 
         // check permission
-        if (poll.getCreator().getID() != account.getID() &&
-                !group.checkPermissionOfMember(account,
+        if (poll.getCreator().getID() != actingAccount.getID() &&
+                !group.checkPermissionOfMember(actingAccount,
                         Permission.EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
         // add poll option
-        poll.addPollOption(input.polloption.getPosition(),
-                input.polloption.getTimeStart(), input.polloption.getTimeEnd());
+        poll.addPollOption(input.pollOption.getPosition(),
+                input.pollOption.getTimeStart(), input.pollOption.getTimeEnd());
 
         // respond
         return new Output();
@@ -83,18 +83,18 @@ public class AddPollOptionCommand extends AbstractCommand {
 
         final int groupId;
         final int pollId;
-        final PollOptionComplete polloption;
+        final PollOptionComplete pollOption;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
                      @JsonDeserialize(using
                              = PollOptionWithoutIDDeserializer.class)
-                     @JsonProperty("poll-option") PollOptionComplete polloption,
+                     @JsonProperty("poll-option") PollOptionComplete pollOption,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
             this.pollId = pollId;
-            this.polloption = polloption;
+            this.pollOption = pollOption;
         }
     }
 

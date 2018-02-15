@@ -28,25 +28,30 @@ public class BlockAccountCommand extends AbstractCommand {
 
         // get accounts
         if (input.getActingAccount().getID() < input.id) {
-            blockingAccount = getSafeForWriting(accountManager
-                    .getAccount(input.getActingAccount().getID()));
+            blockingAccount = getSafeForWriting(input.getActingAccount());
             blockedAccount = getSafeForWriting(
                     accountManager.getAccount(input.id));
         } else {
-            blockedAccount = getSafeForWriting(accountManager
-                    .getAccount(input.getActingAccount().getID()));
+            blockedAccount = getSafeForWriting(input.getActingAccount());
             blockingAccount = getSafeForWriting(
                     accountManager.getAccount(input.id));
         }
         if (blockingAccount == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
         if (blockedAccount == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
+        // check block list
+        if (blockingAccount.getAllBlocks().containsKey(input.id)) {
+            return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
+        }
+
         // block
-        blockedAccount.removeContact(blockedAccount);
+        if (blockingAccount.getAllContacts().containsKey(input.id)) {
+            blockedAccount.removeContact(blockedAccount);
+        }
         blockingAccount.addBlock(blockedAccount);
 
         return new Output();

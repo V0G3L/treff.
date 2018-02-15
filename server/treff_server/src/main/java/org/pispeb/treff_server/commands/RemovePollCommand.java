@@ -6,7 +6,6 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
@@ -41,7 +40,7 @@ public class RemovePollCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
-        // get Poll
+        // get poll
         Poll poll = getSafeForWriting(group.getAllPolls().get(input.pollId));
         if (poll == null) {
             return new ErrorOutput(ErrorCode.POLLIDINVALID);
