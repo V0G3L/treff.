@@ -19,7 +19,7 @@ public class RequestEncoder {
 
 
     public RequestEncoder() {
-        this.connectionHandler = new ConnectionHandler("", 1);
+//        this.connectionHandler = new ConnectionHandler("", 1);
     }
 
     public Error getErrorByCode(int code) {
@@ -36,7 +36,8 @@ public class RequestEncoder {
      * @return A verification token
      */
     public int login(String username, String password) {
-        connectionHandler.sendRequest("cmd" + SEP1 + username + SEP2 + password);
+//        connectionHandler.sendRequest("cmd" + SEP1 + username + SEP2 +
+//                password);
         return 0;
     }
 
