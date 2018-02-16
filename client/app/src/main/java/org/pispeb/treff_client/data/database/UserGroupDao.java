@@ -12,6 +12,7 @@ import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * {@link Dao} which provides access to {@link UserGroup}s
@@ -34,6 +35,7 @@ public interface UserGroupDao {
     @Insert
     void save(GroupMembership groupMembership);
 
+    /*
     @Query("SELECT usergroup.groupID, name " +
             "FROM groupmembership INNER JOIN usergroup " +
             "ON groupmembership.groupID = usergroup.groupID " +
@@ -45,7 +47,14 @@ public interface UserGroupDao {
             "ON groupmembership.userID = user.userID " +
             "WHERE groupmembership.groupID = :groupID")
     DataSource.Factory<Integer, User> getUsersByGroup(int groupID);
+    */
+
+    @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")
+    LiveData<List<GroupMembership>> getGroupMembershipsByGroupId(int groupId);
 
     @Delete
-    void deleteGroups(UserGroup... userGroups);
+    void deleteGroup(UserGroup userGroup);
+
+    @Delete
+    void deleteGroupMemberships(List<GroupMembership> groupMemberships);
 }

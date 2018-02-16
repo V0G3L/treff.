@@ -22,5 +22,6 @@ public enum ViewCall {
     UPDATE_VIEW,
     SHOW_FILTER_DIALOG,
     SHOW_DATE_DIALOG,
-    SHOW_TIME_DIALOG
+    SHOW_TIME_DIALOG,
+    LEFT_GROUP
 }

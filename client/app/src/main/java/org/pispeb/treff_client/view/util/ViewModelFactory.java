@@ -77,8 +77,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         Handler handler = new Handler(thread.getLooper());
 
         userRepository = new UserRepository(userDao, encoder, handler);
-        userGroupRepository = new UserGroupRepository(userGroupDao, encoder,
-                handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, eventDao, chatDao, encoder, handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
     }

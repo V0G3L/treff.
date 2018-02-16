@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.database;
 import android.arch.lifecycle.LiveData;
 import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -26,6 +27,12 @@ public interface EventDao {
 
     @Query("SELECT * FROM event")
     DataSource.Factory<Integer, Event> getAllEvents();
+
+    @Query("SELECT * FROM event WHERE id IN(:eventIds)")
+    LiveData<List<Event>> getEventsByIdSet(Set<Integer> eventIds);
+
+    @Delete
+    void deleteEvents(List<Event> events);
 
 //    @Query("SELECT * FROM event INNER JOIN usergroup ON" +
 //            "usergroup.event = usergroup.event " +

@@ -29,12 +29,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_padding">
             <Switch
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:showText="false"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:text="@string/mute_chat_setting"/>
         </LinearLayout>
 
@@ -44,13 +45,14 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_padding">
             <Switch
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:showText="false"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:text="@string/mute_location_requests_settings"/>
         </LinearLayout>
 
@@ -65,17 +67,20 @@
             android:id="@+id/addFriend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_padding">
+            android:layout_margin="@dimen/activity_padding"
+            android:onClick="@{() -> vm.addMember()}"
+            android:clickable="true"
+            android:focusable="true">
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_person_add_black_24dp"
-                android:contentDescription="@string/add_contact"
-                android:onClick="@{() -> vm.addMember()}"/>
+                android:contentDescription="@string/add_contact"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:text="@string/add_contact"/>
         </LinearLayout>
 
@@ -83,18 +88,21 @@
             android:id="@+id/leaveGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_padding">
+            android:layout_margin="@dimen/activity_padding"
+            android:onClick="@{() -> vm.leave()}"
+            android:clickable="true"
+            android:focusable="true">
             <!-- TODO: replace with remove button -->
             <ImageView
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_person_add_black_24dp"
-                android:contentDescription="@string/add_contact"
-                android:onClick="@{() -> vm.leave()}"/>
+                android:contentDescription="@string/add_contact"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:text="@string/leave_group"/>
 
         </LinearLayout>
