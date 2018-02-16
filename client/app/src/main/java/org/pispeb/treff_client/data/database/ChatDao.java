@@ -25,7 +25,7 @@ public interface ChatDao {
     DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
 
     @Query("SELECT * FROM message WHERE groupID = :groupId")
-    LiveData<List<ChatMessage>> getMessageListByGroupId(int groupId);
+    List<ChatMessage> getMessageListByGroupId(int groupId);
 
     @Delete
     void deleteMessages(List<ChatMessage> messages);

@@ -50,7 +50,7 @@ public interface UserGroupDao {
     */
 
     @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")
-    LiveData<List<GroupMembership>> getGroupMembershipsByGroupId(int groupId);
+    List<GroupMembership> getGroupMembershipsByGroupId(int groupId);
 
     @Delete
     void deleteGroup(UserGroup userGroup);

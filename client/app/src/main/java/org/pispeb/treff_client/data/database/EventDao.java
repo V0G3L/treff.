@@ -29,7 +29,7 @@ public interface EventDao {
     DataSource.Factory<Integer, Event> getAllEvents();
 
     @Query("SELECT * FROM event WHERE id IN(:eventIds)")
-    LiveData<List<Event>> getEventsByIdSet(Set<Integer> eventIds);
+    List<Event> getEventsByIdSet(Set<Integer> eventIds);
 
     @Delete
     void deleteEvents(List<Event> events);

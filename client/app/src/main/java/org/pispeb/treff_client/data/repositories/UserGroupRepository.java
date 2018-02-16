@@ -64,25 +64,20 @@ public class UserGroupRepository {
         //TODO network calls
 
         backgroundHandler.post(() -> {
-            //TODO remove
-            userGroupDao.save(new GroupMembership(12, group.getGroupId()));
-            userGroupDao.save(new GroupMembership(23, group.getGroupId()));
 
-            //TODO implement properly
-            /*
             //delete group memberships
             userGroupDao.deleteGroupMemberships(
-                    userGroupDao.getGroupMembershipsByGroupId(group.getGroupId()).getValue());
+                    userGroupDao.getGroupMembershipsByGroupId(group.getGroupId()));
 
             //delete group events;
-            eventDao.deleteEvents(eventDao.getEventsByIdSet(group.getEvents()).getValue());
+            eventDao.deleteEvents(
+                    eventDao.getEventsByIdSet(group.getEvents()));
 
             //TODO: delete polls
 
             //delete chats
-            chatDao.deleteMessages(chatDao.getMessageListByGroupId(group.getGroupId()).getValue());
-
-            */
+            chatDao.deleteMessages(
+                    chatDao.getMessageListByGroupId(group.getGroupId()));
 
             userGroupDao.deleteGroup(group);
         });
