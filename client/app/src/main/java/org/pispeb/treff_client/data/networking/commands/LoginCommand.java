@@ -6,14 +6,44 @@ import android.util.Log;
  * Class representing a JSON login object
  */
 
-public class LoginCommand {
+public class LoginCommand extends AbstractCommand{
 
-    public final String cmd = "login";
-    public String user;
-    public String pass;
+    private Request output;
 
-    public LoginCommand (String user, String pass) {
-        this.user = user;
-        this.pass = pass;
+    public LoginCommand(String user, String pass) {
+        super(Response.class);
+        output = new Request(user, pass);
+    }
+
+    @Override
+    public Request getRequest() {
+        return output;
+    }
+
+    @Override
+    public void onResponse(AbstractResponse abstractResponse) {
+        Response response = (Response) abstractResponse;
+    }
+
+    public static class Request extends AbstractRequest {
+
+        public final String user;
+        public final String pass;
+
+        public Request(String user, String pass) {
+            super("login");
+            this.user = user;
+            this.pass = pass;
+        }
+    }
+
+
+    public static class Response extends AbstractResponse {
+
+        public final String token;
+
+        public Response(String token) {
+            this.token = token;
+        }
     }
 }

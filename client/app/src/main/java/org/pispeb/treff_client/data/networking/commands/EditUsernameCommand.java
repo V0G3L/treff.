@@ -4,14 +4,41 @@ package org.pispeb.treff_client.data.networking.commands;
  * Class representing a JSON edit-username object
  */
 
-public class EditUsernameCommand {
+public class EditUsernameCommand extends AbstractCommand{
 
-    public final String cmd = "edit-username";
-    public String username;
-    public String token;
+    private Request output;
 
-    public EditUsernameCommand (String username, String token) {
-        this.username = username;
-        this.token = token;
+    public EditUsernameCommand(String username, String token) {
+        super(Response.class);
+        output = new Request(username, token);
+    }
+
+    @Override
+    public Request getRequest() {
+        return output;
+    }
+
+    @Override
+    public void onResponse(AbstractResponse abstractResponse) {
+        Response response = (Response) abstractResponse;
+
+    }
+
+    public static class Request extends AbstractRequest {
+
+        public final String username;
+        public final String token;
+
+        public Request(String username, String token) {
+            super("edit-username");
+            this.username = username;
+            this.token = token;
+        }
+    }
+
+    //server returns empty json object
+    public static class Response extends AbstractResponse {
+        public Response() {
+        }
     }
 }

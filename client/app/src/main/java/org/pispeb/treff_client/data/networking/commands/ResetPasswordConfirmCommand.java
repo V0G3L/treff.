@@ -6,16 +6,46 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class representing a JSON reset-password-confirm object
  */
 
-public class ResetPasswordConfirmCommand {
+public class ResetPasswordConfirmCommand extends AbstractCommand{
 
-    public final String cmd = "reset-password-confirm";
-    public String code;
+    private Request output;
 
-    @JsonProperty("new-pass")
-    public String newPass;
-
-    public ResetPasswordConfirmCommand (String code, String newPass) {
-        this.code = code;
-        this.newPass = newPass;
+    public ResetPasswordConfirmCommand(String code, String newPass) {
+        super(Response.class);
+        output = new Request(code, newPass);
     }
+
+    @Override
+    public Request getRequest() {
+        return output;
+    }
+
+    @Override
+    public void onResponse(AbstractResponse abstractResponse) {
+        Response response = (Response) abstractResponse;
+
+    }
+
+    public static class Request extends AbstractRequest {
+
+        public final String code;
+
+        @JsonProperty("new-pass")
+        public final String newPass;
+
+
+        public Request(String code, String newPass) {
+            super("reset-password-confirm");
+            this.code = code;
+            this.newPass = newPass;
+        }
+    }
+
+    //server returns empty json object
+    public static class Response extends AbstractResponse {
+        public Response() {
+        }
+    }
+
+
 }

@@ -6,19 +6,46 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class representing a JSON edit-password object
  */
 
-public class EditPasswordcommand {
+public class EditPasswordcommand extends AbstractCommand{
 
-    public final String cmd = "edit-password";
-    public String pass;
+    private Request output;
 
-    @JsonProperty("new-pass")
-    public String newPass;
+    public EditPasswordcommand(String pass, String newPass, String token) {
+        super(Response.class);
+        output = new Request(pass, newPass, token);
+    }
 
-    public String token;
+    @Override
+    public Request getRequest() {
+        return output;
+    }
 
-    public EditPasswordcommand (String pass, String newPass, String token) {
-        this.pass = pass;
-        this.newPass = newPass;
-        this.token = token;
+    @Override
+    public void onResponse(AbstractResponse abstractResponse) {
+        Response response = (Response) abstractResponse;
+
+    }
+
+    public static class Request extends AbstractRequest {
+
+        public final String pass;
+
+        @JsonProperty("new-pass")
+        public final String newPass;
+
+        public final String token;
+
+        public Request(String pass, String newPass, String token) {
+            super("edit-password");
+            this.pass = pass;
+            this.newPass = newPass;
+            this.token = token;
+        }
+    }
+
+    //server returns empty json object
+    public static class Response extends AbstractResponse {
+        public Response() {
+        }
     }
 }
