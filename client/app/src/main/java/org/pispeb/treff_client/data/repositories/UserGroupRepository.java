@@ -7,6 +7,7 @@ import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.GroupMembership;
+import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 
@@ -45,18 +46,30 @@ public class UserGroupRepository {
     }
 
     public LiveData<PagedList<UserGroup>> getGroups() {
+        //TODO network call
         return new LivePagedListBuilder<>(userGroupDao.getAllGroups(), 30)
                 .build();
     }
 
     public LiveData<List<UserGroup>> getGroupsInList() {
+        //TODO network call
         return userGroupDao.getAllGroupsInList();
+    }
+
+    public LiveData<PagedList<User>> getGroupMembers(int groupId) {
+        //TODO network call
+        return new LivePagedListBuilder<>(userGroupDao.getUsersByGroup(groupId), 30)
+                .build();
     }
 
     public void add(UserGroup group) {
         //TODO network call
         backgroundHandler.post(() -> {
+            //add group
             userGroupDao.save(group);
+            //add yourself to the group
+            //TODO set own user ID
+            userGroupDao.save(new GroupMembership(3, group.getGroupId()));
         });
     }
 

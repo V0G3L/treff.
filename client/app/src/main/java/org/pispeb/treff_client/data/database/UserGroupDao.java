@@ -35,7 +35,6 @@ public interface UserGroupDao {
     @Insert
     void save(GroupMembership groupMembership);
 
-    /*
     @Query("SELECT usergroup.groupID, name " +
             "FROM groupmembership INNER JOIN usergroup " +
             "ON groupmembership.groupID = usergroup.groupID " +
@@ -47,7 +46,7 @@ public interface UserGroupDao {
             "ON groupmembership.userID = user.userID " +
             "WHERE groupmembership.groupID = :groupID")
     DataSource.Factory<Integer, User> getUsersByGroup(int groupID);
-    */
+
 
     @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")
     List<GroupMembership> getGroupMembershipsByGroupId(int groupId);
@@ -57,4 +56,6 @@ public interface UserGroupDao {
 
     @Delete
     void deleteGroupMemberships(List<GroupMembership> groupMemberships);
+
+
 }

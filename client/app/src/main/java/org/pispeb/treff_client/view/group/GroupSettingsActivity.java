@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
@@ -42,10 +43,19 @@ public class GroupSettingsActivity extends AppCompatActivity {
 
         vm.getState().observe(this, state -> callback(state));
 
-
         binding.setVm(vm);
 
         vm.setGroupById(groupId);
+
+        MemberListAdapter adapter = new MemberListAdapter(vm);
+        vm.getMembers().observe(this, members -> {
+            adapter.setList(members);
+        });
+
+        binding.memberList.setAdapter(adapter);
+        binding.memberList.setLayoutManager(new LinearLayoutManager(this));
+        binding.memberList.setHasFixedSize(true);
+
 
         vm.getGroup().observe(this, group -> {
             binding.toolbarGroupSettings.setTitle(group.getName());
