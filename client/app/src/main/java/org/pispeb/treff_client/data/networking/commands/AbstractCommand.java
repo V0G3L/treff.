@@ -5,7 +5,18 @@ package org.pispeb.treff_client.data.networking.commands;
  */
 
 public abstract class AbstractCommand {
-    public abstract String getJson();
+    private final Class<? extends AbstractResponse> responseClass;
 
-    public abstract void onAnswer(String answer);
+    protected AbstractCommand(
+            Class<? extends AbstractResponse> responseClass) {
+        this.responseClass = responseClass;
+    }
+
+    public abstract AbstractRequest getRequest();
+
+    public abstract void onResponse(AbstractResponse response);
+
+    public Class<? extends AbstractResponse> getResponceClass() {
+        return responseClass;
+    }
 }

@@ -1,23 +1,14 @@
 package org.pispeb.treff_client.data.networking;
 
-import android.os.AsyncTask;
 import android.util.Log;
-
-import org.pispeb.treff_client.data.networking.commands.AbstractCommand;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.LinkedList;
-import java.util.Queue;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Class to handle the Connection to the server
@@ -37,16 +28,11 @@ public class ConnectionHandler {
     // Receiving answers from Server
     private BufferedReader mBufferIn;
 
-    // Queue of commands waiting to be sent to Server
-    Queue<AbstractCommand> commands;
+    private OnMessageReceived mMessageListener;
 
-    public ConnectionHandler(String server, int port) {
-        idle = true;
-        commands = new LinkedList<>();
-    }
-
-    public void sendRequest(AbstractCommand request) {
-        commands.add(request);
+    public ConnectionHandler(String server, int port, OnMessageReceived
+            listener) {
+        this.mMessageListener = listener;
     }
 
     /**
@@ -70,7 +56,7 @@ public class ConnectionHandler {
      *
      * @param message text entered by client
      */
-    private void sendMessage(String message) {
+    public void sendMessage(String message) {
         if (mBufferOut != null && !mBufferOut.checkError()) {
             mBufferOut.println(message);
             mBufferOut.flush();
@@ -106,23 +92,10 @@ public class ConnectionHandler {
                 // the server
                 while (mRun) {
 
-                    if (idle && !commands.isEmpty()) {
-                        sendMessage(commands.peek().getJson());
-                    }
-
                     String mServerMessage = mBufferIn.readLine();
-                    if (mServerMessage != null) {
-                        Log.e("RESPONSE FROM SERVER", "S: Received Message: '"
-                                + mServerMessage + "'");
-                        if (commands.isEmpty()) {
-                            Log.e("TCP", "S: Error",
-                                    new IllegalStateException("No response " +
-                                            "expected"));
 
-                        } else {
-                            commands.poll().onAnswer(mServerMessage);
-                            if (commands.isEmpty()) idle = true;
-                        }
+                    if (mServerMessage != null && mMessageListener != null) {
+                        mMessageListener.messageReceived(mServerMessage);
                     }
 
                 }
@@ -143,6 +116,11 @@ public class ConnectionHandler {
             Log.e("TCP", "C: Error", e);
 
         }
+    }
 
+    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
+    //class at on asynckTask doInBackground
+    public interface OnMessageReceived {
+        public void messageReceived(String message);
     }
 }
