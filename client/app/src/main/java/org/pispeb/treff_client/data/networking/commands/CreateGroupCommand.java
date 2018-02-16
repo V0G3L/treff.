@@ -1,6 +1,10 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.descriptions.UsergroupCreateDescription;
+
+
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 /**
  * Created by matth on 16.02.2018.
@@ -8,11 +12,14 @@ import org.pispeb.treff_client.data.networking.commands.descriptions.UsergroupCr
 
 public class CreateGroupCommand extends AbstractCommand {
 
+    private UserGroupRepository userGroupRepository;
     private Request output;
 
-    public CreateGroupCommand(String name, int[] members, String token) {
+    public CreateGroupCommand(String name, int[] members, String token,
+                              UserGroupRepository userGroupRepository) {
         super(Response.class);
         output = new Request(name, members, token);
+        this.userGroupRepository = userGroupRepository;
     }
 
     @Override
@@ -23,7 +30,8 @@ public class CreateGroupCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        // TODO different constructor
+        userGroupRepository.add(new UserGroup(output.group.name, null, null));
     }
 
     public static class Request extends AbstractRequest {

@@ -2,17 +2,22 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.repositories.EventRepository;
+
 /**
  * Created by matth on 16.02.2018.
  */
 
 public class RemoveEventCommand extends AbstractCommand {
 
+    private EventRepository eventRepository;
     private Request output;
 
-    public RemoveEventCommand(int groupId, int id, String token) {
+    public RemoveEventCommand(int groupId, int id, String token,
+                              EventRepository eventRepository) {
         super(Response.class);
         output = new Request(groupId, id, token);
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -23,7 +28,7 @@ public class RemoveEventCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        eventRepository.delete(output.id);
     }
 
     public static class Request extends AbstractRequest {

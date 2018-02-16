@@ -34,9 +34,9 @@ public class UserRepository {
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
     }
 
-    public void blockUser(int userId) {
+    public void setIsBlocked(int userId, boolean isBlocked) {
         backgroundHandler.post(() -> {
-            userDao.block(userId);
+            userDao.setBlocked(userId, isBlocked);
         });
     }
 
@@ -50,6 +50,7 @@ public class UserRepository {
         });
     }
 
-
-
+    public void setIsFriend(int userId, boolean isFriend) {
+        userDao.setIsFriend(userId, isFriend);
+    }
 }

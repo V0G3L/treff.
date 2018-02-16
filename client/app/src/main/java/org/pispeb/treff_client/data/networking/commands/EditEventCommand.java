@@ -2,8 +2,11 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.pispeb.treff_client.data.networking.commands.descriptions.EventEditDescription;
+import org.pispeb.treff_client.data.entities.Event;
+import org.pispeb.treff_client.data.networking.commands.descriptions
+        .EventEditDescription;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
+import org.pispeb.treff_client.data.repositories.EventRepository;
 
 import java.util.Date;
 
@@ -13,13 +16,17 @@ import java.util.Date;
 
 public class EditEventCommand extends AbstractCommand {
 
+    private EventRepository eventRepository;
     private Request output;
 
-    public EditEventCommand(int groupId, String title, int creatorId, Date timeStart,
-                            Date timeEnd, Position position, int eventId, String token) {
+    public EditEventCommand(int groupId, String title, int creatorId,
+                            Date timeStart, Date timeEnd, Position position,
+                            int eventId, String token,
+                            EventRepository eventRepository) {
         super(Response.class);
         output = new Request(groupId, title, creatorId, timeStart,
                 timeEnd, position, eventId, token);
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -30,7 +37,10 @@ public class EditEventCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        // TODO Location, id
+        eventRepository.update(new Event(output.event.title,
+                output.event.timeStart, output.event.timeEnd,
+                null, output.event.creatorID));
     }
 
     public static class Request extends AbstractRequest {
@@ -41,10 +51,12 @@ public class EditEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String title, int creatorId, Date timeStart,
-                       Date timeEnd, Position position, int eventId, String token) {
+                       Date timeEnd, Position position, int eventId,
+                       String token) {
             super("edit-event");
             this.groupId = groupId;
-            event = new EventEditDescription(title, creatorId, timeStart, timeEnd, position, eventId);
+            event = new EventEditDescription(title, creatorId, timeStart,
+                    timeEnd, position, eventId);
             this.token = token;
         }
     }

@@ -5,22 +5,16 @@ import android.arch.lifecycle.LiveData;
 import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
-import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.GroupMembership;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import android.arch.lifecycle.Observer;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class UserGroupRepository {
     private UserGroupDao userGroupDao;
@@ -92,7 +86,23 @@ public class UserGroupRepository {
             chatDao.deleteMessages(
                     chatDao.getMessageListByGroupId(group.getGroupId()));
 
-            userGroupDao.deleteGroup(group);
+            userGroupDao.delete(group);
         });
+    }
+
+    public void addGroupMembers(int groupId, int[] members) {
+        for (int i = 0; i < members.length; i++ ) {
+            userGroupDao.save(new GroupMembership(groupId, members[i]));
+        }
+    }
+
+    public void removeGroupMembers(int groupId, int[] members) {
+        for (int i = 0; i < members.length; i++ ) {
+            userGroupDao.delete(new GroupMembership(groupId, members[i]));
+        }
+    }
+
+    public void update(UserGroup userGroup) {
+        userGroupDao.update(userGroup);
     }
 }

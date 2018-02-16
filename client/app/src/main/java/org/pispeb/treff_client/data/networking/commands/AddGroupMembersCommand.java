@@ -2,17 +2,22 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+
 /**
  * Created by matth on 16.02.2018.
  */
 
 public class AddGroupMembersCommand extends AbstractCommand {
 
+    private UserGroupRepository userGroupRepository;
     private Request output;
 
-    public AddGroupMembersCommand(int groupId, int[] members, String token) {
+    public AddGroupMembersCommand(int groupId, int[] members, String token,
+                                  UserGroupRepository userGroupRepository) {
         super(Response.class);
         output = new Request(groupId, members, token);
+        this.userGroupRepository = userGroupRepository;
     }
 
     @Override
@@ -23,7 +28,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        userGroupRepository.addGroupMembers(output.groupId, output.members);
     }
 
     public static class Request extends AbstractRequest {

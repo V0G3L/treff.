@@ -4,11 +4,11 @@ package org.pispeb.treff_client.data.networking.commands;
  * Class representing a JSON send-contact-request object
  */
 
-public class SendContactReequestCommand extends AbstractCommand{
+public class SendContactRequestCommand extends AbstractCommand{
 
     private Request output;
 
-    public SendContactReequestCommand(int id, String token) {
+    public SendContactRequestCommand(int id, String token) {
         super(Response.class);
         output = new Request(id, token);
     }
@@ -21,7 +21,7 @@ public class SendContactReequestCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        // TODO handle response
     }
 
     public static class Request extends AbstractRequest {

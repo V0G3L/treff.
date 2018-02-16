@@ -1,7 +1,8 @@
 package org.pispeb.treff_client.data.networking.commands;
 
 /**
- * Created by Lukas on 2/16/2018.
+ * Abstract Command each command inherits from
+ * Every Command has to generate a request and be able to accept a response
  */
 
 public abstract class AbstractCommand {

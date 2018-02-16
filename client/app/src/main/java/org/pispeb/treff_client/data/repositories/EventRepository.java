@@ -47,4 +47,13 @@ public class EventRepository {
             eventDao.save(event);
         });
     }
+
+    public void update(Event newEvent) {
+        eventDao.update(newEvent);
+    }
+
+    public void delete(int eventId) {
+        // TODO constructor with only id
+//        eventDao.delete(eventId);
+    }
 }

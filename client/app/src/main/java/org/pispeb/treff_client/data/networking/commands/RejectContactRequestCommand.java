@@ -1,16 +1,21 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import org.pispeb.treff_client.data.repositories.UserRepository;
+
 /**
  * Class representing a JSON reject-contact-request object
  */
 
 public class RejectContactRequestCommand extends AbstractCommand{
 
+    private UserRepository userRepository;
     private Request output;
 
-    public RejectContactRequestCommand(int id, String token) {
+    public RejectContactRequestCommand(int id, String token,
+                                       UserRepository userRepository) {
         super(Response.class);
         output = new Request(id, token);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -21,7 +26,7 @@ public class RejectContactRequestCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        userRepository.setIsFriend(output.id, false);
     }
 
     public static class Request extends AbstractRequest {

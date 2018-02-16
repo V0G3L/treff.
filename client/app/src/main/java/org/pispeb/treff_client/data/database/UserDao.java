@@ -26,7 +26,10 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
     DataSource.Factory<Integer, User> getFriends();
 
-    @Query("UPDATE user SET isBlocked = 1 WHERE userId = :userId")
-    void block(int userId);
+    @Query("UPDATE user SET isBlocked = :isBlocked WHERE userId = :userId")
+    void setBlocked(int userId, boolean isBlocked);
+
+    @Query("UPDATE user SET isFriend = :isFriend WHERE userId = :userId")
+    void setIsFriend(int userId, boolean isFriend);
 
 }

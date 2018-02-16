@@ -2,8 +2,11 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.pispeb.treff_client.data.networking.commands.descriptions.EventCreateDescription;
+import org.pispeb.treff_client.data.entities.Event;
+import org.pispeb.treff_client.data.networking.commands.descriptions
+        .EventCreateDescription;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
+import org.pispeb.treff_client.data.repositories.EventRepository;
 
 import java.util.Date;
 
@@ -13,12 +16,17 @@ import java.util.Date;
 
 public class CreateEventCommand extends AbstractCommand {
 
+    private EventRepository eventRepository;
     private Request output;
 
-    public CreateEventCommand(int groupId, String title, int creatorId, Date timeStart,
-                              Date timeEnd, Position position, String token) {
+    public CreateEventCommand(int groupId, String title, int creatorId,
+                              Date timeStart,
+                              Date timeEnd, Position position, String token,
+                              EventRepository eventRepository) {
         super(Response.class);
-        output = new Request(groupId, title, creatorId, timeStart, timeEnd, position, token);
+        output = new Request(groupId, title, creatorId, timeStart, timeEnd,
+                position, token);
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -28,8 +36,12 @@ public class CreateEventCommand extends AbstractCommand {
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
-
+        // TODO Location, id
+        eventRepository.addEvent(new Event(output.event.title,
+                output.event.timeStart,
+                output.event.timeEnd,
+                null,
+                output.event.creatorID));
     }
 
     public static class Request extends AbstractRequest {
@@ -43,7 +55,8 @@ public class CreateEventCommand extends AbstractCommand {
                        Date timeEnd, Position position, String token) {
             super("create-event");
             this.groupId = groupId;
-            event = new EventCreateDescription(title, creatorId, timeStart, timeEnd, position);
+            event = new EventCreateDescription(title, creatorId, timeStart,
+                    timeEnd, position);
             this.token = token;
         }
     }
@@ -52,6 +65,7 @@ public class CreateEventCommand extends AbstractCommand {
     public static class Response extends AbstractResponse {
 
         public final int id;
+
         public Response(int id) {
             this.id = id;
         }

@@ -6,6 +6,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.UserGroup;
@@ -39,4 +40,9 @@ public interface EventDao {
 //            "WHERE usergroup.groupID = :g.groupID")
 //    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<UserGroup> g);
 
+    @Update
+    void update(Event event);
+
+    @Delete
+    void delete(Event event);
 }

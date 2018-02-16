@@ -1,16 +1,21 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import org.pispeb.treff_client.data.repositories.UserRepository;
+
 /**
  * Created by matth on 16.02.2018.
  */
 
 public class RemoveContactCommand extends AbstractCommand {
 
+    private UserRepository userRepository;
     private Request output;
 
-    public RemoveContactCommand(int id, String token) {
+    public RemoveContactCommand(int id, String token,
+                                UserRepository userRepository) {
         super(Response.class);
         output = new Request(id, token);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -21,7 +26,7 @@ public class RemoveContactCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        userRepository.setIsFriend(output.id, false);
     }
 
     public static class Request extends AbstractRequest {

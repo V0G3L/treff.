@@ -33,7 +33,7 @@ public class FriendViewModel extends ViewModel {
 
     public void onBlockClick() {
         // TODO block user
-        userRepository.blockUser(user.getValue().getUserId());
+        userRepository.setIsBlocked(user.getValue().getUserId(), true);
     }
 
     public void onChatClick() {
