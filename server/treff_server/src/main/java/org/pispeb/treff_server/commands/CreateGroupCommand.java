@@ -1,10 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.pispeb.treff_server.commands.descriptions.UsergroupComplete;
-import org.pispeb.treff_server.commands.deserializers
-        .UsergroupWithoutIDDeserializer;
+import org.pispeb.treff_server.commands.descriptions.UsergroupCreateDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -14,6 +11,8 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -33,9 +32,13 @@ public class CreateGroupCommand extends AbstractCommand {
         Input input = (Input) commandInput;
         int actingAccountId = input.getActingAccount().getID();
 
-
-        Set<Integer> members = input.group.getAllMembers().keySet();
+        // collect all specified IDs and actionAccount's ID in set,
+        // removing duplicates
+        Set<Integer> members = new HashSet<>();
+        for (int id : input.group.memberIDs)
+            members.add(id);
         members.add(actingAccountId);
+
         // lock the accounts in the correct order and add them all to a set
         TreeSet<Account> memberAccounts = new TreeSet<>();
         for (int memberId : members) {
@@ -57,7 +60,7 @@ public class CreateGroupCommand extends AbstractCommand {
 
         // create the group
         Usergroup usergroup = input.getActingAccount()
-                .createGroup(input.group.getName(), memberArray);
+                .createGroup(input.group.name, memberArray);
 
         // respond
         return new Output(usergroup.getID());
@@ -65,11 +68,9 @@ public class CreateGroupCommand extends AbstractCommand {
 
     public static class Input extends CommandInputLoginRequired {
 
-        final UsergroupComplete group;
+        final UsergroupCreateDescription group;
 
-        public Input(@JsonDeserialize(using
-                = UsergroupWithoutIDDeserializer.class)
-                     @JsonProperty("group") UsergroupComplete group,
+        public Input(@JsonProperty("group") UsergroupCreateDescription group,
                      @JsonProperty("token") String token) {
             super(token);
             this.group = group;

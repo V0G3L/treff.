@@ -1,10 +1,9 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.PollOptionComplete;
-import org.pispeb.treff_server.commands.deserializers.PollOptionDeserializer;
+
+import org.pispeb.treff_server.commands.descriptions.PollOptionEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -30,13 +29,13 @@ public class EditPollOptionCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.inputOption.getTimeEnd()
-                .before(input.inputOption.getTimeStart())) {
+        if (input.inputOption.timeEnd
+                .before(input.inputOption.timeStart)) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
         //TODO is this working?
-        if (input.inputOption.getTimeEnd().before(new Date())) {
+        if (input.inputOption.timeEnd.before(new Date())) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -69,15 +68,15 @@ public class EditPollOptionCommand extends AbstractCommand {
 
         // get poll option
         PollOption currentOption = getSafeForWriting(poll.getPollOptions()
-                .get(input.inputOption.getID()));
+                .get(input.inputOption.id));
         if (currentOption == null) {
             return new ErrorOutput(ErrorCode.POLLOPTIONIDINVALID);
         }
 
         // edit poll option
-        currentOption.setPosition(input.inputOption.getPosition());
-        currentOption.setTimeStart(input.inputOption.getTimeStart());
-        currentOption.setTimeEnd(input.inputOption.getTimeEnd());
+        currentOption.setPosition(input.inputOption.position);
+        currentOption.setTimeStart(input.inputOption.timeStart);
+        currentOption.setTimeEnd(input.inputOption.timeEnd);
 
         // respond
         return new AddPollOptionCommand.Output();
@@ -87,14 +86,12 @@ public class EditPollOptionCommand extends AbstractCommand {
 
         final int groupId;
         final int pollId;
-        final PollOptionComplete inputOption;
+        final PollOptionEditDescription inputOption;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
-                     @JsonDeserialize(using
-                             = PollOptionDeserializer.class)
                      @JsonProperty("poll-option")
-                             PollOptionComplete inputOption,
+                             PollOptionEditDescription inputOption,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

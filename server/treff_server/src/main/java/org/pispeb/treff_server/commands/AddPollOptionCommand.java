@@ -1,11 +1,9 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.PollOptionComplete;
-import org.pispeb.treff_server.commands.deserializers
-        .PollOptionWithoutIDDeserializer;
+import org.pispeb.treff_server.commands.descriptions.PollOptionCreateDescription;
+
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -15,8 +13,6 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
-
-import java.util.Date;
 
 // TODO needs to be tested
 
@@ -34,12 +30,12 @@ public class AddPollOptionCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.pollOption.getTimeEnd()
-                .before(input.pollOption.getTimeStart())) {
+        if (input.pollOption.timeEnd
+                .before(input.pollOption.timeStart)) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        if (checkTime(input.pollOption.getTimeEnd()) < 0) {
+        if (checkTime(input.pollOption.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -71,8 +67,8 @@ public class AddPollOptionCommand extends AbstractCommand {
         }
 
         // add poll option
-        poll.addPollOption(input.pollOption.getPosition(),
-                input.pollOption.getTimeStart(), input.pollOption.getTimeEnd());
+        poll.addPollOption(input.pollOption.position,
+                input.pollOption.timeStart, input.pollOption.timeEnd);
 
         // respond
         return new Output();
@@ -82,13 +78,12 @@ public class AddPollOptionCommand extends AbstractCommand {
 
         final int groupId;
         final int pollId;
-        final PollOptionComplete pollOption;
+        final PollOptionCreateDescription pollOption;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
-                     @JsonDeserialize(using
-                             = PollOptionWithoutIDDeserializer.class)
-                     @JsonProperty("poll-option") PollOptionComplete pollOption,
+                     @JsonProperty("poll-option")
+                             PollOptionCreateDescription pollOption,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

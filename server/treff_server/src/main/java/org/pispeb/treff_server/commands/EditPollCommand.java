@@ -1,22 +1,14 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.PollComplete;
-import org.pispeb.treff_server.commands.deserializers
-        .PollOptionWithoutIDDeserializer;
-import org.pispeb.treff_server.commands.deserializers
-        .PollWithoutOptionsDeserializer;
+import org.pispeb.treff_server.commands.descriptions.PollEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
-
-import java.util.Date;
-import java.util.Map;
 
 // TODO needs to be tested
 
@@ -50,22 +42,22 @@ public class EditPollCommand extends AbstractCommand {
 
         // get poll
         Poll poll = getSafeForWriting(group.getAllPolls()
-                .get(input.poll.getID()));
+                .get(input.poll.id));
         if (poll == null) {
             return new ErrorOutput(ErrorCode.POLLIDINVALID);
         }
 
         // check permission
         if (!group.checkPermissionOfMember(actingAccount,
-                Permission.EDIT_ANY_EVENT) ||
-                !(input.poll.getCreator() == actingAccount)) {
+                Permission.EDIT_ANY_EVENT) &&
+                !(poll.getCreator().getID() == actingAccount.getID())) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
         // edit poll
-        poll.setQuestion(input.poll.getQuestion());
-        poll.setMultiChoice(input.poll.isMultiChoice());
-        poll.setTimeVoteClose(input.poll.getTimeVoteClose());
+        poll.setQuestion(input.poll.question);
+        poll.setMultiChoice(input.poll.isMultiChoice);
+        poll.setTimeVoteClose(input.poll.timeVoteClose);
 
         return new Output();
     }
@@ -73,13 +65,11 @@ public class EditPollCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final PollComplete poll;
+        final PollEditDescription poll;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonDeserialize(using
-                             = PollWithoutOptionsDeserializer.class)
                      @JsonProperty("poll")
-                             PollComplete poll,
+                             PollEditDescription poll,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

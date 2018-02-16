@@ -188,8 +188,7 @@ For the sake of consistency, they are listed here anyways.
     time-close/date/Point in time at which voting closes,
     multi-choice/boolean/True iff an account can vote for multiple poll options
     simultaneously,
-    options/object array/Complete descriptions of the poll options that are
-    part of this poll
+    options/int array/IDs of all poll options that are part of this poll
 }{}{
     question/Up to 64 characters
 }
@@ -237,7 +236,7 @@ For the sake of consistency, they are listed here anyways.
 \apiErrorNew{time-end-start-conflict}{1401}
 {at least one end time is not after the corresponding start time}
 \apiErrorNew{time-measured-future}{1402}
-{the time of measurement is to far in the future}
+{the time of measurement is too far in the future}
 \apiErrorNew{already-in-contacts}{1500}{account already in contact list}
 \apiErrorNew{not-in-contacts}{1501}{account isn't part of the own contact list}
 \apiErrorNew{reflexive-contact}{1502}{account can't be a contact of itself}
@@ -510,23 +509,28 @@ user group will be deleted.}
 user-not-in-group}
 {}
 
-\apiCommand{get-permissions}
-{Gets the permissions of an account in a user group of which the executing user is
-a member.}
+\apiCommand{get-membership-details}
+{Gets the membership details of an account in a user group of which the
+executing user is a member.
+This command can be used to query a group member's permissions.}
 {id/int/The ID of the user group,
 user-id/int/The ID of the account}
-{permissions/object/The complete description of the permissions
-(\ref{sec:permdesc})}
-{group-id-invalid}
+{membership/object/The complete description of the membership belonging to
+the specified user in the specified group (\ref{sec:Membership-desc})}
+{group-id-invalid, user-not-in-group}
 {}
 
-\apiCommand{edit-permissions}
-{Edits the permissions of an account in a user groupof which the executing user
-is a member.}
+\apiCommand{edit-membership}
+{Edits the membership details of an account in a user group of which the
+executing user is a member.
+This command can be used to edit a group member's permissions.
+To revoke a membership, i.e. remove a user from a group, use the
+\textbf{remove-group-members} command.}
 {id/int/The ID of the user group,
-user-id/int/The ID of the account,
-permissions/object/A new complete description of the permissions
-(\ref{sec:permdesc})}
+membership/object/The complete description of the new membership that is to
+replace the current one (see \ref{sec:Membership-desc}).
+The ID specified in the description must match the ID of the account whose
+membership is to be edited.}
 {}
 {group-id-invalid, no-permission-edit-permissions}
 {}
@@ -580,8 +584,8 @@ id/int/The ID of the event}
 \apiCommand{create-poll}
 {Creates a new poll in a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
-poll/object/A new complete description of the poll without the ID and the
-creator}
+poll/object/A new complete description of the poll without the ID, the
+creator ID, and the options array}
 {id/int/The ID of the poll}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-create-poll}
@@ -591,7 +595,7 @@ no-permission-create-poll}
 {Edits a poll of a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
 poll/object/A new complete description of the poll option without
-the options array and the creator.
+the options array and the creator ID.
 The ID specified in the description must match the ID of the poll that
 is to be edited.}
 {}

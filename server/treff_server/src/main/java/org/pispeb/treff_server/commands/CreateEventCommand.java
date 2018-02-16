@@ -1,11 +1,8 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.EventComplete;
-import org.pispeb.treff_server.commands.deserializers
-        .EventWithoutIDDeserializer;
+import org.pispeb.treff_server.commands.descriptions.EventCreateDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -31,11 +28,11 @@ public class CreateEventCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.event.getTimeEnd().before(input.event.getTimeStart())) {
+        if (input.event.timeEnd.before(input.event.timeStart)) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        if (checkTime(input.event.getTimeEnd()) < 0) {
+        if (checkTime(input.event.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -61,9 +58,10 @@ public class CreateEventCommand extends AbstractCommand {
         }
 
         // create event
-        Event event = group.createEvent(input.event.getTitle(),
-                input.event.getPosition(),
-                input.event.getTimeStart(), input.event.getTimeEnd(),
+        Event event = group.createEvent(input.event.title,
+                input.event.position,
+                input.event.timeStart,
+                input.event.timeEnd,
                 input.getActingAccount());
 
         // respond
@@ -73,12 +71,10 @@ public class CreateEventCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final EventComplete event;
+        final EventCreateDescription event;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonDeserialize(using
-                             = EventWithoutIDDeserializer.class)
-                     @JsonProperty("event") EventComplete event,
+                     @JsonProperty("event") EventCreateDescription event,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

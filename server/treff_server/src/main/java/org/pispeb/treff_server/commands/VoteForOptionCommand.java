@@ -14,7 +14,7 @@ import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to vote for a polloption
+ * a command to vote for a pollOption
  */
 public class VoteForOptionCommand extends AbstractCommand {
 

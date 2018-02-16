@@ -1,11 +1,8 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.PollComplete;
-import org.pispeb.treff_server.commands.deserializers
-        .PollOptionWithoutIDDeserializer;
+import org.pispeb.treff_server.commands.descriptions.PollCreateDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -53,8 +50,8 @@ public class CreatePollCommand extends AbstractCommand {
         }
 
         // create poll
-        Poll poll = group.createPoll(input.poll.getQuestion(),
-                actingAccount, input.poll.isMultiChoice());
+        Poll poll = group.createPoll(input.poll.question,
+                actingAccount, input.poll.isMultiChoice);
 
 
         // respond
@@ -64,13 +61,11 @@ public class CreatePollCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final PollComplete poll;
+        final PollCreateDescription poll;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonDeserialize(using
-                             = PollOptionWithoutIDDeserializer.class)
                      @JsonProperty("poll")
-                             PollComplete poll,
+                             PollCreateDescription poll,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

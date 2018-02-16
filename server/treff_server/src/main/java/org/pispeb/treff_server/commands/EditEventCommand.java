@@ -1,10 +1,8 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.descriptions.EventComplete;
-import org.pispeb.treff_server.commands.deserializers.EventDeserializer;
+import org.pispeb.treff_server.commands.descriptions.EventEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -33,12 +31,12 @@ public class EditEventCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.inputEvent.getTimeEnd().before(input.inputEvent
-                .getTimeStart())) {
+        if (input.inputEvent.timeEnd.before(input.inputEvent
+                .timeStart)) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        if (checkTime(input.inputEvent.getTimeEnd()) < 0) {
+        if (checkTime(input.inputEvent.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -65,16 +63,16 @@ public class EditEventCommand extends AbstractCommand {
 
         // get event
         Event currentEvent = getSafeForWriting(group.getAllEvents()
-                .get(input.inputEvent.getID()));
+                .get(input.inputEvent.id));
         if (currentEvent == null) {
             return new ErrorOutput(ErrorCode.EVENTIDINVALID);
         }
 
         //edit event
-        currentEvent.setTitle(input.inputEvent.getTitle());
-        currentEvent.setTimeStart(input.inputEvent.getTimeStart());
-        currentEvent.setTimeEnd(input.inputEvent.getTimeEnd());
-        currentEvent.setPosition(input.inputEvent.getPosition());
+        currentEvent.setTitle(input.inputEvent.title);
+        currentEvent.setTimeStart(input.inputEvent.timeStart);
+        currentEvent.setTimeEnd(input.inputEvent.timeEnd);
+        currentEvent.setPosition(input.inputEvent.position);
 
         // respond
         return new Output();
@@ -83,12 +81,10 @@ public class EditEventCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final EventComplete inputEvent;
+        final EventEditDescription inputEvent;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonDeserialize(using
-                             = EventDeserializer.class)
-                     @JsonProperty("event") EventComplete inputEvent,
+                     @JsonProperty("event") EventEditDescription inputEvent,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;

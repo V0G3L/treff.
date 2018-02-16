@@ -10,7 +10,7 @@ import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to withdraw a vote from a polloption
+ * a command to withdraw a vote from a pollOption
  */
 public class WithdrawVoteForOptionCommand extends AbstractCommand {
 

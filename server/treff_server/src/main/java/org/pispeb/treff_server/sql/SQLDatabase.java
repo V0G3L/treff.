@@ -171,7 +171,8 @@ public class SQLDatabase {
                         // add all permissions
                         Arrays.stream(Permission.values())
                                 .map((p) -> "permission_" +
-                                        p.toString() + " BIT NOT NULL")
+                                        p.toString().toLowerCase()
+                                        + " BIT NOT NULL")
                                 .collect(Collectors.joining(","))),
 
                 // events
