@@ -7,10 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.UserGroup;
-import org.pispeb.treff_client.data.networking.commands.AbstractCommand;
-import org.pispeb.treff_client.data.networking.commands.AbstractRequest;
-import org.pispeb.treff_client.data.networking.commands.AbstractResponse;
-import org.pispeb.treff_client.data.networking.commands.GetUserIdCommand;
+import org.pispeb.treff_client.data.networking.commands.*;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -101,14 +98,75 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     }
 
     /**
+     * Method to perform a register request
+     *
+     * @param username .
+     * @param password .
+     */
+    public synchronized void register(String username, String password) {
+        executeCommand(new RegisterCommand(username, password));
+    }
+
+    /**
      * Method to perform a login request
      *
      * @param username .
      * @param password .
-     * @return A verification token
      */
-    public synchronized int login(String username, String password) {
-        return 0;
+    public synchronized void login(String username, String password) {
+        executeCommand(new LoginCommand(username, password));
+    }
+
+
+    /**
+     * Method to perform an edit-username request
+     * @param username the new username
+     */
+    public synchronized void editUsername(String username) {
+        executeCommand(new EditUsernameCommand(username, TOKEN));
+    }
+
+    /**
+     * Method to perform an edit-email request
+     * @param email the new email
+     */
+    public synchronized void editEmail(String email) {
+        executeCommand(new EditEmailCommand(email, TOKEN));
+    }
+
+    /**
+     * Method to perform an edit-password request
+     * @param password the current password
+     * @param newPassword the new password
+     */
+    public synchronized void editPassword(String password, String newPassword) {
+        executeCommand(new EditPasswordCommand(password, newPassword, TOKEN));
+    }
+
+    /**
+     * Method to perform a reset-password request
+     * @param email the new email
+     */
+    public synchronized void resetPassword(String email) {
+        executeCommand(new ResetPasswordCommand(email));
+    }
+
+    /**
+     * Method to perform a reset-password-confirm request
+     * @param code the validation code of the user
+     * @param password the new password
+     */
+
+    public synchronized void resetPasswordConfirm(String code, String password) {
+        executeCommand(new ResetPasswordConfirmCommand(code, password));
+    }
+
+    /**
+     * Method to perform a delete-account request
+     * @param password the password of the user
+     */
+    public synchronized void deleteAccount(String password) {
+        executeCommand(new DeleteAccountCommand(password, TOKEN));
     }
 
     /**
@@ -117,59 +175,51 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param username .
      * @return The user id of the user
      */
-    public synchronized int getUserId(String username) {
-        //TODO token!
+    public synchronized void getUserId(String username) {
         executeCommand(new GetUserIdCommand(username, TOKEN));
-        return 0;
     }
 
     /**
-     * Method to perform an add-contact request
+     * Method to perform an send-contact-request request
      *
      * @param userId Contact to be added to the friend list
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean addContact(int userId) {
-        return false;
+    public synchronized void sendContactRequest(int userId) {
+        executeCommand(new SendContactReequestCommand(userId, TOKEN));
     }
 
-    /**
-     * Method to perform a remove-contact request
-     *
-     * @param userID Contact to be removed from friend list
-     * @return true if the request was successful, false if not
-     */
-    public synchronized boolean removeContact(int userID) {
-        return false;
+
+    public synchronized void cancelContactRequest(int userId) {
+        executeCommand(new CancelContactRequestCommand(userId, TOKEN));
     }
 
-    /**
-     * Method to perform a list-contacts request
-     *
-     * @return An array of the ID's of the the friends of the user
-     */
-    public synchronized Integer[] listContacts() {
-        return null;
+    public synchronized void acceptContactRequest(int userId) {
+        executeCommand(new AcceptContactRequestCommand(userId, TOKEN));
     }
 
-    /**
-     * Method to perform a block-account request
-     *
-     * @param userId The user to be blocked
-     * @return true if the request was successful, false if not
-     */
-    public synchronized boolean blockAccount(int userId) {
-        return false;
+    public synchronized void rejectContactRequest(int userId) {
+        executeCommand(new RejectContactRequestCommand(userId, TOKEN));
+    }
+
+    public synchronized void removeContact(int userId) {
+        executeCommand(new RemoveContactCommand(userId, TOKEN));
+    }
+
+    public synchronized void getContactList() {
+        executeCommand(new GetContactListCommand(TOKEN));
+    }
+
+    public synchronized void blockAccount(int userId) {
+        executeCommand(new BlockAccountCommand(userId, TOKEN));
     }
 
     /**
      * Method to perform an unblock-account request
      *
      * @param userId The user to be unblocked
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean unblockAccount(int userId) {
-        return false;
+    public synchronized void unblockAccount(int userId) {
+        executeCommand(new UnblockAccountCommand(userId, TOKEN));
     }
 
     /**
@@ -179,19 +229,15 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param memberIds Array of the ID's of the members
      * @return The ID of the new group
      */
-    public synchronized int createGroup(String groupName, Integer[] memberIds) {
-        return 0;
-    }
+    public synchronized void createGroup(String groupName, Integer[] memberIds) {}
 
     /**
      * Method to perform an edit-group-name request
      *
      * @param groupId ID of the group
-     * @param name    New name of the group
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean editGroupName(int groupId, String name) {
-        return false;
+    public synchronized void editGroup(int groupId) {
+
     }
 
     /**
@@ -201,9 +247,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param newMembers ID of the new member
      * @return true if the request was successful, false if not
      */
-    public synchronized boolean addGroupMembers(int groupId,
-                                                Integer[] newMembers) {
-        return false;
+    public synchronized void addGroupMembers(int groupId, int[] newMembers) {
+        executeCommand(new AddGroupMembersCommand(groupId, newMembers, TOKEN));
     }
 
     /**
@@ -211,11 +256,13 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      *
      * @param groupId The ID of the group
      * @param members The ID of the member to be removed
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean removeGroupMembers(int groupId,
-                                                   Integer[] members) {
-        return false;
+    public synchronized void removeGroupMembers(int groupId, int[] members) {
+        executeCommand(new RemoveGroupMembersCommand(groupId, members, TOKEN));
+    }
+
+    public synchronized void getPermissions(int groupId, int userId) {
+        executeCommand(new GetPermissionsCommand(groupId, userId, TOKEN));
     }
 
     /**

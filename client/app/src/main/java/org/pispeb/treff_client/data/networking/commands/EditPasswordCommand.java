@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Class representing a JSON edit-password object
  */
 
-public class EditPasswordcommand extends AbstractCommand{
+public class EditPasswordCommand extends AbstractCommand{
 
     private Request output;
 
-    public EditPasswordcommand(String pass, String newPass, String token) {
+    public EditPasswordCommand(String pass, String newPass, String token) {
         super(Response.class);
         output = new Request(pass, newPass, token);
     }
