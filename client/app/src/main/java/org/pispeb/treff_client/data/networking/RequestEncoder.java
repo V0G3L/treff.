@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.*;
+import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -227,17 +229,18 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      *
      * @param groupName Name of the new group
      * @param memberIds Array of the ID's of the members
-     * @return The ID of the new group
      */
-    public synchronized void createGroup(String groupName, Integer[] memberIds) {}
+    public synchronized void createGroup(String groupName, int[] memberIds) {
+        executeCommand(new CreateGroupCommand(groupName, memberIds, TOKEN));
+    }
 
     /**
      * Method to perform an edit-group-name request
      *
      * @param groupId ID of the group
      */
-    public synchronized void editGroup(int groupId) {
-
+    public synchronized void editGroup(int groupId, String groupName) {
+        executeCommand(new EditGroupCommand(groupId, groupName, TOKEN));
     }
 
     /**
@@ -271,29 +274,34 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param groupId   ID of the group of the event
      * @param title     The name of the event
      * @param timeStart The starting time of the event (unix time)
-     * @param timeEnd   The finishing time of the event (unix time)
-     * @param lat       The latitude of the event (decimal digit)
-     * @param lon       The longitude of the event (decimal digit)
-     * @return The ID of the new event
-     */
-    public synchronized int createEvent(int groupId, String title,
-                                        int timeStart,
-                                        int timeEnd, float lat, float lon) {
-        return 0;
-    }
-
-    //public boolean editEvent() {}
-
-    /**
-     * Method to perform a remove-event request
+     * @param timeEnd   The finishing time of the event (unix time
+     * @param position  The position of the event
      *
-     * @param groupId The ID of the group of the event
-     * @param eventId The ID of the event
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean removeEvent(int groupId, int eventId) {
-        return false;
+    public synchronized void createEvent(int groupId, String title, int creatorId, Date timeStart,
+                                        Date timeEnd, Position position) {
+        executeCommand(new CreateEventCommand(groupId, title, creatorId, timeStart,
+                timeEnd, position, TOKEN));
     }
+
+    public synchronized void editEvent(int groupId, String title, int creatorId, Date timeStart,
+                                       Date timeEnd, Position position, int eventId) {
+        executeCommand(new EditEventCommand(groupId, title, creatorId, timeStart,
+                timeEnd, position, eventId, TOKEN));
+    }
+
+    public synchronized void joinEvent(int groupId, int eventId) {
+        executeCommand(new JoinEventCommand(groupId, eventId, TOKEN));
+    }
+
+    public synchronized void leaveEvent(int groupId, int eventId) {
+        executeCommand(new LeaveEventCommand(groupId, eventId, TOKEN));
+    }
+
+    public synchronized void removeEvent(int groupId, int eventId) {
+        executeCommand(new RemoveEventCommand(groupId, eventId, TOKEN));
+    }
+
 
 
     /**
