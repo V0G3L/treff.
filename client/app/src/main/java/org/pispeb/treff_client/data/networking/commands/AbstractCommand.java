@@ -16,7 +16,7 @@ public abstract class AbstractCommand {
 
     public abstract void onResponse(AbstractResponse response);
 
-    public Class<? extends AbstractResponse> getResponceClass() {
+    public Class<? extends AbstractResponse> getResponseClass() {
         return responseClass;
     }
 }

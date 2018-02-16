@@ -15,11 +15,12 @@ public class GetUserIdCommand extends AbstractCommand {
 
     @Override
     public Request getRequest() {
-        return null;
+        return output;
     }
 
     @Override
-    public void onResponse(AbstractResponse response) {
+    public void onResponse(AbstractResponse abstractResponse) {
+        Response response = (Response) abstractResponse;
 
     }
 
@@ -42,6 +43,4 @@ public class GetUserIdCommand extends AbstractCommand {
             this.id = id;
         }
     }
-
-
 }

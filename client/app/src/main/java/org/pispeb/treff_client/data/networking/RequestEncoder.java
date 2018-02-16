@@ -10,6 +10,7 @@ import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.AbstractCommand;
 import org.pispeb.treff_client.data.networking.commands.AbstractRequest;
 import org.pispeb.treff_client.data.networking.commands.AbstractResponse;
+import org.pispeb.treff_client.data.networking.commands.GetUserIdCommand;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -20,6 +21,8 @@ import java.util.Queue;
  */
 
 public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
+
+    private final String TOKEN = "someToken";
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
@@ -68,7 +71,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         AbstractCommand c = commands.poll();
         try {
             c.onResponse(
-                    mapper.readValue(message, c.getResponceClass()));
+                    mapper.readValue(message, c.getResponseClass()));
         } catch (IOException e) {
             // This would mean, that the internal request encoding is messed
             // up, which would be very bad indeed!
@@ -115,6 +118,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @return The user id of the user
      */
     public synchronized int getUserId(String username) {
+        //TODO token!
+        executeCommand(new GetUserIdCommand(username, TOKEN));
         return 0;
     }
 
