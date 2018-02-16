@@ -344,6 +344,51 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         executeCommand(new RemoveEventCommand(groupId, eventId, TOKEN));
     }
 
+    public synchronized void createPoll(int groupId, String question, boolean isMultiChoice,
+                                        Date timeVoteClose) {
+        executeCommand(new CreatePollCommand(groupId, question,
+                isMultiChoice, timeVoteClose, TOKEN));
+    }
+
+    public synchronized void editPoll(int groupId, String question, boolean isMultiChoice,
+                                      Date timeVoteClose, int id) {
+        executeCommand(new EditPollCommand(groupId, question, isMultiChoice,
+                timeVoteClose, id, TOKEN));
+    }
+
+    public synchronized void addPollOption(int groupId, int pollId, long latitude, long longitude,
+                                           Date timeStart, Date timeEnd) {
+        executeCommand(new AddPollOptionCommand(groupId, pollId, latitude,
+                longitude, timeStart, timeEnd, TOKEN));
+    }
+
+    public synchronized void editPollOption(int groupId, int pollId, long latitude, long longitude,
+                                            Date timeStart, Date timeEnd, int optionId) {
+        executeCommand(new EditPollOptionCommand(groupId, pollId, latitude, longitude,
+                timeStart, timeEnd, optionId, TOKEN));
+    }
+
+    public synchronized void voteForOption(int groupId, int pollId, int id) {
+        executeCommand(new VoteForOptionCommand(groupId, pollId, id, TOKEN));
+    }
+
+    public synchronized void withdrawVoteForOption(int groupId, int pollId, int id) {
+        executeCommand(new WithdrawVoteForOptionCommand(groupId, pollId, id, TOKEN));
+    }
+
+    public synchronized void removePollOption(int groupId, int pollId, int id) {
+        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, TOKEN));
+    }
+
+    public synchronized void removePoll(int groupId, int pollId) {
+        executeCommand(new RemovePollCommand(groupId, pollId, TOKEN));
+    }
+
+    public synchronized void sendChatMessage(int groupId, String message) {
+        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN));
+    }
+
+
 
 
     /**
