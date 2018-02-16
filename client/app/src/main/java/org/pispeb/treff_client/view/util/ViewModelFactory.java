@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
@@ -60,6 +61,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     private ViewModelFactory(Context context) {
+        Log.i("ViewmodelFactory", "create");
         TreffDatabase database = TreffDatabase.getInstance(context);
         userDao = database.getUserDao();
         userGroupDao = database.getUserGroupDao();
@@ -75,7 +77,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         Handler handler = new Handler(thread.getLooper());
 
         userRepository = new UserRepository(userDao, encoder, handler);
-        userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, encoder,
+                handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
     }
@@ -106,10 +109,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new GroupViewModel(userGroupRepository);
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupEventListViewModel(eventRepository);
-        }else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
+        } else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new LoginViewModel();
-        }else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new AddEventViewModel(eventRepository, userGroupRepository);
+        } else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new AddEventViewModel(eventRepository,
+                    userGroupRepository);
         } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new RegisterViewModel();
         }
@@ -117,5 +121,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         throw new IllegalArgumentException(
                 "Building an instance of the given class " + modelClass + " " +
                         "is not supported.");
+    }
+
+    public static void closeConnection() {
+        if (INSTANCE != null) {
+            if (INSTANCE.encoder != null) {
+                INSTANCE.encoder.closeConnection();
+            }
+        }
     }
 }

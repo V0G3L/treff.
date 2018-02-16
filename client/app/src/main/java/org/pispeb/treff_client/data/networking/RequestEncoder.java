@@ -1,6 +1,8 @@
 package org.pispeb.treff_client.data.networking;
 
 import android.location.Location;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,20 +38,31 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         commands = new LinkedList<>();
         idle = true;
         mapper = new ObjectMapper();
-        this.connectionHandler = new ConnectionHandler("", 1, this);
-    }
-
-    private synchronized void executeCommand(AbstractCommand command) {
-        commands.add(command);
-        if (idle) {
+        restartConnection();
+        if (idle && !commands.isEmpty()) {
             sendRequest(commands.peek().getRequest());
         }
     }
 
+    private synchronized void executeCommand(AbstractCommand command) {
+        Log.i("Encoder", "execute Command");
+        commands.add(command);
+        //if (idle) {
+        sendRequest(commands.peek().getRequest());
+        //}
+    }
+
     private synchronized void sendRequest(AbstractRequest request) {
         try {
+            if (connectionHandler == null) {
+                // is connection is lost, establish new connection
+                Log.i("Encoder", "reconnect");
+                restartConnection();
+            }
+            Log.i("Encoder", "sending Message");
             connectionHandler.sendMessage(
-                    new ObjectMapper().writeValueAsString(request));
+                    mapper.writeValueAsString(request));
+                idle = false;
         } catch (JsonProcessingException e) {
             // This would mean, that the internal request encoding is messed
             // up, which would be very bad indeed!
@@ -90,6 +103,35 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         public ErrorResponse(int error) {
             this.error = error;
         }
+    }
+
+    private class ConnectTask extends
+            AsyncTask<String, String, ConnectionHandler> {
+        private ConnectionHandler.OnMessageReceived listener;
+
+        public ConnectTask(ConnectionHandler.OnMessageReceived listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected ConnectionHandler doInBackground(String... message) {
+
+            connectionHandler = new ConnectionHandler(
+                    "100.85.16.29", 1337, listener);
+            connectionHandler.run();
+
+            return null;
+        }
+    }
+
+    public void closeConnection() {
+        connectionHandler.stopClient();
+    }
+
+    @Override
+    public synchronized void restartConnection() {
+        // sets up the connectionHandler and starts it in a different thread
+        new ConnectTask(this).execute();
     }
 
     public Error getErrorByCode(int code) {

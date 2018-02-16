@@ -40,6 +40,10 @@ public class UserRepository {
         });
     }
 
+    public void add (String username) {
+        encoder.getUserId(username);
+    }
+
     public void add(User user) {
         backgroundHandler.post(() -> {
             userDao.save(user);

@@ -1,13 +1,9 @@
 package org.pispeb.treff_client.view.home;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityHomeBinding;
@@ -17,6 +13,7 @@ import org.pispeb.treff_client.view.home.groupList.GroupListFragment;
 import org.pispeb.treff_client.view.home.map.MapFragment;
 import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
+import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 
 /**
@@ -59,6 +56,16 @@ public class HomeActivity extends NavigationActivity {
         adapter.addFragment(new MapFragment(), getString(R.string.tabtext_map));
         adapter.addFragment(new FriendListFragment(), getString(R.string.tabtext_contacts));
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Home", "STOP!");
+        if (isFinishing()) {
+            Log.i("Home", "CLOSING!");
+            ViewModelFactory.closeConnection();
+        }
     }
 
     protected void setDrawerSelected() {

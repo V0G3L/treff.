@@ -38,9 +38,11 @@ public class AddFriendViewModel extends ViewModel {
     public void onOkClick() {
         if (!username.equals("")) {
             //TODO set proper values
-            userRepository.add(new User(
-                    username, true, false,
-                    new Location(LocationManager.GPS_PROVIDER), new Date()));
+            userRepository.add(username);
+
+//            userRepository.add(new User(
+//                    username, true, false,
+//                    new Location(LocationManager.GPS_PROVIDER), new Date()));
             done.postValue(true);
         }
     }

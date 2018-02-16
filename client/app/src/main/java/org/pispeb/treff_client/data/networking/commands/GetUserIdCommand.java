@@ -21,7 +21,6 @@ public class GetUserIdCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
     }
 
     public static class Request extends AbstractRequest {

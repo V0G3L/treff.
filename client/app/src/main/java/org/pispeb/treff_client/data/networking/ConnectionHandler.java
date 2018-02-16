@@ -1,9 +1,12 @@
 package org.pispeb.treff_client.data.networking;
 
+import android.os.HandlerThread;
+import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -18,10 +21,11 @@ import java.net.Socket;
 
 public class ConnectionHandler {
 
-    public static final String SERVER_IP = "100.85.16.25"; // Lukas Laptop
-    private static final int SERVER_PORT = 1337;
+    public final String SERVER_IP; // Lukas Laptop
+    private final int SERVER_PORT;
     private boolean mRun;
-    private boolean idle;
+
+    private final Handler handler;
 
     // Sending to Server
     private PrintWriter mBufferOut;
@@ -29,10 +33,17 @@ public class ConnectionHandler {
     private BufferedReader mBufferIn;
 
     private OnMessageReceived mMessageListener;
+    private Socket socket;
 
     public ConnectionHandler(String server, int port, OnMessageReceived
             listener) {
+        this.SERVER_IP = server;
+        this.SERVER_PORT = port;
         this.mMessageListener = listener;
+        HandlerThread t = new HandlerThread("fgt",
+                HandlerThread.NORM_PRIORITY);
+        t.start();
+        this.handler = new Handler(t.getLooper());
     }
 
     /**
@@ -56,11 +67,20 @@ public class ConnectionHandler {
      *
      * @param message text entered by client
      */
-    public void sendMessage(String message) {
-        if (mBufferOut != null && !mBufferOut.checkError()) {
-            mBufferOut.println(message);
-            mBufferOut.flush();
-        }
+    public synchronized void sendMessage(String message) {
+        Log.i("TCP Client", "Sending message " + message);
+        handler.post(() -> {
+            try {
+                if (socket.getInetAddress().isReachable(1000)) {
+                    if (mBufferOut != null && !mBufferOut.checkError()) {
+                        mBufferOut.println(message);
+                        mBufferOut.flush();
+                    }
+                }
+            } catch (IOException e) {
+                mMessageListener.restartConnection();
+            }
+        });
     }
 
 
@@ -75,7 +95,7 @@ public class ConnectionHandler {
             Log.e("TCP Client", "C: Connecting...");
 
             //create a socket to make the connection with the server
-            Socket socket = new Socket(serverAddr, SERVER_PORT);
+            socket = new Socket(serverAddr, SERVER_PORT);
 
             try {
 
@@ -118,9 +138,11 @@ public class ConnectionHandler {
         }
     }
 
-    //Declare the interface. The method messageReceived(String message) will must be implemented in the MyActivity
+    //Declare the interface. The method messageReceived(String message) will
+    // must be implemented in the MyActivity
     //class at on asynckTask doInBackground
     public interface OnMessageReceived {
-        public void messageReceived(String message);
+        void messageReceived(String message);
+        void restartConnection();
     }
 }
