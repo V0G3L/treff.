@@ -24,7 +24,7 @@ public class UpdatePositionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO Handle response
+        // Do nothing
     }
 
     public static class Request extends AbstractRequest {
@@ -47,7 +47,7 @@ public class UpdatePositionCommand extends AbstractCommand {
 
     //Server returns empty object
     public static class Response extends AbstractResponse {
-        public Response(String token, int id) {
+        public Response() {
         }
     }
 }

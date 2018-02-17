@@ -140,7 +140,9 @@ public class ConnectionHandler {
         }
     }
 
-    //
+    public boolean isRunning() {
+        return mRun;
+    }
 
     /**
      * Declare the interface. The method messageReceived(String message)

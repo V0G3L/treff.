@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.BuildConfig;
 import android.support.v4.app.ActivityCompat;
@@ -56,12 +57,14 @@ public class GPSProvider extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
-        encoder = new RequestEncoder();
+        Log.i("GPSProvider", "Service starting1");
+        encoder = RequestEncoder.getInstance();
 
-        queue = new PriorityQueue<>(0,
-                (o1, o2) -> o1.endOfTransmission.compareTo(o2.endOfTransmission));
+        Log.i("GPSProvider", "Service starting2");
+        queue = new PriorityQueue<>();
 
         String locationProvider = LocationManager.GPS_PROVIDER;
+        Log.i("GPSProvider", "Service starting3");
         LocationManager locationManager = (LocationManager) this
                 .getSystemService(Context.LOCATION_SERVICE);
         // check if Permission to use GPS is granted
@@ -74,7 +77,9 @@ public class GPSProvider extends Service implements LocationListener {
             return;
         }
         // TODO define minimum update interval in config
-        locationManager.requestLocationUpdates(locationProvider, 5000, 0, this);
+        locationManager.requestLocationUpdates(locationProvider, 5000, 0,
+                this);
+        Log.i("GPSProvider", "Service starting done");
     }
 
     @Override
@@ -170,7 +175,7 @@ public class GPSProvider extends Service implements LocationListener {
      * Combination of group and date until which this group requests updates
      * about the users position.
      */
-    private class ListEntry {
+    private class ListEntry implements Comparable<ListEntry> {
         public int groupId;
         public Date endOfTransmission;
 
@@ -188,6 +193,11 @@ public class GPSProvider extends Service implements LocationListener {
 
             if (groupId != listEntry.groupId) return false;
             return endOfTransmission.equals(listEntry.endOfTransmission);
+        }
+
+        @Override
+        public int compareTo(@NonNull ListEntry o) {
+            return endOfTransmission.compareTo(o.endOfTransmission);
         }
     }
 

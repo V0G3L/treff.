@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/shareLocation"
+        android:title="@string/share_location"
+        android:icon="@drawable/ic_add_location_black_24dp"
+        app:showAsAction="always"/>
+
+    <item
         android:id="@+id/settings"
         android:title="@string/settings_title"
         android:icon="@drawable/ic_settings_white_24dp"

@@ -2,6 +2,8 @@ package org.pispeb.treff_client.data.networking;
 
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,6 +22,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * This class provides methods to perform the known server requests.
@@ -35,6 +38,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     private ConnectionHandler connectionHandler;
     private boolean idle;
 
+    private Handler bgHandler;
+
 
     private UserRepository userRepository;
     private UserGroupRepository userGroupRepository;
@@ -43,11 +48,30 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     // Queue of commands waiting to be sent to Server
     Queue<AbstractCommand> commands;
+    private CountDownLatch cdl;
 
-    public RequestEncoder() {
+    private static RequestEncoder INSTANCE;
+
+    public static RequestEncoder getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new RequestEncoder();
+        }
+
+        return INSTANCE;
+    }
+
+    private RequestEncoder() {
         commands = new LinkedList<>();
         idle = true;
+
         mapper = new ObjectMapper();
+
+        HandlerThread thread = new HandlerThread("gbt",
+                HandlerThread.MIN_PRIORITY);
+        thread.start();
+        bgHandler = new Handler(thread.getLooper());
+        cdl = new CountDownLatch(0);
+
         restartConnection();
         if (idle && !commands.isEmpty()) {
             sendRequest(commands.peek().getRequest());
@@ -72,12 +96,11 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param command
      */
     private synchronized void executeCommand(AbstractCommand command) {
-        Log.i("Encoder", "execute Command");
+        Log.i("Encoder", "execute Command" + commands.size());
         commands.add(command);
-        //TODO uncomment
-        //if (idle) {
-        sendRequest(commands.peek().getRequest());
-        //}
+        if (idle) {
+            sendRequest(commands.peek().getRequest());
+        }
     }
 
     /**
@@ -86,21 +109,33 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param request
      */
     private synchronized void sendRequest(AbstractRequest request) {
-        try {
-            if (connectionHandler == null) {
-                // is connection is lost, establish new connection
-                Log.i("Encoder", "reconnect");
-                restartConnection();
+        bgHandler.post(() -> {
+            try {
+                if (connectionHandler == null || !connectionHandler
+                        .isRunning()) {
+                    // if connection is lost, establish new connection
+                    Log.i("Encoder", "reconnect");
+                    restartConnection();
+                    cdl = new CountDownLatch(1);
+                    try {
+                        // wait for reconnection to server
+                        cdl.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("Encoder", "reconnect done");
+                }
+                Log.i("Encoder", "sending Message");
+                Log.i("Encoder", "CH: " + connectionHandler);
+                connectionHandler.sendMessage(
+                        mapper.writeValueAsString(request));
+                idle = false;
+            } catch (JsonProcessingException e) {
+                // This would mean, that the internal request encoding is messed
+                // up, which would be very bad indeed!
+                e.printStackTrace();
             }
-            Log.i("Encoder", "sending Message");
-            connectionHandler.sendMessage(
-                    mapper.writeValueAsString(request));
-            idle = false;
-        } catch (JsonProcessingException e) {
-            // This would mean, that the internal request encoding is messed
-            // up, which would be very bad indeed!
-            e.printStackTrace();
-        }
+        });
     }
 
     /**
@@ -117,9 +152,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
         AbstractCommand c = commands.poll();
         try {
-            mapper.readValue(message, ErrorResponse.class);
-            // TODO handle error response
-//            return;
+            ErrorResponse error = mapper
+                    .readValue(message, ErrorResponse.class);
+            handleError(error);
         } catch (IOException e) {
 //            e.printStackTrace();
             try {
@@ -151,6 +186,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
     }
 
+    private void handleError(ErrorResponse error) {
+        //TODO handle Errors
+    }
+
     /**
      * TODO: doc
      */
@@ -164,10 +203,11 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
         @Override
         protected ConnectionHandler doInBackground(String... message) {
-
+            Log.i("ConnectTask", "in Background");
             connectionHandler = new ConnectionHandler(
                     "100.85.16.29", 13337, listener);
             connectionHandler.run();
+            cdl.countDown();
 
             return null;
         }
@@ -177,13 +217,16 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * TODO: doc
      */
     public void closeConnection() {
+        // TODO check for Service still running
         connectionHandler.stopClient();
     }
 
     @Override
     public synchronized void restartConnection() {
         // sets up the connectionHandler and starts it in a different thread
-        new ConnectTask(this).execute();
+        Log.i("Encoder", "ConnectTask execute");
+        new ConnectTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        Log.i("Encoder", "ConnectTask execute done");
     }
 
     /**
@@ -264,7 +307,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param password the new password
      */
 
-    public synchronized void resetPasswordConfirm(String code, String password) {
+    public synchronized void resetPasswordConfirm(String code,
+                                                  String password) {
         executeCommand(new ResetPasswordConfirmCommand(code, password));
     }
 
@@ -330,7 +374,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param userId The user to be unblocked
      */
     public synchronized void unblockAccount(int userId) {
-        executeCommand(new UnblockAccountCommand(userId, TOKEN, userRepository));
+        executeCommand(
+                new UnblockAccountCommand(userId, TOKEN, userRepository));
     }
 
     /**
@@ -390,16 +435,21 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param timeEnd   The finishing time of the event (unix time
      * @param position  The position of the event
      */
-    public synchronized void createEvent(int groupId, String title, int creatorId, Date timeStart,
+    public synchronized void createEvent(int groupId, String title,
+                                         int creatorId, Date timeStart,
                                          Date timeEnd, Position position) {
-        executeCommand(new CreateEventCommand(groupId, title, creatorId, timeStart,
-                timeEnd, position, TOKEN, eventRepository));
+        executeCommand(
+                new CreateEventCommand(groupId, title, creatorId, timeStart,
+                        timeEnd, position, TOKEN, eventRepository));
     }
 
-    public synchronized void editEvent(int groupId, String title, int creatorId, Date timeStart,
-                                       Date timeEnd, Position position, int eventId) {
-        executeCommand(new EditEventCommand(groupId, title, creatorId, timeStart,
-                timeEnd, position, eventId, TOKEN, eventRepository));
+    public synchronized void editEvent(int groupId, String title, int creatorId,
+                                       Date timeStart,
+                                       Date timeEnd, Position position,
+                                       int eventId) {
+        executeCommand(
+                new EditEventCommand(groupId, title, creatorId, timeStart,
+                        timeEnd, position, eventId, TOKEN, eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
@@ -411,39 +461,48 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     }
 
     public synchronized void removeEvent(int groupId, int eventId) {
-        executeCommand(new RemoveEventCommand(groupId, eventId, TOKEN, eventRepository));
+        executeCommand(new RemoveEventCommand(groupId, eventId, TOKEN,
+                eventRepository));
     }
 
-    public synchronized void createPoll(int groupId, String question, boolean isMultiChoice,
+    public synchronized void createPoll(int groupId, String question,
+                                        boolean isMultiChoice,
                                         Date timeVoteClose) {
         executeCommand(new CreatePollCommand(groupId, question,
                 isMultiChoice, timeVoteClose, TOKEN));
     }
 
-    public synchronized void editPoll(int groupId, String question, boolean isMultiChoice,
+    public synchronized void editPoll(int groupId, String question,
+                                      boolean isMultiChoice,
                                       Date timeVoteClose, int id) {
         executeCommand(new EditPollCommand(groupId, question, isMultiChoice,
                 timeVoteClose, id, TOKEN));
     }
 
-    public synchronized void addPollOption(int groupId, int pollId, long latitude, long longitude,
+    public synchronized void addPollOption(int groupId, int pollId,
+                                           long latitude, long longitude,
                                            Date timeStart, Date timeEnd) {
         executeCommand(new AddPollOptionCommand(groupId, pollId, latitude,
                 longitude, timeStart, timeEnd, TOKEN));
     }
 
-    public synchronized void editPollOption(int groupId, int pollId, long latitude, long longitude,
-                                            Date timeStart, Date timeEnd, int optionId) {
-        executeCommand(new EditPollOptionCommand(groupId, pollId, latitude, longitude,
-                timeStart, timeEnd, optionId, TOKEN));
+    public synchronized void editPollOption(int groupId, int pollId,
+                                            long latitude, long longitude,
+                                            Date timeStart, Date timeEnd,
+                                            int optionId) {
+        executeCommand(
+                new EditPollOptionCommand(groupId, pollId, latitude, longitude,
+                        timeStart, timeEnd, optionId, TOKEN));
     }
 
     public synchronized void voteForOption(int groupId, int pollId, int id) {
         executeCommand(new VoteForOptionCommand(groupId, pollId, id, TOKEN));
     }
 
-    public synchronized void withdrawVoteForOption(int groupId, int pollId, int id) {
-        executeCommand(new WithdrawVoteForOptionCommand(groupId, pollId, id, TOKEN));
+    public synchronized void withdrawVoteForOption(int groupId, int pollId,
+                                                   int id) {
+        executeCommand(
+                new WithdrawVoteForOptionCommand(groupId, pollId, id, TOKEN));
     }
 
     public synchronized void removePollOption(int groupId, int pollId, int id) {
@@ -494,8 +553,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         executeCommand(new RequestPositionCommand(groupId, endTime, TOKEN));
     }
 
-    public synchronized void updatePosition(double latitude, double longitude, Date time) {
-        executeCommand(new UpdatePositionCommand(latitude, longitude, time, TOKEN));
+    public synchronized void updatePosition(double latitude, double longitude,
+                                            Date time) {
+        executeCommand(
+                new UpdatePositionCommand(latitude, longitude, time, TOKEN));
     }
 
     public synchronized void publishPosition(int groupId, Date endTime) {

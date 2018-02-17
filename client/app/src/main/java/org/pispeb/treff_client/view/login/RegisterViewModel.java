@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.home.TreffPunkt;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
@@ -22,10 +23,13 @@ public class RegisterViewModel extends ViewModel {
 
     private SingleLiveEvent<State> state;
 
+    private final RequestEncoder encoder;
 
-    public RegisterViewModel() {
+
+    public RegisterViewModel(RequestEncoder encoder) {
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, 0));
+        this.encoder = encoder;
     }
 
     public SingleLiveEvent<State> getState() {
@@ -53,7 +57,7 @@ public class RegisterViewModel extends ViewModel {
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);
 
-        //TODO coll RequestEncoder
+        encoder.register(username, password);
     }
 
     public void onGoToLogin() {

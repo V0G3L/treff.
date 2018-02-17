@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.home.TreffPunkt;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
@@ -21,10 +22,12 @@ public class LoginViewModel extends ViewModel {
     private String username;
     private String password;
 
+    private final RequestEncoder encoder;
 
-    public LoginViewModel() {
+    public LoginViewModel(RequestEncoder encoder) {
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, 0));
+        this.encoder = encoder;
         username = "";
         password = "";
     }
@@ -68,8 +71,7 @@ public class LoginViewModel extends ViewModel {
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);
 
-        //TODO call RequestEncoder
-
+        encoder.login(username, password);
     }
 
     public void onGoToRegister() {

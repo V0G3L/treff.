@@ -24,7 +24,7 @@ public class RegisterCommand extends AbstractCommand{
 
     @Override
     public Request getRequest() {
-        return null;
+        return output;
     }
 
     @Override

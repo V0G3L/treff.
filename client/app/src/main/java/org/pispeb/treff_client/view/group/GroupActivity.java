@@ -1,6 +1,9 @@
 package org.pispeb.treff_client.view.group;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.TimePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,8 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TimePicker;
 
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.gps_handling.GPSProvider;
+import org.pispeb.treff_client.data.gps_handling.GPSProviderManager;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
 import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
@@ -22,11 +28,14 @@ import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
+import java.util.Calendar;
+
 
 /**
  * Group screen, hosting chat and event fragments in tabs
  */
-public class GroupActivity extends AppCompatActivity {
+public class GroupActivity extends AppCompatActivity
+        implements TimePickerDialog.OnTimeSetListener {
 
     // identifier for group id in starting intent
     public static final String GRP_INTENT = "groupIntent";
@@ -86,8 +95,26 @@ public class GroupActivity extends AppCompatActivity {
             startActivity(groupSettingsIntent);
 
             return true;
+        } else if (item.getItemId() == R.id.shareLocation) {
+
+            TimePickerDialog dialog = new TimePickerDialog(
+                    this,
+                    this,
+                    0, 0,
+                    true);
+            dialog.setTitle("How long do you want to share your Location?");
+            dialog.show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.HOUR, hourOfDay);
+        c.add(Calendar.MINUTE, minute);
+        GPSProviderManager.addRequestToService(
+                this, groupId, c.getTime());
     }
 
     public void onEventClick() {
@@ -106,9 +133,5 @@ public class GroupActivity extends AppCompatActivity {
         adapter.addFragment(gef, getString(R.string.tabtext_events));
         adapter.addFragment(gcf, getString(R.string.tabtext_chat));
         viewPager.setAdapter(adapter);
-    }
-
-    public int getGroupId() {
-        return groupId;
     }
 }

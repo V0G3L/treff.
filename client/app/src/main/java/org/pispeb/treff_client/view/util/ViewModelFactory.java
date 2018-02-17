@@ -69,7 +69,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         chatDao = database.getChatDao();
 
 
-        encoder = new RequestEncoder();
+        encoder = RequestEncoder.getInstance();
 
         HandlerThread thread = new HandlerThread("gbt",
                 HandlerThread.MIN_PRIORITY);
@@ -114,12 +114,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupEventListViewModel(eventRepository);
         } else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new LoginViewModel();
+            return (T) new LoginViewModel(encoder);
         } else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddEventViewModel(eventRepository,
                     userGroupRepository);
         } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new RegisterViewModel();
+            return (T) new RegisterViewModel(encoder);
         }
 
         throw new IllegalArgumentException(

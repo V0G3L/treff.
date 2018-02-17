@@ -76,6 +76,7 @@
     <string name="error_invalid_password">Password too short</string>
     <string name="error_incorrect_password">Password not correct</string>
     <string name="error_field_required">Required field</string>
+    <string name="share_location">Share Location</string>
 
 
 </resources>
