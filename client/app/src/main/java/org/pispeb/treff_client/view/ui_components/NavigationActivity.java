@@ -19,6 +19,7 @@ import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityNavigationBinding;
 import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
+import org.pispeb.treff_client.view.login.LoginActivity;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
 
 /**
@@ -71,7 +72,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         startActivity(aboutIntent);
                         return true;
                     case R.id.nav_logout:
-                        // TODO logout
+                        // TODO delete db, tokens etc
+                        Intent logoutIntent = new Intent(thisActivity,
+                                LoginActivity.class);
+                        startActivity(logoutIntent);
+                        finish();
                         return true;
                     default:
                         return true;
