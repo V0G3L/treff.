@@ -42,7 +42,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     // Livedata objects to keep map up to date
     private MutableLiveData<Location> userLocation;
-    private MutableLiveData<List<User>> friends;
+    private LiveData<PagedList<User>> friends;
     private LiveData<PagedList<Event>> events;
     private LiveData<List<UserGroup>> groups;
 
@@ -63,21 +63,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();
         this.groups = userGroupRepository.getGroupsInList();
-        // set all to fetch from db
-        this.friends = new MutableLiveData<>();
+        this.friends = userRepository.getFriends();
 
         this.activeGroups = new HashSet<>();
 
         this.state = new SingleLiveEvent<>();
-
-        //Test
-        ArrayList<User> f = new ArrayList<>();
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLatitude(49);
-        l.setLongitude(8.4);
-        User u = new User("Peter", true, false, l);
-        f.add(u);
-        friends.postValue(f);
     }
 
     public void onCenterClick() {
@@ -104,7 +94,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return userLocation;
     }
 
-    public MutableLiveData<List<User>> getFriends() {
+    public LiveData<PagedList<User>> getFriends() {
         return friends;
     }
 

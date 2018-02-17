@@ -15,16 +15,20 @@ import java.util.Date;
 
 @Entity(tableName = "event")
 public class Event extends Occasion {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
-    //    private Date created;
     private Date start;
     private Date end;
     private Location location;
     private int creator;
 
-    public Event(String name, Date start, Date end, Location location,
+    public Event(int id,
+                 String name,
+                 Date start,
+                 Date end,
+                 Location location,
                  int creator) {
+        this.id = id;
         this.name = name;
         this.start = start;
         this.end = end;

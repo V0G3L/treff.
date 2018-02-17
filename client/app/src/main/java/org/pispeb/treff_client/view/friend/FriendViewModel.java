@@ -4,12 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import org.pispeb.treff_client.data.entities.User;
-import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * {@link ViewModel} providing a single other {@link User}s data to the UI
@@ -35,13 +31,11 @@ public class FriendViewModel extends ViewModel {
     }
 
     public void onBlockClick() {
-        // TODO block user
-        userRepository.setIsBlocked(user.getValue().getUserId(), true);
+        userRepository.requestIsBlocked(user.getValue().getUserId(), true);
     }
 
     public void onChatClick() {
-        // TODO create new group with the two participants
-        userGroupRepository.add(new UserGroup(user.getValue().getUsername(),
-                new HashSet<>(), new HashSet<>()));
+        userGroupRepository.requestAddGroup(user.getValue().getUsername(), user
+                .getValue().getUserId());
     }
 }

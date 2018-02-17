@@ -12,7 +12,8 @@ import org.pispeb.treff_client.data.networking.RequestEncoder;
 import java.util.List;
 
 /**
- * {@link ChatMessage} repository serving as a bridge between ViewModels and local data/network requests
+ * {@link ChatMessage} repository serving as a bridge between ViewModels and
+ * local data/network requests
  */
 public class ChatRepository {
     private ChatDao chatDao;
@@ -21,8 +22,9 @@ public class ChatRepository {
 
     /**
      * Creates a new {@link ChatRepository}
-     * @param chatDao chatDao
-     * @param encoder requestEncoder
+     *
+     * @param chatDao           chatDao
+     * @param encoder           requestEncoder
      * @param backgroundHandler backgroundHandler
      */
     public ChatRepository(ChatDao chatDao, RequestEncoder encoder,
@@ -34,9 +36,10 @@ public class ChatRepository {
 
     /**
      * Adds a new {@link ChatMessage}
+     *
      * @param message the message
      */
-    public void add(ChatMessage message) {
+    public void addMessage(ChatMessage message) {
         //TODO network call
         backgroundHandler.post(() -> {
             chatDao.save(message);
@@ -44,12 +47,18 @@ public class ChatRepository {
     }
 
     /**
-     * Returns a {@link PagedList} of {@link ChatMessage}s of a {@link org.pispeb.treff_client.data.entities.UserGroup}
+     * Returns a {@link PagedList} of {@link ChatMessage}s of a
+     * {@link org.pispeb.treff_client.data.entities.UserGroup}
+     *
      * @param groupId the group's unique identifier
      * @return {@link PagedList} of {@link ChatMessage}s
      */
     public LiveData<PagedList<ChatMessage>> getMessagesByGroupId(int groupId) {
-        return new LivePagedListBuilder<>(chatDao.getMessagesByGroupId(groupId), 30)
-                .build();
+        return new LivePagedListBuilder<>(chatDao.getMessagesByGroupId(groupId),
+                30).build();
+    }
+
+    public void requestAddMessage(int groupId, String message) {
+        encoder.sendChatMessage(groupId, message);
     }
 }

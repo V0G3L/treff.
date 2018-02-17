@@ -43,7 +43,7 @@ public class AddPollOptionCommand extends AbstractCommand {
 
         public Request(int groupId, int pollId, long latitude, long longitude,
                        Date timeStart, Date timeEnd, String token) {
-            super("add-poll-option");
+            super("requestAddUser-poll-option");
             this.groupId = groupId;
             this.pollId = pollId;
             pollOption = new PollOptionCreateDescription(latitude, longitude, timeStart, timeEnd);

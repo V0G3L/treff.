@@ -11,8 +11,11 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.BuildConfig;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -36,6 +39,8 @@ public class GPSProvider extends Service implements LocationListener {
     // queue of requests for the users position from different groups
     private PriorityQueue<ListEntry> queue;
 
+    private RequestEncoder encoder;
+
     // indicator of noticeable delay to last location
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
@@ -51,6 +56,7 @@ public class GPSProvider extends Service implements LocationListener {
 
     @Override
     public void onCreate() {
+        encoder = new RequestEncoder();
 
         queue = new PriorityQueue<>(0,
                 (o1, o2) -> o1.endOfTransmission.compareTo(o2.endOfTransmission));
@@ -65,20 +71,10 @@ public class GPSProvider extends Service implements LocationListener {
                 .checkSelfPermission(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode,
-            // String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See
-            // the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         // TODO define minimum update interval in config
-        locationManager.requestLocationUpdates(locationProvider, 5000, 0,
-                this);
+        locationManager.requestLocationUpdates(locationProvider, 5000, 0, this);
     }
 
     @Override
@@ -146,6 +142,8 @@ public class GPSProvider extends Service implements LocationListener {
             } else {
                 // TODO send update to server via RequestEncoder
                 Log.i("GPSProvider", currentBestLocation.toString());
+                // TODO test
+                encoder.updateLocation(currentBestLocation);
             }
         }
     }

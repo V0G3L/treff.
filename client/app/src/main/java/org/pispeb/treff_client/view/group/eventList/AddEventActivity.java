@@ -49,6 +49,7 @@ public class AddEventActivity extends AppCompatActivity {
                 ViewModelFactory.getInstance(this))
                 .get(AddEventViewModel.class);
         int groupId = getIntent().getIntExtra(INTENT_GRP, -1);
+
         vm.setGroup(groupId);
 
         vm.getState().observe(this, state -> callback(state));

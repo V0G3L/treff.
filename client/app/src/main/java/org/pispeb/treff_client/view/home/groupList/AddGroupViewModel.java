@@ -34,7 +34,8 @@ public class AddGroupViewModel extends ViewModel {
 
     public void onOkClick() {
         if (!groupname.equals("")) {
-            userGroupRepository.add(new UserGroup(groupname, new HashSet<>(), new HashSet<>()));
+            // TODO determine actual members to add to group
+            userGroupRepository.requestAddGroup(groupname, 0);
             done.postValue(true);
         }
     }

@@ -15,20 +15,16 @@ import java.util.Date;
 
 @Entity(tableName = "user")
 public class User {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int userId;
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
     private Location location;
 
-    @Deprecated
-    public User(String username, boolean isFriend, boolean isBlocked, Location location, Date lastPositionUpdate) {
-        this(username, isFriend, isBlocked, location);
-        this.location.setTime(lastPositionUpdate.getTime());
-    }
-
-    public User(String username, boolean isFriend, boolean isBlocked, Location location) {
+    public User(int userId, String username, boolean isFriend, boolean
+            isBlocked, Location location) {
+        this.userId = userId;
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;

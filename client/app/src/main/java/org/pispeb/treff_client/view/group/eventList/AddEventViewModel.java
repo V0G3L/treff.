@@ -31,12 +31,15 @@ public class AddEventViewModel extends ViewModel
     private EventRepository eventRepository;
     private UserGroupRepository userGroupRepository;
 
-    Event event;
-
-    private SingleLiveEvent<State> state;
+    String name;
+    Location location;
 
     MutableLiveData<Calendar> start;
     MutableLiveData<Calendar> end;
+
+    int groupId;
+
+    private SingleLiveEvent<State> state;
 
     private int lastTimeDialog = NO_DIALOG;
     private int lastDateDialog = NO_DIALOG;
@@ -56,11 +59,14 @@ public class AddEventViewModel extends ViewModel
         end.setValue(Calendar.getInstance());
         end.getValue().add(Calendar.HOUR, 1);
 
-        Location location = new Location(LocationManager.GPS_PROVIDER);
-        event = new Event("", start.getValue().getTime(), end.getValue().getTime(),
-                location, 0);
+        location = new Location(LocationManager.GPS_PROVIDER);
+        name = "";
 
         state = new SingleLiveEvent<>();
+    }
+
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
     }
 
     public MutableLiveData<Calendar> getStart() {
@@ -71,9 +77,6 @@ public class AddEventViewModel extends ViewModel
         return end;
     }
 
-    public void setGroup(int groupId) {
-    }
-
     public SingleLiveEvent<State> getState() {
         return state;
     }
@@ -82,7 +85,6 @@ public class AddEventViewModel extends ViewModel
         lastDateDialog = START_DIALOG;
         state.setValue(new State(ViewCall.SHOW_DATE_DIALOG, 0));
     }
-
 
     public void onEndDateClick() {
         lastDateDialog = END_DIALOG;
@@ -100,24 +102,29 @@ public class AddEventViewModel extends ViewModel
     }
 
     public void onSaveClick(Location location) {
-        if (event.getName().equals("")) return;
+        if (name.equals("")) return;
 
         // Add Event to Database
-        eventRepository.addEvent(event);
+        eventRepository.requestAddEvent(
+                groupId,
+                name,
+                start.getValue().getTime(),
+                start.getValue().getTime(),
+                location);
 
         state.setValue(new State(ViewCall.SUCCESS, 0));
     }
 
     public String getName() {
-        return event.getName();
+        return name;
     }
 
     public Location getLocation() {
-        return event.getLocation();
+        return location;
     }
 
     public void setName(String name) {
-        event.setName(name);
+        this.name = name;
     }
 
 
@@ -129,14 +136,12 @@ public class AddEventViewModel extends ViewModel
                 start.getValue().set(Calendar.YEAR, year);
                 start.getValue().set(Calendar.MONTH, month);
                 start.getValue().set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                event.setStart(start.getValue().getTime());
                 start.postValue(start.getValue());
                 break;
             case END_DIALOG:
                 end.getValue().set(Calendar.YEAR, year);
                 end.getValue().set(Calendar.MONTH, month);
                 end.getValue().set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                event.setEnd(end.getValue().getTime());
                 end.postValue(end.getValue());
                 break;
         }
@@ -150,13 +155,11 @@ public class AddEventViewModel extends ViewModel
             case START_DIALOG:
                 start.getValue().set(Calendar.HOUR_OF_DAY, hourOfDay);
                 start.getValue().set(Calendar.MINUTE, minute);
-                event.setStart(start.getValue().getTime());
                 start.postValue(start.getValue());
                 break;
             case END_DIALOG:
                 end.getValue().set(Calendar.HOUR_OF_DAY, hourOfDay);
                 end.getValue().set(Calendar.MINUTE, minute);
-                event.setEnd(end.getValue().getTime());
                 end.postValue(end.getValue());
                 break;
         }

@@ -11,7 +11,6 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.Date;
-import java.util.List;
 
 public class GroupChatViewModel extends ViewModel {
 
@@ -34,8 +33,7 @@ public class GroupChatViewModel extends ViewModel {
 
     public void onSendClick() {
         if (!currentMessage.equals("")) {
-            //TODO set the proper user ID e.g. by getting it from SharedPreferences
-            chatRepository.add(new ChatMessage(groupId, currentMessage, 1, new Date()));
+            chatRepository.requestAddMessage(groupId, currentMessage);
             currentMessage = "";
             state.postValue(new State(ViewCall.UPDATE_VIEW, 0));
         }

@@ -1,6 +1,17 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.entities.ChatMessage;
+import org.pispeb.treff_client.data.repositories.ChatRepository;
+import org.pispeb.treff_client.view.home.TreffPunkt;
+
+import java.util.Date;
 
 /**
  * Created by matth on 16.02.2018.
@@ -8,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SendChatMessageCommand extends AbstractCommand {
 
+    private ChatRepository chatRepository;
     private Request output;
 
     public SendChatMessageCommand(int groupId, String message, String token) {
@@ -24,6 +36,15 @@ public class SendChatMessageCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
 
+        // TODO test
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        int creator = pref.getInt(ctx.getString(R.string.key_userId), -1);
+
+        chatRepository.addMessage(
+                new ChatMessage(output.groupId, output.message,
+                        creator, new Date()));
     }
 
     public static class Request extends AbstractRequest {

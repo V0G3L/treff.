@@ -107,22 +107,21 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      */
     @Override
     public synchronized void messageReceived(String message) {
-        try {
-            mapper.readValue(message, ErrorResponse.class);
-        } catch (IOException e) {
-            // TODO handle error response
-            e.printStackTrace();
-            return;
-        }
-
         AbstractCommand c = commands.poll();
         try {
-            c.onResponse(
-                    mapper.readValue(message, c.getResponseClass()));
+            mapper.readValue(message, ErrorResponse.class);
+            // TODO handle error response
+//            return;
         } catch (IOException e) {
-            // This would mean, that the internal request encoding is messed
-            // up, which would be very bad indeed!
-            e.printStackTrace();
+//            e.printStackTrace();
+            try {
+                c.onResponse(
+                        mapper.readValue(message, c.getResponseClass()));
+            } catch (IOException ex) {
+                // This would mean, that the internal request encoding is messed
+                // up, which would be very bad indeed!
+                ex.printStackTrace();
+            }
         }
 
         if (!commands.isEmpty()) {
@@ -158,7 +157,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         protected ConnectionHandler doInBackground(String... message) {
 
             connectionHandler = new ConnectionHandler(
-                    "100.85.16.29", 1337, listener);
+                    "100.85.16.29", 13337, listener);
             connectionHandler.run();
 
             return null;
@@ -340,7 +339,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     }
 
     /**
-     * Method to perform an add-group-member request
+     * Method to perform an requestAddUser-group-member request
      *
      * @param groupId    ID of the group
      * @param newMembers ID of the new member

@@ -31,6 +31,7 @@ public class UserRepository {
 
     public LiveData<PagedList<User>> getFriends() {
         //TODO send update request to server
+        encoder.getContactList();
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
     }
 
@@ -40,17 +41,27 @@ public class UserRepository {
         });
     }
 
-    public void add (String username) {
-        encoder.getUserId(username);
+    public void setIsFriend(int userId, boolean isFriend) {
+        backgroundHandler.post(() -> {
+            userDao.setIsFriend(userId, isFriend);
+        });
     }
 
-    public void add(User user) {
+    public void addUser(User user) {
         backgroundHandler.post(() -> {
             userDao.save(user);
         });
     }
 
-    public void setIsFriend(int userId, boolean isFriend) {
-        userDao.setIsFriend(userId, isFriend);
+    public void requestAddUser(String username) {
+        encoder.getUserId(username);
+    }
+
+    public void requestIsBlocked(int userId, boolean isBlocked) {
+        if (isBlocked) {
+            encoder.blockAccount(userId);
+        } else {
+            encoder.unblockAccount(userId);
+        }
     }
 }

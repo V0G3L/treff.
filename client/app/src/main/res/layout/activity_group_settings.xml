@@ -92,11 +92,11 @@
             android:onClick="@{() -> vm.leave()}"
             android:clickable="true"
             android:focusable="true">
-            <!-- TODO: replace with remove button -->
+
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_person_add_black_24dp"
+                android:src="@drawable/ic_exit_to_app_black_24dp"
                 android:contentDescription="@string/add_contact"/>
 
             <TextView

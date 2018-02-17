@@ -20,7 +20,7 @@ import org.pispeb.treff_client.data.entities.converter.*;
         GroupMembership.class,
         User.class,
         UserGroup.class
-        }, version = 3, exportSchema = false)
+        }, version = 12, exportSchema = false)
 @TypeConverters({
         DateConverter.class,
         PositionConverter.class,

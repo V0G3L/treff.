@@ -16,7 +16,7 @@ import org.pispeb.treff_client.databinding.ActivityAddFriendBinding;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
- * Lets the user add a different account to their friendlist
+ * Lets the user requestAddUser a different account to their friendlist
  */
 
 public class AddFriendActivity extends AppCompatActivity {

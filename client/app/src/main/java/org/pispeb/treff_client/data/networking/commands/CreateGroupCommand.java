@@ -30,8 +30,7 @@ public class CreateGroupCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO different constructor
-        userGroupRepository.add(new UserGroup(output.group.name, null, null));
+        userGroupRepository.add(new UserGroup(response.id, output.group.name));
     }
 
     public static class Request extends AbstractRequest {

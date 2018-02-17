@@ -14,7 +14,7 @@
         android:padding="5dp"
         android:elevation="5dp">
 
-        <!-- TODO add sender name -->
+        <!-- TrequestaddUaddMessage add sender name -->
         <TextView
             android:id="@+id/sender"
             android:layout_width="wrap_content"

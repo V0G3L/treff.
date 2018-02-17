@@ -1,5 +1,8 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.data.entities.Event;
@@ -36,11 +39,17 @@ public class EditEventCommand extends AbstractCommand {
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
-        // TODO Location, id
-        eventRepository.update(new Event(output.event.title,
-                output.event.timeStart, output.event.timeEnd,
-                null, output.event.creatorID));
+        Response response = (Response) abstractResponse; //empty
+        Location l = new Location(LocationManager.GPS_PROVIDER);
+        l.setLongitude(output.event.position.longitude);
+        l.setLatitude(output.event.position.latitude);
+        eventRepository.update(new Event(
+                output.event.id,
+                output.event.title,
+                output.event.timeStart,
+                output.event.timeEnd,
+                l,
+                output.event.creatorID));
     }
 
     public static class Request extends AbstractRequest {

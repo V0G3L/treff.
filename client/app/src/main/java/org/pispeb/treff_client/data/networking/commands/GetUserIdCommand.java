@@ -1,5 +1,10 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.location.Location;
+import android.location.LocationManager;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
@@ -27,9 +32,12 @@ public class GetUserIdCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO different constructor
-//        userRepository.add(new User(response.id, output.user));
-        userRepository.add(new User(output.user, false, false, null));
+        userRepository.addUser(new User(
+                response.id,
+                output.user,
+                true,
+                false,
+                new Location(LocationManager.GPS_PROVIDER)));
     }
 
     public static class Request extends AbstractRequest {
@@ -46,8 +54,7 @@ public class GetUserIdCommand extends AbstractCommand {
 
     public static class Response extends AbstractResponse {
         public final int id;
-
-        public Response(int id) {
+        public Response(@JsonProperty("id") int id) {
             this.id = id;
         }
     }

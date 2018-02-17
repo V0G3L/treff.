@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,16 +13,19 @@ import java.util.Set;
 
 @Entity(tableName = "usergroup")
 public class UserGroup {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int groupId;
     private String name;
     private Set<Integer> events;
-    private Set<Integer> polls;
+    //TODO set of users in group
+    // private Set<Integer> members
 
-    public UserGroup(String name, Set<Integer> events, Set<Integer> polls) {
+//    private Set<Integer> polls;
+
+    public UserGroup(int groupId, String name) {
+        this.groupId = groupId;
         this.name = name;
-        this.events = events;
-        this.polls = polls;
+        this.events = new HashSet<>();
     }
 
     public int getGroupId() {
@@ -48,14 +52,6 @@ public class UserGroup {
         this.events = events;
     }
 
-    public Set<Integer> getPolls() {
-        return polls;
-    }
-
-    public void setPolls(Set<Integer> polls) {
-        this.polls = polls;
-    }
-
     @Override
     public String toString() {
         return name;
@@ -70,9 +66,8 @@ public class UserGroup {
 
         if (groupId != userGroup.groupId) return false;
         if (name != null ? !name.equals(userGroup.name) : userGroup.name != null) return false;
-        if (events != null ? !events.equals(userGroup.events) : userGroup.events != null)
-            return false;
-        return polls != null ? polls.equals(userGroup.polls) : userGroup.polls == null;
+        return (events != null ? !events.equals(userGroup.events) : userGroup
+                .events != null);
     }
 
     @Override
@@ -80,7 +75,6 @@ public class UserGroup {
         int result = groupId;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (events != null ? events.hashCode() : 0);
-        result = 31 * result + (polls != null ? polls.hashCode() : 0);
         return result;
     }
 }
