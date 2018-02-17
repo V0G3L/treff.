@@ -15,11 +15,11 @@ import java.util.Set;
  * {@link Usergroup}.
  * <p>
  * <p>Once an {@link Update} is sent to a client device using an {@link Account}
- * that is affected by that Update, the Account should be removed from the
- * Update's set of affected Accounts to ensure that the same Account isn't
+ * that is affected by that UpdateToSerialize, the Account should be removed from the
+ * UpdateToSerialize's set of affected Accounts to ensure that the same Account isn't
  * handed
- * the same Update twice.
- * An Update that has no more affected Accounts should be isDeleted and no longer
+ * the same UpdateToSerialize twice.
+ * An UpdateToSerialize that has no more affected Accounts should be isDeleted and no longer
  * referenced.</p>
  * <p>
  * <p>Updates are naturally ordered from oldest to newest.</p>
@@ -29,33 +29,33 @@ public interface Update extends Comparable<Update>, DataObject {
     /**
      * Returns the time the {@link Update} was created, used for ordering
      *
-     * @return The time the Update was created
+     * @return The time the UpdateToSerialize was created
      */
     Date getTime();
 
     UpdateType getType();
 
     /**
-     * Returns the content of the Update.
+     * Returns the content of the UpdateToSerialize.
      *
-     * @return A {@link JsonObject} containing
+     * @return A String that is a JSON-Object containing
      * all necessary IDs used for referencing in the
      * communication protocol, and either the names of the edited fields and
      * their
      * values or the chat message.
      * <p>The structure of the JsonObject depends on the type.
-     * For an {@link UpdateType#EDIT} Update, the format is a partial extensive
+     * For an {@link UpdateType#EDIT} UpdateToSerialize, the format is a partial extensive
      * description omitting all non-id fields that didn't change.</p>
-     * <p>For a {@link UpdateType#CHAT} Update, the format is as follows:</p>
+     * <p>For a {@link UpdateType#CHAT} UpdateToSerialize, the format is as follows:</p>
      * <code>{ "group-id": id-of-group, "message": the-message }</code>
      */
-    JsonObject getUpdate();
+    String getUpdate();
 
     /**
      * Removes an {@link Account} from the set of affected Accounts.
      * Should the set be empty after the removal, this method will
      * return true.
-     * In that case, the Update should be considered as isDeleted.
+     * In that case, the UpdateToSerialize should be considered as isDeleted.
      * It's methods should no longer be used and all references to it
      * should be removed.
      *
@@ -77,32 +77,66 @@ public interface Update extends Comparable<Update>, DataObject {
      */
     enum UpdateType {
         /**
-         * The type of Updates that represent changes to the fields
-         * of database entities.
+         * The type of updates that represent changes to an account
          */
-        EDIT("edit"),
+        ACCOUNT_CHANGE,
         /**
-         * The type of Updates that represent chat messages sent to
+         * The type of updates that represent changes to an usergroup
+         */
+        USERGROUP_CHANGE,
+        /**
+         * The type of updates that represent changes to an event
+         */
+        EVENT_CHANGE,
+        /**
+         * The type of updates that represent changes to a poll
+         */
+        POLL_CHANGE,
+        /**
+         * The type of updates that represent changes to a poll-option
+         */
+        POLL_OPTION_CHANGE,
+        /**
+         * The type of updates that represent changes to an account
+         */
+        GROUP_MEMBERSHIP_CHANGE,
+
+        /**
+         * The type of updates that represent chat messages sent to
          * {@link Usergroup}s
          */
-        CHAT("chat");
+        CHAT,
+        /**
+         * The type of updates that represent a position request
+         */
+        POSITION_REQUEST,
+        /**
+         * The type of updates that represent a contact request
+         */
+        CONTACT_REQUEST,
+        /**
+         * The type of updates that represent a position change
+         */
+        POSITION,
+        /**
+         * The type of updates that represent an answer to a contact request
+         */
+        CONTACT_REQUEST_ANSWER,
+        /**
+         * The type of updates that represent someone canceling a contact
+         * request
+         */
+        CANCEL_CONTACT_REQUEST,
+        /**
+         * The type of updates that represent someone removing a contact
+         */
+        REMOVE_CONTACT,
 
-        private final String name;
-
-        UpdateType(String name) {
-            this.name = name;
-        }
-
-        public static UpdateType fromString(String name) {
-            for (UpdateType ut : values())
-                if (ut.toString().equals(name ))
-                    return ut;
-            return null;
-        }
+        ;
 
         @Override
         public String toString() {
-            return name;
+            return this.name().toLowerCase().replace('_','-');
         }
     }
 

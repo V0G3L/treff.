@@ -1,14 +1,19 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.networking.ErrorCode;
+
+import java.util.Date;
 
 /**
  * a command to send a contact request to another user/account
@@ -60,6 +65,19 @@ public class SendContactRequestCommand extends AbstractCommand {
 
         // send request
         actingAccount.sendContactRequest(newContact);
+
+        // create update
+        UpdatesWithoutSpecialParameters update =
+                new UpdatesWithoutSpecialParameters(new Date(),
+                        actingAccount.getID(),
+                        Update.UpdateType.CONTACT_REQUEST);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(), newContact);
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
 
         return new Output();
     }

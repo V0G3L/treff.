@@ -1,17 +1,21 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.descriptions.UsergroupCreateDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.UsergroupChangeUpdate;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -61,6 +65,20 @@ public class CreateGroupCommand extends AbstractCommand {
         // create the group
         Usergroup usergroup = input.getActingAccount()
                 .createGroup(input.group.name, memberArray);
+
+        // create update
+        UsergroupChangeUpdate update =
+                new UsergroupChangeUpdate(new Date(),
+                        actingAccountId,
+                        usergroup);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    (Account[]) usergroup.getAllMembers().values().toArray());
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
 
         // respond
         return new Output(usergroup.getID());

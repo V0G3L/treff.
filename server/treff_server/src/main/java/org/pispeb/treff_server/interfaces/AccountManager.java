@@ -69,7 +69,7 @@ public interface AccountManager {
 
     Account getAccountByLoginToken(String token);
 
-    void createUpdate(JsonObject updateContent, Date time,
-                      Update.UpdateType type, Account... affectedAccounts);
+    void createUpdate(String updateContent, Date time,
+                      Account... affectedAccounts);
 
 }

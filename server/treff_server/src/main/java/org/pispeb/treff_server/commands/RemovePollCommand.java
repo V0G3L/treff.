@@ -1,17 +1,21 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.PollChangeUpdate;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
+
+import java.util.Date;
 
 /**
  * a command to delete a Poll of a Usergroup
@@ -51,6 +55,22 @@ public class RemovePollCommand extends AbstractCommand {
         if (!group.checkPermissionOfMember(actingAccount, Permission
                 .EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
+        }
+
+        // create update
+        PollChangeUpdate update =
+                new PollChangeUpdate(new Date(),
+                        actingAccount.getID(),
+                        poll);
+        for (Account a: group.getAllMembers().values())
+            getSafeForWriting(a);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    (Account[]) group.getAllMembers().values().toArray());
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
         }
 
         // remove the poll

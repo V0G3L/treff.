@@ -32,7 +32,7 @@ public interface DataObject {
      *
      * <p>If two DataObjects are on the same level of the access hierarchy,
      * their locks are to be acquired in the order in which they are listed
-     * above, e.g. Usergroup-Locks are to be acquired before Update-Locks.</p>
+     * above, e.g. Usergroup-Locks are to be acquired before UpdateToSerialize-Locks.</p>
      *
      * <p>If two DataObjects are of the same type, their locks are to be
      * acquired in order of their ID, from lowest to highest.</p>

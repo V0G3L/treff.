@@ -142,18 +142,16 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public void createUpdate(JsonObject updateContent, Date time,
-                             Update.UpdateType type, Account...
-                                     affectedAccounts) {
+    public void createUpdate(String updateContent, Date time,
+                             Account... affectedAccounts) {
         int id;
         // create update itself
         id = database.insert(
-                "INSERT INTO %s(updatestring,time,type) VALUES (?,?,?);",
+                "INSERT INTO %s(updatestring,time) VALUES (?,?,?);",
                 TableName.UPDATES,
                 new ScalarHandler<Integer>(),
-                updateContent.toString(),
-                time,
-                type.toString());
+                updateContent,
+                time);
 
         Update update = getUpdate(id);
         update.getReadWriteLock().writeLock().lock();

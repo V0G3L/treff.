@@ -117,7 +117,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * registered
      * AccountUpdateListeners.
      *
-     * @param update The Update to add
+     * @param update The UpdateToSerialize to add
      */
     void addUpdate(Update update);
 

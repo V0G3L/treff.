@@ -34,12 +34,8 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public JsonObject getUpdate()  {
-        String updatestring = (String) getProperty("updatestring");
-       try (JsonReader jsonReader
-                = Json.createReader(new StringReader(updatestring))) {
-           return jsonReader.readObject();
-       }
+    public String getUpdate()  {
+        return (String) getProperty("updatestring");
     }
 
     @Override

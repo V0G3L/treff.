@@ -1,15 +1,23 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.AccountChangeUpdate;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Update;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 // TODO needs to be tested
 
@@ -20,7 +28,6 @@ public class EditUsernameCommand extends AbstractCommand {
 
     public EditUsernameCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, CommandInput.class, mapper);
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -38,6 +45,29 @@ public class EditUsernameCommand extends AbstractCommand {
             actingAccount.setUsername(input.username);
         } catch (DuplicateUsernameException e) {
             return new ErrorOutput(ErrorCode.USERNAMEALREADYINUSE);
+        }
+
+        // create the update
+        Set<Account> affected = new HashSet<Account>();
+        affected.addAll(actingAccount.getAllContacts().values());
+        affected.addAll(actingAccount.getAllIncomingContactRequests().values());
+        affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
+        Collection<Usergroup> groups = actingAccount.getAllGroups().values();
+        for (Usergroup g : groups) {
+            getSafeForReading(g);
+            affected.addAll(g.getAllMembers().values());
+        }
+        for (Account a : affected)
+            getSafeForWriting(a);
+        AccountChangeUpdate update = new AccountChangeUpdate(new Date(),
+                actingAccount.getID(), actingAccount);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    (Account[]) affected.toArray());
+        } catch (JsonProcessingException e) {
+            // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
         }
 
         return new Output();

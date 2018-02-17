@@ -26,7 +26,7 @@ public abstract class AbstractCommand {
 
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
-    private final ObjectMapper mapper;
+    protected final ObjectMapper mapper;
 
     private Set<Lock> acquiredLocks = new HashSet<>();
 
@@ -98,7 +98,7 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected abstract CommandOutput executeInternal(CommandInput commandInput);
+    protected abstract CommandOutput executeInternal(CommandInput commandInput) throws JsonProcessingException;
 
     private String errorToString(ErrorCode errorCode, ObjectMapper mapper) {
         try {

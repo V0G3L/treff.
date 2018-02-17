@@ -8,9 +8,9 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 /**
  * a command to edit the permissions of an Account
  */
-public class EditPermissionsCommand extends AbstractCommand {
+public class EditMembershipCommand extends AbstractCommand {
 
-    public EditPermissionsCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public EditMembershipCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, CommandInput.class, mapper);
 		throw new UnsupportedOperationException();
     }
