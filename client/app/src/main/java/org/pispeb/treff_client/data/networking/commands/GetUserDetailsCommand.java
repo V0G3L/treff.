@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteAccount;
 
 /**
@@ -42,7 +44,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
 
         public final CompleteAccount account;
 
-        public Response(CompleteAccount account) {
+        public Response(@JsonProperty("account") CompleteAccount account) {
             this.account = account;
         }
     }

@@ -43,7 +43,6 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
     public static class Response extends AbstractResponse {
 
-        @JsonProperty("user-group")
         public final CompleteUsergroup usergroup;
 
         public Response(@JsonProperty("user-group")

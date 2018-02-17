@@ -48,7 +48,7 @@ public class GetEventDetailsCommand extends AbstractCommand {
 
         public final CompleteEvent event;
 
-        public Response(CompleteEvent event) {
+        public Response(@JsonProperty("event") CompleteEvent event) {
             this.event = event;
         }
     }

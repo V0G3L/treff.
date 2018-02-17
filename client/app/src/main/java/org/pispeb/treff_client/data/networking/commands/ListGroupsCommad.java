@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.data.networking.commands.descriptions.ShallowUserGroup;
 
 /**
@@ -36,12 +38,11 @@ public class ListGroupsCommad extends AbstractCommand {
         }
     }
 
-    //server returns empty json object
     public static class Response extends AbstractResponse {
 
         public final ShallowUserGroup[] groups;
 
-        public Response(ShallowUserGroup[] groups) {
+        public Response(@JsonProperty("groups") ShallowUserGroup[] groups) {
             this.groups = groups;
         }
     }

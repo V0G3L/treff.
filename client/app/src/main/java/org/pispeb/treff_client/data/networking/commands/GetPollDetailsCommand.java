@@ -48,7 +48,7 @@ public class GetPollDetailsCommand extends AbstractCommand {
 
         public final CompletePoll poll;
 
-        public Response(CompletePoll poll) {
+        public Response(@JsonProperty("poll") CompletePoll poll) {
             this.poll = poll;
         }
     }
