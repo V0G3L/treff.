@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">treff.</string>
     <string name="prompt_email">Email-Adresse</string>
     <string name="prompt_password">Passwort</string>
     <string name="action_sign_in">Anmelden oder Registrieren</string>
@@ -27,4 +26,28 @@
     <string name="private_group">Private Gruppe</string>
     <string name="groupname">Gruppenname</string>
     <string name="create_group">Gruppe erstellen</string>
+    <string name="group_dialog_add">Was möchtest du hinzufügen?</string>
+    <string name="group_toolbar_add_poll">Eine neue Abstimmung erstellen</string>
+    <string name="group_toolbar_add_event">Eine neues Event erstellen</string>
+    <string name="drawer_nav_home">Home</string>
+    <string name="drawer_nav_settings">Einstellungen</string>
+    <string name="drawer_nav_about">Über uns</string>
+    <string name="drawer_nav_logout">Ausloggen</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="about_title">Über uns</string>
+    <string name="login_username">Benutzername</string>
+    <string name="login_password">Passwort</string>
+    <string name="login_email">Email-Adresse</string>
+    <string name="login_login">Einloggen</string>
+    <string name="login_register">Registrieren</string>
+    <string name="login_auth">Authentifizieren</string>
+    <string name="mute_chat_setting">Chat stummschalten</string>
+    <string name="mute_location_requests_settings">Standortanfragen stummschalten</string>
+    <string name="ok">OK</string>
+    <string name="poll_or_event">Was möchtest du hinzufügen?</string>
+    <string name="poll">Abstimmung</string>
+    <string name="event">Event</string>
+    <string name="leave_group">Gruppe verlassen</string>
+    <string name="event_title">Event Titel</string>
+    <string name="manage_groups">Gruppen filtern</string>
 </resources>

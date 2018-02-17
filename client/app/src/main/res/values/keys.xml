@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
-    <string name="key_userId">userId</string>
-    <string name="key_userName">userName</string>
-    <string name="key_email">email</string>
-    <string name="key_password">password</string>
-    <string name="key_token">token</string>
+    <string name="key_userId" translatable="false">userId</string>
+    <string name="key_userName" translatable="false">userName</string>
+    <string name="key_email" translatable="false">email</string>
+    <string name="key_password" translatable="false">password</string>
+    <string name="key_token" translatable="false">token</string>
 
 </resources>

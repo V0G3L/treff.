@@ -21,7 +21,7 @@ import java.util.List;
 
 
 /**
- *
+ *  Shows group details/members and settings, allows adding/removing users, leaving etc
  */
 public class GroupSettingsActivity extends AppCompatActivity {
 

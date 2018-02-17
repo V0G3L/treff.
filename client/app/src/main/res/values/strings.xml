@@ -35,7 +35,7 @@
     <!-- login/register -->
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
-    <string name="login_email">Email</string>
+    <string name="login_email">Email-Addresse</string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
     <string name="login_auth">Authenticating...</string>
@@ -47,7 +47,7 @@
     <string name="error_session">User session is no longer valid</string>
 
     <!--Service description-->
-    <string name="gps_service_description">Provides GPS Location for the \"treff.\"-App</string>
+    <string name="gps_service_description" translatable="false">Provides GPS Location for the \"treff.\"-App</string>
     <string name="mute_chat_setting">Mute Chat</string>
     <string name="mute_location_requests_settings">Mute location requests</string>
 
@@ -68,6 +68,14 @@
     <string name="leave_group">Leave group</string>
     <string name="event_title">Event Title</string>
     <string name="manage_groups">Manage Groups</string>
+    <string name="prompt_email">Email-Address</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Log in or register</string>
+    <string name="action_sign_in_short">Log in</string>
+    <string name="error_invalid_email">Not a valid email-address</string>
+    <string name="error_invalid_password">Password too short</string>
+    <string name="error_incorrect_password">Password not correct</string>
+    <string name="error_field_required">Required field</string>
 
 
 </resources>
