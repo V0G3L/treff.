@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.view.home.eventList;
 
 import android.arch.paging.PagedListAdapter;
+import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -20,6 +21,7 @@ import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.databinding.EventItemBinding;
+import org.pispeb.treff_client.view.home.TreffPunkt;
 import org.pispeb.treff_client.view.home.map.MapFragment;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
 
@@ -108,8 +110,8 @@ class EventListViewHolder extends RecyclerView.ViewHolder
     public void bindTo(Event event) {
         binding.setEvent(event);
         EventMarker marker = new EventMarker(binding.map, event);
-//        marker.setIcon(Resources.getSystem().getDrawable(R.drawable
-//                .ic_marker_event));
+        Context ctx = TreffPunkt.getAppContext();
+        marker.setIcon(ctx.getDrawable(R.drawable.ic_marker_event));
         binding.map.getOverlays().add(marker);
         controller.setCenter(new GeoPoint(event.getLocation()));
     }

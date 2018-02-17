@@ -123,8 +123,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         } catch (IOException e) {
 //            e.printStackTrace();
             try {
-                c.onResponse(
-                        mapper.readValue(message, c.getResponseClass()));
+                AbstractResponse response = mapper.readValue(message, c
+                        .getResponseClass());
+                c.onResponse(response);
             } catch (IOException ex) {
                 // This would mean, that the internal request encoding is messed
                 // up, which would be very bad indeed!
