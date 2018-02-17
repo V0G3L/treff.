@@ -105,6 +105,10 @@ public interface Account extends DataObject, Comparable<Account> {
 
     void updatePosition(Position position, Date timeMeasured);
 
+    String generateNewLoginToken();
+
+    void invalidateLoginToken();
+
     /**
      * Adds an {@link Update} that affects this {@link Account} to the set of
      * undelivered

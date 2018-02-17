@@ -54,7 +54,12 @@ public class RequestHandler {
         try {
             request = mapper.readValue(this.requestString, Request.class);
         } catch (IOException e) {
-            throw new AssertionError("This shouldn't happen."); // TODO: really?
+            try {
+                return new Response(mapper.writeValueAsString(
+                        new ErrorOutput(ErrorCode.SYNTAXINVALID)));
+            } catch (JsonProcessingException e1) {
+                throw new AssertionError("This shouldn't happen."); // TODO: really?
+            }
         }
 
         AbstractCommand command = request.getCommandObject(accountManager);
@@ -69,13 +74,7 @@ public class RequestHandler {
             }
         }
 
-        CommandOutput output = command.execute(requestString, mapper);
-        String outputString = null;
-        try {
-            outputString = mapper.writeValueAsString(output);
-        } catch (JsonProcessingException e) {
-            throw new AssertionError("This shouldn't happen."); // TODO: really?
-        }
+        String outputString = command.execute(requestString, mapper);
         return new Response(outputString);
     }
 }

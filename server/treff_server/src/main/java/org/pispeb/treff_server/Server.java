@@ -51,20 +51,24 @@ public class Server {
         new Server(config);
     }
 
-    private Server(Properties config) {
+    public Server(Properties config) {
         // Start DB
 
+        SQLDatabase sqlDatabase = null;
         try {
-            SQLDatabase.initialize(config);
+            sqlDatabase = new SQLDatabase(config);
         } catch (SQLException | NoSuchAlgorithmException e) {
             // TODO: error message and exit
             e.printStackTrace();
         }
 
-        AccountManager accountManager = EntityManagerSQL.getInstance();
+        AccountManager accountManager = sqlDatabase.getEntityManagerSQL();
 
         try (ServerSocket socket = new ServerSocket(
                     Integer.parseInt(config.getProperty("port")))) {
+            // TODO: remove debug message
+            System.out.println("Listening on port "
+                    + socket.getLocalSocketAddress().toString());
             //noinspection UnusedAssignment WTF IntelliJ?
             DatabaseExceptionHandler exceptionHandler
                     = new DatabaseExceptionHandler();
@@ -76,6 +80,7 @@ public class Server {
                         exceptionHandler)
                         .start();
             }
+            System.err.println(exceptionHandler.getCaughtException().getMessage());
         } catch (IOException e) {
             e.printStackTrace(System.out);
         }

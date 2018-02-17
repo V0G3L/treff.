@@ -7,31 +7,43 @@ package org.pispeb.treff_server.sql;
 // TODO: make all classes use this
 
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.ColumnListHandler;
 
-import java.lang.reflect.ParameterizedType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-public class DataObjectHandler<T extends SQLObject>
-        implements ResultSetHandler<Map<Integer, T>> {
+/**
+ * {@link ResultSetHandler} implementation that converts a {@link ResultSet}
+ * containing a single ID of an {@link SQLObject} into the respective
+ * {@code SQLObject} instance.
+ * This Handler does <b>not</b> check whether an instance
+ * with the same type and ID already exists.
+ * <p>
+ * The {@code ResultSet} should contain exactly zero or one ID.
+ * If it holds more than one ID then it will still return a single
+ * {@code SQLObject} of the correct type but no guarantee is made as to which
+ * ID is used.
+ * If no ID is contained in the {@code ResultSet}, null is returned.
+ *
+ * @param <T> The type of SQLObject that the IDs belong to.
+ */
+class DataObjectHandler<T extends SQLObject>
+        implements ResultSetHandler<T> {
 
-    // Get class of type parameter
-    @SuppressWarnings("unchecked")
-    private final Class<T> tClass =
-            (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass())
-                    .getActualTypeArguments()[0];
+    private final Class<T> tClass;
+    private final EntityManagerSQL entityManager;
+
+    DataObjectHandler(Class<T> tClass, EntityManagerSQL entityManager) {
+        this.tClass = tClass;
+        this.entityManager = entityManager;
+    }
 
     @Override
-    public Map<Integer, T> handle(ResultSet rs) throws SQLException {
-        return new ColumnListHandler<Integer>().handle(rs)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        id -> EntityManagerSQL.getInstance()
-                                .getSQLObject(id, tClass)));
-
+    public T handle(ResultSet rs) throws SQLException {
+        Map<Integer, T> map
+                = new DataObjectMapHandler<T>(tClass, entityManager).handle(rs);
+        // take any value from the map
+        // as the map is assumed to have a size of 0 or 1, this is acceptable
+        return map.values().stream().findAny().orElse(null);
     }
 }

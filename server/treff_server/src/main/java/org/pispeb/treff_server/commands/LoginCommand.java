@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -15,7 +14,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 public class LoginCommand extends AbstractCommand {
 
     public LoginCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+        super(accountManager, Input.class);
     }
 
     @Override
@@ -32,8 +31,8 @@ public class LoginCommand extends AbstractCommand {
         // check if password is correct
         if (!actingAccount.checkPassword(input.password))
             return new ErrorOutput(ErrorCode.CREDWRONG);
-        String token = ""; //TODO account getToken()
-        return new Output(token);
+        String token = actingAccount.generateNewLoginToken();
+        return new Output(token, actingAccount.getID());
     }
 
     public static class Input extends CommandInput {
@@ -50,11 +49,13 @@ public class LoginCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("token")
-        final String token;
+        // TODO: make all fields to be serialized public or annotate
+        public final String token;
+        public final int id;
 
-        Output(String token) {
+        Output(String token, int id) {
             this.token = token;
+            this.id = id;
         }
     }
 }

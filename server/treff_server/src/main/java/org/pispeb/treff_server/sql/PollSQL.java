@@ -25,8 +25,9 @@ public class PollSQL extends SQLObject implements Poll {
 
     private static final TableName TABLE_NAME = TableName.POLLS;
 
-    PollSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    PollSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class PollSQL extends SQLObject implements Poll {
                     this.id)
                     .stream()
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getPollOption));
+                            entityManager::getPollOption));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -74,7 +75,7 @@ public class PollSQL extends SQLObject implements Poll {
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
-        return EntityManagerSQL.getInstance().getPollOption(id);
+        return entityManager.getPollOption(id);
     }
 
     @Override
@@ -102,7 +103,7 @@ public class PollSQL extends SQLObject implements Poll {
     @Override
     public Account getCreator() {
         int id = (int) getProperties("creator").get("creator");
-        return EntityManagerSQL.getInstance().getAccount(id);
+        return entityManager.getAccount(id);
     }
 
     @Override
@@ -126,7 +127,7 @@ public class PollSQL extends SQLObject implements Poll {
 
             // create event
             int groupID = (int) getProperties("groupid").get("groupid");
-            Usergroup group = EntityManagerSQL.getInstance().getUsergroup(groupID);
+            Usergroup group = entityManager.getUsergroup(groupID);
             Event event = group.createEvent(
                     getQuestion(),
                     bestOption.getPosition(),

@@ -1,10 +1,11 @@
 package org.pispeb.treff_server.commands;
 
+// TODO: optimize imports everywhere
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -15,7 +16,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 public class RegisterCommand extends AbstractCommand {
 
     public RegisterCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+        super(accountManager, Input.class);
     }
 
     @Override
@@ -29,8 +30,8 @@ public class RegisterCommand extends AbstractCommand {
         Account account = accountManager.createAccount(input.username,
                 input.password);
 
-        String token = ""; //TODO account getToken()
-        return new Output(token);
+        String token = account.generateNewLoginToken();
+        return new Output(token, account.getID());
     }
 
     public static class Input extends CommandInput {
@@ -47,11 +48,12 @@ public class RegisterCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("token")
-        final String token;
+        public final String token;
+        public final int id;
 
-        Output(String token) {
+        Output(String token, int id) {
             this.token = token;
+            this.id = id;
         }
     }
 }

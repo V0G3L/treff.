@@ -21,80 +21,73 @@ public abstract class SQLObject implements DataObject {
 
     protected final int id;
     protected final SQLDatabase database;
+    protected final EntityManagerSQL entityManager;
     protected final Properties config;
 
     private final ReadWriteLock readWriteLock
             = new ReentrantReadWriteLock(true);
     protected boolean deleted = false;
 
-    final TableName tableName;
+    private final TableName tableName;
 
-    SQLObject(int id, SQLDatabase database, Properties config, TableName
-            tableName) {
+    SQLObject(Integer id,  TableName tableName,
+              SQLDatabase database, EntityManagerSQL entityManager,
+              Properties config) {
         this.id = id;
-        this.database = database;
-        this.config = config;
         this.tableName = tableName;
+        this.database = database;
+        this.entityManager = entityManager;
+        this.config = config;
     }
 
-    protected Object getProperty(String key) {
+    Object getProperty(String key) {
         return getProperties(key).get(key);
     }
 
-    protected Map<String, Object> getProperties(String... keys) {
-        try {
-            String keyList = Arrays.stream(keys)
-                    .collect(Collectors.joining(","));
-            return database.getQueryRunner().query(
-                    "SELECT (?) FROM ? WHERE id=?;",
-                    new MapHandler(),
-                    keyList,
-                    tableName,
-                    id
-            );
+    Map<String, Object> getProperties(String... keys) {
+        String keyList = Arrays.stream(keys)
+                .collect(Collectors.joining(","));
+        return database.query(
+                "SELECT " + keyList + " FROM %s WHERE id=?;",
+                tableName,
+                new MapHandler(),
+                id
+        );
 
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
     }
 
-    protected void setProperty(String key, Object value) {
+    void setProperty(String key, Object value) {
         setProperties(new AssignmentList()
                 .put(key, value));
     }
 
     protected void setProperties(AssignmentList pairs) {
-        try {
-            // split keys and values into two lists
-            // can't call map.entrySet() twice because it doesn't
-            // guarantee the same iteration order
-            LinkedList<String> keys = new LinkedList<>();
-            LinkedList<Object> values = new LinkedList<>();
-            pairs.getMap().forEach((key, value) -> {
-                keys.add(key);
-                values.add(value);
-            });
+        // split keys and values into two lists
+        // can't call map.entrySet() twice because it doesn't
+        // guarantee the same iteration order
+        LinkedList<String> keys = new LinkedList<>();
+        LinkedList<Object> values = new LinkedList<>();
+        pairs.getMap().forEach((key, value) -> {
+            keys.add(key);
+            values.add(value);
+        });
 
-            // convert keys into MySQL assignment_list using
-            // PreparedStatement's placeholders for the values
-            // key1=?,key2=?,key3=?
-            String assignmentList =
-                    keys.stream()
-                            .map((key) -> key + "=?")
-                            .collect(Collectors.joining(","));
+        // convert keys into MySQL assignment_list using
+        // PreparedStatement's placeholders for the values
+        // key1=?,key2=?,key3=?
+        String assignmentList =
+                keys.stream()
+                        .map((key) -> key + "=?")
+                        .collect(Collectors.joining(","));
 
-            LinkedList<Object> params = new LinkedList<>();
-            params.add(tableName);
-            params.add(values);
-            params.add(id);
+        LinkedList<Object> params = new LinkedList<>();
+        params.add(values);
+        params.add(id);
 
-            database.getQueryRunner().update(
-                    "UPDATE ? " + assignmentList + " WHERE id=?;",
-                    params.toArray());
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        database.update(
+                "UPDATE %s SET " + assignmentList + " WHERE id=?;",
+                tableName,
+                params.toArray());
     }
 
     @Override

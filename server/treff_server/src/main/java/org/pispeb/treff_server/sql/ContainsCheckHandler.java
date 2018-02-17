@@ -13,6 +13,7 @@ import java.sql.SQLException;
  * <code>true</code> implies that at least one row was returned.</p>
  */
 public class ContainsCheckHandler implements ResultSetHandler<Boolean> {
+
     @Override
     public Boolean handle(ResultSet rs) throws SQLException {
         return rs.next();

@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -59,12 +60,15 @@ public abstract class AbstractCommand {
      * @return A {@link } object representing the outcome of the
      * command execution
      */
-    public CommandOutput execute(String input, ObjectMapper mapper) {
-        CommandInput commandInput = null;
+    public String execute(String input, ObjectMapper mapper) {
+
+        // try to construct input object
+        // if that fails, return a syntax error message
+        CommandInput commandInput;
         try {
             commandInput = mapper.readValue(input, expectedInput);
         } catch (IOException e) {
-            throw new AssertionError("shouldn't happen"); // TODO: really?
+            return errorToString(ErrorCode.SYNTAXINVALID, mapper);
         }
 
         // for commands that require login, set account manager and check token
@@ -74,31 +78,33 @@ public abstract class AbstractCommand {
 
             cmdInputLoginReq.setAccountManager(accountManager);
             if (cmdInputLoginReq.getActingAccount() == null) {
-                return new ErrorOutput(ErrorCode.TOKENINVALID);
+                return errorToString(ErrorCode.TOKENINVALID, mapper);
             }
         }
 
         // make sure to release all locks after execution
         try {
-            // TODO: serialize before releasing locks
-            return executeInternal(commandInput);
+            // serialize before releasing locks
+            CommandOutput output = executeInternal(commandInput);
+            return mapper.writeValueAsString(output);
+        } catch (JsonProcessingException e) {
+            // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
         } finally {
             releaseAllLocks();
         }
     }
 
-    /**
-     * executes the command
-     *
-     * @param input           TODO
-     * @param actingAccountID The ID of the account the the user who made the
-     *                        request is logged into.
-     *                        If a command does not require login,
-     *                        this is {@code -1}.
-     * @return a CommandResponse with a status code and
-     * the specific return value encoded as a JsonObject
-     */
     protected abstract CommandOutput executeInternal(CommandInput commandInput);
+
+    private String errorToString(ErrorCode errorCode, ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(new ErrorOutput(errorCode));
+        } catch (JsonProcessingException e) {
+            // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
+    }
 
     protected void acquireLock(Lock lock) {
         if (!acquiredLocks.contains(lock)) {

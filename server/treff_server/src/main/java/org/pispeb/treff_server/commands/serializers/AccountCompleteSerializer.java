@@ -9,10 +9,16 @@ import java.io.IOException;
 
 public class AccountCompleteSerializer extends JsonSerializer<Account>{
 
-    //TODO
-
     @Override
-    public void serialize(Account value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(Account account, JsonGenerator gen,
+                          SerializerProvider serializers) throws IOException {
 
+        gen.writeStartObject();
+
+        gen.writeStringField("type", "account");
+        gen.writeNumberField("id", account.getID());
+        gen.writeStringField("username", account.getUsername());
+
+        gen.writeEndObject();
     }
 }

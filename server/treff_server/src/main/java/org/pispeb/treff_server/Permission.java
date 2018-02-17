@@ -7,5 +7,10 @@ public enum Permission {
     CREATE_EVENT,
     EDIT_ANY_EVENT,
     CREATE_POLL,
-    EDIT_ANY_POLL
+    EDIT_ANY_POLL;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 }

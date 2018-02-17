@@ -4,6 +4,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
+import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.ContactRequestNonexistantException;
@@ -42,8 +43,9 @@ public class AccountSQL extends SQLObject implements Account {
     private final Lock requestLock = new ReentrantLock();
     private Set<AccountUpdateListener> listeners = new HashSet<>();
 
-    AccountSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    AccountSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -56,7 +58,6 @@ public class AccountSQL extends SQLObject implements Account {
     public void setUsername(String username) throws
             DuplicateUsernameException {
         // have to acquire lock since username changes are not atomical
-        EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.usernameLock) {
             // check for duplicates
             if (entityManager.usernameAvailable(username)) {
@@ -130,8 +131,8 @@ public class AccountSQL extends SQLObject implements Account {
                 = generatePasswordHash(password, hashAlg, saltBytes);
         // Store new salt and new hash in DB
         setProperties(new AssignmentList()
-                .put("passwordsalt", Hex.encodeHexString(passwordHash.salt))
-                .put("passwordhash", Hex.encodeHexString(passwordHash.hash)));
+                .put("passwordsalt", passwordHash.getSaltAsHex())
+                .put("passwordhash", passwordHash.getHashAsHex()));
     }
 
     @Override
@@ -143,7 +144,6 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public void setEmail(String email) throws DuplicateEmailException {
         // have to acquire lock since email address changes are not atomical
-        EntityManagerSQL entityManager = EntityManagerSQL.getInstance();
         synchronized (entityManager.emailLock) {
             // check for duplicates
             if (entityManager.emailAvailable(email)) {
@@ -168,7 +168,7 @@ public class AccountSQL extends SQLObject implements Account {
                     .stream()
                     // create ID -> UsergroupSQL map
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getUsergroup));
+                            entityManager::getUsergroup));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -261,7 +261,7 @@ public class AccountSQL extends SQLObject implements Account {
                     this.id)
                     .stream()
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
+                            entityManager::getAccount));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -323,7 +323,7 @@ public class AccountSQL extends SQLObject implements Account {
                             : (Integer) rsMap.get("lowid"))
                     // create ID -> AccountSQL map
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
+                            entityManager::getAccount));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -369,7 +369,7 @@ public class AccountSQL extends SQLObject implements Account {
                     .stream()
                     // create ID -> AccountSQL map
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
+                            entityManager::getAccount));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -395,6 +395,31 @@ public class AccountSQL extends SQLObject implements Account {
                 .put("latitude", position.latitude)
                 .put("longitude", position.longitude)
                 .put("timemeasured", timeMeasured));
+    }
+
+    @Override
+    public String generateNewLoginToken() {
+        SecureRandom secureRandom = new SecureRandom();
+
+        int loginTokenByteSize = Integer.parseInt(config.getProperty(
+                ConfigKeys.LOGIN_TOKEN_BYTES.toString()));
+        byte[] loginTokenBytes = new byte[loginTokenByteSize];
+        secureRandom.nextBytes(loginTokenBytes);
+        String loginToken = Hex.encodeHexString(loginTokenBytes);
+        database.update(
+                "UPDATE %s SET logintoken=? WHERE id=?;",
+                TableName.ACCOUNTS,
+                loginToken,
+                id);
+        return loginToken;
+    }
+
+    @Override
+    public void invalidateLoginToken() {
+        database.update(
+                "UPDATE %s SET logintoken=NULL WHERE id=?;",
+                TableName.ACCOUNTS,
+                id);
     }
 
     @Override
@@ -433,7 +458,7 @@ public class AccountSQL extends SQLObject implements Account {
             throw new DatabaseException(e);
         }
         return updateIDs.stream()
-                .map(EntityManagerSQL.getInstance()::getUpdate)
+                .map(entityManager::getUpdate)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 

@@ -18,8 +18,9 @@ public class UpdateSQL extends SQLObject implements Update {
 
     private static final TableName TABLE_NAME = TableName.UPDATES;
 
-    UpdateSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    UpdateSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override

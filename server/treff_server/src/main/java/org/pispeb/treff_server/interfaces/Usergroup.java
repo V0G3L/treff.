@@ -38,6 +38,10 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
                                boolean valid)
             throws AccountNotInGroupException;
 
-    // TODO: unload on inactivity
+    Date getLocationSharingTimeEndOfMember(Account member)
+            throws AccountNotInGroupException;
+
+    void setLocationSharingTimeEndOfMember(Account member, Date timeEnd)
+            throws AccountNotInGroupException;
 
 }

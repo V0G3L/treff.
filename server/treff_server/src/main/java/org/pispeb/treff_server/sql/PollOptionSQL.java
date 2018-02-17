@@ -18,8 +18,9 @@ public class PollOptionSQL extends SQLObject implements PollOption {
 
     private static final TableName TABLE_NAME = TableName.POLLOPTIONS;
 
-    PollOptionSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    PollOptionSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class PollOptionSQL extends SQLObject implements PollOption {
                     this.id)
                     .stream()
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
+                            entityManager::getAccount));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }

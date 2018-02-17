@@ -169,7 +169,8 @@ For the sake of consistency, they are listed here anyways.
 
 \apiDesc{Event}{
     title/string/Title of the event,
-    creator/int/ID of the account that created this event,
+    creator/int/ID of the account that created this event.
+    If the creator account was deleted{,} -1 is returned.,
     time-start/date/Point in time at which the event starts,
     time-end/date/Point in time at which the event ends,
     latitude/decimal degree/Latitude of the position that the event is centered
@@ -184,7 +185,8 @@ For the sake of consistency, they are listed here anyways.
 
 \apiDesc{Poll}{
     question/string/Question for which answered are supplied as poll options,
-    creator/int/ID of the account that created this poll,
+    creator/int/ID of the account that created this poll.
+    If the creator account was deleted{,} -1 is returned.,
     time-close/date/Point in time at which voting closes,
     multi-choice/boolean/True iff an account can vote for multiple poll options
     simultaneously,
@@ -204,8 +206,13 @@ For the sake of consistency, they are listed here anyways.
     poll option
 }{}{}
 
+% TODO: remove ID (defined in .sty)
 \apiDesc{Membership}{
     account-id/int/ID of the account that this membership belongs to,
+    sharing-until/date/Point in time until which location sharing is active.
+    If this value is in the past then other members of the group will not be
+    notified of position updates unless they are also in another group in which
+    location sharing is active,
     permissions/object/Object holding a \code{permission-name -> boolean} pair
     for each permission defined in chapter \ref{sec:permissions}.
 }{}{}
@@ -291,7 +298,8 @@ Declaring an e-mail adress is optional.
 It may be set at a later time via the \textbf{edit-email} command.}
 {user/string/Username of the account,
 pass/string/Password of the account}
-{token/string/Authentication token}
+{token/string/Authentication token,
+id/int/ID of account}
 {username-already-in-use}
 {}
 
@@ -300,7 +308,8 @@ pass/string/Password of the account}
 password is correct.}
 {user/string/Username of the account,
 pass/string/Password of the account}
-{token/string/Authentication token}
+{token/string/Authentication token,
+id/int/ID of account}
 {cred-wrong}
 {}
 
@@ -771,7 +780,7 @@ May lie in the past.}
 To inform users of changes that affect them, update objects are created with
 each successfully executed command that makes changes to domain model objects.
 
-These update objects are divided in several types. All of them hold at least
+These update objects are divided into several types. All of them hold at least
 the following properties:
 
 \apiArgument{
@@ -837,13 +846,13 @@ the following properties:
 
 \updateType{contact-request}{
 		\apiArgument{
-
+            TODO/TODO/TODO
 		}
 }
 
 \updateType{position}{
 		\apiArgument{
-
+            TODO/TODO/TODO
 		}
 }
 
@@ -855,19 +864,19 @@ the following properties:
 
 \updateType{cancel-contact-request}{
 		\apiArgument{
-
+            TODO/TODO/TODO
 		}
 }
 
 \updateType{remove-contact}{
 		\apiArgument{
-
+            TODO/TODO/TODO
 		}
 }
 
 \updateType{}{
 		\apiArgument{
-
+            TODO/TODO/TODO
 		}
 }
 

@@ -1,12 +1,10 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.commands.serializers.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -19,7 +17,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 public class GetUserIdCommand extends AbstractCommand {
 
     public GetUserIdCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+        super(accountManager, Input.class);
     }
 
     @Override
@@ -38,14 +36,14 @@ public class GetUserIdCommand extends AbstractCommand {
         if (account == null)
             return new ErrorOutput(ErrorCode.USERIDINVALID);
 
-        return new Output(account);
+        return new Output(account.getID());
     }
 
     public static class Input extends CommandInputLoginRequired {
 
         final String username;
 
-        public Input(@JsonProperty("username") String username,
+        public Input(@JsonProperty("user") String username,
                      @JsonProperty("token") String token) {
             super(token);
             this.username = username;
@@ -54,12 +52,10 @@ public class GetUserIdCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonSerialize(using = AccountCompleteSerializer.class)
-        @JsonProperty("user")
-        final Account account;
+        public final int id;
 
-        Output(Account account) {
-            this.account = account;
+        Output(int id) {
+            this.id = id;
         }
     }
 }

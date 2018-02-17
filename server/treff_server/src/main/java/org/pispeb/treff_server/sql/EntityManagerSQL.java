@@ -1,40 +1,25 @@
 package org.pispeb.treff_server.sql;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.ConfigKeys;
-import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
-import org.pispeb.treff_server.exceptions
-        .EntityManagerAlreadyInitializedException;
-import org.pispeb.treff_server.exceptions.EntityManagerNotInitializedException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.DataObject;
-import org.pispeb.treff_server.interfaces.Event;
-import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Update;
-import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 
 import javax.json.JsonObject;
 import java.lang.reflect.InvocationTargetException;
-import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -46,8 +31,6 @@ import java.util.stream.Collectors;
  * @see AccountManager
  */
 public class EntityManagerSQL implements AccountManager {
-
-    private static EntityManagerSQL instance;
 
     public final Object usernameLock = new Object();
     public final Object emailLock = new Object();
@@ -63,12 +46,16 @@ public class EntityManagerSQL implements AccountManager {
     private final Map<Class<? extends SQLObject>, TableName> tableNames
             = new HashMap<>();
 
+    public EntityManagerSQL(SQLDatabase database, Properties config) {
 
-    // singleton
-    private EntityManagerSQL(SQLDatabase database, Properties config) {
         this.database = database;
         this.config = config;
 
+        // create the following maps:
+        // - sql class -> TableName
+        // - sql class -> fetchlock (Object)
+        // - sql class -> loadedObjectMap (id -> sql object)
+        //
         // This'd be so much easier if Java supported abstract static methods
         tableNames.put(AccountSQL.class, TableName.ACCOUNTS);
         tableNames.put(EventSQL.class, TableName.EVENTS);
@@ -84,34 +71,6 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     /**
-     * Creates the {@link EntityManagerSQL} instance and prepares it to create
-     * connections to the specified MySQL database on being supplied with
-     */
-    static synchronized void initialize(SQLDatabase database, Properties config)
-            throws EntityManagerAlreadyInitializedException {
-        if (instance == null) {
-            instance = new EntityManagerSQL(database, config);
-        } else {
-            throw new EntityManagerAlreadyInitializedException();
-        }
-    }
-
-    /**
-     * Returns the {@link EntityManagerSQL} instance created with
-     * {@link #initialize(SQLDatabase, Properties)}
-     *
-     * @return The {@link EntityManagerSQL} instance
-     * @throws EntityManagerNotInitializedException
-     */
-    public static EntityManagerSQL getInstance()
-            throws EntityManagerNotInitializedException {
-        if (instance == null) {
-            throw new EntityManagerNotInitializedException();
-        }
-        return instance;
-    }
-
-    /**
      * Check whether the specified username is available. The calling method
      * should acquire a lock on {@link #usernameLock} and hold it until the
      * username change is complete to avoid conflicts.
@@ -121,137 +80,65 @@ public class EntityManagerSQL implements AccountManager {
      * <code>false</code> otherwise
      */
     boolean usernameAvailable(String username) {
-        try {
-            synchronized (usernameLock) {
-                return !database.getQueryRunner().query(
-                        "SELECT FROM ? WHERE username=?;",
-                        new ContainsCheckHandler(),
-                        TableName.ACCOUNTS.toString(),
-                        username);
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
+        synchronized (usernameLock) {
+            return !database.query(
+                    "SELECT FROM %s WHERE username=?;",
+                    TableName.ACCOUNTS,
+                    new ContainsCheckHandler(),
+                    username);
         }
     }
 
     boolean emailAvailable(String email) {
-        try {
-            synchronized (emailLock) {
-                return !database.getQueryRunner().query(
-                        "SELECT FROM ? WHERE username=?;",
-                        new ContainsCheckHandler(),
-                        TableName.ACCOUNTS.toString(),
-                        email);
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
+        synchronized (emailLock) {
+            return !database.query(
+                    "SELECT FROM %s WHERE username=?;",
+                    TableName.ACCOUNTS,
+                    new ContainsCheckHandler(),
+                    email);
         }
     }
 
     @Override
     public Map<Integer, Account> getAllAccounts() {
-        try {
-            return database.getQueryRunner().query(
-                    "SELECT id FROM ?;",
-                    new MapListHandler(),
-                    TableName.ACCOUNTS.toString())
-                    .stream()
-                    .map((rsMap) -> (Integer) rsMap.get("id"))
-                    .collect(Collectors.toMap(Function.identity(),
-                            this::getAccount));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT id FROM %s;",
+                TableName.ACCOUNTS,
+                new MapListHandler())
+                .stream()
+                .map((rsMap) -> (Integer) rsMap.get("id"))
+                .collect(Collectors.toMap(Function.identity(),
+                        this::getAccount));
     }
 
     @Override
     public AccountSQL getAccountByUsername(String username) {
         // get ID by username, then get Account by ID
-        try {
-            Map<String, Object> resultMap = database.getQueryRunner().query(
-                    "SELECT FROM ? WHERE username=?;",
-                    new MapHandler(),
-                    TableName.ACCOUNTS.toString(),
-                    username);
-            if (resultMap.containsKey("id")) {
-                return getAccount((Integer) resultMap.get("id"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT id FROM %s WHERE username=?;",
+                TableName.ACCOUNTS,
+                new DataObjectHandler<>(AccountSQL.class, this),
+                username);
     }
 
     @Override
     public AccountSQL getAccountByEmail(String email) {
         // get ID by email, then get Account by ID
-        try {
-            Map<String, Object> resultMap = database.getQueryRunner().query(
-                    "SELECT FROM ? WHERE email=?;",
-                    new MapHandler(),
-                    TableName.ACCOUNTS.toString(),
-                    email);
-            if (resultMap.containsKey("id")) {
-                return getAccount((Integer) resultMap.get("id"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT id FROM %s WHERE email=?;",
+                TableName.ACCOUNTS,
+                new DataObjectHandler<>(AccountSQL.class, this),
+                email);
     }
 
     @Override
     public Account getAccountByLoginToken(String loginToken) {
-        try {
-            Map<String, Object> resultMap = database.getQueryRunner().query(
-                    "SELECT id FROM ? WHERE logintoken=?;",
-                    new MapHandler(),
-                    TableName.ACCOUNTS.toString(),
-                    loginToken
-            );
-            if (resultMap.containsKey("id")) {
-                return getAccount((Integer) resultMap.get("id"));
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public String generateNewLoginToken(Account account) {
-        SecureRandom secureRandom = new SecureRandom();
-
-        int loginTokenByteSize = Integer.parseInt(config.getProperty(
-                ConfigKeys.LOGIN_TOKEN_BYTES.toString()));
-        byte[] loginTokenBytes = new byte[loginTokenByteSize];
-        secureRandom.nextBytes(loginTokenBytes);
-        String loginToken = Hex.encodeHexString(loginTokenBytes);
-        try {
-            database.getQueryRunner().update(
-                    "UPDATE ? SET logintoken=? WHERE id=?;",
-                    TableName.ACCOUNTS.toString(),
-                    loginToken,
-                    account.getID());
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return loginToken;
-    }
-
-    @Override
-    public void invalidateLoginToken(Account account) {
-        try {
-            database.getQueryRunner().update(
-                    "UPDATE ? SET logintoken=NULL WHERE id=?;",
-                    TableName.ACCOUNTS.toString(),
-                    account.getID());
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT id FROM %s WHERE logintoken=?;",
+                TableName.ACCOUNTS,
+                new DataObjectHandler<>(AccountSQL.class, this),
+                loginToken
+        );
     }
 
     @Override
@@ -259,19 +146,14 @@ public class EntityManagerSQL implements AccountManager {
                              Update.UpdateType type, Account...
                                      affectedAccounts) {
         int id;
-        try {
-            // create update itself
-            id = database.getQueryRunner().insert(
-                    "INSERT INTO ?(updatestring,time,type) VALUES (?,?,?);",
-                    new ScalarHandler<Integer>(),
-                    TableName.UPDATES.toString(),
-                    updateContent.toString(),
-                    time,
-                    type.toString());
-
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        // create update itself
+        id = database.insert(
+                "INSERT INTO %s(updatestring,time,type) VALUES (?,?,?);",
+                TableName.UPDATES,
+                new ScalarHandler<Integer>(),
+                updateContent.toString(),
+                time,
+                type.toString());
 
         Update update = getUpdate(id);
         update.getReadWriteLock().writeLock().lock();
@@ -310,6 +192,10 @@ public class EntityManagerSQL implements AccountManager {
         return getSQLObject(id, UpdateSQL.class);
     }
 
+    // TODO: Don't use ScalarHandler<Integer> anywhere
+    // because it returns
+    // a BigInteger instead and causes a ClassCastException
+
     @Override
     public Account createAccount(String username, String password)
             throws DuplicateEmailException, DuplicateUsernameException {
@@ -321,27 +207,23 @@ public class EntityManagerSQL implements AccountManager {
                 = AccountSQL.generatePasswordHash(password, hashAlg, saltBytes);
 
         int id;
-        try {
-            id = database.getQueryRunner().insert(
-                    "INSERT INTO ?(username,passwordsalt,passwordhash) " +
-                            "VALUES (?,?,?);",
-                    new ScalarHandler<Integer>(),
-                    TableName.ACCOUNTS.toString(),
-                    username,
-                    passwordHash.salt,
-                    passwordHash.hash);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        id = database.insert(
+                "INSERT INTO %s(username,passwordsalt,passwordhash) " +
+                        "VALUES (?,?,?);",
+                TableName.ACCOUNTS,
+                new IDHandler(),
+                username,
+                passwordHash.getSaltAsHex(),
+                passwordHash.getHashAsHex());
         return getAccount(id);
     }
 
     private boolean hasObjectInDB(TableName tableName, int id) throws
             SQLException {
-        return database.getQueryRunner().query(
-                "SELECT id FROM ? WHERE id=?;",
+        return database.query(
+                "SELECT id FROM %s WHERE id=?;",
+                tableName,
                 new ContainsCheckHandler(),
-                tableName.toString(),
                 id);
     }
 
@@ -371,10 +253,13 @@ public class EntityManagerSQL implements AccountManager {
             try {
                 if (hasObjectInDB(tableName, id)) {
                     T obj = sqlClass
-                            .getConstructor(Integer.class,
+                            // must use DeclaredConstructor because constructor
+                            // is not public
+                            .getDeclaredConstructor(int.class,
                                     SQLDatabase.class,
+                                    EntityManagerSQL.class,
                                     Properties.class)
-                            .newInstance(id, database, config);
+                            .newInstance(id, database, this, config);
                     loadedMap.put(id, obj);
                     return obj;
                 } else {
@@ -386,7 +271,8 @@ public class EntityManagerSQL implements AccountManager {
                     NoSuchMethodException | InvocationTargetException e) {
                 throw new AssertionError("One of the SQLObject classes " +
                         "doesn't support the " +
-                        "(int, SQLDatabase, Properties)-constructor.");
+                        "(int, SQLDatabase, EntityManagerSQL, Properties)-" +
+                        "constructor.");
             }
         }
     }

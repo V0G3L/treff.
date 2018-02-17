@@ -69,10 +69,6 @@ public interface AccountManager {
 
     Account getAccountByLoginToken(String token);
 
-    String generateNewLoginToken(Account account);
-
-    void invalidateLoginToken(Account account);
-
     void createUpdate(JsonObject updateContent, Date time,
                       Update.UpdateType type, Account... affectedAccounts);
 

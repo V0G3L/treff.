@@ -2,7 +2,9 @@ package org.pispeb.treff_server.sql;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions
         .SQLDatabaseAlreadyInitializedException;
 import org.pispeb.treff_server.interfaces.Update;
@@ -24,19 +26,10 @@ import static org.pispeb.treff_server.sql.SQLDatabase.TableName.*;
 public class SQLDatabase {
 
     private final Properties config;
-    private static SQLDatabase instance;
     private final QueryRunner queryRunner;
+    private final EntityManagerSQL entityManagerSQL;
 
-    public static void initialize(Properties config) throws SQLException,
-            NoSuchAlgorithmException {
-        if (instance == null) {
-            instance = new SQLDatabase(config);
-        } else {
-            throw new SQLDatabaseAlreadyInitializedException();
-        }
-    }
-
-    private SQLDatabase(Properties config) throws SQLException,
+    public SQLDatabase(Properties config) throws SQLException,
             NoSuchAlgorithmException {
         this.config = config;
 
@@ -54,7 +47,7 @@ public class SQLDatabase {
         // if db never initialized before:
         createTables();
 
-        EntityManagerSQL.initialize(this, config);
+        this.entityManagerSQL = new EntityManagerSQL(this, config);
     }
 
     private void createTables()
@@ -99,8 +92,8 @@ public class SQLDatabase {
                         PASSWORD_HASH_BYTES * 2,
                         Integer.parseInt(
                                 config.getProperty(LOGIN_TOKEN_BYTES
-                                        .toString())
-                        )),
+                                        .toString())) * 2
+                ),
 
                 // contacts
                 String.format("CREATE TABLE %s (" +
@@ -165,13 +158,14 @@ public class SQLDatabase {
                                 "   REFERENCES usergroups(id)" +
                                 "   ON DELETE CASCADE," +
                                 "PRIMARY KEY (accountid, usergroupid)," +
+                                "locsharetimeend DATETIME," +
                                 "%s" +
                                 ");",
                         GROUPMEMBERSHIPS.toString(),
                         // add all permissions
                         Arrays.stream(Permission.values())
                                 .map((p) -> "permission_" +
-                                        p.toString().toLowerCase()
+                                        p.toString()
                                         + " BIT NOT NULL")
                                 .collect(Collectors.joining(","))),
 
@@ -317,8 +311,107 @@ public class SQLDatabase {
         }
     }
 
+    public EntityManagerSQL getEntityManagerSQL() {
+        return entityManagerSQL;
+    }
+
+    @Deprecated
     QueryRunner getQueryRunner() {
         return queryRunner;
+    }
+
+    /**
+     * Like {@link QueryRunner#query(String, ResultSetHandler, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param rsHandler The {@code ResultSetHandler} to use
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @param <T> The type of return value returned by the
+     * {@code ResultSetHandler}
+     * @return The return value produced by the specified
+     * {@code ResultSetHandler}
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public <T> T query(String sqlQuery, TableName tableName,
+                       ResultSetHandler<T> rsHandler, Object... parameters) {
+        try {
+            return queryRunner.query(
+                    String.format(sqlQuery, tableName.toString()),
+                    rsHandler,
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Like {@link QueryRunner#insert(String, ResultSetHandler, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param rsHandler The {@code ResultSetHandler} to use
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @param <T> The type of return value returned by the
+     * {@code ResultSetHandler}
+     * @return The return value produced by the specified
+     * {@code ResultSetHandler}
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public <T> T insert(String sqlQuery, TableName tableName,
+                       ResultSetHandler<T> rsHandler, Object... parameters) {
+        try {
+            return queryRunner.insert(
+                    String.format(sqlQuery, tableName.toString()),
+                    rsHandler,
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Like {@link QueryRunner#update(String, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @return The amount of rows updated.
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public int update(String sqlQuery, TableName tableName,
+                          Object... parameters) {
+        try {
+            return queryRunner.update(
+                    String.format(sqlQuery, tableName.toString()),
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     enum TableName {

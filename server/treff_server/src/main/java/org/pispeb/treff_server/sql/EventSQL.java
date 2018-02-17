@@ -19,8 +19,9 @@ public class EventSQL extends SQLObject implements Event {
 
     private static final TableName TABLE_NAME = TableName.EVENTS;
 
-    EventSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    EventSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -74,7 +75,7 @@ public class EventSQL extends SQLObject implements Event {
     @Override
     public Account getCreator() {
         int id = (int) getProperties("creator").get("creator");
-        return EntityManagerSQL.getInstance().getAccount(id);
+        return entityManager.getAccount(id);
     }
 
     @Override
@@ -114,7 +115,7 @@ public class EventSQL extends SQLObject implements Event {
                     this.id)
                     .stream()
                     .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
+                            entityManager::getAccount));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
