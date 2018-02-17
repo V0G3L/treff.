@@ -68,6 +68,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * TODO: doc
+     *
      * @param command
      */
     private synchronized void executeCommand(AbstractCommand command) {
@@ -81,6 +82,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * TODO: doc
+     *
      * @param request
      */
     private synchronized void sendRequest(AbstractRequest request) {
@@ -93,7 +95,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
             Log.i("Encoder", "sending Message");
             connectionHandler.sendMessage(
                     mapper.writeValueAsString(request));
-                idle = false;
+            idle = false;
         } catch (JsonProcessingException e) {
             // This would mean, that the internal request encoding is messed
             // up, which would be very bad indeed!
@@ -103,6 +105,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * TODO: doc
+     *
      * @param message
      */
     @Override
@@ -179,6 +182,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * TODO doc
+     *
      * @param code
      * @return
      */
@@ -212,6 +216,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform an edit-username request
+     *
      * @param username the new username
      */
     public synchronized void editUsername(String username) {
@@ -220,6 +225,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform an edit-email request
+     *
      * @param email the new email
      */
     public synchronized void editEmail(String email) {
@@ -228,7 +234,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform an edit-password request
-     * @param password the current password
+     *
+     * @param password    the current password
      * @param newPassword the new password
      */
     public synchronized void editPassword(String password, String newPassword) {
@@ -237,6 +244,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform a reset-password request
+     *
      * @param email the new email
      */
     public synchronized void resetPassword(String email) {
@@ -245,7 +253,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform a reset-password-confirm request
-     * @param code the validation code of the user
+     *
+     * @param code     the validation code of the user
      * @param password the new password
      */
 
@@ -255,6 +264,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     /**
      * Method to perform a delete-account request
+     *
      * @param password the password of the user
      */
     public synchronized void deleteAccount(String password) {
@@ -373,10 +383,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param timeStart The starting time of the event (unix time)
      * @param timeEnd   The finishing time of the event (unix time
      * @param position  The position of the event
-     *
      */
     public synchronized void createEvent(int groupId, String title, int creatorId, Date timeStart,
-                                        Date timeEnd, Position position) {
+                                         Date timeEnd, Position position) {
         executeCommand(new CreateEventCommand(groupId, title, creatorId, timeStart,
                 timeEnd, position, TOKEN, eventRepository));
     }
@@ -439,62 +448,50 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         executeCommand(new RemovePollCommand(groupId, pollId, TOKEN));
     }
 
-    public synchronized void sendChatMessage(int groupId, String message) {
-        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN));
-    }
-
-
-
-
     /**
      * Method to perform a send-chat-message request
      *
      * @param groupId ID of the group recieving the message
      * @param message The chat message
-     * @return true if the request was successful, false if not
      */
-    public synchronized boolean sendChatMesaage(int groupId, String message) {
-        return false;
+
+    public synchronized void sendChatMessage(int groupId, String message) {
+        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN));
     }
 
     /**
      * Metod to get information about the users groups
-     *
-     * @return The IDs of the users groups, hashed to an integer value
      */
-    public synchronized Integer[] listGroups() {
-        return null;
-    }
-
-    /**
-     * Method to get all details of a group
-     *
-     * @param groupId The ID of the group
-     * @return All details as a group object
-     */
-    public synchronized UserGroup getGroupDetails(int groupId) {
-        return null;
-    }
-
-    /**
-     * Method to get all details of an event
-     *
-     * @param eventId ID of the event
-     * @param groupId ID of the group of the event
-     * @return All details as an event object
-     */
-    public synchronized Event getEventDetails(int eventId, int groupId) {
-        return null;
+    public synchronized void listGroups() {
+        executeCommand(new ListGroupsCommad(TOKEN));
     }
 
 
-    /**
-     * Method to update the current position to the server
-     *
-     * @param location The Position to be updated
-     * @return true if the request was successful, false if not
-     */
-    public synchronized boolean updateLocation(Location location) {
-        return false;
+    public synchronized void getGroupDetails(int groupId) {
+        executeCommand(new GetGroupDetailsCommand(groupId, TOKEN));
+    }
+
+    public synchronized void getUserDetails(int userId) {
+        executeCommand(new GetUserDetailsCommand(userId, TOKEN));
+    }
+
+    public synchronized void getEventDetails(int eventId, int groupId) {
+        executeCommand(new GetEventDetailsCommand(eventId, groupId, TOKEN));
+    }
+
+    public synchronized void getPollDetails(int pollId, int groupId) {
+        executeCommand(new GetPollDetailsCommand(pollId, groupId, TOKEN));
+    }
+
+    public synchronized void requestPosition(int groupId, Date endTime) {
+        executeCommand(new RequestPositionCommand(groupId, endTime, TOKEN));
+    }
+
+    public synchronized void updatePosition(double latitude, double longitude, Date time) {
+        executeCommand(new UpdatePositionCommand(latitude, longitude, time, TOKEN));
+    }
+
+    public synchronized void publishPosition(int groupId, Date endTime) {
+        executeCommand(new PublishPositionCommand(groupId, endTime, TOKEN));
     }
 }
