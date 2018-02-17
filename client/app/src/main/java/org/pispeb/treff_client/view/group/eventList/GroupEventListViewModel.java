@@ -14,10 +14,12 @@ import org.pispeb.treff_client.view.util.ViewCall;
 public class GroupEventListViewModel extends ViewModel implements
         EventListAdapter.EventClickedListener {
 
-    SingleLiveEvent<State> state;
+    private SingleLiveEvent<State> state;
 
     private LiveData<PagedList<Event>> events;
     private final EventRepository eventRepository;
+
+    private int groupId;
 
     public GroupEventListViewModel(
             EventRepository eventRepository) {
@@ -25,6 +27,11 @@ public class GroupEventListViewModel extends ViewModel implements
         this.events = eventRepository.getEvents();
 
         this.state = new SingleLiveEvent<>();
+    }
+
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
+        this.events = eventRepository.getEventsFromGroup(groupId);
     }
 
     public void onAddClick() {

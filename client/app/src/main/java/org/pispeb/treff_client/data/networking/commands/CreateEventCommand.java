@@ -49,7 +49,8 @@ public class CreateEventCommand extends AbstractCommand {
                 output.event.timeStart,
                 output.event.timeEnd,
                 l,
-                output.event.creatorID));
+                output.event.creatorID,
+                output.groupId));
     }
 
     public static class Request extends AbstractRequest {

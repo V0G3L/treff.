@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.view.group;
 
+import android.app.Fragment;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -17,6 +18,7 @@ import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
 import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
+import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
@@ -97,10 +99,12 @@ public class GroupActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter
                 (getSupportFragmentManager());
-        adapter.addFragment(new GroupEventListFragment(),
-                getString(R.string.tabtext_events));
-        adapter.addFragment(new GroupChatFragment(),
-                getString(R.string.tabtext_chat));
+        GroupEventListFragment gef = new GroupEventListFragment();
+        GroupChatFragment gcf = new GroupChatFragment();
+        gef.setGroup(groupId);
+        gcf.setGroup(groupId);
+        adapter.addFragment(gef, getString(R.string.tabtext_events));
+        adapter.addFragment(gcf, getString(R.string.tabtext_chat));
         viewPager.setAdapter(adapter);
     }
 

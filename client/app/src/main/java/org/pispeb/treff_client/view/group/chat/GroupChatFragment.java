@@ -25,6 +25,8 @@ public class GroupChatFragment extends Fragment {
     private FragmentGroupChatBinding binding;
     private GroupChatAdapter adapter;
 
+    private int groupId;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -39,7 +41,7 @@ public class GroupChatFragment extends Fragment {
 
 
         //set groupID
-        vm.setGroupId(((GroupActivity) getActivity()).getGroupId());
+        vm.setGroup(groupId);
 
         vm.getMessages().observe(this, messages -> {
             adapter.setList(messages);
@@ -66,5 +68,9 @@ public class GroupChatFragment extends Fragment {
             default:
                 Log.e("Chat", "Illegal VM State");
         }
+    }
+
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
     }
 }

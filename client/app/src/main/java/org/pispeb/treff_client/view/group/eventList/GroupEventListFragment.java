@@ -21,6 +21,9 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class GroupEventListFragment extends Fragment {
 
+    private GroupEventListViewModel vm;
+    private int groupId;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -29,12 +32,14 @@ public class GroupEventListFragment extends Fragment {
         // inflate layout
         final FragmentGroupEventsBinding binding = FragmentGroupEventsBinding
                 .inflate(inflater, container, false);
-        GroupEventListViewModel vm = ViewModelProviders.of(this,
+        vm = ViewModelProviders.of(this,
                 ViewModelFactory.getInstance(getContext())).get
                 (GroupEventListViewModel.class);
         final EventListAdapter adapter = new EventListAdapter(vm);
 
         binding.setVm(vm);
+
+        vm.setGroup(groupId);
 
         vm.getState().observe(this, state -> callback(state));
 
@@ -63,5 +68,7 @@ public class GroupEventListFragment extends Fragment {
         }
     }
 
-
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
+    }
 }

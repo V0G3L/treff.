@@ -35,15 +35,11 @@ public interface EventDao {
     @Delete
     void deleteEvents(List<Event> events);
 
-//    @Query("SELECT * FROM event INNER JOIN usergroup " +
-//            "ON usergroup.event = usergroup.event " +
-//            "WHERE usergroup.groupID = :g.groupID")
-//    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<UserGroup> g);
+    @Query("SELECT * FROM event WHERE groupId = :g")
+    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<Integer> g);
 
-    @Query("SELECT * FROM event INNER JOIN usergroup " +
-            "ON usergroup.event = usergroup.event " +
-            "WHERE usergroup.groupID = :g.groupId")
-    DataSource.Factory<Integer, Event> getEventsFromGroup(UserGroup g);
+    @Query("SELECT * FROM event WHERE groupId = :groupId")
+    DataSource.Factory<Integer, Event> getEventsFromGroup(int groupId);
 
 
     @Update

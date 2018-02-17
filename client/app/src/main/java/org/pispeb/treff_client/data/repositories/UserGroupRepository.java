@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 public class UserGroupRepository {
     private UserGroupDao userGroupDao;
@@ -72,7 +73,8 @@ public class UserGroupRepository {
             //add group
             userGroupDao.save(group);
             //add yourself to the group
-            userGroupDao.save(new GroupMembership(user, group.getGroupId()));
+            //TODO uncomment!!!
+//            userGroupDao.save(new GroupMembership(user, group.getGroupId()));
         });
     }
 
@@ -108,6 +110,8 @@ public class UserGroupRepository {
 
     public void addGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
+            Log.i("AddGroupMember",
+                    "group: " + groupId + " member: " + members[i]);
             userGroupDao.save(new GroupMembership(groupId, members[i]));
         }
     }

@@ -53,7 +53,7 @@ public class GroupChatViewModel extends ViewModel {
      * Sets the group ID and updates the messages
      * @param groupId
      */
-    public void setGroupId(int groupId) {
+    public void setGroup(int groupId) {
         this.groupId = groupId;
         messages = chatRepository.getMessagesByGroupId(groupId);
     }

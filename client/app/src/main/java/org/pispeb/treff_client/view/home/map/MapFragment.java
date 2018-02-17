@@ -283,7 +283,7 @@ public class MapFragment extends Fragment {
         UserGroup[] groups = new UserGroup[groupList.size()];
         groupList.toArray(groups);
         // Set of active groups
-        Set<UserGroup> activeGroups = vm.getActiveGroups();
+        Set<Integer> activeGroups = vm.getActiveGroups();
         // Groupnames displayed in dialog
         String[] names = new String[groupList.size()];
         // boolean for which groups are currently shown
@@ -308,9 +308,9 @@ public class MapFragment extends Fragment {
                         UserGroup group = groups[which];
                         // set corresponding group to be (un)active
                         if (isChecked) {
-                            activeGroups.add(group);
+                            activeGroups.add(group.getGroupId());
                         } else {
-                            activeGroups.remove(group);
+                            activeGroups.remove(group.getGroupId());
                         }
                     }
                 });

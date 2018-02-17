@@ -46,7 +46,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private LiveData<PagedList<Event>> events;
     private LiveData<List<UserGroup>> groups;
 
-    private Set<UserGroup> activeGroups;
+    private Set<Integer> activeGroups;
 
     private SingleLiveEvent<State> state;
 
@@ -106,11 +106,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return groups;
     }
 
-    public Set<UserGroup> getActiveGroups() {
+    public Set<Integer> getActiveGroups() {
         return activeGroups;
     }
 
-    public void setActiveGroups(Set<UserGroup> activeGroups) {
+    public void setActiveGroups(Set<Integer> activeGroups) {
         this.activeGroups = activeGroups;
         events = eventRepository.getEventsFromGroups(activeGroups);
     }

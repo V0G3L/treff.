@@ -19,11 +19,13 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 /**
- * {@link Event} repository serving as a bridge between ViewModels and local data/network requests
+ * {@link Event} repository serving as a bridge between ViewModels and local
+ * data/network requests
  */
 public class EventRepository {
 
@@ -33,11 +35,13 @@ public class EventRepository {
 
     /**
      * Creates a new {@link EventRepository}
-     * @param eventDao the eventDao
-     * @param encoder the requestEncoder
+     *
+     * @param eventDao          the eventDao
+     * @param encoder           the requestEncoder
      * @param backgroundHandler the backgroundHandler
      */
-    public EventRepository(EventDao eventDao, RequestEncoder encoder, Handler backgroundHandler) {
+    public EventRepository(EventDao eventDao, RequestEncoder encoder,
+                           Handler backgroundHandler) {
         this.eventDao = eventDao;
         this.encoder = encoder;
         this.backgroundHandler = backgroundHandler;
@@ -45,6 +49,7 @@ public class EventRepository {
 
     /**
      * Returns a {@link PagedList} of all {@link Event}s
+     *
      * @return the {@link PagedList} of {@link Event}s
      */
     public LiveData<PagedList<Event>> getEvents() {
@@ -53,14 +58,29 @@ public class EventRepository {
     }
 
     /**
-     * Returns a {@link PagedList} of {@link Event}s of a {@link Set} of {@link org.pispeb.treff_client.data.entities.UserGroup}s
-     * @param {@link Set} of {@link org.pispeb.treff_client.data.entities.UserGroup}s
+     * Returns a {@link PagedList} of {@link Event}s of a {@link Set} of
+     * {@link org.pispeb.treff_client.data.entities.UserGroup}s
+     *
+     * @param idSet{@link Set} of ids of
+     *          {@link org.pispeb.treff_client.data.entities.UserGroup}s
      * @return {@link PagedList} of {@link Event}s
      */
-    public LiveData<PagedList<Event>> getEventsFromGroups(Set<UserGroup> g) {
-        return null;//new LivePagedListBuilder<>(eventDao.getEventsFromGroups
-        // (g),
-//                30).build();
+    public LiveData<PagedList<Event>> getEventsFromGroups(Set<Integer> idSet) {
+        return new LivePagedListBuilder<>(eventDao.getEventsFromGroups(idSet),
+                30).build();
+    }
+
+    /**
+     * Returns a {@link PagedList} of {@link Event}s of a
+     * {@link org.pispeb.treff_client.data.entities.UserGroup}
+     *
+     * @param g id of {@link org.pispeb.treff_client.data.entities.UserGroup}
+     * @return {@link PagedList} of {@link Event}s
+     */
+    public LiveData<PagedList<Event>> getEventsFromGroup(int groupId) {
+        return new LivePagedListBuilder<>(
+                eventDao.getEventsFromGroup(groupId), 30)
+                .build();
     }
 
     //TODO: remove or doc
@@ -70,6 +90,7 @@ public class EventRepository {
 
     /**
      * Adds a new {@link Event}
+     *
      * @param event the event to be added
      */
     public void addEvent(Event event) {
@@ -83,7 +104,7 @@ public class EventRepository {
     }
 
     public void delete(int eventId) {
-        eventDao.delete(new Event(eventId, null, null, null, null, 0));
+        eventDao.delete(new Event(eventId, null, null, null, null, 0, 0));
     }
 
     public void requestAddEvent(int groupId, String name, Date start,

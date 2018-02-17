@@ -39,7 +39,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int[] members, String token) {
-            super("requestAddUser-group-members");
+            super("add-group-members");
             this.groupId = groupId;
             this.members = members;
             this.token = token;

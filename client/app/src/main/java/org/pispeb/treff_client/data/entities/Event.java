@@ -21,19 +21,22 @@ public class Event extends Occasion {
     private Date end;
     private Location location;
     private int creator;
+    private int groupId;
 
     public Event(int id,
                  String name,
                  Date start,
                  Date end,
                  Location location,
-                 int creator) {
+                 int creator,
+                 int groupId) {
         this.id = id;
         this.name = name;
         this.start = start;
         this.end = end;
         this.location = location;
         this.creator = creator;
+        this.groupId = groupId;
     }
 
     public int getId() {
@@ -78,6 +81,14 @@ public class Event extends Occasion {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override
