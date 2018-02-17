@@ -10,8 +10,6 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
-import java.util.Date;
-
 public class GroupChatViewModel extends ViewModel {
 
     private int groupId;
@@ -33,7 +31,7 @@ public class GroupChatViewModel extends ViewModel {
 
     public void onSendClick() {
         if (!currentMessage.equals("")) {
-            chatRepository.requestAddMessage(groupId, currentMessage);
+            chatRepository.requestSendMessage(groupId, currentMessage);
             currentMessage = "";
             state.postValue(new State(ViewCall.UPDATE_VIEW, 0));
         }

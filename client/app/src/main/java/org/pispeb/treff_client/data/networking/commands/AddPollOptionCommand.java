@@ -55,7 +55,7 @@ public class AddPollOptionCommand extends AbstractCommand {
     public static class Response extends AbstractResponse {
         public final int id;
 
-        public Response(int id) {
+        public Response(@JsonProperty("id")int id) {
             this.id = id;
         }
     }

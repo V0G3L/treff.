@@ -22,9 +22,11 @@ public class SendChatMessageCommand extends AbstractCommand {
     private ChatRepository chatRepository;
     private Request output;
 
-    public SendChatMessageCommand(int groupId, String message, String token) {
+    public SendChatMessageCommand(int groupId, String message, String token,
+                                  ChatRepository chatRepository) {
         super(Response.class);
         output = new Request(groupId, message, token);
+        this.chatRepository = chatRepository;
     }
 
     @Override

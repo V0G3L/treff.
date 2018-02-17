@@ -58,7 +58,7 @@ public class ChatRepository {
                 30).build();
     }
 
-    public void requestAddMessage(int groupId, String message) {
+    public void requestSendMessage(int groupId, String message) {
         encoder.sendChatMessage(groupId, message);
     }
 }

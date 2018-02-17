@@ -7,9 +7,12 @@ import android.arch.paging.PagedList;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
+
+import java.util.List;
 
 
 /**
@@ -20,12 +23,16 @@ public class GroupViewModel extends ViewModel
         implements MemberListAdapter. MemberClickedListener{
     private LiveData<UserGroup> group;
     private LiveData<PagedList<User>> members;
+
     private UserGroupRepository userGroupRepository;
+    private UserRepository userRepository;
 
     private SingleLiveEvent<State> state;
 
-    public GroupViewModel(UserGroupRepository userGroupRepository) {
+    public GroupViewModel(UserGroupRepository userGroupRepository,
+                          UserRepository userRepository) {
         this.userGroupRepository = userGroupRepository;
+        this.userRepository = userRepository;
         this.state = new SingleLiveEvent<>();
     }
 
@@ -42,8 +49,18 @@ public class GroupViewModel extends ViewModel
         return members;
     }
 
-    public void addMember() {
+    public LiveData<List<User>> getFriends() {
+        return userRepository.getFriendsAsList();
+    }
+
+    public void onAddMemberClick() {
         //TODO add member dialog (?)
+        state.postValue(new State(ViewCall.SHOW_ADD_MEMBER_DIALOG, 0));
+    }
+
+    public void addMember(int userId) {
+        userGroupRepository.requestAddMembersToGroup(
+                group.getValue().getGroupId(), userId);
     }
 
     public void leave() {

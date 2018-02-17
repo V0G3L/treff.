@@ -47,7 +47,11 @@ public class GetContactListCommand extends AbstractCommand {
         @JsonProperty("outgoing-requests")
         public final int[] outgoingRequests;
 
-        public Response(int[] contacts, int[] incomingRequests, int[] outgoingRequests) {
+        public Response(@JsonProperty("contacts") int[] contacts,
+                        @JsonProperty("incoming-requests")
+                                int[] incomingRequests,
+                        @JsonProperty("outgoing-requests")
+                                int[] outgoingRequests) {
             this.contacts = contacts;
             this.incomingRequests = incomingRequests;
             this.outgoingRequests = outgoingRequests;

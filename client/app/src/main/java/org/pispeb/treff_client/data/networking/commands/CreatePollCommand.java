@@ -52,7 +52,7 @@ public class CreatePollCommand extends AbstractCommand{
 
         public final int id;
 
-        public Response(int id) {
+        public Response(@JsonProperty("id")int id) {
             this.id = id;
         }
     }

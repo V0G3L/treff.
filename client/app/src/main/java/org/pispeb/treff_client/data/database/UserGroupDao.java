@@ -46,17 +46,17 @@ public interface UserGroupDao {
     @Delete
     void delete(GroupMembership groupMembership);
 
-    @Query("SELECT usergroup.groupID, name " +
+    @Query("SELECT usergroup.groupId, name " +
             "FROM groupmembership INNER JOIN usergroup " +
-            "ON groupmembership.groupID = usergroup.groupID " +
-            "WHERE groupmembership.userID = :userID")
-    DataSource.Factory<Integer, UserGroup> getGroupsByUser(int userID);
+            "ON groupmembership.groupId = usergroup.groupId " +
+            "WHERE groupmembership.userId = :userId")
+    DataSource.Factory<Integer, UserGroup> getGroupsByUser(int userId);
 
-    @Query("SELECT user.userID, username, isFriend, isBlocked " +
+    @Query("SELECT user.userId, user.username, user.isFriend, user.isBlocked " +
             "FROM groupmembership INNER JOIN user " +
-            "ON groupmembership.userID = user.userID " +
-            "WHERE groupmembership.groupID = :groupID")
-    DataSource.Factory<Integer, User> getUsersByGroup(int groupID);
+            "ON groupmembership.userId = user.userId " +
+            "WHERE groupmembership.groupId = :groupId")
+    DataSource.Factory<Integer, User> getUsersByGroup(int groupId);
 
 
     @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")

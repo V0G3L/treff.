@@ -35,6 +35,10 @@ public class UserRepository {
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
     }
 
+    public LiveData<List<User>> getFriendsAsList() {
+        return userDao.getFriendsAsList();
+    }
+
     public void setIsBlocked(int userId, boolean isBlocked) {
         backgroundHandler.post(() -> {
             userDao.setBlocked(userId, isBlocked);

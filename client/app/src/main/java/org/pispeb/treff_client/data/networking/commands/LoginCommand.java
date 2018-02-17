@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.view.home.TreffPunkt;
 
@@ -57,7 +59,8 @@ public class LoginCommand extends AbstractCommand{
         public final String token;
         public final int id;
 
-        public Response(String token, int id) {
+        public Response(@JsonProperty("token") String token,
+                        @JsonProperty("id") int id) {
             this.token = token;
             this.id = id;
         }

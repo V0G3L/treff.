@@ -110,7 +110,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupChatViewModel(chatRepository);
         } else if (GroupViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new GroupViewModel(userGroupRepository);
+            return (T) new GroupViewModel(userGroupRepository, userRepository);
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupEventListViewModel(eventRepository);
         } else if (LoginViewModel.class.isAssignableFrom(modelClass)) {

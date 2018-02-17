@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.descriptions.UsergroupCreateDescription;
 
@@ -49,7 +51,7 @@ public class CreateGroupCommand extends AbstractCommand {
     public static class Response extends AbstractResponse {
 
         public final int id;
-        public Response(int id) {
+        public Response(@JsonProperty("id") int id) {
             this.id = id;
         }
     }

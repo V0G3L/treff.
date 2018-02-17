@@ -110,6 +110,11 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      */
     @Override
     public synchronized void messageReceived(String message) {
+        // no commands waiting for response
+        if (commands.isEmpty()) {
+            //should never happen as long as server is working correctly
+            return;
+        }
         AbstractCommand c = commands.poll();
         try {
             mapper.readValue(message, ErrorResponse.class);
@@ -451,12 +456,13 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     /**
      * Method to perform a send-chat-message request
      *
-     * @param groupId ID of the group recieving the message
+     * @param groupId ID of the group receiving the message
      * @param message The chat message
      */
 
     public synchronized void sendChatMessage(int groupId, String message) {
-        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN));
+        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN,
+                chatRepository));
     }
 
     /**

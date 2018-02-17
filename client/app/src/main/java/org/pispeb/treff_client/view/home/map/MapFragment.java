@@ -121,7 +121,6 @@ public class MapFragment extends Fragment {
         vm.getUserLocation().observe(this, userLocation ->
                 updateUserLocation(userLocation));
 
-
         vm.getFriends().observe(this, friends ->
                 updateContactLocations(friends));
 
