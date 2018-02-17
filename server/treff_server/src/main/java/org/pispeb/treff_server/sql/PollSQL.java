@@ -43,38 +43,29 @@ public class PollSQL extends SQLObject implements Poll {
 
     @Override
     public Map<Integer, PollOption> getPollOptions() {
-        try {
-            return database.getQueryRunner().query(
-                    "SELECT id FROM ? WHERE pollid=?;",
-                    new ColumnListHandler<Integer>(),
-                    TableName.POLLOPTIONS,
-                    this.id)
-                    .stream()
-                    .collect(Collectors.toMap(Function.identity(),
-                            entityManager::getPollOption));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT id FROM %s WHERE pollid=?;",
+                TableName.POLLOPTIONS,
+                new ColumnListHandler<Integer>(),
+                this.id)
+                .stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        entityManager::getPollOption));
     }
 
     @Override
     public PollOption addPollOption(Position position, Date timeStart, Date
             timeEnd) {
-        int id;
-        try {
-            id = database.getQueryRunner().insert(
-                    "INSERT INTO ?(latitude,longitude,timestart,timeend," +
-                            "pollid) VALUES (?,?,?,?,?);",
-                    new ScalarHandler<Integer>(),
-                    TableName.POLLOPTIONS,
-                    position.latitude,
-                    position.longitude,
-                    timeStart,
-                    timeEnd,
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        int id = database.insert(
+                "INSERT INTO %s(latitude,longitude,timestart,timeend," +
+                        "pollid) VALUES (?,?,?,?,?);",
+                TableName.POLLOPTIONS,
+                new IDHandler(),
+                position.latitude,
+                position.longitude,
+                timeStart,
+                timeEnd,
+                this.id);
         return entityManager.getPollOption(id);
     }
 
@@ -163,14 +154,10 @@ public class PollSQL extends SQLObject implements Poll {
                     -> pO.getReadWriteLock().writeLock().unlock());
         }
 
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE id=?;",
-                    TableName.POLLS,
-                    id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE id=?;",
+                TableName.POLLS,
+                id);
         deleted = true;
     }
 

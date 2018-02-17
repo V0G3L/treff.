@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands.io;
 
-import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 

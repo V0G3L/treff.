@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.descriptions.UsergroupCreateDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -11,7 +12,6 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,8 +23,8 @@ import java.util.TreeSet;
  */
 public class CreateGroupCommand extends AbstractCommand {
 
-    public CreateGroupCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public CreateGroupCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

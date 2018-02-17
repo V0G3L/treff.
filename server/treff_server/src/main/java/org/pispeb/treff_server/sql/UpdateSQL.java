@@ -30,7 +30,7 @@ public class UpdateSQL extends SQLObject implements Update {
 
     @Override
     public UpdateType getType()  {
-        return UpdateType.fromString((String) getProperty("type"));
+        return UpdateType.valueOf((String) getProperty("type"));
     }
 
     @Override
@@ -72,14 +72,10 @@ public class UpdateSQL extends SQLObject implements Update {
     public void delete() {
         assert getAffectedAccounts().size() == 0;
 
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE id=?;",
-                    TableName.UPDATES.toString(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE id=?;",
+                TableName.UPDATES,
+                this.id);
 
         deleted = true;
     }

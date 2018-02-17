@@ -1,14 +1,18 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
-
 import org.pispeb.treff_server.commands.descriptions.PollOptionEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Poll;
+import org.pispeb.treff_server.interfaces.PollOption;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
@@ -20,8 +24,8 @@ import java.util.Date;
  */
 public class EditPollOptionCommand extends AbstractCommand {
 
-    public EditPollOptionCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public EditPollOptionCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

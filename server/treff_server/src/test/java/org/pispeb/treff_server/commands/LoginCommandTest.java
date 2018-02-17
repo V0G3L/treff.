@@ -16,11 +16,11 @@ public class LoginCommandTest extends MultipleUsersTest {
 
     @Test
     public void execute() {
-        LoginCommand loginCommand = new LoginCommand(accountManager);
+        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
         inputBuilder.add("user", userNames[1]);
         inputBuilder.add("pass", userPasswords[1]);
         JsonObject output
-                = toJsonObject(loginCommand.execute(buildInput(), mapper));
+                = toJsonObject(loginCommand.execute(buildInput()));
 
         Assert.assertTrue(output.containsKey("token"));
         Assert.assertTrue(output.containsKey("id"));

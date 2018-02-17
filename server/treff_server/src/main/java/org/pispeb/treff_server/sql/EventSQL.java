@@ -80,59 +80,43 @@ public class EventSQL extends SQLObject implements Event {
 
     @Override
     public void addParticipant(Account participant) {
-        try {
-            database.getQueryRunner().insert(
-                    "INSERT INTO ?(accountid,eventid) VALUES (?,?);",
-                    (rs -> null),
-                    TableName.EVENTPARTICIPATIONS.toString(),
-                    participant.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.insert(
+                "INSERT INTO %s(accountid,eventid) VALUES (?,?);",
+                TableName.EVENTPARTICIPATIONS,
+                (rs -> null),
+                participant.getID(),
+                this.id);
     }
 
     @Override
     public void removeParticipant(Account participant) {
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE accountid=? AND eventid=?;",
-                    TableName.EVENTPARTICIPATIONS.toString(),
-                    participant.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE accountid=? AND eventid=?;",
+                TableName.EVENTPARTICIPATIONS,
+                participant.getID(),
+                this.id);
     }
 
     @Override
     public Map<Integer, Account> getAllParticipants() {
-        try {
-            return database.getQueryRunner().query(
-                    "SELECT accountid FROM ? WHERE eventid=?;",
-                    new ColumnListHandler<Integer>(),
-                    TableName.EVENTPARTICIPATIONS.toString(),
-                    this.id)
-                    .stream()
-                    .collect(Collectors.toMap(Function.identity(),
-                            entityManager::getAccount));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT accountid FROM %s WHERE eventid=?;",
+                TableName.EVENTPARTICIPATIONS,
+                new ColumnListHandler<Integer>(),
+                this.id)
+                .stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        entityManager::getAccount));
     }
 
     @Override
     public void delete() {
         // remove all participants
         getAllParticipants().values().forEach(this::removeParticipant);
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE id=?;",
-                    TableName.EVENTS,
-                    id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE id=?;",
+                TableName.EVENTS,
+                id);
         deleted = true;
     }
 

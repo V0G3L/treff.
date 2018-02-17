@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.descriptions.UsergroupEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
@@ -19,8 +20,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class EditGroupCommand extends AbstractCommand {
 
-    public EditGroupCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public EditGroupCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, CommandInput.class, mapper);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -17,8 +18,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class RemoveEventCommand extends AbstractCommand {
 
-    public RemoveEventCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public RemoveEventCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

@@ -315,11 +315,6 @@ public class SQLDatabase {
         return entityManagerSQL;
     }
 
-    @Deprecated
-    QueryRunner getQueryRunner() {
-        return queryRunner;
-    }
-
     /**
      * Like {@link QueryRunner#query(String, ResultSetHandler, Object...)}
      * but only supports simple queries on a single table, e.g. no

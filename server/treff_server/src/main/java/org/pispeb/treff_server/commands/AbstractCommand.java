@@ -26,6 +26,7 @@ public abstract class AbstractCommand {
 
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
+    private final ObjectMapper mapper;
 
     private Set<Lock> acquiredLocks = new HashSet<>();
 
@@ -40,15 +41,17 @@ public abstract class AbstractCommand {
      * {@link #executeInternal(JsonObject, int)}. For commands that
      * don't require login, this parameter will instead be <code>null</code>.
      * </p>
-     *
-     * @param accountManager The AccountManager representing the database to
+     *  @param accountManager The AccountManager representing the database to
      *                       operate on
      * @param expectedInput
+     * @param mapper
      */
     protected AbstractCommand(AccountManager accountManager,
-                              Class<? extends CommandInput> expectedInput) {
+                              Class<? extends CommandInput> expectedInput,
+                              ObjectMapper mapper) {
         this.accountManager = accountManager;
         this.expectedInput = expectedInput;
+        this.mapper = mapper;
     }
 
     /**
@@ -60,7 +63,7 @@ public abstract class AbstractCommand {
      * @return A {@link } object representing the outcome of the
      * command execution
      */
-    public String execute(String input, ObjectMapper mapper) {
+    public String execute(String input) {
 
         // try to construct input object
         // if that fails, return a syntax error message

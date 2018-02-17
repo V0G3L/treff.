@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -14,8 +15,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class SendContactRequestCommand extends AbstractCommand {
 
-    public SendContactRequestCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public SendContactRequestCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -75,7 +76,5 @@ public class SendContactRequestCommand extends AbstractCommand {
     }
 
     public static class Output extends CommandOutput {
-        Output() {
-        }
     }
 }

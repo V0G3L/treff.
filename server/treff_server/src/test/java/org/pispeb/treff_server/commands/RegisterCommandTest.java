@@ -14,10 +14,11 @@ public class RegisterCommandTest extends CommandTest {
 
     @Test
     public void execute() {
-        RegisterCommand registerCommand = new RegisterCommand(accountManager);
+        RegisterCommand registerCommand
+                = new RegisterCommand(accountManager, mapper);
         inputBuilder.add("user", "w4rum");
         inputBuilder.add("pass", "D4nz1g0rW4r");
-        String outputString = registerCommand.execute(buildInput(), mapper);
+        String outputString = registerCommand.execute(buildInput());
         JsonObject output = toJsonObject(outputString);
 
         Assert.assertTrue(output.containsKey("id"));

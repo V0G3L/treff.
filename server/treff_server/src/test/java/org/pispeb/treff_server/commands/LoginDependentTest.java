@@ -2,9 +2,8 @@ package org.pispeb.treff_server.commands;
 
 
 import org.junit.Before;
-import org.pispeb.treff_server.commands.CommandTest;
-import org.pispeb.treff_server.commands.RegisterCommand;
 
+import javax.json.Json;
 import javax.json.JsonObject;
 
 public abstract class LoginDependentTest extends CommandTest {
@@ -21,7 +20,7 @@ public abstract class LoginDependentTest extends CommandTest {
     @Before
     public void register() {
         RegisteredUserData registeredUserData = registerAccount(
-                ownUsername,ownPassword);
+                ownUsername, ownPassword);
         token = registeredUserData.token;
         ownID = registeredUserData.id;
 
@@ -31,12 +30,13 @@ public abstract class LoginDependentTest extends CommandTest {
     protected RegisteredUserData registerAccount(String username,
                                                  String password) {
 
-        String outputString = new RegisterCommand(accountManager).execute(
-                String.format("{\"cmd\": \"register\"," +
-                        "\"user\": \"%s\"," +
-                        " \"pass\": \"%s\"}", username, password),
-                mapper);
-        JsonObject output = toJsonObject(outputString);
+        RegisterCommand registerCommand
+                = new RegisterCommand(accountManager, mapper);
+        JsonObject output = runCommand(registerCommand,
+                Json.createObjectBuilder()
+                        .add("cmd", "register")
+                        .add("user", username)
+                        .add("pass", password));
         return new RegisteredUserData(
                 output.getString("token"),
                 output.getInt("id"));

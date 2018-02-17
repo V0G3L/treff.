@@ -3,8 +3,8 @@ package org.pispeb.treff_server.networking;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.pispeb.treff_server.commands.AbstractCommand;
-import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.exceptions.RequestHandlerAlreadyRan;
 import org.pispeb.treff_server.interfaces.AccountManager;
@@ -19,7 +19,7 @@ public class RequestHandler {
     private static final ObjectMapper mapper = new ObjectMapper();
     private final String requestString;
     private final AccountManager accountManager;
-    private final boolean didRun = false;
+    private boolean didRun = false;
 
     /**
      * Creates a RequestHandler for a JSON-encoded requestString.
@@ -33,12 +33,6 @@ public class RequestHandler {
     }
 
     /**
-     * Decodes and executes the requestString
-     * and returns either a JSON-encoded response or
-     * {@link #PERSISTENT_CONNECTION_REQUEST_PREFIX} followed by the user id
-     * if a requestString for a
-     * {@link org.pispeb.treff_server.update_notifier.PersistentConnection}
-     * was made.
      * May only be run once on the same {@link RequestHandler}.
      *
      * @return JSON-encoded response
@@ -46,9 +40,14 @@ public class RequestHandler {
      *                                  was handled via {@link #run()}
      */
     public Response run() throws RequestHandlerAlreadyRan {
+        if (didRun)
+            throw new RequestHandlerAlreadyRan();
+        didRun = true;
+
         // Do not fail on unknown properties. Important because we're only
         // extracting the cmd for now.
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         Request request = null;
         try {
@@ -74,7 +73,7 @@ public class RequestHandler {
             }
         }
 
-        String outputString = command.execute(requestString, mapper);
+        String outputString = command.execute(requestString);
         return new Response(outputString);
     }
 }

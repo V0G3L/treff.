@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -18,8 +19,8 @@ import java.util.Date;
  */
 public class UpdatePositionCommand extends AbstractCommand {
 
-    public UpdatePositionCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public UpdatePositionCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.descriptions.EventEditDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
@@ -13,8 +14,6 @@ import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Date;
-
 //TODO needs to be tested
 
 /**
@@ -22,8 +21,8 @@ import java.util.Date;
  */
 public class EditEventCommand extends AbstractCommand {
 
-    public EditEventCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public EditEventCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

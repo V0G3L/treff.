@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -20,8 +21,8 @@ import java.util.TreeSet;
  */
 public class AddGroupMembersCommand extends AbstractCommand {
 
-    public AddGroupMembersCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public AddGroupMembersCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, CommandInput.class, mapper);
     }
 
     @Override

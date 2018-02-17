@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
@@ -18,8 +19,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class GetUserDetailsCommand extends AbstractCommand {
 
-    public GetUserDetailsCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public GetUserDetailsCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, CommandInput.class, mapper);
     }
 
     @Override

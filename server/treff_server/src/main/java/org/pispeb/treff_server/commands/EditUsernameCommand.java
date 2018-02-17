@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
@@ -17,8 +18,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
  */
 public class EditUsernameCommand extends AbstractCommand {
 
-    public EditUsernameCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public EditUsernameCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, CommandInput.class, mapper);
         throw new UnsupportedOperationException();
     }
 

@@ -8,7 +8,6 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
 
 import java.io.IOException;
-import java.util.Collection;
 
 public class EventCompleteSerializer extends JsonSerializer<Event> {
 

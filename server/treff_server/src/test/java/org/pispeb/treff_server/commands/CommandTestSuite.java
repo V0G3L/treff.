@@ -11,6 +11,7 @@ import org.junit.runners.Suite;
         GetPollDetailsCommandTest.class,
         GetUserIdCommandTest.class,
         LoginCommandTest.class,
-        RegisterCommandTest.class
+        RegisterCommandTest.class,
+        SendContactRequestCommandTest.class
 })
 public class CommandTestSuite { }

@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.interfaces.AccountManager;
@@ -9,8 +10,8 @@ import org.pispeb.treff_server.interfaces.AccountManager;
  */
 public class EditPermissionsCommand extends AbstractCommand {
 
-    public EditPermissionsCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public EditPermissionsCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, CommandInput.class, mapper);
 		throw new UnsupportedOperationException();
     }
 

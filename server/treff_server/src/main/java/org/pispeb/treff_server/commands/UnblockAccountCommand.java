@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
@@ -12,8 +13,8 @@ import org.pispeb.treff_server.interfaces.AccountManager;
  */
 public class UnblockAccountCommand extends ManageBlockCommand {
 
-    public UnblockAccountCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public UnblockAccountCommand(AccountManager accountManager, ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

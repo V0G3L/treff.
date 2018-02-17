@@ -3,7 +3,6 @@ package org.pispeb.treff_server.commands.descriptions;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Position;
 
-
 import java.util.Date;
 
 /**
