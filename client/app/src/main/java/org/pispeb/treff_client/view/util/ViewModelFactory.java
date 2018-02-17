@@ -127,6 +127,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                         "is not supported.");
     }
 
+    /**
+     * Closes the {@link RequestEncoder}s connection
+     */
     public static void closeConnection() {
         if (INSTANCE != null) {
             if (INSTANCE.encoder != null) {

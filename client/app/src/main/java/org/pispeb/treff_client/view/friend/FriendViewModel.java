@@ -11,6 +11,9 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * {@link ViewModel} providing a single other {@link User}s data to the UI
+ */
 public class FriendViewModel extends ViewModel {
 
     private final UserGroupRepository userGroupRepository;

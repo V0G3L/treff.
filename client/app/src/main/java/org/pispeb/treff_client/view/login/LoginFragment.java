@@ -16,6 +16,9 @@ import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
+/**
+ * {@link Fragment} to log into your treff. account
+ */
 public class LoginFragment extends Fragment{
 
     private FragmentLoginBinding binding;

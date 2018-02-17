@@ -21,6 +21,9 @@ import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
 
+/**
+ * Abstract Activity providing top level navigation through a navigation drawer
+ */
 public abstract class NavigationActivity extends AppCompatActivity {
 
     protected Toolbar toolbar;
@@ -78,6 +81,9 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fixes the navigation drawer's highlighting
+     */
     abstract protected void setDrawerSelected();
 
     protected void setupToolbar(Toolbar toolbar, int title) {

@@ -13,6 +13,12 @@ import java.util.Date;
 
 public class GPSProviderManager {
 
+    /**
+     * TODO: doc
+     * @param context
+     * @param groupId
+     * @param endOfTransmission
+     */
     public static void addRequestToService(Context context, int groupId,
                                             Date endOfTransmission) {
         Intent intent = new Intent(context, GPSProvider.class);
@@ -23,6 +29,12 @@ public class GPSProviderManager {
         startService(context, intent);
     }
 
+    /**
+     * TODO: doc
+     * @param context
+     * @param groupId
+     * @param endOfTransmission
+     */
     public static void removeRequestFromService(Context context, int groupId,
                                            Date endOfTransmission) {
         Intent intent = new Intent(context, GPSProvider.class);

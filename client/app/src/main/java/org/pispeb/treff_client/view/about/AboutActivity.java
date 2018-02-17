@@ -7,6 +7,10 @@ import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityAboutBinding;
 import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 
+/**
+ * {@link android.support.v7.app.AppCompatActivity} showing information about treff.
+ * and providing access to the top level navigation
+ */
 public class AboutActivity extends NavigationActivity {
 
     private ActivityAboutBinding binding;

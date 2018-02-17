@@ -8,6 +8,9 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
+/**
+ * {@link ViewModel} providing the {@link LoginFragment}'s data
+ */
 public class LoginViewModel extends ViewModel {
 
     private SingleLiveEvent<State> state;

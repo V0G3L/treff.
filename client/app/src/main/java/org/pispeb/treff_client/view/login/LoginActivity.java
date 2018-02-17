@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import org.pispeb.treff_client.R;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login/registration
+ * by hosting a {@link LoginFragment} or a {@link RegisterFragment}
  */
-
 public class LoginActivity extends AppCompatActivity {
 
     @Override

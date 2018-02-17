@@ -83,7 +83,9 @@ public class ConnectionHandler {
         });
     }
 
-
+    /**
+     * TODO: doc
+     */
     public void run() {
 
         mRun = true;
@@ -138,9 +140,13 @@ public class ConnectionHandler {
         }
     }
 
-    //Declare the interface. The method messageReceived(String message) will
-    // must be implemented in the MyActivity
-    //class at on asynckTask doInBackground
+    //
+
+    /**
+     * Declare the interface. The method messageReceived(String message)
+     * must be implemented in the MyActivity
+     * class at on asyncTask doInBackground
+     */
     public interface OnMessageReceived {
         void messageReceived(String message);
         void restartConnection();

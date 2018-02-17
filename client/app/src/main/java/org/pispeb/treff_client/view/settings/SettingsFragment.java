@@ -5,6 +5,9 @@ import android.preference.PreferenceFragment;
 
 import org.pispeb.treff_client.R;
 
+/**
+ * Fragment showing app preferences/settings
+ */
 public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {

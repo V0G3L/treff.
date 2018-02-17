@@ -1,18 +1,15 @@
 package org.pispeb.treff_client.view.settings;
 
-import android.app.Activity;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivitySettingsBinding;
 import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 
 /**
- * Screen to change settings and preferences
+ * {@link android.support.v7.app.AppCompatActivity} showing general settings
+ * and providing access to the top level navigation
  */
 
 public class SettingsActivity extends NavigationActivity {
@@ -33,6 +30,7 @@ public class SettingsActivity extends NavigationActivity {
 
     }
 
+    @Override
     protected void setDrawerSelected() {
         frameBinding.navigation.getMenu().findItem(R.id.nav_settings).setChecked
                 (true);

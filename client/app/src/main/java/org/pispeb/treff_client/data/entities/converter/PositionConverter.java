@@ -4,7 +4,10 @@ import android.arch.persistence.room.TypeConverter;
 import android.location.Location;
 import android.location.LocationManager;
 
-
+/**
+ * Contains TypeConverters to allow conversion
+ * from {@link Location}s to {@link String}s and vice versa
+ */
 public class PositionConverter {
     @TypeConverter
     public static Location toLocation(String location) {

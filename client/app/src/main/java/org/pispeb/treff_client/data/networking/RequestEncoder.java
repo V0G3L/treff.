@@ -66,6 +66,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         this.chatRepository = chatRepository;
     }
 
+    /**
+     * TODO: doc
+     * @param command
+     */
     private synchronized void executeCommand(AbstractCommand command) {
         Log.i("Encoder", "execute Command");
         commands.add(command);
@@ -75,6 +79,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         //}
     }
 
+    /**
+     * TODO: doc
+     * @param request
+     */
     private synchronized void sendRequest(AbstractRequest request) {
         try {
             if (connectionHandler == null) {
@@ -93,6 +101,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
     }
 
+    /**
+     * TODO: doc
+     * @param message
+     */
     @Override
     public synchronized void messageReceived(String message) {
         try {
@@ -120,6 +132,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
     }
 
+    /**
+     * TODO: doc
+     */
     public static class ErrorResponse extends AbstractResponse {
         public final int error;
 
@@ -128,6 +143,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
     }
 
+    /**
+     * TODO: doc
+     */
     private class ConnectTask extends
             AsyncTask<String, String, ConnectionHandler> {
         private ConnectionHandler.OnMessageReceived listener;
@@ -147,6 +165,9 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         }
     }
 
+    /**
+     * TODO: doc
+     */
     public void closeConnection() {
         connectionHandler.stopClient();
     }
@@ -157,6 +178,11 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         new ConnectTask(this).execute();
     }
 
+    /**
+     * TODO doc
+     * @param code
+     * @return
+     */
     public Error getErrorByCode(int code) {
         for (Error e : Error.values()) {
             if (e.getCode() == code) return e;

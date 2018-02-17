@@ -1,6 +1,8 @@
 package org.pispeb.treff_client.data.entities;
 
-
+/**
+ * Superclass of {@link Event} and Poll allowing usage in the same UI components
+ */
 public abstract class Occasion {
     protected String name;
 
