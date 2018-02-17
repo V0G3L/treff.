@@ -143,7 +143,8 @@ public class GPSProvider extends Service implements LocationListener {
                 // TODO send update to server via RequestEncoder
                 Log.i("GPSProvider", currentBestLocation.toString());
                 // TODO test
-                encoder.updateLocation(currentBestLocation);
+                encoder.updatePosition(currentBestLocation.getLatitude(),
+                        currentBestLocation.getLongitude(), new Date(currentBestLocation.getTime()));
             }
         }
     }
