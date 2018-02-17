@@ -1,9 +1,13 @@
 package org.pispeb.treff_client.view.login;
 
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import org.pispeb.treff_client.view.home.TreffPunkt;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
@@ -46,9 +50,25 @@ public class LoginViewModel extends ViewModel {
 
         state.setValue(new State(ViewCall.LOGIN, 0));
 
-        //TODO Call RequestEncoder
+        SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
-        state.setValue(new State(ViewCall.SUCCESS, 0));
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+
+        pref.edit().putString("token", "").apply();
+
+        prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+
+                if(key.equals("token"))
+                    state.setValue(new State(ViewCall.SUCCESS, 0));
+
+            }
+        };
+
+        pref.registerOnSharedPreferenceChangeListener(prefListener);
+
+        //TODO call RequestEncoder
 
     }
 
