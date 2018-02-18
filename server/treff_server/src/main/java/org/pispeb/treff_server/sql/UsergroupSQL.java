@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.sql;
 
-import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
@@ -8,8 +7,9 @@ import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
+import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,11 +17,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
@@ -29,7 +27,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     private static final TableName TABLE_NAME = TableName.USERGROUPS;
 
     UsergroupSQL(int id, SQLDatabase database,
-               EntityManagerSQL entityManager, Properties config) {
+                 EntityManagerSQL entityManager, Properties config) {
         super(id, TABLE_NAME, database, entityManager, config);
     }
 
@@ -46,27 +44,40 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void addMember(Account member) {
-        // generate placeholders for all permissions
-        String placeholders = String.join(",",
+        // SQL string will contain a lot of placeholders and look like this:
+        // INSERT INTO groupmemberships(accountid, usergroupid,
+        // permission_columns...) VALUES (?,?,n*?);
+        // (n = amount of permission columns = amount of permissions)
+
+
+        // generate permission columns and n*?
+        String permissionColumns =
+                Arrays.stream(Permission.values())
+                        .map(p -> "permission_" + p.toString())
+                        .collect(Collectors.joining(","));
+        String permissionValuePlaceholders = String.join(",",
                 Collections.nCopies(Permission.values().length, "?"));
 
         // generate values for placeholders
+        //
+        // placeholders need to be matched values in the following order
+        // - accountid
+        // - usergroupid
+        // - all permission default values, same order as column names
+
         List<Object> values = new LinkedList<>();
         // permission column names
-        values.add(Arrays.stream(Permission.values())
-                .map(Permission::toString)
-                .collect(Collectors.joining(",")));
         values.add(member.getID());
         values.add(this.id);
-        // ignore resultset. If it doesn't simply state OK, then an
-        // exception is thrown anyways
+        // permission default values
+        // TODO: define permission default values, currently all true
+        values.addAll(Collections.nCopies(Permission.values().length, true));
+
         database.insert(
-                "INSERT INTO %s(accountid,usergroupid," +
-                        placeholders +
-                        ") VALUES (?,?," +
-                        placeholders +
-                        ");",
+                "INSERT INTO %s(accountid,usergroupid," + permissionColumns +
+                        ") VALUES (?,?," + permissionValuePlaceholders + ");",
                 TableName.GROUPMEMBERSHIPS,
+                // ignore resultset as no new ID is produced anyways
                 (rs) -> null,
                 values.toArray());
     }
@@ -109,17 +120,14 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Map<Integer, Account> getAllMembers() {
+    public Map<Integer, AccountSQL> getAllMembers() {
         // get ID list
-        return database.query(
+        return Collections.unmodifiableMap(database.query(
                 "SELECT accountid FROM %s WHERE usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new ColumnListHandler<Integer>(),
-                id)
-                .stream()
-                // create ID -> AccountSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<AccountSQL>(AccountSQL.class,
+                        entityManager),
+                id));
     }
 
     @Override
@@ -143,16 +151,13 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Map<Integer, Event> getAllEvents() {
-        return database.query(
+    public Map<Integer, EventSQL> getAllEvents() {
+        return Collections.unmodifiableMap(database.query(
                 "SELECT id FROM %s WHERE usergroupid=?;",
                 TableName.EVENTS,
-                new ColumnListHandler<Integer>(),
-                id)
-                .stream()
-                // create ID -> EventSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getEvent));
+                new DataObjectMapHandler<EventSQL>(EventSQL.class,
+                        entityManager),
+                id));
     }
 
     @Override
@@ -163,7 +168,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                 "INSERT INTO %s(question,creator,multichoice," +
                         "usergroupid) VALUES (?,?,?,?);",
                 TableName.POLLS,
-                new ScalarHandler<Integer>(),
+                new IDHandler(),
                 question,
                 creator,
                 multichoice,
@@ -172,16 +177,12 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Map<Integer, Poll> getAllPolls() {
-        return database.query(
+    public Map<Integer, PollSQL> getAllPolls() {
+        return Collections.unmodifiableMap(database.query(
                 "SELECT id FROM %s WHERE usergroupid=?;",
                 TableName.POLLS,
-                new ColumnListHandler<Integer>(),
-                id)
-                .stream()
-                // create ID -> PollSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getPoll));
+                new DataObjectMapHandler<>(PollSQL.class, entityManager),
+                id));
     }
 
     @Override
@@ -237,7 +238,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         // is removed. If there are still members, remove them all but don't
         // perform the actual deletion in this invocation. Removal of the last
         // member will cause this method to be invoked again.
-        Collection<Account> members = getAllMembers().values();
+        Collection<AccountSQL> members = getAllMembers().values();
         if (members.size() > 0) {
             members.forEach(this::removeMember);
         } else {

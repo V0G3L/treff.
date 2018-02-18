@@ -6,6 +6,7 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.DataObject;
@@ -14,7 +15,9 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -23,6 +26,9 @@ import java.util.function.Function;
  * TODO description
  */
 public abstract class AbstractCommand {
+
+    private static Map<String, Class<? extends AbstractCommand>>
+            availableCommands = new HashMap<>();
 
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
@@ -41,7 +47,8 @@ public abstract class AbstractCommand {
      * {@link #executeInternal(JsonObject, int)}. For commands that
      * don't require login, this parameter will instead be <code>null</code>.
      * </p>
-     *  @param accountManager The AccountManager representing the database to
+     *
+     * @param accountManager The AccountManager representing the database to
      *                       operate on
      * @param expectedInput
      * @param mapper
@@ -170,12 +177,14 @@ public abstract class AbstractCommand {
     }
 
     // TODO is this even working?
+
     /**
      * compares a given time to the system time with a tolerance
+     *
      * @param time the time to compare with the system time
      * @return -1   , if time < SysTime - tolerance;
-     *          0   , if SysTime - tolerance <= time <= SysTime + tolerance;
-     *          1   , if time > SysTime + tolerance;
+     * 0   , if SysTime - tolerance <= time <= SysTime + tolerance;
+     * 1   , if time > SysTime + tolerance;
      */
     protected static int checkTime(Date time) {
         long tolerance = 0; //TODO need a tolerance
@@ -185,6 +194,20 @@ public abstract class AbstractCommand {
         if (time.before(minusTolerance)) return -1;
         else if (plusTolerance.before(time)) return 1;
         return 0;
+    }
+
+    public static void registerCommand(String stringIdentifier,
+                                       Class<? extends AbstractCommand>
+                                               command) {
+        if (availableCommands.containsKey(stringIdentifier))
+            throw new DuplicateCommandIdentifier(stringIdentifier);
+        else
+            availableCommands.put(stringIdentifier, command);
+    }
+
+    public static Class<? extends AbstractCommand> getCommandByStringIdentifier(
+            String stringIdentifier) {
+        return availableCommands.get(stringIdentifier);
     }
 }
 

@@ -17,7 +17,7 @@ public class AccountCompleteSerializer extends JsonSerializer<Account>{
 
         gen.writeStringField("type", "account");
         gen.writeNumberField("id", account.getID());
-        gen.writeStringField("username", account.getUsername());
+        gen.writeStringField("user", account.getUsername());
 
         gen.writeEndObject();
     }

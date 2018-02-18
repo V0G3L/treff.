@@ -18,9 +18,15 @@ import java.util.Date;
  * a command to accept a received contact request
  */
 public class AcceptContactRequestCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "accept-contact-request",
+                AcceptContactRequestCommand.class);
+    }
 
-    public AcceptContactRequestCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public AcceptContactRequestCommand(AccountManager accountManager,
+                                       ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

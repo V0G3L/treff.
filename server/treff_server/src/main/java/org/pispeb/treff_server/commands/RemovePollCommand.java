@@ -16,14 +16,21 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * a command to delete a Poll of a Usergroup
  */
 public class RemovePollCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "remove-poll",
+                RemovePollCommand.class);
+    }
 
-    public RemovePollCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public RemovePollCommand(AccountManager accountManager,
+                             ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class RemovePollCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) group.getAllMembers().values().toArray());
+                    new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

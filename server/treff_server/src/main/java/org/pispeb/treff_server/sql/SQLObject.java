@@ -81,7 +81,7 @@ public abstract class SQLObject implements DataObject {
                         .collect(Collectors.joining(","));
 
         LinkedList<Object> params = new LinkedList<>();
-        params.add(values);
+        params.addAll(values);
         params.add(id);
 
         database.update(

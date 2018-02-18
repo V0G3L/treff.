@@ -17,6 +17,7 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 // TODO needs to be tested
 
@@ -24,9 +25,15 @@ import java.util.Date;
  * a command to create a Poll in a Usergroup
  */
 public class CreatePollCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "create-poll",
+                CreatePollCommand.class);
+    }
 
-    public CreatePollCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public CreatePollCommand(AccountManager accountManager,
+                             ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
         throw new UnsupportedOperationException();
     }
 
@@ -67,7 +74,7 @@ public class CreatePollCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) group.getAllMembers().values().toArray());
+                    new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

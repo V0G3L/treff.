@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.sql;
+package org.pispeb.treff_server.sql.resultsethandler;
 
 /**
  * @author tim
@@ -7,6 +7,8 @@ package org.pispeb.treff_server.sql;
 // TODO: make all classes use this
 
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.pispeb.treff_server.sql.EntityManagerSQL;
+import org.pispeb.treff_server.sql.SQLObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,13 +29,13 @@ import java.util.Map;
  *
  * @param <T> The type of SQLObject that the IDs belong to.
  */
-class DataObjectHandler<T extends SQLObject>
+public class DataObjectHandler<T extends SQLObject>
         implements ResultSetHandler<T> {
 
     private final Class<T> tClass;
     private final EntityManagerSQL entityManager;
 
-    DataObjectHandler(Class<T> tClass, EntityManagerSQL entityManager) {
+    public DataObjectHandler(Class<T> tClass, EntityManagerSQL entityManager) {
         this.tClass = tClass;
         this.entityManager = entityManager;
     }

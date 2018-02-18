@@ -1,12 +1,12 @@
 package org.pispeb.treff_server.interfaces;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.Position;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 
 /**
@@ -67,14 +67,26 @@ public interface Account extends DataObject, Comparable<Account> {
      */
     void setEmail(String email) throws DuplicateEmailException;
 
-    /**
-     * @return ID to Usergroup mapping containing only groups that this
-     * account is a member
-     * of.
-     */
-    Map<Integer, Usergroup> getAllGroups();
+    // TODO: document unmodifiability everywhere
 
-    Usergroup createGroup(String name, Account... otherMembers);
+    /**
+     * Returns an unmodifiable ID -> {@code Usergroup} map holding all
+     * usergroups that this {@code Account} is a member of.
+     * @return Map of {@code Usergroup} that this {@code Account} is a member of
+     * @see java.util.Collections#unmodifiableMap(Map)
+     */
+    Map<Integer, ? extends Usergroup> getAllGroups();
+
+    /**
+     * Creates a new {@code Usergroup} with the specified name and members.
+     * This {@code Account} will be a member of the created group regardless of
+     * whether it is contained in the specified set of members.
+     *
+     * @param name The name of the group
+     * @param members The members to be added in addition to this account
+     * @return The created {@code Usergroup}
+     */
+    Usergroup createGroup(String name, Set<Account> members);
 
     void addToGroup(Usergroup usergroup);
 
@@ -110,12 +122,10 @@ public interface Account extends DataObject, Comparable<Account> {
     void invalidateLoginToken();
 
     /**
-     * Adds an {@link Update} that affects this {@link Account} to the set of
-     * undelivered
-     * Updates.
+     * Adds an {@code Update} to this {@code Account}'s set of
+     * undelivered Updates.
      * Will call {@link AccountUpdateListener#onUpdateAdded(Update)} on all
-     * registered
-     * AccountUpdateListeners.
+     * registered AccountUpdateListeners.
      *
      * @param update The UpdateToSerialize to add
      */
@@ -123,8 +133,7 @@ public interface Account extends DataObject, Comparable<Account> {
 
     /**
      * Returns the set of {@link Update}s that affect this {@link Account}
-     * but have
-     * not been delivered to it yet.
+     * but have not been delivered to it's user yet.
      *
      * @return The set of undelivered Updates, sorted by time in ascending
      * order.
@@ -133,8 +142,8 @@ public interface Account extends DataObject, Comparable<Account> {
 
     /**
      * Marks an {@link Update} that affects this {@link Account} as
-     * delivered, removing
-     * it from the set returned by {@link #getUndeliveredUpdates()}.
+     * delivered, removing it from the set returned by
+     * {@link #getUndeliveredUpdates()}.
      */
     void markUpdateAsDelivered(Update update);
 

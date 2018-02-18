@@ -24,9 +24,15 @@ import java.util.Set;
  * a command to delete an Account
  */
 public class DeleteAccountCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "delete-account",
+                DeleteAccountCommand.class);
+    }
 
-    public DeleteAccountCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public DeleteAccountCommand(AccountManager accountManager,
+                                ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -48,8 +54,7 @@ public class DeleteAccountCommand extends AbstractCommand {
         affected.addAll(actingAccount.getAllContacts().values());
         affected.addAll(actingAccount.getAllIncomingContactRequests().values());
         affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
-        Collection<Usergroup> groups = actingAccount.getAllGroups().values();
-        for (Usergroup g : groups) {
+        for (Usergroup g : actingAccount.getAllGroups().values()) {
             getSafeForReading(g);
             affected.addAll(g.getAllMembers().values());
         }
@@ -65,7 +70,7 @@ public class DeleteAccountCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) affected.toArray());
+                    affected);
         } catch (JsonProcessingException e) {
             // TODO: really?
             throw new AssertionError("This shouldn't happen.");

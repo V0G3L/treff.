@@ -3,6 +3,7 @@ package org.pispeb.treff_server.sql;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.ConfigKeys;
+import org.pispeb.treff_server.PasswordHash;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
@@ -10,6 +11,10 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.ContainsCheckHandler;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
+import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
+import org.pispeb.treff_server.interfaces.DataObject;
 
 import javax.json.JsonObject;
 import java.lang.reflect.InvocationTargetException;
@@ -17,16 +22,16 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * The single entry-point for MySQL implementation of the database interfaces.
- * Uses the singleton design pattern. The instance must be initialized with the
- * {@link #initialize(SQLDatabase, Properties)} method and can be requested
- * with {@link #getInstance()}.
+ * The single entry-point for the MySQL implementation of the {@link DataObject}
+ * interfaces.
  *
  * @see AccountManager
  */
@@ -143,25 +148,31 @@ public class EntityManagerSQL implements AccountManager {
 
     @Override
     public void createUpdate(String updateContent, Date time,
-                             Account... affectedAccounts) {
-        int id;
+                             Set<? extends Account> affectedAccounts) {
         // create update itself
-        id = database.insert(
-                "INSERT INTO %s(updatestring,time) VALUES (?,?,?);",
+        UpdateSQL update = database.insert(
+                "INSERT INTO %s(updatestring,time) VALUES (?,?);",
                 TableName.UPDATES,
-                new ScalarHandler<Integer>(),
+                new DataObjectHandler<>(UpdateSQL.class, this),
                 updateContent,
                 time);
 
-        Update update = getUpdate(id);
         update.getReadWriteLock().writeLock().lock();
         try {
             // add all affected accounts
-            Arrays.stream(affectedAccounts).forEach(
+            affectedAccounts.forEach(
                     a -> a.addUpdate(update));
         } finally {
             update.getReadWriteLock().writeLock().unlock();
         }
+    }
+
+    @Override
+    public void createUpdate(String updateContent, Date time,
+                             Account affectedAccount) {
+        Set<Account> affected = new HashSet<>();
+        affected.add(affectedAccount);
+        createUpdate(updateContent, time, affected);
     }
 
 
@@ -234,7 +245,7 @@ public class EntityManagerSQL implements AccountManager {
      * @return The SQLObject with the specified type and ID. <code>null</code>
      * if no such object exists in the database.
      */
-    <T extends SQLObject> T getSQLObject(int id, Class<T> sqlClass) {
+    public <T extends SQLObject> T getSQLObject(int id, Class<T> sqlClass) {
         @SuppressWarnings("unchecked")
         Map<Integer, T> loadedMap
                 = (Map<Integer, T>) loadedObjectMaps.get(sqlClass);

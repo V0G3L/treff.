@@ -162,9 +162,9 @@ For the sake of consistency, they are listed here anyways.
 }
 
 \apiDesc{Account}{
-    username/string/Username of the account
+    user/string/Username of the account
 }{}{
-    username/Alphanumeric{,} up to 32 characters
+    user/Alphanumeric{,} up to 32 characters
 }
 
 \apiDesc{Event}{
@@ -323,7 +323,7 @@ from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
 
 \apiCommand{edit-username}
 {Changes the executing user's username.}
-{username/string/New username}
+{user/string/New username}
 {}
 {username-already-in-use}
 {account-change}
@@ -470,7 +470,8 @@ This does not lift any block that was issued against the executing user.}
 
 \apiCommand{create-group}
 {Creates a new user group.}
-{group/object/Complete description of the new user group{,} omitting the ID.
+{group/object/Complete description of the new user group{,} omitting the ID{,}
+the events array{,} and the polls array.
 The members array must contain both the executing user's account ID and at
 least one other account ID.}
 {id/int/ID of the newly created user group}
@@ -697,7 +698,7 @@ message/string/The chat message}
 \apiCommand{get-group-details}
 {Gets the details of a user group of which the executing user is a member.}
 {id/int/The ID of the user group}
-{user-group/object/The complete description of the user group
+{group/object/The complete description of the user group
 (\ref{subsec:Usergroup-desc})}
 {group-id-invalid}
 {}

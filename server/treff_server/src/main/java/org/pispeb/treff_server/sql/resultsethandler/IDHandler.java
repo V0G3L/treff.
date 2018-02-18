@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.sql;
+package org.pispeb.treff_server.sql.resultsethandler;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 
@@ -7,7 +7,8 @@ import java.sql.SQLException;
 
 /**
 * {@link ResultSetHandler} implementation that converts a {@link ResultSet}
-* containing a single ID to an {@code Integer} holding that ID.
+* containing a single column and row filled with an ID to an {@code Integer}
+* representation of that ID.
 * <p>
 * The {@code ResultSet} should contain exactly one ID.
 * If it holds more than one ID then it will return the first ID.

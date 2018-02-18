@@ -17,13 +17,20 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * a command to withdraw a vote from a pollOption
  */
 public class WithdrawVoteForOptionCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "withdraw-vote-for-option",
+                WithdrawVoteForOptionCommand.class);
+    }
 
-    public WithdrawVoteForOptionCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public WithdrawVoteForOptionCommand(AccountManager accountManager,
+                                        ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -79,7 +86,7 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) group.getAllMembers().values().toArray());
+                    new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

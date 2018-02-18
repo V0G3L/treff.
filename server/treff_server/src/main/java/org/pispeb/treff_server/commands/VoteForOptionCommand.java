@@ -17,13 +17,20 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * a command to vote for a pollOption
  */
 public class VoteForOptionCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "vote-for-option",
+                VoteForOptionCommand.class);
+    }
 
-    public VoteForOptionCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public VoteForOptionCommand(AccountManager accountManager,
+                                ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -60,6 +67,8 @@ public class VoteForOptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.POLLOPTIONIDINVALID);
         }
 
+        ObjectMapper mapper = new ObjectMapper();
+
         // check votes
         if (pollOption.getVoters().containsKey(input
                 .getActingAccount().getID())) {
@@ -88,7 +97,7 @@ public class VoteForOptionCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) group.getAllMembers().values().toArray());
+                    new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

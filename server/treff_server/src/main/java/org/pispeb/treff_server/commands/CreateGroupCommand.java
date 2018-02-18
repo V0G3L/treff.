@@ -18,6 +18,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 // TODO needs to be tested
@@ -26,8 +27,14 @@ import java.util.TreeSet;
  * a command to create a Usergroup
  */
 public class CreateGroupCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "create-group",
+                CreateGroupCommand.class);
+    }
 
-    public CreateGroupCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public CreateGroupCommand(AccountManager accountManager,
+                              ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -38,33 +45,32 @@ public class CreateGroupCommand extends AbstractCommand {
 
         // collect all specified IDs and actionAccount's ID in set,
         // removing duplicates
-        Set<Integer> members = new HashSet<>();
+        // ensure ascending order for correct locking
+        SortedSet<Integer> sortedMemberIDs = new TreeSet<>();
         for (int id : input.group.memberIDs)
-            members.add(id);
-        members.add(actingAccountId);
+            sortedMemberIDs.add(id);
+        sortedMemberIDs.add(actingAccountId);
+
 
         // lock the accounts in the correct order and add them all to a set
-        TreeSet<Account> memberAccounts = new TreeSet<>();
-        for (int memberId : members) {
-            // lock the account with smallest id to the set,
-            // check if it still exists and add it to the set
+        Set<Account> members = new HashSet<>();
+        for (int memberId : sortedMemberIDs) {
+            // lock the account with smallest id and add it to the set,
             Account currentAccount = getSafeForReading(this.accountManager
                     .getAccount(memberId));
+            // if account has been deleted, return an 'id invalid'-error.
+            // If it was the acting account, reject the token instead.
             if (currentAccount == null) {
                 if (memberId == actingAccountId)
                     return new ErrorOutput(ErrorCode.TOKENINVALID);
                 else return new ErrorOutput(ErrorCode.USERIDINVALID);
             }
-            memberAccounts.add(currentAccount);
+            members.add(currentAccount);
         }
-
-        // remove the actingAccount from the set and turn the set to an array
-        memberAccounts.remove(input.getActingAccount());
-        Account[] memberArray = memberAccounts.toArray(new Account[0]);
 
         // create the group
         Usergroup usergroup = input.getActingAccount()
-                .createGroup(input.group.name, memberArray);
+                .createGroup(input.group.name, members);
 
         // create update
         UsergroupChangeUpdate update =
@@ -74,7 +80,7 @@ public class CreateGroupCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) usergroup.getAllMembers().values().toArray());
+                    new HashSet<>(usergroup.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

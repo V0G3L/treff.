@@ -22,9 +22,15 @@ import java.util.Set;
  * a command to get all Usergroups of an Account
  */
 public class ListGroupsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "list-groups",
+                ListGroupsCommand.class);
+    }
 
-    public ListGroupsCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public ListGroupsCommand(AccountManager accountManager,
+                             ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -41,9 +47,7 @@ public class ListGroupsCommand extends AbstractCommand {
 
         // get groups
         Set<Usergroup> safeGroups = new HashSet<>();
-        Map<Integer, Usergroup> groupMap
-                = input.getActingAccount().getAllGroups();
-        for (Usergroup group : groupMap.values()) {
+        for (Usergroup group : actingAccount.getAllGroups().values()) {
             group = getSafeForReading(group);
             if (group == null) {
                 return new ErrorOutput(ErrorCode.GROUPIDINVALID);

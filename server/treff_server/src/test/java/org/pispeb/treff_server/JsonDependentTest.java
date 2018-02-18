@@ -17,7 +17,6 @@ import java.io.StringReader;
 public abstract class JsonDependentTest {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
-    protected JsonObjectBuilder inputBuilder;
 
     @BeforeClass
     public static void setUp() {

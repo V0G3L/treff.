@@ -24,8 +24,14 @@ import java.util.Set;
  * a command to update the Position of an Account in the database
  */
 public class UpdatePositionCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "update-position",
+                UpdatePositionCommand.class);
+    }
 
-    public UpdatePositionCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public UpdatePositionCommand(AccountManager accountManager,
+                                 ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -65,7 +71,8 @@ public class UpdatePositionCommand extends AbstractCommand {
                         Update.UpdateType.POSITION);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(), (Account[]) affected.toArray());
+                    new Date(),
+                    affected);
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

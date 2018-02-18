@@ -15,15 +15,22 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 /**
  * a command to remove Accounts from a Usergroup
  */
 public class RemoveGroupMembersCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "remove-group-members",
+                RemoveGroupMembersCommand.class);
+    }
 
-    public RemoveGroupMembersCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public RemoveGroupMembersCommand(AccountManager accountManager,
+                                     ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -80,7 +87,7 @@ public class RemoveGroupMembersCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) usergroup.getAllMembers().values().toArray());
+                    new HashSet<>(usergroup.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

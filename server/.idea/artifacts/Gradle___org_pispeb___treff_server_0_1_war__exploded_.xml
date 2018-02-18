@@ -1,0 +1,32 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="Gradle : org.pispeb : treff_server-0.1.war (exploded)">
+    <output-path>$PROJECT_DIR$/treff_server/build/libs/exploded/treff_server-0.1.war</output-path>
+    <properties id="gradle-properties">
+      <options external-project-path="$PROJECT_DIR$/treff_server">
+        <manifest>TWFuaWZlc3QtVmVyc2lvbjogMS4wDQoNCg==</manifest>
+      </options>
+    </properties>
+    <root id="root">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/treff_server/build/libs/exploded/treff_server-0.1.war/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="javaee-facet-resources" facet="treff_server/web/Web Gradle : treff_server-0.1.war" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="treff_server" />
+          <element id="dir-copy" path="$PROJECT_DIR$/treff_server/out/production/resources" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Gradle: javax.json:javax.json-api:1.0" />
+          <element id="library" level="project" name="Gradle: org.glassfish:javax.json:1.1" />
+          <element id="library" level="project" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" />
+          <element id="library" level="project" name="Gradle: commons-dbutils:commons-dbutils:1.7" />
+          <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.11" />
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" />
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" />
+          <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

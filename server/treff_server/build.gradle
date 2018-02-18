@@ -1,7 +1,10 @@
+plugins {
+    id 'war'
+    id 'org.akhikhl.gretty' version '2.0.0'
+}
+
 group 'org.pispeb'
 version '0.1'
-
-apply plugin: 'java'
 
 sourceCompatibility = 1.8
 

@@ -20,9 +20,15 @@ import java.util.Date;
  * and is still pending
  */
 public class CancelContactRequestCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "cancel-contact-request",
+                CancelContactRequestCommand.class);
+    }
 
-    public CancelContactRequestCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public CancelContactRequestCommand(AccountManager accountManager,
+                                       ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

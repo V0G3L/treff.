@@ -25,9 +25,16 @@ import java.util.Set;
  * a command to edit the username of an Account
  */
 public class EditUsernameCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "edit-username",
+                EditUsernameCommand.class);
+    }
 
-    public EditUsernameCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public EditUsernameCommand(AccountManager accountManager,
+                               ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -52,8 +59,7 @@ public class EditUsernameCommand extends AbstractCommand {
         affected.addAll(actingAccount.getAllContacts().values());
         affected.addAll(actingAccount.getAllIncomingContactRequests().values());
         affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
-        Collection<Usergroup> groups = actingAccount.getAllGroups().values();
-        for (Usergroup g : groups) {
+        for (Usergroup g : actingAccount.getAllGroups().values()) {
             getSafeForReading(g);
             affected.addAll(g.getAllMembers().values());
         }
@@ -64,7 +70,7 @@ public class EditUsernameCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) affected.toArray());
+                    affected);
         } catch (JsonProcessingException e) {
             // TODO: really?
             throw new AssertionError("This shouldn't happen.");
@@ -77,7 +83,7 @@ public class EditUsernameCommand extends AbstractCommand {
 
         final String username;
 
-        public Input(@JsonProperty("username") String username,
+        public Input(@JsonProperty("user") String username,
                      @JsonProperty("token") String token) {
             super(token);
             this.username = username;

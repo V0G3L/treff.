@@ -255,8 +255,7 @@ public class SQLDatabase {
                 String.format("CREATE TABLE %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL," +
-                                "time DATETIME NOT NULL," +
-                                "type VARCHAR(%d) NOT NULL" +
+                                "time DATETIME NOT NULL" +
                                 ");",
                         UPDATES.toString(),
                         // set max size of 'type' field to size of longest

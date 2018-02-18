@@ -12,15 +12,19 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-//TODO needs to be tested
-
 /**
  * a command to get a detailed description of an Account by its ID
  */
 public class GetUserDetailsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-user-details",
+                GetUserDetailsCommand.class);
+    }
 
-    public GetUserDetailsCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public GetUserDetailsCommand(AccountManager accountManager,
+                                 ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

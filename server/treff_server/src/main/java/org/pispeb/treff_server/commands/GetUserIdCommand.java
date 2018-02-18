@@ -10,14 +10,18 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-//TODO needs to be tested
-
 /**
  * a command to get the ID of an Account by its name
  */
 public class GetUserIdCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-user-id",
+                GetUserIdCommand.class);
+    }
 
-    public GetUserIdCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public GetUserIdCommand(AccountManager accountManager,
+                            ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 

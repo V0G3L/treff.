@@ -18,9 +18,15 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to edit the email of an Account
  */
 public class EditEmailCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "edit-email",
+                EditEmailCommand.class);
+    }
 
-    public EditEmailCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public EditEmailCommand(AccountManager accountManager,
+                            ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id="treff_server" external.linked.project.path="$MODULE_DIR$/../../treff_server" external.root.project.path="$MODULE_DIR$/../../treff_server" external.system.id="GRADLE" external.system.module.group="org.pispeb" external.system.module.version="0.1" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="Web Gradle : treff_server-0.1.war">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/../../treff_server/src/main/webapp/WEB-INFdd/web.xmldd" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/../../treff_server/src/main/webapp" relative="/" />
+        </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/../../treff_server/src/main/resources" />
+          <root url="file://$MODULE_DIR$/../../treff_server/src/main/java" />
+        </sourceRoots>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager">
     <output url="file://$MODULE_DIR$/../../treff_server/out/production/classes" />
     <output-test url="file://$MODULE_DIR$/../../treff_server/out/test/classes" />
@@ -15,6 +31,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.websocket:javax.websocket-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.json:javax.json-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish:javax.json:1.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" level="project" />

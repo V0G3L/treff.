@@ -14,14 +14,18 @@ import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-//TODO needs to be tested
-
 /**
  * a command to get a detailed description of a Poll of a Usergroup
  */
 public class GetPollDetailsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-poll-details",
+                GetPollDetailsCommand.class);
+    }
 
-    public GetPollDetailsCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public GetPollDetailsCommand(AccountManager accountManager,
+                                 ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 

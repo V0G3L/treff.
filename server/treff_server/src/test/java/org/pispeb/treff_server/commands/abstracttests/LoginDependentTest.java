@@ -1,7 +1,9 @@
-package org.pispeb.treff_server.commands;
+package org.pispeb.treff_server.commands.abstracttests;
 
 
 import org.junit.Before;
+import org.pispeb.treff_server.commands.RegisterCommand;
+import org.pispeb.treff_server.commands.abstracttests.CommandTest;
 
 import javax.json.Json;
 import javax.json.JsonObject;

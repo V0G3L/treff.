@@ -1,9 +1,8 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.pispeb.treff_server.interfaces.Update;
+import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
 
 import javax.json.JsonObject;
 

@@ -16,10 +16,11 @@ import java.util.TreeSet;
 public class PollCompleteSerializer extends JsonSerializer<Poll> {
 
     // TODO: document that locked readLock is asserted
+    // TODO: replace polloption descriptions with IDs
 
     @Override
     public void serialize(Poll poll, JsonGenerator gen, SerializerProvider
-        serializers) throws IOException {
+            serializers) throws IOException {
         // collect poll properties
         gen.writeStartObject();
         gen.writeStringField("type", "poll");
@@ -30,27 +31,9 @@ public class PollCompleteSerializer extends JsonSerializer<Poll> {
         gen.writeNumberField("time-vote-close",
                 poll.getTimeVoteClose().toInstant().getEpochSecond());
 
-        // collect properties of polloptions
-        SortedSet<PollOption> pollOptions
-                = new TreeSet<>(poll.getPollOptions().values());
-        PollOptionCompleteSerializer pOSerializer
-                = new PollOptionCompleteSerializer();
-
-        gen.writeArrayFieldStart("polloptions");
-        for (PollOption pO : pollOptions) {
-            pO.getReadWriteLock().readLock().lock();
-            try {
-                // if polloption was deleted before we could acquire the
-                // readlock, skip that polloption
-                if (pO.isDeleted())
-                    continue;
-
-                pOSerializer.serialize(pO, gen, serializers);
-            } finally {
-                pO.getReadWriteLock().readLock().unlock();
-            }
-        }
-        gen.writeEndArray();
+        // collect polloptions
+        SerializerUtil.writeIDArray(poll.getPollOptions().keySet(),
+                "options", gen);
 
         gen.writeEndObject();
     }

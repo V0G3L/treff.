@@ -14,14 +14,22 @@ import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * a command to remove an Account from the contact-list of another Account
  */
 public class RemoveContactCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "remove-contact",
+                RemoveContactCommand.class);
+    }
 
-    public RemoveContactCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public RemoveContactCommand(AccountManager accountManager,
+                                ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

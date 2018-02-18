@@ -3,6 +3,7 @@ package org.pispeb.treff_server.commands;
 import com.jcabi.matchers.RegexMatchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.pispeb.treff_server.commands.abstracttests.CommandTest;
 
 import javax.json.JsonObject;
 

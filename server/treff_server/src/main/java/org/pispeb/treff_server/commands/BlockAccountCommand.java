@@ -18,10 +18,15 @@ import java.util.Date;
  * a command to block an Account for another Account
  */
 public class BlockAccountCommand extends ManageBlockCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "block-account",
+                BlockAccountCommand.class);
+    }
 
-    public BlockAccountCommand(AccountManager accountManager, ObjectMapper
-            mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public BlockAccountCommand(AccountManager accountManager,
+                               ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

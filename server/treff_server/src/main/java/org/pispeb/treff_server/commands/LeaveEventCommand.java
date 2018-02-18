@@ -15,13 +15,20 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * a command to remove an Account from an Event of a Usergroup
  */
 public class LeaveEventCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "leave-event",
+                LeaveEventCommand.class);
+    }
 
-    public LeaveEventCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public LeaveEventCommand(AccountManager accountManager,
+                             ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -71,7 +78,7 @@ public class LeaveEventCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) group.getAllMembers().values().toArray());
+                    new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

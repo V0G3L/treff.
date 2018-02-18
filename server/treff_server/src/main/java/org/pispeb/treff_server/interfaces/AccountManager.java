@@ -7,6 +7,7 @@ import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import javax.json.JsonObject;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <p>An interface for an underlying database. The user of this interface
@@ -70,6 +71,9 @@ public interface AccountManager {
     Account getAccountByLoginToken(String token);
 
     void createUpdate(String updateContent, Date time,
-                      Account... affectedAccounts);
+                      Set<? extends Account> affectedAccounts);
+
+    void createUpdate(String updateContent, Date time,
+                      Account affectedAccount);
 
 }

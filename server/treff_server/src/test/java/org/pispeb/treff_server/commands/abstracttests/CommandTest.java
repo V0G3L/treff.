@@ -1,7 +1,8 @@
-package org.pispeb.treff_server.commands;
+package org.pispeb.treff_server.commands.abstracttests;
 
 import org.junit.Before;
 import org.pispeb.treff_server.DatabaseDependentTest;
+import org.pispeb.treff_server.commands.AbstractCommand;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -11,6 +12,9 @@ import javax.json.JsonObjectBuilder;
  * @author tim
  */
 public abstract class CommandTest extends DatabaseDependentTest {
+
+    protected JsonObjectBuilder inputBuilder;
+
     private final String cmd;
 
     public CommandTest(String cmd) {

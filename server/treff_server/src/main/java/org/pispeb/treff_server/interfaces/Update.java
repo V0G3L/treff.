@@ -33,8 +33,6 @@ public interface Update extends Comparable<Update>, DataObject {
      */
     Date getTime();
 
-    UpdateType getType();
-
     /**
      * Returns the content of the UpdateToSerialize.
      *
@@ -72,6 +70,7 @@ public interface Update extends Comparable<Update>, DataObject {
      */
     Map<Integer, Account> getAffectedAccounts();
 
+    // TODO: move UpdateTypes into commands package, it's not used here anymore
     /**
      * The type of an {@link Update}.
      */

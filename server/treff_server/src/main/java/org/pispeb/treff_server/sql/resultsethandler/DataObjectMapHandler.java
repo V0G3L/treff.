@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.sql;
+package org.pispeb.treff_server.sql.resultsethandler;
 
 /**
  * @author tim
@@ -8,6 +8,8 @@ package org.pispeb.treff_server.sql;
 
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
+import org.pispeb.treff_server.sql.EntityManagerSQL;
+import org.pispeb.treff_server.sql.SQLObject;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,20 +24,20 @@ import java.util.stream.Collectors;
  *
  * @param <T> The type of SQLObject that the IDs belong to.
  */
-class DataObjectMapHandler<T extends SQLObject>
+public class DataObjectMapHandler<T extends SQLObject>
         implements ResultSetHandler<Map<Integer, T>> {
 
     private final Class<T> tClass;
     private final EntityManagerSQL entityManager;
 
-    DataObjectMapHandler(Class<T> tClass, EntityManagerSQL entityManager) {
+    public DataObjectMapHandler(Class<T> tClass, EntityManagerSQL entityManager) {
         this.tClass = tClass;
         this.entityManager = entityManager;
     }
 
     @Override
     public Map<Integer, T> handle(ResultSet rs) throws SQLException {
-        return new ColumnListHandler<Integer>().handle(rs)
+        return new IDListHandler().handle(rs)
                 .stream()
                 .collect(Collectors.toMap(Function.identity(),
                         id -> entityManager

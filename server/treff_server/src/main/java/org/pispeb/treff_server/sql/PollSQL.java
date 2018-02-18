@@ -1,17 +1,15 @@
 package org.pispeb.treff_server.sql;
 
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
-import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;

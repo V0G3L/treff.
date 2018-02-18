@@ -10,7 +10,9 @@ import org.pispeb.treff_server.interfaces.PollOption;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -33,8 +35,10 @@ public class PollCompleteSerializerTest {
         when(poll.getID()).thenReturn(4);
         when(poll.getQuestion()).thenReturn("the-question");
         when(poll.isMultiChoice()).thenReturn(true);
+        Calendar timeVoteClose = new GregorianCalendar();
+        timeVoteClose.set(2018,Calendar.JANUARY,1,13,33,37);
         when(poll.getTimeVoteClose())
-                .thenReturn(new Date(2018, 1, 1));
+                .thenReturn(timeVoteClose.getTime());
 
         // mock creator
         Account creator = mock(Account.class);
@@ -43,34 +47,17 @@ public class PollCompleteSerializerTest {
 
         // mock polloptions
         Map<Integer, PollOption> pollOptions = new HashMap<>();
+        pollOptions.put(0, null);
+        pollOptions.put(1, null);
+        pollOptions.put(2, null);
         when(poll.getPollOptions()).thenReturn(pollOptions);
-
-        PollOption pollOption = mock(PollOption.class);
-        when(pollOption.getID()).thenReturn(77);
-        when(pollOption.getPosition())
-                .thenReturn(new Position(13.37,42.00));
-        when(pollOption.getTimeStart())
-                .thenReturn(new Date(2018, 2, 1));
-        when(pollOption.getTimeEnd())
-                .thenReturn(new Date(2018, 3, 1));
-        when(pollOption.getTitle()).thenReturn("the-title");
-        when(pollOption.getReadWriteLock())
-                .thenReturn(new ReentrantReadWriteLock());
-        pollOptions.put(77, pollOption);
-
-        // mock voters
-        Map<Integer, Account> voters = new HashMap<>();
-        when(pollOption.getVoters()).thenReturn(voters);
-
-        Account voter = mock(Account.class);
-        when(voter.getID()).thenReturn(42);
-        voters.put(42, voter);
 
         PollCompleteSerializer pollCompleteSerializer
                 = new PollCompleteSerializer();
 
         pollCompleteSerializer.serialize(poll, jsonGenerator,null);
         jsonGenerator.close();
+        // TODO: actually test contents
         System.out.println(outputWriter.toString());
     }
 }

@@ -18,9 +18,15 @@ import java.util.Date;
  * a command to reject a received contact request
  */
 public class RejectContactRequestCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "reject-contact-request",
+                RejectContactRequestCommand.class);
+    }
 
-    public RejectContactRequestCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public RejectContactRequestCommand(AccountManager accountManager,
+                                       ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override

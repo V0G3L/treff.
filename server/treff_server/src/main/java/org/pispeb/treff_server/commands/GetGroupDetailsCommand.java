@@ -19,8 +19,14 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a detailed description of a Usergroup
  */
 public class GetGroupDetailsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-group-details",
+                GetGroupDetailsCommand.class);
+    }
 
-    public GetGroupDetailsCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public GetGroupDetailsCommand(AccountManager accountManager,
+                                  ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 
@@ -58,7 +64,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = UsergroupCompleteSerializer.class)
-        @JsonProperty("user-group")
+        @JsonProperty("group")
         final Usergroup usergroup;
 
         Output(Usergroup usergroup) {

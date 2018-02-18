@@ -29,11 +29,6 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public UpdateType getType()  {
-        return UpdateType.valueOf((String) getProperty("type"));
-    }
-
-    @Override
     public String getUpdate()  {
         return (String) getProperty("updatestring");
     }

@@ -1,7 +1,5 @@
 package org.pispeb.treff_server.commands;
 
-// TODO: optimize imports everywhere
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
@@ -15,6 +13,11 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to create an Account
  */
 public class RegisterCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "register",
+                RegisterCommand.class);
+    }
 
     public RegisterCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);

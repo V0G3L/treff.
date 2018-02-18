@@ -15,6 +15,7 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 // TODO needs to be tested
@@ -23,9 +24,15 @@ import java.util.TreeSet;
  * a command to add Accounts to a Usergroup
  */
 public class AddGroupMembersCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "add-group-members",
+                AddGroupMembersCommand.class);
+    }
 
-    public AddGroupMembersCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, CommandInput.class, mapper);
+    public AddGroupMembersCommand(AccountManager accountManager,
+                                  ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -86,7 +93,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    (Account[]) usergroup.getAllMembers().values().toArray());
+                    new HashSet<>(usergroup.getAllMembers().values()));
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

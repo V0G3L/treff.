@@ -19,8 +19,14 @@ import java.util.Date;
  * a command to send a contact request to another user/account
  */
 public class SendContactRequestCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "send-contact-request",
+                SendContactRequestCommand.class);
+    }
 
-    public SendContactRequestCommand(AccountManager accountManager, ObjectMapper mapper) {
+    public SendContactRequestCommand(AccountManager accountManager,
+                                     ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
 

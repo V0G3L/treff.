@@ -5,6 +5,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.ConfigKeys;
+import org.pispeb.treff_server.PasswordHash;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.ContactRequestNonexistantException;
@@ -16,13 +17,15 @@ import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -156,22 +159,34 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Usergroup> getAllGroups() {
-        // get ID list
-        return database.query(
-                        "SELECT usergroupid FROM %s WHERE accountid=?;",
-                        TableName.GROUPMEMBERSHIPS,
-                        new ColumnListHandler<Integer>(),
-                        id)
-                .stream()
-                // create ID -> UsergroupSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getUsergroup));
+    public Map<Integer, UsergroupSQL> getAllGroups() {
+        return Collections.unmodifiableMap(database.query(
+                "SELECT usergroupid FROM %s WHERE accountid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new DataObjectMapHandler<UsergroupSQL>(UsergroupSQL.class,
+                        entityManager),
+                id));
     }
 
     @Override
-    public Usergroup createGroup(String name, Account... otherMembers) {
-        throw new UnsupportedOperationException(); // TODO: implement
+    public Usergroup createGroup(String name, Set<Account> members) {
+        // Insert empty group into database and get a reference on it
+        UsergroupSQL usergroup = database.insert(
+                "INSERT INTO %s(name) VALUES (?);",
+                TableName.USERGROUPS,
+                new DataObjectHandler<>(UsergroupSQL.class, entityManager),
+                name);
+
+        // Add all members
+        // make sure this account also gets added
+        usergroup.getReadWriteLock().writeLock().lock();
+        try {
+            members.add(this);
+            members.forEach(usergroup::addMember);
+            return usergroup;
+        } finally {
+            usergroup.getReadWriteLock().writeLock().unlock();
+        }
     }
 
     @Override
@@ -330,10 +345,10 @@ public class AccountSQL extends SQLObject implements Account {
     public Map<Integer, Account> getAllBlocks() {
         // get ID list
         return database.query(
-                        "SELECT blocked FROM %s WHERE blocker=?;",
-                        TableName.BLOCKS,
-                        new ColumnListHandler<Integer>(),
-                        id)
+                "SELECT blocked FROM %s WHERE blocker=?;",
+                TableName.BLOCKS,
+                new ColumnListHandler<Integer>(),
+                id)
                 .stream()
                 // create ID -> AccountSQL map
                 .collect(Collectors.toMap(Function.identity(),

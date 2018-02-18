@@ -8,10 +8,14 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        CreateGroupCommandTest.class,
+        GetGroupDetailsCommandTest.class,
         GetPollDetailsCommandTest.class,
+        GetUserDetailsCommandTest.class,
         GetUserIdCommandTest.class,
         LoginCommandTest.class,
         RegisterCommandTest.class,
-        SendContactRequestCommandTest.class
+        SendContactRequestCommandTest.class,
+        UpdatePositionCommandTest.class
 })
 public class CommandTestSuite { }
