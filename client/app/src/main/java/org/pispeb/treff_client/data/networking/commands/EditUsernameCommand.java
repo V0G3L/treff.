@@ -1,5 +1,12 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.view.util.TreffPunkt;
+
 /**
  * Class representing a JSON edit-username object
  */
@@ -21,7 +28,10 @@ public class EditUsernameCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO handle response
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        pref.edit().putString(ctx.getString(R.string.key_userName), output.username);
     }
 
     public static class Request extends AbstractRequest {

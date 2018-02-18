@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.databinding.ChatItemBinding;
 
+/**
+ * Adapter to hold {@link GroupChatViewHolder]}s and display them in a list,
+ * representing a chat history.
+ */
 public class GroupChatAdapter
         extends PagedListAdapter<ChatMessage, GroupChatViewHolder> {
 

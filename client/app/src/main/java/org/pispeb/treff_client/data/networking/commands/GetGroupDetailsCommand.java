@@ -2,7 +2,11 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteUsergroup;
+
+
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 /**
  * Created by matth on 17.02.2018.
@@ -11,10 +15,13 @@ import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteUse
 public class GetGroupDetailsCommand extends AbstractCommand {
 
     private Request output;
+    private UserGroupRepository userGroupRepository;
 
-    public GetGroupDetailsCommand(int id, String token) {
+    public GetGroupDetailsCommand(int id, String token,
+                                  UserGroupRepository userGroupRepository) {
         super(Response.class);
         output = new Request(id, token);
+        this.userGroupRepository = userGroupRepository;
     }
 
     @Override
@@ -25,7 +32,8 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        //TODO response
+        userGroupRepository.updateGroup(
+                new UserGroup(output.id, response.usergroup.name));
     }
 
     public static class Request extends AbstractRequest {

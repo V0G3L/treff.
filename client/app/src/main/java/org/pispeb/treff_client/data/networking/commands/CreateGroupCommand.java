@@ -33,6 +33,7 @@ public class CreateGroupCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         userGroupRepository.add(new UserGroup(response.id, output.group.name));
+        userGroupRepository.addGroupMembers(response.id, output.group.memberIDs);
     }
 
     public static class Request extends AbstractRequest {

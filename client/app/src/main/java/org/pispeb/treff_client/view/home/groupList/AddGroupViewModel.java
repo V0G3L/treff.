@@ -51,7 +51,6 @@ public class AddGroupViewModel extends ViewModel implements
 
     public void onOkClick() {
         if (!groupname.equals("") && !selectedUsers.isEmpty()) {
-            // TODO determine actual members to add to group
             int[] members = new int[selectedUsers.size()];
             int cnt = 0;
             for (User u : selectedUsers) {

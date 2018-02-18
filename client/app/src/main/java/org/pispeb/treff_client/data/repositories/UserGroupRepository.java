@@ -62,6 +62,12 @@ public class UserGroupRepository {
                 .build();
     }
 
+    public void setIsSharing (int groupId, boolean isSharing) {
+        backgroundHandler.post(() -> {
+            userGroupDao.setIsSharing(groupId, isSharing);
+        });
+    }
+
     public void add(UserGroup group) {
         // TODO test
         Context ctx = TreffPunkt.getAppContext();
@@ -96,7 +102,7 @@ public class UserGroupRepository {
 
             //delete group events;
             eventDao.deleteEvents(
-                    eventDao.getEventsByIdSet(group.getEvents()));
+                    eventDao.getEventsFromGroupInList(group.getGroupId()));
 
             //TODO: delete polls
 
@@ -110,15 +116,16 @@ public class UserGroupRepository {
 
     public void addGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
+            GroupMembership gms = new GroupMembership(members[i], groupId);
             Log.i("AddGroupMember",
-                    "group: " + groupId + " member: " + members[i]);
-            userGroupDao.save(new GroupMembership(groupId, members[i]));
+                    "group: " + gms.getGroupId() + " member: " + gms.getUserId());
+            userGroupDao.save(gms);
         }
     }
 
     public void removeGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
-            userGroupDao.delete(new GroupMembership(groupId, members[i]));
+            userGroupDao.delete(new GroupMembership(members[i], groupId));
         }
     }
 

@@ -1,5 +1,13 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.view.ContextThemeWrapper;
+
+import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.view.util.TreffPunkt;
+
 /**
  * Class representing a JSON edit-email object
  */
@@ -21,7 +29,10 @@ public class EditEmailCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        pref.edit().putString(ctx.getString(R.string.key_email), output.email);
     }
 
     public static class Request extends AbstractRequest {

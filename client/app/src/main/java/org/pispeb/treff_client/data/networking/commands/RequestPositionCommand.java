@@ -24,6 +24,7 @@ public class RequestPositionCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         // TODO Handle response
+        // Do nothing
     }
 
     public static class Request extends AbstractRequest {

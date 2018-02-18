@@ -2,18 +2,26 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteAccount;
+
+
+import org.pispeb.treff_client.data.repositories.UserRepository;
 
 /**
  * Created by matth on 17.02.2018.
  */
 
 public class GetUserDetailsCommand extends AbstractCommand {
-    private Request output;
 
-    public GetUserDetailsCommand(int id, String token) {
+    private Request output;
+    private UserRepository userRepository;
+
+    public GetUserDetailsCommand(int id, String token,
+                                 UserRepository userRepository) {
         super(Response.class);
         output = new Request(id, token);
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -24,7 +32,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        //TODO response
+        userRepository.setUserName(output.id, response.account.username);
     }
 
     public static class Request extends AbstractRequest {

@@ -42,6 +42,8 @@ public class AddGroupActivity extends AppCompatActivity {
         CheckedFriendListAdapter adapter = new CheckedFriendListAdapter(vm);
         binding.list.setAdapter(adapter);
 
+
+        //TODO friends not displaying
         vm.getFriends().observe(this, friends -> {
             adapter.setList(friends);
             adapter.notifyDataSetChanged();

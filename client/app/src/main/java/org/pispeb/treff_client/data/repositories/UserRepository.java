@@ -2,10 +2,8 @@ package org.pispeb.treff_client.data.repositories;
 
 
 import android.arch.lifecycle.LiveData;
-import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
-import android.arch.persistence.room.Query;
 import android.os.Handler;
 
 import org.pispeb.treff_client.data.database.UserDao;
@@ -77,9 +75,24 @@ public class UserRepository {
         });
     }
 
+    public void setUserName(int userId, String username) {
+        backgroundHandler.post(() -> {
+            userDao.setUserName(userId, username);
+        });
+    }
+
     public void addUser(User user) {
         backgroundHandler.post(() -> {
             userDao.save(user);
+        });
+    }
+
+    public void resetAllUsers() {
+        backgroundHandler.post(() -> {
+            List<User> users = userDao.getAllAsList();
+            for (User u : users) {
+                userDao.reset(u.getUserId());
+            }
         });
     }
 

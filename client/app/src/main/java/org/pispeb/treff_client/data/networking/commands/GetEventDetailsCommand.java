@@ -1,8 +1,15 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteEvent;
+
+
+import org.pispeb.treff_client.data.repositories.EventRepository;
 
 /**
  * Created by matth on 17.02.2018.
@@ -11,10 +18,13 @@ import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteEve
 public class GetEventDetailsCommand extends AbstractCommand {
 
     private Request output;
+    private EventRepository eventRepository;
 
-    public GetEventDetailsCommand(int id, int groupId, String token) {
+    public GetEventDetailsCommand(int id, int groupId, String token,
+                                  EventRepository eventRepository) {
         super(Response.class);
         output = new Request(id, groupId, token);
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -25,7 +35,17 @@ public class GetEventDetailsCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        //TODO response
+        Location l = new Location(LocationManager.GPS_PROVIDER);
+        l.setLatitude(response.event.latitude);
+        l.setLongitude(response.event.longitude);
+        eventRepository.update(new Event(
+                output.id,
+                response.event.title,
+                response.event.timeStart,
+                response.event.timeEnd,
+                l,
+                response.event.creator,
+                output.groupId));
     }
 
     public static class Request extends AbstractRequest {

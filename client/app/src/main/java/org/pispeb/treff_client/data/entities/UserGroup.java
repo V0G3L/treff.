@@ -16,16 +16,12 @@ public class UserGroup {
     @PrimaryKey
     private int groupId;
     private String name;
-    private Set<Integer> events;
-    //TODO set of users in group
-    // private Set<Integer> members
-
-//    private Set<Integer> polls;
+    private boolean isSharingLocation;
 
     public UserGroup(int groupId, String name) {
         this.groupId = groupId;
         this.name = name;
-        this.events = new HashSet<>();
+        this.isSharingLocation = false;
     }
 
     public int getGroupId() {
@@ -44,12 +40,12 @@ public class UserGroup {
         this.name = name;
     }
 
-    public Set<Integer> getEvents() {
-        return events;
+    public boolean isSharingLocation() {
+        return isSharingLocation;
     }
 
-    public void setEvents(Set<Integer> events) {
-        this.events = events;
+    public void setSharingLocation(boolean sharingLocation) {
+        isSharingLocation = sharingLocation;
     }
 
     @Override
@@ -62,19 +58,16 @@ public class UserGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserGroup userGroup = (UserGroup) o;
+        UserGroup group = (UserGroup) o;
 
-        if (groupId != userGroup.groupId) return false;
-        if (name != null ? !name.equals(userGroup.name) : userGroup.name != null) return false;
-        return (events != null ? !events.equals(userGroup.events) : userGroup
-                .events != null);
+        if (groupId != group.groupId) return false;
+        return name.equals(group.name);
     }
 
     @Override
     public int hashCode() {
         int result = groupId;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (events != null ? events.hashCode() : 0);
+        result = 31 * result + name.hashCode();
         return result;
     }
 }

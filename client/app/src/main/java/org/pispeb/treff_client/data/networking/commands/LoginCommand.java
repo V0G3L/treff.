@@ -37,7 +37,7 @@ public class LoginCommand extends AbstractCommand{
         pref.edit()
                 .putString(ctx.getString(R.string.key_token), response.token)
                 .putInt(ctx.getString(R.string.key_userId), response.id)
-                .commit();
+                .apply();
     }
 
     public static class Request extends AbstractRequest {

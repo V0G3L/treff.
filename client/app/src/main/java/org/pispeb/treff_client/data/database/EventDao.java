@@ -5,6 +5,7 @@ import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -20,7 +21,7 @@ import java.util.Set;
 
 @Dao
 public interface EventDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(Event event);
 
     @Query("SELECT * FROM event WHERE id = :eventId")
@@ -40,6 +41,9 @@ public interface EventDao {
 
     @Query("SELECT * FROM event WHERE groupId = :groupId")
     DataSource.Factory<Integer, Event> getEventsFromGroup(int groupId);
+
+    @Query("SELECT * FROM event WHERE groupId = :groupId")
+    List<Event> getEventsFromGroupInList(int groupId);
 
 
     @Update

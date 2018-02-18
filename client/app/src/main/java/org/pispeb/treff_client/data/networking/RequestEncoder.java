@@ -409,7 +409,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     }
 
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(getToken()));
+        executeCommand(new GetContactListCommand(getToken(), userRepository));
     }
 
     public synchronized void blockAccount(int userId) {
@@ -582,15 +582,16 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
 
     public synchronized void getGroupDetails(int groupId) {
-        executeCommand(new GetGroupDetailsCommand(groupId, getToken()));
+        executeCommand(new GetGroupDetailsCommand(groupId, getToken(), userGroupRepository));
     }
 
     public synchronized void getUserDetails(int userId) {
-        executeCommand(new GetUserDetailsCommand(userId, getToken()));
+        executeCommand(new GetUserDetailsCommand(userId, getToken(), userRepository));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
-        executeCommand(new GetEventDetailsCommand(eventId, groupId, getToken()));
+        executeCommand(new GetEventDetailsCommand(eventId, groupId,
+                getToken(), eventRepository));
     }
 
     public synchronized void getPollDetails(int pollId, int groupId) {
@@ -608,6 +609,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     }
 
     public synchronized void publishPosition(int groupId, Date endTime) {
-        executeCommand(new PublishPositionCommand(groupId, endTime, getToken()));
+        executeCommand(new PublishPositionCommand(groupId, endTime,
+                getToken(), userGroupRepository));
     }
 }

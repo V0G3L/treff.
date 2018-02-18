@@ -5,6 +5,7 @@ import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
@@ -22,7 +23,7 @@ import java.util.function.ToDoubleBiFunction;
 
 @Dao
 public interface UserGroupDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(UserGroup group);
 
     @Delete
@@ -59,6 +60,10 @@ public interface UserGroupDao {
 
     @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")
     List<GroupMembership> getGroupMembershipsByGroupId(int groupId);
+
+    @Query("UPDATE usergroup SET isSHaringLocation = :isSharing WHERE groupId" +
+            " = :groupId")
+    void setIsSharing(int groupId, boolean isSharing);
 
 
     @Delete
