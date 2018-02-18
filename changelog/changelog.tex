@@ -80,27 +80,30 @@
 \section{Klient}
 
 \subsection{TreffPunkt}
-Für einzelne Daten von primitiven Datentypen bietet es sich an, diese in 
-Shared-Preferences zu speichern. Allerdings wird ein Context benötigt, um auf 
-diese zuzugreifen. Um Klassen, welche keinen eigenen Context besitzen, trotzdem 
-den Zugriff auf Shared-Preferences zu ermöglichen, wurde die TreffPunkt Klasse 
-als Superklasse für Application eingeführt. Sie bietet statisch einen Context, 
-welcher nicht von irgendwelchen Lebenszyklen abhängig ist.
+Für einzelne Daten von primitiven Datentypen bietet es sich an, diese in
+Shared-Preferences zu speichern. Allerdings wird ein Context benötigt, um auf
+diese zuzugreifen. Um Klassen, welche keinen eigenen Context besitzen, trotzdem
+den Zugriff auf Shared-Preferences zu ermöglichen, wurde die TreffPunkt Klasse
+als Superklasse für Application eingeführt. Sie bietet statisch einen Context,
+welcher nicht von irgendwelchen Lebenszyklen abhängig ist.\\
+Dieser ermöglicht es auch, auf String Ressourcen zuzugreifen, in unserem Fall
+zum Beispiel Errorcodes in mehreren Sprachen zur Verfügung zu stellen und diese
+Contextunabhängig zu verwenden.
 
 \subsection{Befehle}
-Die interne Umsetzung der Netzwerkbefehle wurde um das Commands Package 
-erweitert. Nach dem Command Design Pattern werden nun die einzelnen Server 
-Befehle durch Objekte repräsentiert. Die Hauptfunktion der neuen Klassen 
-besteht zum einen darin, Objekte für die JSON Serialisierung zu verwalten. Zum 
-anderen werden von dort aus aber auch die lokalen Datenbankzugriffe (und 
-andere Reaktionen auf Antworten des Servers) gesteuert. So wird vermieden, dass 
+Die interne Umsetzung der Netzwerkbefehle wurde um das Commands Package
+erweitert. Nach dem Command Design Pattern werden nun die einzelnen Server
+Befehle durch Objekte repräsentiert. Die Hauptfunktion der neuen Klassen
+besteht zum einen darin, Objekte für die JSON Serialisierung zu verwalten. Zum
+anderen werden von dort aus aber auch die lokalen Datenbankzugriffe (und
+andere Reaktionen auf Antworten des Servers) gesteuert. So wird vermieden, dass
 die ViewModels auf Reaktionen des Servers warten müssen und die UI einfriert.
-Um eine zu enge Kopplung zu verhindern, wird die Ausführung eines Befehls 
+Um eine zu enge Kopplung zu verhindern, wird die Ausführung eines Befehls
 weiterhin die jeweilige Methode des RequestEncoders veranlasst\\
-Zudem gibt es ein weiteres Package, welches die im Protokoll beschriebenen 
-Entitäten enthält. Dieses ist nötig, um eine gewisse Konsistenz zwischen Server 
+Zudem gibt es ein weiteres Package, welches die im Protokoll beschriebenen
+Entitäten enthält. Dieses ist nötig, um eine gewisse Konsistenz zwischen Server
 und Klient zu schaffen.\\
-Für die bereits angesprochene JSON Serialisierung wird sowohl Server- , als 
+Für die bereits angesprochene JSON Serialisierung wird sowohl Server- , als
 auch Klientseitig die Jackson Library verwendet.
 
 \subsection{Karte}
@@ -108,17 +111,30 @@ osmdroid bonuspack hinzugefügt, um clustering zu verwirklichen
 marker package im map package: UserMarker, EventMarker, +...
 
 \subsection{Datenbank}
-Event entity hat jetzt Gruppen ID
-TypeConverter für Integer Sets hinzugefügt
-Position entity durch android.location.Location ersetzt
+Events enthalten nun die eindeutige Identifikationsnummer der Gruppe,
+zu der sie gehören. So müssen Events nicht innerhalb der Gruppe
+gespeichert oder referenziert werden und können leichter in der
+Datenbank gefunden werden.\\
+User Entitäten haben nun weitere Felder, die angeben, ob der aktuelle Benutzer
+mit ihnen befreundet ist, sie blockiert hat, eine Freundschaftsanfrage
+gesendet oder bekommen hat.\\
+Außerdem wurde die eigene Position Entität durch android.location.Location
+ersetzt und der TypeConverter angepasst. Diese Klasse speichert bereits
+einen Zeitpunkt und macht so das Speichern des Zeitpunktes des letzten
+Positionsupdates überflüssig.
 
 \subsection{Ortung}
 GPSProvider nur Service, Map ist selbst auch LocationListener
 GPSProviderManager hinzugefügt, um den GPSProvider zu starten
 
 \subsection{Gruppeneinstellungen}
-GroupSettingsActivity statt Fragment (BackStack einfacher), ViewModel dazu entfernt/kein eigenes mehr
-MemberListAdapter hinzugefügt
+Der Einstellungsbildschirm der Gruppe ist nun eine Activity statt einem
+Fragment, sodass die Historie der vergangenen Bildschirme und die
+Navigation einfacher und sinnvoller umgesetzt werden können.\\
+Das zugehörige ViewModel wurde entfernt, stattdessen wird das
+GroupViewModel verwendet, um Redundanz zu vermeiden.\\
+Um die Gruppenmitglieder anzuzeigen, wurde ein MemberListAdapter
+hinzugefügt.
 
 \subsection{Über uns}
 about package/activity hinzugefügt
