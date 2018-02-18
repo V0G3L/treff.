@@ -24,7 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".view.home.TreffPunkt">
+        android:name=".view.util.TreffPunkt">
 
         <activity
             android:name=".view.login.LoginActivity"

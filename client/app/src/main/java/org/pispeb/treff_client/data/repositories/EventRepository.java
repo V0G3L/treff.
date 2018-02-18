@@ -3,11 +3,9 @@ package org.pispeb.treff_client.data.repositories;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.UserGroup;
-import org.pispeb.treff_client.data.networking.ConnectionHandler;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.paging.LivePagedListBuilder;
@@ -19,8 +17,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**

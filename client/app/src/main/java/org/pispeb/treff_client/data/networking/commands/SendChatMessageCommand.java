@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.util.Date;
 

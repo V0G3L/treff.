@@ -3,10 +3,8 @@ package org.pispeb.treff_client.view.home.groupList;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
-import java.util.HashSet;
 
 public class AddGroupViewModel extends ViewModel {
     private UserGroupRepository userGroupRepository;

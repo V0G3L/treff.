@@ -27,7 +27,6 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 import java.util.Calendar;
 
-
 /**
  * Lets the user create a new event inside a group
  */

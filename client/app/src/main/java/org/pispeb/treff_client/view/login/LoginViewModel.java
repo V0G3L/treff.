@@ -3,12 +3,10 @@ package org.pispeb.treff_client.view.login;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import org.pispeb.treff_client.data.networking.RequestEncoder;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;

@@ -2,12 +2,9 @@ package org.pispeb.treff_client.view.home.eventList;
 
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +12,13 @@ import android.view.ViewGroup;
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.databinding.EventItemBinding;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 import org.pispeb.treff_client.view.home.map.MapFragment;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Adapter to hold {@link EventListViewHolder}s and display them in a list

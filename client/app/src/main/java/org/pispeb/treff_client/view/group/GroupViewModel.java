@@ -14,7 +14,6 @@ import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.List;
 
-
 /**
  * Holding Group that is currently displayed in Activity
  */

@@ -3,12 +3,11 @@ package org.pispeb.treff_client.data.networking.commands;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 /**
  * Class representing a JSON login object

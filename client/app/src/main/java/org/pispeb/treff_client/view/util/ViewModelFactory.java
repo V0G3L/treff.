@@ -8,16 +8,9 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.pispeb.treff_client.data.database.ChatDao;
-import org.pispeb.treff_client.data.database.EventDao;
-import org.pispeb.treff_client.data.database.TreffDatabase;
-import org.pispeb.treff_client.data.database.UserDao;
-import org.pispeb.treff_client.data.database.UserGroupDao;
+import org.pispeb.treff_client.data.database.*;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
-import org.pispeb.treff_client.data.repositories.ChatRepository;
-import org.pispeb.treff_client.data.repositories.EventRepository;
-import org.pispeb.treff_client.data.repositories.UserGroupRepository;
-import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.data.repositories.*;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
 import org.pispeb.treff_client.view.group.GroupViewModel;
 import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;

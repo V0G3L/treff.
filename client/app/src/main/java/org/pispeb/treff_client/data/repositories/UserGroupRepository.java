@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.entities.GroupMembership;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.util.List;
 

@@ -12,10 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.FragmentFriendListBinding;
 import org.pispeb.treff_client.view.friend.FriendActivity;
-import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 

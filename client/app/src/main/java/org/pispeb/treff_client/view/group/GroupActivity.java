@@ -1,8 +1,5 @@
 package org.pispeb.treff_client.view.group;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -14,22 +11,18 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TimePicker;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.data.gps_handling.GPSProvider;
 import org.pispeb.treff_client.data.gps_handling.GPSProviderManager;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
 import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
-import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.Calendar;
-
 
 /**
  * Group screen, hosting chat and event fragments in tabs

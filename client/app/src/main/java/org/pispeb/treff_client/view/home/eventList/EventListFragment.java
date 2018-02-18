@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.osmdroid.config.Configuration;
-import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.databinding.FragmentEventListBinding;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 

@@ -10,8 +10,6 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
-import java.util.List;
-
 /**
  * Stores and manages the necessary data for the GroupListFragment
  */

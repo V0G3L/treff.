@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 /**
  * Class representing a JSON register object

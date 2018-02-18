@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.view.home;
+package org.pispeb.treff_client.view.util;
 
 import android.app.Application;
 import android.content.Context;

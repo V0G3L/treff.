@@ -13,10 +13,7 @@ import android.view.ViewGroup;
 import org.pispeb.treff_client.databinding.FragmentGroupListBinding;
 import org.pispeb.treff_client.view.group.GroupActivity;
 import org.pispeb.treff_client.view.util.State;
-import org.pispeb.treff_client.view.util.ViewCall;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
-
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
 /**
  * Fragment hosting RecyclerView of GroupList and handling onClick-events

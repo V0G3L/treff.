@@ -9,8 +9,6 @@ import android.location.LocationManager;
 import android.widget.DatePicker;
 import android.widget.TimePicker;
 
-import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
@@ -18,7 +16,6 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * ViewModel for creating a new event

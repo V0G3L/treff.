@@ -1,14 +1,11 @@
 package org.pispeb.treff_client.view.home.eventList;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.repositories.EventRepository;
-
-import java.util.List;
 
 /**
  * Stores and manages the necessary data for the EventListFragment
