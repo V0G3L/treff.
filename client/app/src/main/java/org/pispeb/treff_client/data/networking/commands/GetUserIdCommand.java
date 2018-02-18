@@ -35,7 +35,9 @@ public class GetUserIdCommand extends AbstractCommand {
         userRepository.addUser(new User(
                 response.id,
                 output.user,
-                true,
+                false,
+                false,
+                false,
                 false,
                 new Location(LocationManager.GPS_PROVIDER)));
     }

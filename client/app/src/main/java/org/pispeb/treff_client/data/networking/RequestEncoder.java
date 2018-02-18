@@ -1,16 +1,23 @@
 package org.pispeb.treff_client.data.networking;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.database.TreffDatabase;
 import org.pispeb.treff_client.data.networking.commands.*;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
@@ -31,7 +38,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
-    private final String TOKEN = "someToken";
     private final int DISPLAY_ERROR_TOAST = 1;
 
     // mapper to convert from Pojos to Strings and vice versa
@@ -68,6 +74,8 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         idle = true;
 
         mapper = new ObjectMapper();
+        mapper.enable(DeserializationFeature
+                .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
         HandlerThread thread = new HandlerThread("gbt",
                 HandlerThread.MIN_PRIORITY);
@@ -163,12 +171,15 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
             //should never happen as long as server is working correctly
             return;
         }
+        Log.i("RequestEncoder", "Message received: " + message);
         AbstractCommand c = commands.poll();
         try {
             ErrorResponse error = mapper
                     .readValue(message, ErrorResponse.class);
+            Log.i("RequestEncoder", "Error");
             handleError(error);
         } catch (IOException e) {
+            // it is no Error
             try {
                 AbstractResponse response = mapper.readValue(message, c
                         .getResponseClass());
@@ -185,6 +196,13 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         } else {
             idle = true;
         }
+    }
+
+    private String getToken() {
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        return pref.getString(ctx.getString(R.string.key_token), "");
     }
 
     /**
@@ -281,7 +299,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param username the new username
      */
     public synchronized void editUsername(String username) {
-        executeCommand(new EditUsernameCommand(username, TOKEN));
+        executeCommand(new EditUsernameCommand(username, getToken()));
     }
 
     /**
@@ -290,7 +308,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param email the new email
      */
     public synchronized void editEmail(String email) {
-        executeCommand(new EditEmailCommand(email, TOKEN));
+        executeCommand(new EditEmailCommand(email, getToken()));
     }
 
     /**
@@ -300,7 +318,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param newPassword the new password
      */
     public synchronized void editPassword(String password, String newPassword) {
-        executeCommand(new EditPasswordCommand(password, newPassword, TOKEN));
+        executeCommand(new EditPasswordCommand(password, newPassword, getToken()));
     }
 
     /**
@@ -330,7 +348,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param password the password of the user
      */
     public synchronized void deleteAccount(String password) {
-        executeCommand(new DeleteAccountCommand(password, TOKEN));
+        executeCommand(new DeleteAccountCommand(password, getToken()));
     }
 
     /**
@@ -340,7 +358,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @return The user id of the user
      */
     public synchronized void getUserId(String username) {
-        executeCommand(new GetUserIdCommand(username, TOKEN, userRepository));
+        executeCommand(new GetUserIdCommand(username, getToken(), userRepository));
     }
 
     /**
@@ -349,35 +367,46 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param userId Contact to be added to the friend list
      */
     public synchronized void sendContactRequest(int userId) {
-        executeCommand(new SendContactRequestCommand(userId, TOKEN));
+        executeCommand(new SendContactRequestCommand(userId, getToken()));
+    }
+
+    /**
+     * Method to perform an send-contact-request request
+     *
+     * @param userName Contact to be added to the friend list
+     */
+    public synchronized void sendContactRequest(String userName) {
+        executeCommand(new GetUserIdCommand(userName, getToken(), userRepository));
+        executeCommand(new SendContactRequestCommand(userName, getToken(),
+                userRepository));
     }
 
 
     public synchronized void cancelContactRequest(int userId) {
-        executeCommand(new CancelContactRequestCommand(userId, TOKEN,
+        executeCommand(new CancelContactRequestCommand(userId, getToken(),
                 userRepository));
     }
 
     public synchronized void acceptContactRequest(int userId) {
-        executeCommand(new AcceptContactRequestCommand(userId, TOKEN,
+        executeCommand(new AcceptContactRequestCommand(userId, getToken(),
                 userRepository));
     }
 
     public synchronized void rejectContactRequest(int userId) {
-        executeCommand(new RejectContactRequestCommand(userId, TOKEN,
+        executeCommand(new RejectContactRequestCommand(userId, getToken(),
                 userRepository));
     }
 
     public synchronized void removeContact(int userId) {
-        executeCommand(new RemoveContactCommand(userId, TOKEN, userRepository));
+        executeCommand(new RemoveContactCommand(userId, getToken(), userRepository));
     }
 
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(TOKEN));
+        executeCommand(new GetContactListCommand(getToken()));
     }
 
     public synchronized void blockAccount(int userId) {
-        executeCommand(new BlockAccountCommand(userId, TOKEN, userRepository));
+        executeCommand(new BlockAccountCommand(userId, getToken(), userRepository));
     }
 
     /**
@@ -387,7 +416,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      */
     public synchronized void unblockAccount(int userId) {
         executeCommand(
-                new UnblockAccountCommand(userId, TOKEN, userRepository));
+                new UnblockAccountCommand(userId, getToken(), userRepository));
     }
 
     /**
@@ -397,7 +426,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param memberIds Array of the ID's of the members
      */
     public synchronized void createGroup(String groupName, int[] memberIds) {
-        executeCommand(new CreateGroupCommand(groupName, memberIds, TOKEN,
+        executeCommand(new CreateGroupCommand(groupName, memberIds, getToken(),
                 userGroupRepository));
     }
 
@@ -407,7 +436,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param groupId ID of the group
      */
     public synchronized void editGroup(int groupId, String groupName) {
-        executeCommand(new EditGroupCommand(groupId, groupName, TOKEN,
+        executeCommand(new EditGroupCommand(groupId, groupName, getToken(),
                 userGroupRepository));
     }
 
@@ -419,7 +448,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @return true if the request was successful, false if not
      */
     public synchronized void addGroupMembers(int groupId, int[] newMembers) {
-        executeCommand(new AddGroupMembersCommand(groupId, newMembers, TOKEN,
+        executeCommand(new AddGroupMembersCommand(groupId, newMembers, getToken(),
                 userGroupRepository));
     }
 
@@ -430,12 +459,12 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * @param members The ID of the member to be removed
      */
     public synchronized void removeGroupMembers(int groupId, int[] members) {
-        executeCommand(new RemoveGroupMembersCommand(groupId, members, TOKEN,
+        executeCommand(new RemoveGroupMembersCommand(groupId, members, getToken(),
                 userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
-        executeCommand(new GetPermissionsCommand(groupId, userId, TOKEN));
+        executeCommand(new GetPermissionsCommand(groupId, userId, getToken()));
     }
 
     /**
@@ -452,7 +481,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                                          Date timeEnd, Position position) {
         executeCommand(
                 new CreateEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, TOKEN, eventRepository));
+                        timeEnd, position, getToken(), eventRepository));
     }
 
     public synchronized void editEvent(int groupId, String title, int creatorId,
@@ -461,19 +490,19 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                                        int eventId) {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, eventId, TOKEN, eventRepository));
+                        timeEnd, position, eventId, getToken(), eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
-        executeCommand(new JoinEventCommand(groupId, eventId, TOKEN));
+        executeCommand(new JoinEventCommand(groupId, eventId, getToken()));
     }
 
     public synchronized void leaveEvent(int groupId, int eventId) {
-        executeCommand(new LeaveEventCommand(groupId, eventId, TOKEN));
+        executeCommand(new LeaveEventCommand(groupId, eventId, getToken()));
     }
 
     public synchronized void removeEvent(int groupId, int eventId) {
-        executeCommand(new RemoveEventCommand(groupId, eventId, TOKEN,
+        executeCommand(new RemoveEventCommand(groupId, eventId, getToken(),
                 eventRepository));
     }
 
@@ -481,21 +510,21 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                                         boolean isMultiChoice,
                                         Date timeVoteClose) {
         executeCommand(new CreatePollCommand(groupId, question,
-                isMultiChoice, timeVoteClose, TOKEN));
+                isMultiChoice, timeVoteClose, getToken()));
     }
 
     public synchronized void editPoll(int groupId, String question,
                                       boolean isMultiChoice,
                                       Date timeVoteClose, int id) {
         executeCommand(new EditPollCommand(groupId, question, isMultiChoice,
-                timeVoteClose, id, TOKEN));
+                timeVoteClose, id, getToken()));
     }
 
     public synchronized void addPollOption(int groupId, int pollId,
                                            long latitude, long longitude,
                                            Date timeStart, Date timeEnd) {
         executeCommand(new AddPollOptionCommand(groupId, pollId, latitude,
-                longitude, timeStart, timeEnd, TOKEN));
+                longitude, timeStart, timeEnd, getToken()));
     }
 
     public synchronized void editPollOption(int groupId, int pollId,
@@ -504,25 +533,25 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                                             int optionId) {
         executeCommand(
                 new EditPollOptionCommand(groupId, pollId, latitude, longitude,
-                        timeStart, timeEnd, optionId, TOKEN));
+                        timeStart, timeEnd, optionId, getToken()));
     }
 
     public synchronized void voteForOption(int groupId, int pollId, int id) {
-        executeCommand(new VoteForOptionCommand(groupId, pollId, id, TOKEN));
+        executeCommand(new VoteForOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void withdrawVoteForOption(int groupId, int pollId,
                                                    int id) {
         executeCommand(
-                new WithdrawVoteForOptionCommand(groupId, pollId, id, TOKEN));
+                new WithdrawVoteForOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void removePollOption(int groupId, int pollId, int id) {
-        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, TOKEN));
+        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void removePoll(int groupId, int pollId) {
-        executeCommand(new RemovePollCommand(groupId, pollId, TOKEN));
+        executeCommand(new RemovePollCommand(groupId, pollId, getToken()));
     }
 
     /**
@@ -533,7 +562,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      */
 
     public synchronized void sendChatMessage(int groupId, String message) {
-        executeCommand(new SendChatMessageCommand(groupId, message, TOKEN,
+        executeCommand(new SendChatMessageCommand(groupId, message, getToken(),
                 chatRepository));
     }
 
@@ -541,37 +570,37 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      * Metod to get information about the users groups
      */
     public synchronized void listGroups() {
-        executeCommand(new ListGroupsCommad(TOKEN));
+        executeCommand(new ListGroupsCommad(getToken()));
     }
 
 
     public synchronized void getGroupDetails(int groupId) {
-        executeCommand(new GetGroupDetailsCommand(groupId, TOKEN));
+        executeCommand(new GetGroupDetailsCommand(groupId, getToken()));
     }
 
     public synchronized void getUserDetails(int userId) {
-        executeCommand(new GetUserDetailsCommand(userId, TOKEN));
+        executeCommand(new GetUserDetailsCommand(userId, getToken()));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
-        executeCommand(new GetEventDetailsCommand(eventId, groupId, TOKEN));
+        executeCommand(new GetEventDetailsCommand(eventId, groupId, getToken()));
     }
 
     public synchronized void getPollDetails(int pollId, int groupId) {
-        executeCommand(new GetPollDetailsCommand(pollId, groupId, TOKEN));
+        executeCommand(new GetPollDetailsCommand(pollId, groupId, getToken()));
     }
 
     public synchronized void requestPosition(int groupId, Date endTime) {
-        executeCommand(new RequestPositionCommand(groupId, endTime, TOKEN));
+        executeCommand(new RequestPositionCommand(groupId, endTime, getToken()));
     }
 
     public synchronized void updatePosition(double latitude, double longitude,
                                             Date time) {
         executeCommand(
-                new UpdatePositionCommand(latitude, longitude, time, TOKEN));
+                new UpdatePositionCommand(latitude, longitude, time, getToken()));
     }
 
     public synchronized void publishPosition(int groupId, Date endTime) {
-        executeCommand(new PublishPositionCommand(groupId, endTime, TOKEN));
+        executeCommand(new PublishPositionCommand(groupId, endTime, getToken()));
     }
 }

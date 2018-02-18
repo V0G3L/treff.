@@ -23,7 +23,7 @@ public class FriendViewModel extends ViewModel {
     }
 
     public void setUserById(int userId) {
-        user = userRepository.getUser(userId);
+        user = userRepository.getUserLiveData(userId);
     }
 
     public LiveData<User> getUser() {

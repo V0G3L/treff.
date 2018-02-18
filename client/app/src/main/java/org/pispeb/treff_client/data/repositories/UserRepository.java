@@ -2,8 +2,10 @@ package org.pispeb.treff_client.data.repositories;
 
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
+import android.arch.persistence.room.Query;
 import android.os.Handler;
 
 import org.pispeb.treff_client.data.database.UserDao;
@@ -24,15 +26,27 @@ public class UserRepository {
         this.backgroundHandler = backgroundHandler;
     }
 
-    public LiveData<User> getUser(int userID) {
+    public LiveData<User> getUserLiveData(int userID) {
         //TODO send update request to server
-        return userDao.getUserByID(userID);
+        return userDao.getUserByIdLiveData(userID);
+    }
+
+    public User getUser(String username) {
+        //TODO send update request to server
+        return userDao.getUserByName(username);
     }
 
     public LiveData<PagedList<User>> getFriends() {
         //TODO send update request to server
         encoder.getContactList();
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
+    }
+
+    public LiveData<PagedList<User>> getFriendsAndPending() {
+        //TODO send update request to server
+        encoder.getContactList();
+        return new LivePagedListBuilder<>(userDao.getFriendsAndPending(), 30)
+                .build();
     }
 
     public LiveData<List<User>> getFriendsAsList() {
@@ -51,14 +65,32 @@ public class UserRepository {
         });
     }
 
+    public void setIsPending(int userId, boolean isPending) {
+        backgroundHandler.post(() -> {
+            userDao.setIsPending(userId, isPending);
+        });
+    }
+
+    public void setIsRequesting(int userId, boolean isRequesting) {
+        backgroundHandler.post(() -> {
+            userDao.setIsRequesting(userId, isRequesting);
+        });
+    }
+
     public void addUser(User user) {
         backgroundHandler.post(() -> {
             userDao.save(user);
         });
     }
 
+    public void updateUser(User user) {
+        backgroundHandler.post(() -> {
+            userDao.update(user);
+        });
+    }
+
     public void requestAddUser(String username) {
-        encoder.getUserId(username);
+        encoder.sendContactRequest(username);
     }
 
     public void requestIsBlocked(int userId, boolean isBlocked) {

@@ -24,7 +24,7 @@ public class FriendListViewModel extends ViewModel
 
     public FriendListViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.friends = userRepository.getFriends();
+        this.friends = userRepository.getFriendsAndPending();
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, -1));
     }

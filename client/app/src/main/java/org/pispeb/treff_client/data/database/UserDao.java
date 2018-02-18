@@ -21,10 +21,20 @@ public interface UserDao {
     void save(User user);
 
     @Query("SELECT * FROM user WHERE userID = :userID")
-    LiveData<User> getUserByID(int userID);
+    LiveData<User> getUserByIdLiveData(int userID);
+
+    @Query("SELECT * FROM user WHERE username = :username")
+    User getUserByName(String username);
+
+    @Update
+    void update(User user);
 
     @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
     DataSource.Factory<Integer, User> getFriends();
+
+    @Query("SELECT * FROM user WHERE (isFriend = 1 | requestPending = 1 | " +
+            "isRequesting = 1) & isBlocked = 0")
+    DataSource.Factory<Integer, User> getFriendsAndPending();
 
     @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
     LiveData<List<User>> getFriendsAsList();
@@ -34,5 +44,12 @@ public interface UserDao {
 
     @Query("UPDATE user SET isFriend = :isFriend WHERE userId = :userId")
     void setIsFriend(int userId, boolean isFriend);
+
+    @Query("UPDATE user SET isPending = :isPending WHERE userId = :userId")
+    void setIsPending(int userId, boolean isPending);
+
+    @Query("UPDATE user SET isRequesting = :isRequesting WHERE userId = " +
+            ":userId")
+    void setIsRequesting(int userId, boolean isRequesting);
 
 }

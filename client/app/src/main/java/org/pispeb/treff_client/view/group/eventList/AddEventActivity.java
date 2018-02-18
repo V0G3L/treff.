@@ -92,7 +92,7 @@ public class AddEventActivity extends AppCompatActivity {
         map.setTilesScaledToDpi(true);
         IMapController controller = map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
-        controller.setCenter(new GeoPoint(45d, 9d));
+        controller.setCenter(new GeoPoint(49d, 9d));
 
         binding.setVm(vm);
     }

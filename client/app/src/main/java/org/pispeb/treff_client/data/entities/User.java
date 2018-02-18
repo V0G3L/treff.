@@ -1,13 +1,8 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
-import android.location.LocationManager;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Room {@link Entity} that represents a user, contains only as much information as the client needs
@@ -20,14 +15,23 @@ public class User {
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
+    private boolean isRequesting;
+    private boolean requestPending;
     private Location location;
 
-    public User(int userId, String username, boolean isFriend, boolean
-            isBlocked, Location location) {
+    public User(int userId,
+                String username,
+                boolean isFriend,
+                boolean isBlocked,
+                boolean isRequesting,
+                boolean requestPending,
+                Location location) {
         this.userId = userId;
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
+        this.isRequesting = isRequesting;
+        this.requestPending = requestPending;
         this.location = location;
     }
 
@@ -61,6 +65,22 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public boolean isRequesting() {
+        return isRequesting;
+    }
+
+    public void setRequesting(boolean requesting) {
+        this.isRequesting = requesting;
+    }
+
+    public boolean isRequestPending() {
+        return requestPending;
+    }
+
+    public void setRequestPending(boolean requestPending) {
+        this.requestPending = requestPending;
     }
 
     public Location getLocation() {

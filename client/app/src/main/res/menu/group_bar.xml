@@ -5,7 +5,7 @@
     <item
         android:id="@+id/shareLocation"
         android:title="@string/share_location"
-        android:icon="@drawable/ic_add_location_black_24dp"
+        android:icon="@drawable/ic_person_pin_circle_white_24dp"
         app:showAsAction="always"/>
 
     <item

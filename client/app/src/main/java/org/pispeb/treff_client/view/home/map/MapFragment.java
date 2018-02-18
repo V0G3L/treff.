@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -65,7 +69,7 @@ public class MapFragment extends Fragment {
     private FolderOverlay pollOptionMarkers;
     private FolderOverlay eventMarkers;
     // TODO replace with RadiusMarkerClusterer
-    private FolderOverlay contactMarkers;
+    private RadiusMarkerClusterer contactMarkers;
     private Marker userMarker;
 
     private final static int POLLS = 0;
@@ -222,7 +226,12 @@ public class MapFragment extends Fragment {
         master = new FolderOverlay();
         pollOptionMarkers = new FolderOverlay();
         eventMarkers = new FolderOverlay();
-        contactMarkers = new FolderOverlay();
+        contactMarkers = new RadiusMarkerClusterer(getContext());
+        Drawable groupIcon = getResources().getDrawable(R.drawable
+                .marker_group, getContext().getTheme());
+
+        Bitmap clusterIcon = ((BitmapDrawable) groupIcon).getBitmap();
+        contactMarkers.setIcon(clusterIcon);
         userMarker = new Marker(map);
 
         master.add(pollOptionMarkers);
@@ -248,7 +257,8 @@ public class MapFragment extends Fragment {
 
     private void updateContactLocations(List<User> contacts) {
         // TODO replace with nicer update algorithm
-        ((FolderOverlay) master.getItems().get(CONTACTS)).getItems().clear();
+        ((RadiusMarkerClusterer) master.getItems().get(CONTACTS))
+                .getItems().clear();
         List<UserMarker> markers = new ArrayList<>();
         for (User u : contacts) {
             UserMarker m = new UserMarker(map, u);
@@ -256,8 +266,8 @@ public class MapFragment extends Fragment {
                     getContext().getTheme()));
             markers.add(m);
         }
-        ((FolderOverlay) master.getItems().get(CONTACTS)).getItems().addAll
-                (markers);
+        ((RadiusMarkerClusterer) master.getItems().get(CONTACTS))
+                .getItems().addAll(markers);
     }
 
     private void updateEventLocations(List<Event> events) {
