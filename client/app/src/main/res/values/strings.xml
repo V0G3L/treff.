@@ -3,7 +3,7 @@
     <string name="username_path" translatable="false">org_pispeb_treff_client_username</string>
 
     <!-- home activity tab titles -->
-    <string name="tabtext_events">Events &amp; Polls</string>
+    <string name="tabtext_events">Events</string>
     <string name="tabtext_map">Map</string>
     <string name="tabtext_contacts">Contacts</string>
     <string name="tabtext_groups">Groups</string>
@@ -29,21 +29,23 @@
     <!-- settings activity -->
     <string name="settings_title">Settings</string>
 
-    <!-- error codes -->
-    <string name="error_errorcode_invalid">Unknown error code</string>
-    <string name="error_username_taken">Username is already taken</string>
-    <string name="error_email_invalid">Not a valid email address</string>
-    <string name="error_session">User session is no longer valid</string>
+    <!-- about activity -->
+    <string name="about_title">About us</string>
 
     <!-- login/register -->
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
-    <string name="login_email">Email</string>
+    <string name="login_email">Email-Addresse</string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
     <string name="login_auth">Authenticating...</string>
 
-    
+    <!--Service description-->
+    <string name="gps_service_description" translatable="false">Provides GPS Location for the \"treff.\"-App</string>
+    <string name="mute_chat_setting">Mute Chat</string>
+    <string name="mute_location_requests_settings">Mute location requests</string>
+
+
     <!-- TODO more specific comments -->
     <!-- GUI texts -->
     <string name="username_contact">Contact\'s Username</string>
@@ -57,12 +59,67 @@
     <string name="poll_or_event">What do you want to add?</string>
     <string name="poll">Poll</string>
     <string name="event">Event</string>
-
-    <!--Service description-->
-    <string name="gps_service_description">Provides GPS Location for the \"treff.\"-App</string>
-    <string name="mute_chat_setting">Mute Chat</string>
-    <string name="mute_location_requests_settings">Mute location requests</string>
     <string name="leave_group">Leave group</string>
     <string name="event_title">Event Title</string>
+    <string name="manage_groups">Manage Groups</string>
+    <string name="prompt_email">Email-Address</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Log in or register</string>
+    <string name="action_sign_in_short">Log in</string>
+    <string name="error_invalid_email">Not a valid email-address</string>
+    <string name="error_invalid_password">Password too short</string>
+    <string name="error_incorrect_password">Password not correct</string>
+    <string name="error_field_required">Required field</string>
+    <string name="share_location">Share Location</string>
+    <string name="user_is_requesting">Contact Request</string>
+    <string name="request_from">Contact Request from </string>
+    <string name="request_pending">Request pending</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+
+    <!-- error codes -->
+    <string name="error_errorcode_invalid">Unknown error code</string>
+    <string name="error_wrong_parameters">Parameter in wrong format</string>
+    <string name="error_unknown_command">Cmd Parameter unknown</string>
+    <string name="error_token_inv">authentication token invalid</string>
+    <string name="error_login_inv">Invalid username/password</string>
+    <string name="error_pw_reset_inv">Password reset code invalid</string>
+    <string name="error_user_id_inv">at least one account identification number is invalid</string>
+    <string name="error_group_id_inv">group identification number is invalid or account not part of the group</string>
+    <string name="error_event_id_inv">event identification number invalid</string>
+    <string name="error_poll_id_inv">poll identification number invalid</string>
+    <string name="error_poll_option_id_inv">poll option identification number invalid</string>
+    <string name="error_username_used">username already in use</string>
+    <string name="error_email_inv">email is invalid</string>
+    <string name="error_username_inv">username is invalid</string>
+    <string name="error_end_time_in_past">at least one end time is in the past</string>
+    <string name="error_end_before_start">at least one end time is not after the corresponding start time</string>
+    <string name="error_measure_in_future">the time of measurement is too far in the future</string>
+    <string name="error_already_contact">account already in contact list</string>
+    <string name="error_not_contact">account isn’t part of the own contact list</string>
+    <string name="error_request_pending">account can’t be a contact of itself</string>
+    <string name="error_no_request">no contact request from specified user</string>
+    <string name="error_user_blocked">this account was blocked by the given user</string>
+    <string name="error_blocked_by_user">the given account was blocked by this account</string>
+    <string name="error_not_blocked">the given account wasn’t blocked by this account</string>
+    <string name="error_self_block">account can’t block itself</string>
+    <string name="error_no_user_invited">no account invited except the own account</string>
+    <string name="error_user_already_in_group">at least one account is already part of the group</string>
+    <string name="error_user_not_in_group">at least one account is not part of the group</string>
+    <string name="error_already_in_event">account already part of this event</string>
+    <string name="error_not_in_event">account not part of this event</string>
+    <string name="error_already_voted">account already voted for this option</string>
+    <string name="error_no_multi_choice">multi-choice is not available for this poll</string>
+    <string name="error_not_voted_for">account didn’t vote for this option</string>
+    <string name="error_perm_edit_perm">account doesn’t possess the permission to edit permissions</string>
+    <string name="error_perm_edit_group">account doesn’t possess the permission to edit the group</string>
+    <string name="error_perm_edit_members">account doesn’t possess the permission to edit the list of group members</string>
+    <string name="error_perm_create_event">account doesn’t possess the permission to create events in this group</string>
+    <string name="error_perm_edit_event">account doesn’t possess the permission to edit the event</string>
+    <string name="error_perm_create_poll">account doesn’t possess the permission to create polls in this group</string>
+    <string name="error_perm_edit_poll">account doesn’t possess the permission to edit the poll</string>
+    <string name="channel_name">treff.</string>
+    <string name="channel_description">Location transmitted to other users</string>
+    <string name="tap_for_back">Tap to get back</string>
 
 </resources>

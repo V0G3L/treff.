@@ -26,8 +26,9 @@
             android:id="@+id/textlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/paddding_standard"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar" >
+            android:layout_margin="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            android:theme="@style/GreyTextInputLayout">
 
             <EditText
                 android:id="@+id/username"
@@ -43,21 +44,23 @@
             android:id="@+id/okButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:backgroundTint="@color/colorAccent"
             android:onClick="@{() -> vm.onOkClick()}"
             android:text="@string/add_contact"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toEndOf="@id/cancelButton"
-            app:layout_constraintTop_toBottomOf="@id/textlayout" />
+            app:layout_constraintTop_toBottomOf="@id/textlayout"
+            android:textColor="@color/white"/>
 
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:onClick="@{() -> vm.onCancelClick()}"
             android:text="@string/cancel"
-            android:backgroundTint="@color/colorPrimary"
             app:layout_constraintEnd_toStartOf="@id/okButton"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"

@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+    implementation 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.13.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
@@ -42,4 +43,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'org.osmdroid:osmdroid-android:5.6.5'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    compile 'com.github.MKergall:osmbonuspack:6.4'
 }

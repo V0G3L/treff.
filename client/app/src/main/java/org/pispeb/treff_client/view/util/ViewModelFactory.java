@@ -6,26 +6,17 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
-import org.pispeb.treff_client.data.database.ChatDao;
-import org.pispeb.treff_client.data.database.EventDao;
-import org.pispeb.treff_client.data.database.PollDao;
-import org.pispeb.treff_client.data.database.TreffDatabase;
-import org.pispeb.treff_client.data.database.UserDao;
-import org.pispeb.treff_client.data.database.UserGroupDao;
+import org.pispeb.treff_client.data.database.*;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
-import org.pispeb.treff_client.data.repositories.ChatRepository;
-import org.pispeb.treff_client.data.repositories.EventRepository;
-import org.pispeb.treff_client.data.repositories.PollRepository;
-import org.pispeb.treff_client.data.repositories.UserGroupRepository;
-import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.data.repositories.*;
 import org.pispeb.treff_client.view.friend.FriendViewModel;
 import org.pispeb.treff_client.view.group.GroupViewModel;
 import org.pispeb.treff_client.view.group.chat.GroupChatViewModel;
 import org.pispeb.treff_client.view.group.eventList.AddEventViewModel;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel;
 import org.pispeb.treff_client.view.home.eventList.EventListViewModel;
-import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.home.friendList.AddFriendViewModel;
 import org.pispeb.treff_client.view.home.friendList.FriendListViewModel;
 import org.pispeb.treff_client.view.home.groupList.AddGroupViewModel;
@@ -47,13 +38,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final UserGroupDao userGroupDao;
     private final EventDao eventDao;
     private final ChatDao chatDao;
-    private final PollDao pollDao;
 
     private final UserRepository userRepository;
     private final UserGroupRepository userGroupRepository;
     private final EventRepository eventRepository;
     private final ChatRepository chatRepository;
-    private final PollRepository pollRepository;
 
     private final RequestEncoder encoder;
 
@@ -65,15 +54,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     private ViewModelFactory(Context context) {
+        Log.i("ViewmodelFactory", "create");
         TreffDatabase database = TreffDatabase.getInstance(context);
         userDao = database.getUserDao();
         userGroupDao = database.getUserGroupDao();
         eventDao = database.getEventDao();
         chatDao = database.getChatDao();
-        pollDao = database.getPollDao();
 
 
-        encoder = new RequestEncoder();
+        encoder = RequestEncoder.getInstance();
 
         HandlerThread thread = new HandlerThread("gbt",
                 HandlerThread.MIN_PRIORITY);
@@ -81,10 +70,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         Handler handler = new Handler(thread.getLooper());
 
         userRepository = new UserRepository(userDao, encoder, handler);
-        userGroupRepository = new UserGroupRepository(userGroupDao, encoder, handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, eventDao, chatDao, encoder, handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
-        pollRepository = new PollRepository(pollDao, encoder, handler);
+
+        encoder.setRepos(userRepository,
+                userGroupRepository,
+                eventRepository,
+                chatRepository);
     }
 
     @NonNull
@@ -104,27 +97,37 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MapViewModel(
                     userGroupRepository,
                     userRepository,
-                    eventRepository,
-                    pollRepository);
+                    eventRepository);
         } else if (AddGroupViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new AddGroupViewModel(userGroupRepository);
+            return (T) new AddGroupViewModel(userGroupRepository, userRepository);
         } else if (GroupChatViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new GroupChatViewModel(chatRepository);
         } else if (GroupViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new GroupViewModel(userGroupRepository);
+            return (T) new GroupViewModel(userGroupRepository, userRepository);
         } else if (GroupEventListViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new GroupEventListViewModel(eventRepository,
-                    pollRepository);
-        }else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new LoginViewModel();
-        }else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new AddEventViewModel(eventRepository, userGroupRepository);
+            return (T) new GroupEventListViewModel(eventRepository);
+        } else if (LoginViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new LoginViewModel(encoder);
+        } else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new AddEventViewModel(eventRepository,
+                    userGroupRepository);
         } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new RegisterViewModel();
+            return (T) new RegisterViewModel(encoder);
         }
 
         throw new IllegalArgumentException(
                 "Building an instance of the given class " + modelClass + " " +
                         "is not supported.");
+    }
+
+    /**
+     * Closes the {@link RequestEncoder}s connection
+     */
+    public static void closeConnection() {
+        if (INSTANCE != null) {
+            if (INSTANCE.encoder != null) {
+                INSTANCE.encoder.closeConnection();
+            }
+        }
     }
 }

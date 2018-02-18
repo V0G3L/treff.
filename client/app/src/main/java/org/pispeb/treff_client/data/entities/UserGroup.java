@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,16 +13,15 @@ import java.util.Set;
 
 @Entity(tableName = "usergroup")
 public class UserGroup {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int groupId;
     private String name;
-    private Set<Integer> events;
-    private Set<Integer> polls;
+    private boolean isSharingLocation;
 
-    public UserGroup(String name, Set<Integer> events, Set<Integer> polls) {
+    public UserGroup(int groupId, String name) {
+        this.groupId = groupId;
         this.name = name;
-        this.events = events;
-        this.polls = polls;
+        this.isSharingLocation = false;
     }
 
     public int getGroupId() {
@@ -40,20 +40,17 @@ public class UserGroup {
         this.name = name;
     }
 
-    public Set<Integer> getEvents() {
-        return events;
+    public boolean isSharingLocation() {
+        return isSharingLocation;
     }
 
-    public void setEvents(Set<Integer> events) {
-        this.events = events;
+    public void setSharingLocation(boolean sharingLocation) {
+        isSharingLocation = sharingLocation;
     }
 
-    public Set<Integer> getPolls() {
-        return polls;
-    }
-
-    public void setPolls(Set<Integer> polls) {
-        this.polls = polls;
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
@@ -61,21 +58,16 @@ public class UserGroup {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UserGroup userGroup = (UserGroup) o;
+        UserGroup group = (UserGroup) o;
 
-        if (groupId != userGroup.groupId) return false;
-        if (name != null ? !name.equals(userGroup.name) : userGroup.name != null) return false;
-        if (events != null ? !events.equals(userGroup.events) : userGroup.events != null)
-            return false;
-        return polls != null ? polls.equals(userGroup.polls) : userGroup.polls == null;
+        if (groupId != group.groupId) return false;
+        return name.equals(group.name);
     }
 
     @Override
     public int hashCode() {
         int result = groupId;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (events != null ? events.hashCode() : 0);
-        result = 31 * result + (polls != null ? polls.hashCode() : 0);
+        result = 31 * result + name.hashCode();
         return result;
     }
 }

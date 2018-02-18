@@ -3,26 +3,26 @@ package org.pispeb.treff_client.view.group.eventList;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.pispeb.treff_client.data.entities.Occasion;
 import org.pispeb.treff_client.databinding.FragmentGroupEventsBinding;
+import org.pispeb.treff_client.view.group.GroupActivity;
+import org.pispeb.treff_client.view.home.eventList.EventListAdapter;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Display events and polls created in the group in a list
  */
 
 public class GroupEventListFragment extends Fragment {
+
+    private GroupEventListViewModel vm;
+    private int groupId;
 
     @Nullable
     @Override
@@ -32,37 +32,22 @@ public class GroupEventListFragment extends Fragment {
         // inflate layout
         final FragmentGroupEventsBinding binding = FragmentGroupEventsBinding
                 .inflate(inflater, container, false);
-        GroupEventListViewModel vm = ViewModelProviders.of(this,
+        vm = ViewModelProviders.of(this,
                 ViewModelFactory.getInstance(getContext())).get
                 (GroupEventListViewModel.class);
-        final GroupEventListAdapter adapter = new GroupEventListAdapter();
+        final EventListAdapter adapter = new EventListAdapter(vm);
 
         binding.setVm(vm);
+
+        vm.setGroup(groupId);
 
         vm.getState().observe(this, state -> callback(state));
 
         // merge event and poll list when either of them changes
         vm.getEvents().observe(this, events -> {
-            List<Occasion> list = new LinkedList<>();
-            if (events != null) {
-                list.addAll(events);
-            }
-            if (vm.getPolls().getValue() != null) {
-                list.addAll(vm.getPolls().getValue());
-            }
-            adapter.setData(list);
+            adapter.setList(events);
         });
 
-        vm.getPolls().observe(this, polls -> {
-            List<Occasion> list = new LinkedList<>();
-            if (polls != null) {
-                list.addAll(polls);
-            }
-            if (vm.getEvents().getValue() != null) {
-                list.addAll(vm.getEvents().getValue());
-            }
-            adapter.setData(list);
-        });
 
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -74,14 +59,16 @@ public class GroupEventListFragment extends Fragment {
     // handling callbacks from the ViewModel that require a context
     private void callback(State state) {
         switch (state.call) {
-            case DISPLAY_EOP_DIALOG:
-                DialogFragment dialog = new EoPDialogFragment();
-                dialog.show(getFragmentManager(), "event or poll");
+            case ADD_EVENT:
+                //TODO make pretty
+                ((GroupActivity)getActivity()).onEventClick();
                 break;
             default:
                 throw new IllegalArgumentException("Illegal VM state");
         }
     }
 
-
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
+    }
 }

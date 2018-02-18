@@ -18,11 +18,9 @@ import org.pispeb.treff_client.data.entities.converter.*;
         ChatMessage.class,
         Event.class,
         GroupMembership.class,
-        Poll.class,
-        PollOption.class,
         User.class,
         UserGroup.class
-        }, version = 10, exportSchema = false)
+        }, version = 12, exportSchema = false)
 @TypeConverters({
         DateConverter.class,
         PositionConverter.class,
@@ -42,6 +40,4 @@ public abstract class TreffDatabase extends RoomDatabase {
     public abstract EventDao getEventDao();
     public abstract UserGroupDao getUserGroupDao();
     public abstract ChatDao getChatDao();
-    public abstract PollDao getPollDao();
-
 }

@@ -1,13 +1,8 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
-import android.location.LocationManager;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * Room {@link Entity} that represents a user, contains only as much information as the client needs
@@ -15,20 +10,29 @@ import java.util.Date;
 
 @Entity(tableName = "user")
 public class User {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int userId;
     private String username;
     private boolean isFriend;
     private boolean isBlocked;
-    private Position position;
-    private Date lastPositionUpdate;
+    private boolean isRequesting;
+    private boolean requestPending;
+    private Location location;
 
-    public User(String username, boolean isFriend, boolean isBlocked, Position position, Date lastPositionUpdate) {
+    public User(int userId,
+                String username,
+                boolean isFriend,
+                boolean isBlocked,
+                boolean isRequesting,
+                boolean requestPending,
+                Location location) {
+        this.userId = userId;
         this.username = username;
         this.isFriend = isFriend;
         this.isBlocked = isBlocked;
-        this.position = position;
-        this.lastPositionUpdate = lastPositionUpdate;
+        this.isRequesting = isRequesting;
+        this.requestPending = requestPending;
+        this.location = location;
     }
 
     public int getUserId() {
@@ -63,28 +67,28 @@ public class User {
         isBlocked = blocked;
     }
 
-    public Position getPosition() {
-        return position;
+    public boolean isRequesting() {
+        return isRequesting;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void setRequesting(boolean requesting) {
+        this.isRequesting = requesting;
     }
 
-    public Date getLastPositionUpdate() {
-        return lastPositionUpdate;
+    public boolean isRequestPending() {
+        return requestPending;
     }
 
-    public void setLastPositionUpdate(Date lastPositionUpdate) {
-        this.lastPositionUpdate = lastPositionUpdate;
+    public void setRequestPending(boolean requestPending) {
+        this.requestPending = requestPending;
     }
 
     public Location getLocation() {
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLatitude(position.getLat());
-        l.setLongitude(position.getLon());
-        l.setTime(lastPositionUpdate.getTime());
-        return l;
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     @Override
@@ -96,12 +100,11 @@ public class User {
 
         if (userId != user.userId) return false;
         if (isFriend != user.isFriend) return false;
-        if (isBlocked != user.isBlocked) return false;
         if (username != null ? !username.equals(user.username) : user.username != null)
             return false;
-        if (position != null ? !position.equals(user.position) : user.position != null)
+        if (location != null ? !location.equals(user.location) : user.location != null)
             return false;
-        return lastPositionUpdate != null ? lastPositionUpdate.equals(user.lastPositionUpdate) : user.lastPositionUpdate == null;
+        return isBlocked == user.isBlocked;
     }
 
     @Override
@@ -110,8 +113,7 @@ public class User {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (isFriend ? 1 : 0);
         result = 31 * result + (isBlocked ? 1 : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
-        result = 31 * result + (lastPositionUpdate != null ? lastPositionUpdate.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
         return result;
     }
 }

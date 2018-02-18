@@ -14,20 +14,29 @@ import java.util.Date;
  */
 
 @Entity(tableName = "event")
-public class Event extends Occasion{
-    @PrimaryKey(autoGenerate = true)
+public class Event extends Occasion {
+    @PrimaryKey
     private int id;
-    private Date created;
     private Date start;
-    private Position position;
+    private Date end;
+    private Location location;
     private int creator;
+    private int groupId;
 
-    public Event(String name, Date created, Date start, Position position, int creator) {
+    public Event(int id,
+                 String name,
+                 Date start,
+                 Date end,
+                 Location location,
+                 int creator,
+                 int groupId) {
+        this.id = id;
         this.name = name;
-        this.created = created;
         this.start = start;
-        this.position = position;
+        this.end = end;
+        this.location = location;
         this.creator = creator;
+        this.groupId = groupId;
     }
 
     public int getId() {
@@ -38,12 +47,12 @@ public class Event extends Occasion{
         this.id = id;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getEnd() {
+        return end;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
     public Date getStart() {
@@ -52,14 +61,6 @@ public class Event extends Occasion{
 
     public void setStart(Date start) {
         this.start = start;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
     }
 
     public int getCreator() {
@@ -71,15 +72,23 @@ public class Event extends Occasion{
     }
 
     public String getStartString() {
-        return start.toString().substring(0, 17);
+        return start.toString().substring(0, 16);
     }
 
     public Location getLocation() {
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLatitude(position.getLat());
-        l.setLongitude(position.getLon());
-        l.setTime(start.getTime());
-        return l;
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     @Override
@@ -91,17 +100,22 @@ public class Event extends Occasion{
 
         if (id != event.id) return false;
         if (creator != event.creator) return false;
-        if (created != null ? !created.equals(event.created) : event.created != null) return false;
-        if (start != null ? !start.equals(event.start) : event.start != null) return false;
-        return position != null ? position.equals(event.position) : event.position == null;
+        if (end != null ? !end.equals(event.end) : event.end !=null) {
+            return false;
+        }
+        if (start != null ? !start.equals(event.start) : event.start != null) {
+            return false;
+        }
+        return location != null ? location
+                .equals(event.location) : event.location == null;
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (end != null ? end.hashCode() : 0);
         result = 31 * result + (start != null ? start.hashCode() : 0);
-        result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (location != null ? location.hashCode() : 0);
         result = 31 * result + creator;
         return result;
     }

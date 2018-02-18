@@ -1,8 +1,6 @@
 package org.pispeb.treff_client.view.group.chat;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,9 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treff_client.databinding.FragmentGroupChatBinding;
-import org.pispeb.treff_client.view.friend.FriendActivity;
-import org.pispeb.treff_client.view.group.GroupActivity;
-import org.pispeb.treff_client.view.home.friendList.AddFriendActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
@@ -28,6 +23,8 @@ public class GroupChatFragment extends Fragment {
     private GroupChatViewModel vm;
     private FragmentGroupChatBinding binding;
     private GroupChatAdapter adapter;
+
+    private int groupId;
 
     @Nullable
     @Override
@@ -43,7 +40,7 @@ public class GroupChatFragment extends Fragment {
 
 
         //set groupID
-        vm.setGroupId(((GroupActivity) getActivity()).getGroupId());
+        vm.setGroup(groupId);
 
         vm.getMessages().observe(this, messages -> {
             adapter.setList(messages);
@@ -68,7 +65,11 @@ public class GroupChatFragment extends Fragment {
                 binding.text.setText("");
                 break;
             default:
-                Log.i("Chat", "Illegal VM State");
+                Log.e("Chat", "Illegal VM State");
         }
+    }
+
+    public void setGroup(int groupId) {
+        this.groupId = groupId;
     }
 }

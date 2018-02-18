@@ -6,8 +6,6 @@ import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +15,14 @@ import android.view.View;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityNavigationBinding;
+import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
+import org.pispeb.treff_client.view.login.LoginActivity;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
 
+/**
+ * Abstract Activity providing top level navigation through a navigation drawer
+ */
 public abstract class NavigationActivity extends AppCompatActivity {
 
     protected Toolbar toolbar;
@@ -62,10 +65,16 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         startActivity(settingsIntent);
                         return true;
                     case R.id.nav_about:
-                        // TODO About page
+                        Intent aboutIntent = new Intent(thisActivity,
+                                AboutActivity.class);
+                        startActivity(aboutIntent);
                         return true;
                     case R.id.nav_logout:
-                        // TODO logout
+                        // TODO delete db, tokens etc
+                        Intent logoutIntent = new Intent(thisActivity,
+                                LoginActivity.class);
+                        startActivity(logoutIntent);
+                        finish();
                         return true;
                     default:
                         return true;
@@ -75,11 +84,15 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Fixes the navigation drawer's highlighting
+     */
     abstract protected void setDrawerSelected();
 
-    protected void setupToolbar(Toolbar toolbar) {
+    protected void setupToolbar(Toolbar toolbar, int title) {
         //set custom toolbar as action bar
         this.toolbar = toolbar;
+        toolbar.setTitle(title);
         setSupportActionBar(toolbar);
 
         //drawer toggle

@@ -7,6 +7,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.data.entities.User;
 
+import java.util.Date;
+
 /**
  * Marker than can be displayed on OSM containing info about the user the
  * marker points to
@@ -33,7 +35,8 @@ public class UserMarker extends Marker {
     private void init() {
         setPosition(new GeoPoint(user.getLocation()));
         setTitle(user.getUsername());
-        setSnippet(user.getLastPositionUpdate().toString());
+        Date d = new Date(user.getLocation().getTime());
+        setSnippet(d.toString());
     }
 
     @Override

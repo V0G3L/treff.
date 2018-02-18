@@ -5,6 +5,10 @@ import android.arch.persistence.room.TypeConverter;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+/**
+ * Contains TypeConverters to allow conversion
+ * from {@link Date}s to Unix Timestamps and vice versa
+ */
 public class DateConverter {
 
     @TypeConverter

@@ -1,10 +1,13 @@
 package org.pispeb.treff_client.view.home.map.markers;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
 
 /**

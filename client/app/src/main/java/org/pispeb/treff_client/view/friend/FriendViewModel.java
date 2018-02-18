@@ -7,6 +7,9 @@ import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
+/**
+ * {@link ViewModel} providing a single other {@link User}s data to the UI
+ */
 public class FriendViewModel extends ViewModel {
 
     private final UserGroupRepository userGroupRepository;
@@ -20,7 +23,7 @@ public class FriendViewModel extends ViewModel {
     }
 
     public void setUserById(int userId) {
-        user = userRepository.getUser(userId);
+        user = userRepository.getUserLiveData(userId);
     }
 
     public LiveData<User> getUser() {
@@ -28,11 +31,11 @@ public class FriendViewModel extends ViewModel {
     }
 
     public void onBlockClick() {
-        // TODO block user
-//        userRepository.block(user.getUserID());
+        userRepository.requestIsBlocked(user.getValue().getUserId(), true);
     }
 
     public void onChatClick() {
-        // TODO create new group with the two participants
+        userGroupRepository.requestAddGroup(user.getValue().getUsername(), user
+                .getValue().getUserId());
     }
 }

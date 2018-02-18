@@ -10,8 +10,6 @@ import org.pispeb.treff_client.view.util.SingleLiveEvent;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
-import java.util.List;
-
 /**
  * Stores and manages the necessary data for the {@link FriendListFragment}
  */
@@ -26,7 +24,7 @@ public class FriendListViewModel extends ViewModel
 
     public FriendListViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.friends = userRepository.getFriends();
+        this.friends = userRepository.getFriendsAndPending();
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, -1));
     }
@@ -39,10 +37,26 @@ public class FriendListViewModel extends ViewModel
         state.setValue(new State(ViewCall.ADD_FRIEND, 0));
     }
 
+    public void decline(int userId) {
+        userRepository.requestAccept(userId);
+    }
+
+    public void accept(int userId) {
+        userRepository.requestDecline(userId);
+    }
+
     @Override
     public void onItemClicked(int position, User user) {
-        state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
-                user.getUserId()));
+        if (user.isRequestPending()) {
+            state.setValue(new State(ViewCall.SHOW_PENDING_DIALOG,
+                    user.getUserId()));
+        } else if (user.isRequesting()) {
+            state.setValue(new State(ViewCall.SHOW_REQUESTING_DIALOG,
+                    user.getUserId()));
+        } else {
+            state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
+                    user.getUserId()));
+        }
     }
 
     public SingleLiveEvent<State> getState() {

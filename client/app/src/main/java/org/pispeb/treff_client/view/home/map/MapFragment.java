@@ -1,10 +1,15 @@
 package org.pispeb.treff_client.view.home.map;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -19,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.bonuspack.clustering.RadiusMarkerClusterer;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -27,8 +33,8 @@ import org.osmdroid.views.overlay.FolderOverlay;
 import org.osmdroid.views.overlay.Marker;
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.databinding.FragmentMapBinding;
 import org.pispeb.treff_client.view.home.map.markers.EventMarker;
 import org.pispeb.treff_client.view.home.map.markers.UserMarker;
@@ -36,8 +42,9 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -61,14 +68,14 @@ public class MapFragment extends Fragment {
     private FolderOverlay master;
     private FolderOverlay pollOptionMarkers;
     private FolderOverlay eventMarkers;
-    // TODO replace with RadiusMarkerClusterer
-    private FolderOverlay contactMarkers;
+    private RadiusMarkerClusterer contactMarkers;
     private Marker userMarker;
 
     private final static int POLLS = 0;
     private final static int EVENTS = 1;
     private final static int CONTACTS = 2;
     private final static int USER = 3;
+    private List<UserGroup> groupList;
 
     public MapFragment() {
         // Required empty public constructor
@@ -117,12 +124,16 @@ public class MapFragment extends Fragment {
         vm.getUserLocation().observe(this, userLocation ->
                 updateUserLocation(userLocation));
 
-
         vm.getFriends().observe(this, friends ->
                 updateContactLocations(friends));
 
         vm.getEvents().observe(this, events ->
                 updateEventLocations(events));
+
+        groupList = new ArrayList<>();
+        vm.getGroups().observe(this, groups -> {
+            groupList = groups;
+        });
 
         //make sure the map catches lateral swipes instead of the viewpager
         disableTouchTheft(binding.map);
@@ -175,6 +186,9 @@ public class MapFragment extends Fragment {
                     binding.map.getController().setZoom(STANDARD_ZOOM_LEVEL);
                 }
                 break;
+            case SHOW_FILTER_DIALOG:
+                showFilterDialog();
+                break;
             default:
                 Log.i("Map", "Illegal VM State");
         }
@@ -198,6 +212,7 @@ public class MapFragment extends Fragment {
         map = binding.map;
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.setMultiTouchControls(true);
+        map.setTilesScaledToDpi(true);
 
         //set default zoom level and location to show Karlsruhe, Germany
         IMapController mapController = map.getController();
@@ -210,7 +225,12 @@ public class MapFragment extends Fragment {
         master = new FolderOverlay();
         pollOptionMarkers = new FolderOverlay();
         eventMarkers = new FolderOverlay();
-        contactMarkers = new FolderOverlay();
+        contactMarkers = new RadiusMarkerClusterer(getContext());
+        Drawable groupIcon = getResources().getDrawable(R.drawable
+                .marker_group, getContext().getTheme());
+
+        Bitmap clusterIcon = ((BitmapDrawable) groupIcon).getBitmap();
+        contactMarkers.setIcon(clusterIcon);
         userMarker = new Marker(map);
 
         master.add(pollOptionMarkers);
@@ -225,12 +245,6 @@ public class MapFragment extends Fragment {
         userMarker.setIcon(getResources().getDrawable(R.drawable
                 .ic_marker_own, getContext().getTheme()));
         userMarker.setTitle("Your only friend: You");
-        UserMarker m = new UserMarker(map,
-                new User("Peter", true, false, new Position(49, 8.4),
-                        new Date(100000)));
-        m.setIcon(getResources().getDrawable(R.drawable.ic_marker_person,
-                getContext().getTheme()));
-        contactMarkers.add(m);
         map.invalidate();
     }
 
@@ -242,7 +256,8 @@ public class MapFragment extends Fragment {
 
     private void updateContactLocations(List<User> contacts) {
         // TODO replace with nicer update algorithm
-        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().clear();
+        ((RadiusMarkerClusterer) master.getItems().get(CONTACTS))
+                .getItems().clear();
         List<UserMarker> markers = new ArrayList<>();
         for (User u : contacts) {
             UserMarker m = new UserMarker(map, u);
@@ -250,27 +265,84 @@ public class MapFragment extends Fragment {
                     getContext().getTheme()));
             markers.add(m);
         }
-        ((FolderOverlay)master.getItems().get(CONTACTS)).getItems().addAll
-                (markers);
+        ((RadiusMarkerClusterer) master.getItems().get(CONTACTS))
+                .getItems().addAll(markers);
     }
 
     private void updateEventLocations(List<Event> events) {
         // TODO replace with nicer update algorithm
-        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().clear();
+        ((FolderOverlay) master.getItems().get(EVENTS)).getItems().clear();
         List<EventMarker> markers = new ArrayList<>();
         for (Event e : events) {
             EventMarker m = new EventMarker(map, e);
             m.setIcon(getResources().getDrawable(R.drawable.ic_marker_event,
                     getContext().getTheme()));
+            m.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             markers.add(m);
         }
-        ((FolderOverlay)master.getItems().get(EVENTS)).getItems().addAll
+        ((FolderOverlay) master.getItems().get(EVENTS)).getItems().addAll
                 (markers);
     }
+
+
+    private void showFilterDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        // Array of all groups
+        UserGroup[] groups = new UserGroup[groupList.size()];
+        groupList.toArray(groups);
+        // Set of active groups
+        Set<Integer> activeGroups = vm.getActiveGroups();
+        // Groupnames displayed in dialog
+        String[] names = new String[groupList.size()];
+        // boolean for which groups are currently shown
+        boolean[] checkedGroups = new boolean[groupList.size()];
+
+        // set names and booleans
+        for (int i = 0; i < groups.length; i++) {
+            names[i] = groups[i].getName();
+            if (activeGroups.contains(groups[i])) {
+                checkedGroups[i] = true;
+            }
+        }
+
+        builder.setMultiChoiceItems(names, checkedGroups,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which,
+                                        boolean isChecked) {
+                        // check/uncheck item
+                        checkedGroups[which] = isChecked;
+                        //TODO does not handle changing groups during dialog
+                        UserGroup group = groups[which];
+                        // set corresponding group to be (un)active
+                        if (isChecked) {
+                            activeGroups.add(group.getGroupId());
+                        } else {
+                            activeGroups.remove(group.getGroupId());
+                        }
+                    }
+                });
+
+        builder.setTitle("Displayed Groups:");
+
+        // ok button closes dialog and saves changes to vm
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
+            vm.setActiveGroups(activeGroups);
+            dialog.dismiss();
+        });
+
+        // display the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
 
     /**
      * Ensures that a view correctly catches touch events
      * by disabling their parent view's onInterceptTouchEvent
+     *
      * @param target the view to catch touch events
      */
     private static void disableTouchTheft(View target) {
@@ -279,7 +351,9 @@ public class MapFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 view.getParent().requestDisallowInterceptTouchEvent(true);
 
-                if ((motionEvent.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP) {
+                if ((motionEvent
+                        .getAction() & MotionEvent.ACTION_MASK) ==
+                        MotionEvent.ACTION_UP) {
                     view.getParent().requestDisallowInterceptTouchEvent(false);
                 }
 

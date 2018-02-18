@@ -17,9 +17,8 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
- * Overlay to create a new account
+ * {@link Fragment} to create a treff. account
  */
-
 public class RegisterFragment extends Fragment {
 
     FragmentRegisterBinding binding;
@@ -84,7 +83,8 @@ public class RegisterFragment extends Fragment {
                 this.startActivity(intent);
                 break;
             case GO_TO_LOGIN:
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.activity_login, new LoginFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.activity_login, new LoginFragment()).commit();
                 break;
             default:
         }

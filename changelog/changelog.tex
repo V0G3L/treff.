@@ -67,8 +67,13 @@
 \pagebreak
 \section{Entwurf}
 
+\subsection{Kontakte}
+Ursprünglich wurde mit der Pflichtanforderung F20 im Pflichtenheft implizit 
+festgelegt, dass das Hinzufügen von Kontakten keiner Zustimmung bedarf. Da so 
+auch eine ungewollte Kontaktaufnahme durch Fremde leicht möglich ist, wird das 
+einfache Hinzufügen durch das Senden einer Freundschaftsanfrage ersetzt.
 
-
+%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Server}
 
@@ -124,10 +129,121 @@ verändern.
 		eingeführt.
 	\end{itemize}
 
+
+%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Klient}
 
+\subsection{TreffPunkt}
+Für einzelne Daten von primitiven Datentypen bietet es sich an, diese in
+Shared-Preferences zu speichern. Allerdings wird ein Context benötigt, um auf
+diese zuzugreifen. Um Klassen, welche keinen eigenen Context besitzen, trotzdem
+den Zugriff auf Shared-Preferences zu ermöglichen, wurde die TreffPunkt Klasse
+als Superklasse für Application eingeführt. Sie bietet statisch einen Context,
+welcher nicht von irgendwelchen Lebenszyklen abhängig ist.\\
+Dieser ermöglicht es auch, auf String Ressourcen zuzugreifen, in unserem Fall
+zum Beispiel Errorcodes in mehreren Sprachen zur Verfügung zu stellen und diese
+Contextunabhängig zu verwenden.
 
+\subsection{Befehle}
+Die interne Umsetzung der Netzwerkbefehle wurde um das Commands Package
+erweitert. Nach dem Command Design Pattern werden nun die einzelnen Server
+Befehle durch Objekte repräsentiert. Die Hauptfunktion der neuen Klassen
+besteht zum einen darin, Objekte für die JSON Serialisierung zu verwalten. Zum
+anderen werden von dort aus aber auch die lokalen Datenbankzugriffe (und
+andere Reaktionen auf Antworten des Servers) gesteuert. So wird vermieden, dass
+die ViewModels auf Reaktionen des Servers warten müssen und die UI einfriert.
+Um eine zu enge Kopplung zu verhindern, wird die Ausführung eines Befehls
+weiterhin die jeweilige Methode des RequestEncoders veranlasst\\
+Zudem gibt es ein weiteres Package, welches die im Protokoll beschriebenen
+Entitäten enthält. Dieses ist nötig, um eine gewisse Konsistenz zwischen Server
+und Klient zu schaffen.\\
+Für die bereits angesprochene JSON-Serialisierung wird sowohl server-, als
+auch klientseitig die Jackson-Library verwendet.
+
+\subsection{Karte}
+Da bereits die Karte vom Open Street Map Projekt stammt, wurde noch das 
+osmdroid Bonuspaket hinzugefügt. Dieses Paket ermöglicht zum Beispiel 
+das Clustering von Positionen.\\
+Desweiteren wurde noch ein marker Paket erstellt, in dem unter anderem die 
+Marker für Benutzer oder Events enthalten sind.
+
+\subsection{Datenbank}
+Events enthalten nun die eindeutige Identifikationsnummer der Gruppe,
+zu der sie gehören. So müssen Events nicht innerhalb der Gruppe
+gespeichert oder referenziert werden und können leichter in der
+Datenbank gefunden werden.\\
+User Entitäten haben nun weitere Felder, die angeben, ob der aktuelle Benutzer
+mit ihnen befreundet ist, sie blockiert hat, eine Freundschaftsanfrage
+gesendet oder bekommen hat.\\
+Außerdem wurde die eigene Position Entität durch android.location.Location
+ersetzt und der TypeConverter angepasst. Diese Klasse speichert bereits
+einen Zeitpunkt und macht so das Speichern des Zeitpunktes des letzten
+Positionsupdates überflüssig.
+
+\subsection{Ortung}
+Der GPSProvider erbt nun von Service, nicht von IntentService, da dieser
+nur eine Anfrage gleichzeitig bearbeiten könnte. Dies benötigen wir
+zum Beispiel, um mehreren Gruppen gleichzeitig eine Position zur
+Verfügung zu stellen. Dieser Service und das MapViewModel selbst sind
+jeweils beide LocationListener.\\
+Zusätzlich wurde der GPSProviderManager hinzugefügt, um den
+GPSProvider zu starten und die Anfragen zu verwalten.
+
+\subsection{Gruppeneinstellungen}
+Der Einstellungsbildschirm der Gruppe ist nun eine Activity statt einem
+Fragment, sodass die Historie der vergangenen Bildschirme und die
+Navigation einfacher und sinnvoller umgesetzt werden können.\\
+Das zugehörige ViewModel wurde entfernt, stattdessen wird das
+GroupViewModel verwendet, um Redundanz zu vermeiden.\\
+Um die Gruppenmitglieder anzuzeigen, wurde ein MemberListAdapter
+hinzugefügt.
+
+\subsection{Über uns}
+Eine Activity zum Anzeigen von Informationen über die App, Entwickler und
+Lizenz wurde in einem neuen dazugehörigen Paket hinzugefügt.
+
+\subsection{Login}
+Die LoginActivity hält nun entweder ein RegisterFragment oder das neu
+hinzugefügte LoginFragment.
+
+\subsection{Dependency Injection}
+Die Klasse AppModule mit Konfigurationen für Dagger und Dagger selbst
+wurden entfernt. Die als Singleton implementierte ViewModelFactory stellt
+nun alle repositories für die ViewModels bereit.
+
+\subsection{ViewModels}
+Dem Klient wurde ein util Paket hinzugefügt, das einige Hilfsklassen beinhaltet.\\
+Dazu gehören die bereits erwähnte TreffPunkt Klasse und die
+ViewModelFactory, sowie:
+\begin{itemize}
+\item
+SingleLiveEvent
+
+\item
+State
+
+\item
+ViewCall
+
+\end{itemize} 
+Einige Methodenaufrufe in ViewModels benötigen einen Context. In einem
+SingleLiveEvent Objekt wird dieser Aufruf festgehalten. Es hält einen State,
+also einen Wert aus dem ViewCall enum und einen optionalen Parameter.\\
+Der Context, also das Fragment oder die Activity, observiert das SingleLiveEvent und
+kann entsprechend auf Änderungen reagieren.
+
+
+\subsection{Paging}
+Es werden jetzt PagedListAdapter statt \enquote{normalen} Adaptern verwendet,
+sodass nur beispielweise 30 ListItems geladen werden. Dies spart Netzwerkbandbreite
+und macht die App responsiver.
+
+\subsection{NavigationDrawer}
+Die Abstraktionsebene der TabbedNavigationActivity wurde entfernt, da
+sie keinen zusätzlichen Nutzen bietet. Die HomeActivity ist die einzige
+Activity, die den NavigationDrawer darstellt und Tabs hält.\\
+Das NavigationDrawerFragment wird nun nur im xml verwendet, nicht als Java-Klasse.
 
 \pagebreak
 \section{Protokoll}

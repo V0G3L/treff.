@@ -5,6 +5,10 @@ import android.arch.persistence.room.TypeConverter;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Contains TypeConverters to allow conversion
+ * from {@link Integer} {@link Set}s to {@link String}s and vice versa
+ */
 public class IntegerSetConverter {
     @TypeConverter
     public static Set<Integer> toSet(String string) {

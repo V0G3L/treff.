@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="vm"
+            type="org.pispeb.treff_client.view.group.GroupViewModel"/>
+    </data>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar_group_settings"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="?attr/colorPrimary">
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:id="@+id/switchMuteChat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_padding">
+            <Switch
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:showText="false"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/mute_chat_setting"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/switchMutePos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_padding">
+            <Switch
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:showText="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/mute_location_requests_settings"/>
+        </LinearLayout>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/memberList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/activity_padding"/>
+
+        <LinearLayout
+            android:id="@+id/addFriend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_padding"
+            android:onClick="@{() -> vm.onAddMemberClick()}"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_person_add_black_24dp"
+                android:contentDescription="@string/add_contact"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/add_contact"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/leaveGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_padding"
+            android:onClick="@{() -> vm.leave()}"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_exit_to_app_black_24dp"
+                android:contentDescription="@string/add_contact"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:text="@string/leave_group"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

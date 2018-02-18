@@ -9,10 +9,8 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="WhiteTextInputLayout" parent="AppTheme">
-
-        
-        
+    <style name="GreyTextInputLayout" parent="AppTheme">
+        <item name="colorAccent">#808080</item>
     </style>
 
 </resources>

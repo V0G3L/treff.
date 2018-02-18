@@ -6,13 +6,14 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.Position;
 import org.pispeb.treff_client.data.entities.User;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.repositories.EventRepository;
-import org.pispeb.treff_client.data.repositories.PollRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
@@ -20,8 +21,9 @@ import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewCall;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -37,41 +39,35 @@ public class MapViewModel extends ViewModel implements LocationListener {
     private UserGroupRepository userGroupRepository;
     private UserRepository userRepository;
     private EventRepository eventRepository;
-    private PollRepository pollRepository;
 
     // Livedata objects to keep map up to date
     private MutableLiveData<Location> userLocation;
-    private MutableLiveData<List<User>> friends;
+    private LiveData<PagedList<User>> friends;
     private LiveData<PagedList<Event>> events;
+    private LiveData<List<UserGroup>> groups;
+
+    private Set<Integer> activeGroups;
+
     private SingleLiveEvent<State> state;
 
 
     public MapViewModel(
             UserGroupRepository userGroupRepository,
             UserRepository userRepository,
-            EventRepository eventRepository,
-            PollRepository pollRepository) {
+            EventRepository eventRepository) {
 
         this.userGroupRepository = userGroupRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
-        this.pollRepository = pollRepository;
 
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();
-        // set all to fetch from db
-        this.friends = new MutableLiveData<>();
+        this.groups = userGroupRepository.getGroupsInList();
+        this.friends = userRepository.getFriends();
+
+        this.activeGroups = new HashSet<>();
 
         this.state = new SingleLiveEvent<>();
-
-        //Test
-        ArrayList<User> f = new ArrayList<>();
-        User u = new User("Peter", true, false, new Position(49, 8.4),
-                new Date(100000));
-        f.add(u);
-        friends.postValue(f);
-
-
     }
 
     public void onCenterClick() {
@@ -79,9 +75,12 @@ public class MapViewModel extends ViewModel implements LocationListener {
         state.setValue(new State(ViewCall.CENTER_MAP, 0));
     }
 
+    public void onFilterClick() {
+        state.setValue(new State(ViewCall.SHOW_FILTER_DIALOG, 0));
+    }
+
     @Override
     public void onLocationChanged(Location location) {
-        // Log.i("Map", "new Location");
         if (isBetterLocation(userLocation.getValue(), location)) {
             userLocation.postValue(location);
         }
@@ -95,12 +94,25 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return userLocation;
     }
 
-    public MutableLiveData<List<User>> getFriends() {
+    public LiveData<PagedList<User>> getFriends() {
         return friends;
     }
 
     public LiveData<PagedList<Event>> getEvents() {
         return events;
+    }
+
+    public LiveData<List<UserGroup>> getGroups() {
+        return groups;
+    }
+
+    public Set<Integer> getActiveGroups() {
+        return activeGroups;
+    }
+
+    public void setActiveGroups(Set<Integer> activeGroups) {
+        this.activeGroups = activeGroups;
+        events = eventRepository.getEventsFromGroups(activeGroups);
     }
 
     @Override
@@ -138,14 +150,11 @@ public class MapViewModel extends ViewModel implements LocationListener {
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location,
-        // use
-        // the new location
-        // because the user has likely moved
+        // use the new location because the user has likely moved
         if (isSignificantlyNewer) {
             return true;
             // If the new location is more than two minutes older, it
-            // must be
-            // worse
+            // must be worse
         } else if (isSignificantlyOlder) {
             return false;
         }
