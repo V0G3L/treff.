@@ -72,6 +72,17 @@
 \pagebreak
 \section{Server}
 
+\subsection{Datenmodell}
+
+\subsection{Verwendung eines Command-Entwurfsmusters}
+	\begin{itemize}
+	\item Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
+	aus vielen weiteren Gründen vermeidet werden sollten, wurde die Funktionalität
+	der Befehle in Form einer Befehlsstruktur aus der Klasse "Requesthandler"
+	ausgelagert.
+	\item Um unübersichtliche Fallunterscheidungen über Präfixe von Strings
+	zu vermeiden, wurde der Rückgabetyp des Requesthandlers in den speziell
+	hierfür angeferigten Typ "RequestHandlerResponse" geändert
 
 
 \pagebreak
@@ -81,6 +92,43 @@
 
 \pagebreak
 \section{Protokoll}
+
+Zur Spezifikation der API wurde ein Protokoll angelegt.
+Hierbei haben sich einige Veränderungen zum Entwurf ergeben,
+die im Folgenden aufgezählt und erläutert werden.
+Um hierbei Redundanz durch Dopplung mit dem Protokoll zu vermeiden,
+werden diese Änderungen nur oberflächlich beleuchtet.
+
+\subsection{Veränderung der Befehle}
+	\begin{itemize}
+	\item Da viele der Befehle kleine Logikfehler vor allem
+	im Bereich der Parameter und Rückgabewerte enthielten,
+	welche leider erst im Laufe der Implementierung entdeckt worden waren,
+	mussten diese geringfügig angepasst und verändert werden.
+	\item Da der Vorgang des Zurücksetzen des Passwortes aus zwei
+	und nicht wie anfangs angenommen aus einem,
+	wurde der zugehörige Befehl in 2 seperate aufgeteilt.
+	\item Die Verwendung von Freundschaftsanfragen anstelle des direkten
+	Hinzufügens konsequenterweise auch diverse Änderungen der Befehle.
+	So wurde der Befehl Befehl "add-contact" entfernt und stattdessen die Befehle
+	"send-contact-request", "cancel-cntact-request", "accept-contact-request" und
+	"reject-contact-request" hinzugefügt.
+	\item zur Vereinfachungen des Regestrierungsvorgangs auf Seiten der Benutzer
+	sowie auf Seiten der Entwickler wurde die Angabe einer E-Mail optional gemacht
+	und die Aktivierug sowie Bestätigung durch diese entfernt.
+	\item um das Übermitteln von Updates an die Klienten zu handhaben wird eine
+	sog. "persistant connection" verwendet, welche von Klienten über den neuen
+	Befehl "request-persistant-connection" angefordert werden kann.
+	\end{itemize}
+
+\subsection{neues Design der Fehlercodes}
+	Aufgrund dem Ändern und Hinzufügen von API-Befehlen
+	sind diverse potentielle Fehler entstanden oder entdeckt worden.
+	Dies hatte zur Folge, dass Fehlercods angepasst
+	oder hinzugefügt werden mussten.
+	Desweiteren wurden diese in diesem Zusammenhang neu kategoresiert,
+	sortiert und passend nummeriert, wodurch sich ein vierstelliger Code
+	anstelle eines dreistelligen ergab.
 
 
 
