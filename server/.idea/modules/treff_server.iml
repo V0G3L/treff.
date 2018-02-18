@@ -7,8 +7,8 @@
           <root url="file://$MODULE_DIR$/../../treff_server/src/main/webapp" relative="/" />
         </webroots>
         <sourceRoots>
-          <root url="file://$MODULE_DIR$/../../treff_server/src/main/java" />
           <root url="file://$MODULE_DIR$/../../treff_server/src/main/resources" />
+          <root url="file://$MODULE_DIR$/../../treff_server/src/main/java" />
         </sourceRoots>
       </configuration>
     </facet>
@@ -31,7 +31,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.websocket:javax.websocket-api:1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: javax.json:javax.json-api:1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish:javax.json:1.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.glassfish:javax.json:1.0.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-dbutils:commons-dbutils:1.7" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.11" level="project" />
@@ -39,7 +39,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: javax.json:javax.json-api:1.0" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.glassfish:javax.json:1.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.glassfish:javax.json:1.0.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-dbutils:commons-dbutils:1.7" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-codec:commons-codec:1.11" level="project" />
@@ -47,7 +47,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: javax.json:javax.json-api:1.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.glassfish:javax.json:1.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.glassfish:javax.json:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: commons-dbutils:commons-dbutils:1.7" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: commons-codec:commons-codec:1.11" level="project" />

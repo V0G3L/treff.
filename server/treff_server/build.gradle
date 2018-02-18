@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     implementation "javax.json:javax.json-api:1.0"
-    implementation "org.glassfish:javax.json:1.1"
+    implementation "org.glassfish:javax.json:1.0.2"
     implementation "mysql:mysql-connector-java:8.0.8-dmr"
     implementation "commons-dbutils:commons-dbutils:1.7"
     implementation "commons-codec:commons-codec:1.11"

@@ -71,15 +71,14 @@
 % (Fließtext und Sequenzdiagram, ggf UML-Klassendiagram)
 % TODO: JSON verlinken / footnote
 % TODO: Alphabet und Escapes genau festlegen
-Client and server communicate via a TLS-encrypted TCP connection.
-This implies that a server must possess a valid SSL certificate.
+Client and server communicate via a TLS-encrypted WebSocket connection.
+This implies that the server must possess a valid certificate.
 
-The commands specified below are encoded as a single JSON object each and are
-sent from client to server.
+Requests including one of the commands specified below are encoded as a single
+JSON object each and are sent from client to server.
 If not specified otherwise, each request produces a single response from the
 server, also encoded as a JSON object.
-A request is considered to be completely transferred to the server once the
-server receives the closing curly bracket for the top-level JSON object.
+A request or response must always be sent as a single WebSocket message.
 
 The \textbf{cmd} property of the top-level JSON object of a request defines
 which command the client is trying to execute.
@@ -96,15 +95,15 @@ parameters, the response JSON object consists of only the single integer
 property \textbf{error}.
 The meaning of these error codes is specified in chapter \ref{sec:errorcodes}.
 
-\section{Data types and restrictions}
+\section{Data types and restrictions}\label{sec:datatypes}
 While JSON itself defines several data types, the property
 definitions in the following chapters use the conventional, more restrictive
 variants as used, for example, in the Java programming language.
 As such, mentions of \code{int} and \code{long} refer to the signed variants
 within the upper and lower bounds defined in the Java programming language.
 
-Strings may contain any Unicode symbol as long as they are properly escaped to
-match the restriction set by JSON specifications.
+Strings may contain any Unicode symbol as long as it is properly escaped to
+match the restrictions set by JSON specifications.
 
 The string properties defined in chapter \ref{sec:descriptions} might impose
 additional restrictions, such as maximum amount of characters, i.e. Unicode
@@ -892,70 +891,54 @@ the following properties:
 		}
 }
 
-\section{Prüfsummen für ausführliche Beschreibungen}\label{sec:checksum}
+\section{Checksums for recursively complete descriptions}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}
-Um unnötige ausführliche Übertragungen zu vermeiden beinhalten oberflächliche
-Beschreibungen Prüfsummen der zum selben Objekt gehörenden ausführlichen
-Beschreibung.
-Der Klient ist somit in der Lage, festzustellen, ob seine lokalen Datensätze
-mit denen des Servers übereinstimmen, ohne die Datensätze erneut anfordern zu
-müssen.
+In order to avoid unnecessary transmissions of complete descriptions, each
+object can also be shallowly described.
+These shallow descriptions contain checksums of the recursively complete
+descriptions of the same object, making it possible to detect whether entire
+parts of the access hierarchy are in sync and do not need to be queried again.
 
-\par Zur Berechnung der Prüfsummen wird der \hashAlg-Algorithmus verwendet.
+\par The \hashAlg~algorithm will be used to calculate the checksums.
 
-\par Als Grundlage der Eingabe an den \hashAlg-Algorithmus wird die
-ausführliche Beschreibung des jeweiligen Objektes im gleichen Format wie in den
-vorangegangenen Kapiteln verwendet.
+\par The following paragraphs specify how to serialize a recursively complete
+description into a unambiguous form that can then be used as the input for the
+checksum algorithm.
 
-\par Da es aufgrund von Umordnungen, Leerzeichen, Zeilenumbrüchen etc. mehrere
-unterschiedliche, aber äquivalente JSON-Darstellungen für eine ausführliche
-Beschreibung gibt, müssen diese vor Eingabe an den \hashAlg-Algorithmus in eine
-normalisierte Form gebracht werden:
+\par \textit{Note: In this paragraph, the digits 0 through 9 do not describe
+the ASCII literals \enquote{0} through \enquote{9} with ASCII values 48 through
+57 but instead describe the non-printable control characters with values 0
+through 9.}\\
+Descriptions themselves are treated as objects.
+Objects are serialized by adding a 1 to the input, then serializing all
+properties and finally adding a 3 to the input.
+Object properties are serialized by first sorting them in alphabetical order of
+their keys and then serializing their values, adding a 2 as seperator between
+each two values.
+Arrays are serialized by adding a 4 to the input, then serialiazing all values
+in ascending order, seperated by a 5 each, and finally adding a 6 to the input.
+In this protocol, arrays can only contain object descriptions or integers.
+The ascending order of integers is based on their signed value.
+The ascending order of descriptions matches the ascending order of their
+included IDs.
 
-\par \textit{Hinweis: In dem folgenden Absatz bezeichnen Ziffern nicht etwa die
-ASCII-Ziffern \enquote{0} bis \enquote{9} mit den Werten 48 bis 57, sondern die
-nicht darstellbaren Steuerzeichen mit den Werten 0 bis 9.}\\
-JSON-Objekte werden mit einer 1 begonnen und mit einer 3 beendet.
-Eigenschaften dieser JSON-Objekte werden mit einer 2 statt einem Komma
-getrennt.
-Die Eigenschaften werden gemäß der in den Beschreibungsspezifikationen
-aufgeführten Reihenfolgen sortiert.
-JSON-Arrays werden mit einer 4 begonnen und mit einer 6 beendet.
-Elemente dieser JSON-Arrays werden mit einer 5 statt mit einem Komma getrennt.
-In JSON-Arrays von Beschreibungen kommen entweder nur Beschreibungen anderer
-Objekte oder nur Integer vor.
-Diese werden aufsteigend nach ihren IDs bzw. aufsteigend nach ihrem Wert
-sortiert.
-
-Alle JSON-Objekteigenschaften werden ohne Schlüssel, Doppelpunkte, geschwungene
-Klammern und zusätzliche Leerzeichen oder Zeilenumbrüche konkateniert.
-Alle JSON-Arrayelemente werden ohne eckige Klammern und zusätzliche
-Leerzeichen oder Zeilenumbrüche konkateniert.
-Die doppelten Anführungszeichen um Zeichenketten werden entfernt.
-Da alle sechs Trennzeichen nur als Escape-Sequenzen, nicht aber direkt im
-JSON-Format vorkommen können\footnote{Vgl. \enquote{RFC 7159}, Kapitel 7
-\enquote{Strings}, \url{https://tools.ietf.org/html/rfc7159}} ist diese
-Darstellung eindeutig.
+Strings are serialized with the same escape sequences as used in
+JSON\footnote{Vgl. \enquote{RFC 7159}, Chapter 7 \enquote{Strings},
+\url{https://tools.ietf.org/html/rfc7159}}.
+No quotation marks are added arounds strings.
+Integers are serialized in decimal form.
+Decimal degrees, the only floating-point numbers in this protocol, are
+serialized in decimal form, with the same precision as defined in chapter
+\ref{sec:datatypes}.
+Booleans are serialized as either \enquote{true} or \enquote{false}, in
+lowercase and without quotation marks.
 
 % TODO: Update example
-\par Im folgenden beispielhaft eine Verabredung mit folgenden Details:
-\begin{itemize}
-    \item Besitzt die ID 12
-    \item Trägt den Titel \enquote{Beispielverabredung 1010}
-    \item Erstellt vom Benutzerkonto mit ID 200
-    \item Beginnt am 01. Januar 2018 um 00:00:00.000
-    \item Endet am 03. Januar 2018 um 18:30:00.000
-    \item Findet auf der Position 49.011978 N, 8.416377 E statt
-    \item Die Benutzerkonten mit den IDs 200, 3 und 43378 sind als Teilnehmer
-        eingetragen
-\end{itemize}
-
-Eine mögliche Kodierung der ausführlichen Beschreibung im JSON-Format kann wie
-folgt aussehen:
+\par Example: Checksum generation for an Event with the following details:
 \begin{lstlisting}[language=json,firstnumber=1]
 {   "type" : "event",
     "id": 2,
-    "title": "Beispielverabredung 1010",
+    "title": "200k+ DPS or kick",
     "creator": 200,
     "time-start": 1514761200000,
     "time-end": 1515000600000,
@@ -968,48 +951,28 @@ folgt aussehen:
 \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
             \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
 
-Die normalisierte Darstellung dieser Verabredung sieht wie folgt aus.
-Die Steuerzeichen werden durch \circled{1}, \circled{2}, \circled{3} etc.
-dargestellt.\\
-\textit{Hinweis: Die Zeilenumbrüche dienen nur der besseren Lesbarkeit und sind
-nicht in der normalisierten Darstellung enthalten.}
+This event is serialized into the following sequence as follows.
+Control characters are represented as \circled{1}, \circled{2}, \circled{3}
+etc.\\
+\textit{Note: The line-breaks are solely added for better readability and are
+not part of the actual sequence.}
 
 \begin{lstlisting}[language=norm,firstnumber=1]
-(*\circled{1}*)"event"(*\circled{2}*)2(*\circled{2}%
-*)"Beispielverabredung 1010"(*\circled{2}*)200(*\circled{2}*)1514761200000(*%
-\circled{2}*)
-1515000600000(*\circled{2}*)49.011978(*\circled{2}*)8.416377(*\circled{2}%
-\circled{4}*)3(*\circled{5}*)200(*\circled{5}*)43378(*\circled{6}\circled{3}*)
+(*\circled{1}*)200(*\circled{2}*)2(*\circled{2}*)49.011978(*\circled{2}%
+*)8.416377(*\circled{2}*)(*\circled{4}*)3(*\circled{5}*)200(*\circled{5}%
+*)43378(*\circled{6}*)(*\circled{2}*)1515000600000(*\circled{2}*)
+1514761200000(*\circled{2}*)200k+ DPS or kick(*\circled{2}*)event(*%
+\circled{3}*)
 \end{lstlisting}
 
-\par Ein beispielhafter Algorithmus für die Normalisierung ist im folgenden
-als Python-Implementierung angegeben:
+This sequence has the hex-encoded \hashAlg~checksum\
+\
+\code{5770ff0d6314b111f3006e9a4d6e4884}
+
+\par The following Python script serves as an example implementation of this
+algorithm:
 
 \pythonexternal{scripts/normalize.py}
-
-\section{Abrufen von Aktualisierungen}\label{sec:get-updates}
-Zum Abrufen von Aktualisierungen gibt es mehrere Möglichkeiten.
-
-\begin{itemize}
-    \item Eine einzelne Anfrage an den Server, die alle aktuell für das eigene
-        Benutzerkonto vorliegenden Änderungen abruft
-    \item Eine Anfrage an den Server, die die aktuelle Verbindung als
-        \enquote{Aktualisierungsverbindung} kennzeichnet.
-        Auf einer Aktualisierungsverbindung werden alle Befehle des Klienten
-        ignoriert.
-        Erhält der Server für ein Benutzerkonto, welches eine offene
-        Aktualisierungsverbindung zum Server hat, eine Aktualisierung, wird
-        diese sofort über die Aktualisierungsverbindung an den Klienten
-        gesendet.
-    \item Push-Notifications.
-        Diese Möglichkeit der Übertragung ist auf mehreren
-        Smartphone-Betriebssystemen vertreten und erlaubt sehr
-        ressourceneffiziente Mitteilungen an den Klienten.
-        Für das verwendete Framework gibt es neben Google's Firebase noch
-        wenige weitere quelloffene Kandidaten.
-        Die Umsetzung dieser Übertragungsmöglichkeit wird sich erst während
-        der Implementierung zeigen.
-\end{itemize}
 
 
 \end{document}

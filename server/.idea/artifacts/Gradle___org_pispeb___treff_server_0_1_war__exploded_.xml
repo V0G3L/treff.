@@ -18,7 +18,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Gradle: javax.json:javax.json-api:1.0" />
-          <element id="library" level="project" name="Gradle: org.glassfish:javax.json:1.1" />
+          <element id="library" level="project" name="Gradle: org.glassfish:javax.json:1.0.2" />
           <element id="library" level="project" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" />
           <element id="library" level="project" name="Gradle: commons-dbutils:commons-dbutils:1.7" />
           <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.11" />

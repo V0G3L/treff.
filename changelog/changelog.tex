@@ -26,7 +26,7 @@
 \newcommand\producttitle{treff.}
 \newcommand\protocolversion{0.3}
 \hypersetup{
-	pdftitle={\producttitle~- Änderungsdokument},
+	pdftitle={\producttitle~- Änderungsdokument~-~Implementierung},
 	bookmarks=true,
 }
 
@@ -47,7 +47,7 @@
 %\let\raggedsection\centering
 
 \title{\includegraphics[width = 80mm]{images/logo_crop.png}}
-\subtitle{\huge Änderungsdokument}
+\subtitle{\huge Änderungsdokument\\Implementierung}
 \author{Lukas Dippon
         \and Jens Kienle
         \and Matthias Noll
@@ -73,31 +73,57 @@
 \section{Server}
 
 \subsection{Datenmodell}
-\begin{itemize}
-\item Da die Gruppenzugehörigkeit eines Benutzers zu einer Gruppe eindeutig
-durch die Verbindung der Benutzer-Id und Gruppen-Id identifiziert wird und die
-Id der Gruppenzugehörigkeit nirgends gebraucht wird, wurde sie entfernt und als
-Primärschlüssel durch die Verbindung von Benutzer-Id und Gruppen-Id ersetzt.
-\item Die Gruppenzugehörigkeit speichert nun zusätzlich den Zeitpunkt bis zu
-dem ein Benutzer seinen Standort mit der Gruppe teilt, da diese Zeit
-einzigartig für eine Gruppenzugehörigkeit ist.
-\end{itemize}
-
-\subsection{Verwendung eines Command-Entwurfsmusters}
-Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
-aus vielen weiteren Gründen vermieden werden sollten, wurde die Funktionalität
-der Befehle in Form einer Befehlsstruktur aus der Klasse Requesthandler
-ausgelagert.
-
-\subsection{Rückgabetyp des Requesthandlers}
-Um unübersichtliche Fallunterscheidungen über Präfixe von Strings
-zu vermeiden, wurde der Rückgabetyp des Requesthandlers in den speziell
-hierfür angeferigten Typ RequestHandlerResponse geändert.
+	\begin{itemize}
+	\item Da die Gruppenzugehörigkeit eines Benutzers zu einer Gruppe eindeutig
+		durch die Verbindung der Benutzer-ID und Gruppen-ID identifiziert wird
+		und die ID der Gruppenzugehörigkeit nicht gebraucht wird, wurde sie
+		entfernt und als Primärschlüssel durch die Verbindung von Benutzer-ID
+		und Gruppen-ID ersetzt.
+	\item Die Gruppenzugehörigkeit speichert nun zusätzlich den Zeitpunkt bis
+		zu dem ein Benutzer seinen Standort mit der Gruppe teilt.
+	\end{itemize}
 
 \subsection{Permissions-Enum}
 Das Permission Enum wurde aus dem SQL-Paket in das Haupt-Paket bewegt, da es
 nicht spezifisch für die SQL-Implementation ist und auch allen alternativen
 Datenbank-Implementationen zur Verfügung stehen muss.
+
+\subsection{Verwendung eines Command-Entwurfsmusters}
+	\begin{itemize}
+	\item Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten
+		sind und deshalb vermieden werden sollten, wurde
+		die Funktionalität der Befehle in Form einer Befehlsstruktur aus der
+		Klasse "Requesthandler" ausgelagert.
+	\item Der String-Rückgabewert des RequestHandlers an den WebSocketEndPoint,
+		früher Connectionhandler, wurde zu einer eigenen Klasse.
+		Diese unterstützt neben der Weiterleitung der Antwort an den Klienten
+		weitere Informationen für den WebSocketEndPoint.
+		Diese wird genutzt, um beim Anfragen einer PersistentConnection durch
+		den Klienten das Verhalten des WebSocketEndpoint zu verändern.
+	\end{itemize}
+
+\subsection{Änderungen im SQL-Paket}
+	\begin{itemize}
+		\item Die Erstellung der Datenbank-Tabellen wurde in die seperate
+			Klasse \enquote{SQLDatabase} ausgelagert.
+	\end{itemize}
+
+\subsection{Interessante Abhängigkeiten}
+	\begin{itemize}
+		\item \enquote{Jackson}:
+			(De-)Serialisierung von JSON-kodierter Ein- und Ausgabe
+		\item \enquote{Apache Commons DBUtils}:
+			Vereinfachter Zugang zu JDBC-Methoden
+		\item \enquote{MariaDB4j}:
+			MySQL-in-a-Jar für einfaches Testen von Methoden, die eine
+			Verbindung zur MySQL-Datenbank benötigen
+	\end{itemize}
+
+\subsection{Verschiedenes}
+	\begin{itemize}
+	\item Für einige früh abzufangende Fehlerzustände wurden neue Exceptions
+		eingeführt.
+	\end{itemize}
 
 \pagebreak
 \section{Klient}
@@ -107,43 +133,46 @@ Datenbank-Implementationen zur Verfügung stehen muss.
 \pagebreak
 \section{Protokoll}
 
-Zur Spezifikation der API wurde ein Protokoll angelegt.
+Zur Spezifikation der Netzwerkschnittstellen von Server und Klient wurde das
+Netzwerkprotokoll in ein eigenes, englischsprachiges Dokument ausgelagert.
 Hierbei haben sich einige Veränderungen zum Entwurf ergeben,
-die im Folgenden aufgezählt und erläutert werden.
+die im Folgenden erläutert werden.
 Um hierbei Redundanz durch Dopplung mit dem Protokoll zu vermeiden,
 werden diese Änderungen nur oberflächlich beleuchtet.
 
 \subsection{Veränderung der Befehle}
 	\begin{itemize}
-	\item Da viele der Befehle kleine Logikfehler vor allem
-	im Bereich der Parameter und Rückgabewerte enthielten,
-	welche erst im Laufe der Implementierung entdeckt wurden,
-	mussten diese geringfügig angepasst und verändert werden.
-	\item Da der Vorgang des Zurücksetzens des Passwortes aus zwei
-	und nicht wie anfangs angenommen aus einem besteht,
-	wurde der zugehörige Befehl in 2 seperate aufgeteilt.
-	\item Die Verwendung von Freundschaftsanfragen anstelle des direkten
-	Hinzufügens hat auch diverse Änderungen der Befehle mit sich gezogen.
-	So wurde der Befehl Befehl add-contact entfernt und stattdessen die
-    Befehle send-contact-request, cancel-contact-request,
-    accept-contact-request und reject-contact-request hinzugefügt.
-	\item Zur Vereinfachungen des Registrierungsvorgangs auf Seiten der
-    Benutzer sowie auf Seiten der Entwickler, wurde die Angabe einer E-Mail
-    optional gemacht und die Aktivierug sowie Bestätigung durch diese entfernt.
-	\item Um das Übermitteln von Updates an die Klienten zu handhaben wird eine
-	sogenannten persistent connection verwendet, welche von Klienten über den neuen
-	Befehl request-persistent-connection angefordert werden kann.
+		\item Statt TCP wird nun WebSocket verwendet, da WebSocket
+			nachrichtenbasiert und nicht nur bytebasiert arbeiten kann und sich
+			leichter in Verbindung mit einem Tomcat Server verwenden lässt.
+		\item Da viele der Befehle kleinere Fehler, vor allem im Bereich der
+			Parameter und Rückgabewerte enthielten, welche erst im Laufe der
+			Implementierung entdeckt worden sind, wurden diese angepasst.
+		\item Da der Vorgang des Zurücksetzens des Passworts aus zwei und nicht
+			wie fälschlicherweise im Entwurfsheft dokumentiert aus einem
+			Schritt besteht, wurde der zugehörige Befehl zweigeteilt.
+		\item Die Verwendung von Freundschaftsanfragen anstelle des direkten
+			Hinzufügens verursachte diverse Änderungen der Befehle.
+			So wurde der Befehl Befehl \enquote{add-contact} entfernt und
+			stattdessen die Befehle \enquote{send-contact-request},
+			\enquote{cancel-contact-request}, \enquote{accept-contact-request}
+			und \enquote{reject-contact-request} hinzugefügt.
+		\item Zur Vereinfachungen des Registrierungsvorgangs auf Seiten der
+			Benutzer wurde die Angabe einer E-Mail-Adresse optional gemacht.
+		\item Um den Vorgang, Klienten über neue Updates zu informieren, zu
+			erleichtern, wurde mit dem Befehl
+			\enquote{request-persistent-connection} die Möglichkeit eingebaut,
+			eine bestehende WebSocket-Verbindung offenzuhalten und komplett dem
+			Benachrichtigungsvorgang zu dedizieren.
 	\end{itemize}
 
-\subsection{neues Design der Fehlercodes}
-	Aufgrund dem Ändern und Hinzufügen von API-Befehlen
-	sind diverse potentielle Fehler entstanden oder entdeckt worden.
-	Dies hatte zur Folge, dass Fehlercodes angepasst
-	oder hinzugefügt werden mussten.
-	Desweiteren wurden diese in diesem Zusammenhang neu kategoresiert,
+\subsection{Umgestaltung einiger Fehlercodes}
+	Aufgrund des Änderns und Hinzufügens von API-Befehlen
+	sind weitere potenzielle Fehlerszenarien entstanden oder entdeckt worden.
+	Dies hatte zur Folge, dass Fehlercodes angepasst oder hinzugefügt werden
+	mussten.
+	Desweiteren wurden diese in diesem Zusammenhang neu kategorisiert,
 	sortiert und passend nummeriert, wodurch sich ein vierstelliger Code
 	anstelle eines dreistelligen ergab.
-
-
 
 \end{document}
