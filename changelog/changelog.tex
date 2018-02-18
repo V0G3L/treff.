@@ -133,9 +133,13 @@ einen Zeitpunkt und macht so das Speichern des Zeitpunktes des letzten
 Positionsupdates überflüssig.
 
 \subsection{Ortung}
-TODO
-GPSProvider nur Service, Map ist selbst auch LocationListener
-GPSProviderManager hinzugefügt, um den GPSProvider zu starten
+Der GPSProvider erbt nun von Service, nicht von IntentService, da dieser
+nur eine Anfrage gleichzeitig bearbeiten könnte. Dies benötigen wir
+zum Beispiel, um mehreren Gruppen gleichzeitig eine Position zur
+Verfügung zu stellen. Dieser Service und das MapViewModel selbst sind
+jeweils beide LocationListener.\\
+Zusätzlich wurde der GPSProviderManager hinzugefügt, um den
+GPSProvider zu starten und die Anfragen zu verwalten.
 
 \subsection{Gruppeneinstellungen}
 Der Einstellungsbildschirm der Gruppe ist nun eine Activity statt einem
@@ -160,11 +164,31 @@ wurden entfernt. Die als Singleton implementierte ViewModelFactory stellt
 nun alle repositories für die ViewModels bereit.
 
 \subsection{ViewModels}
-TODO
-util package: ViewCall und State enum
-Aufrufe im ViewModel, welche einen Context benötigen, werden in einem SingleLiveEvent State Objekt gespeichert, welches vom Context (Fragment/Activity) observed wird. Dieses kann dann entsprechend auf State-Änderungen reagieren.
-ViewModels (nicht die Fragments) erweitern ItemClickListener um alle Nutzerinteraktionen im ViewModel zu behandeln
-PagedListAdapter statt normalen Adaptern um unnötiges Laden von ListItems zu vermeiden
+Dem Klient wurde ein util Paket hinzugefügt, das einige Hilfsklassen beinhaltet.\\
+Dazu gehören die bereits erwähnte TreffPunkt Klasse und die
+ViewModelFactory, sowie:
+\begin{itemize}
+\item
+SingleLiveEvent
+
+\item
+State
+
+\item
+ViewCall
+
+\end{itemize} 
+Einige Methodenaufrufe in ViewModels benötigen einen Context. In einem
+SingleLiveEvent Objekt wird dieser Aufruf festgehalten. Es hält einen State,
+also einen Wert aus dem ViewCall enum und einen optionalen Parameter.\\
+Der Context, also das Fragment oder die Activity, observiert das SingleLiveEvent und
+kann entsprechend auf Änderungen reagieren.
+
+
+\subsection{Paging}
+Es werden jetzt PagedListAdapter statt \enquote{normalen} Adaptern verwendet,
+sodass nur beispielweise 30 ListItems geladen werden. Dies spart Netzwerkbandbreite
+und macht die App responsiver.
 
 \subsection{NavigationDrawer}
 Die Abstraktionsebene der TabbedNavigationActivity wurde entfernt, da
