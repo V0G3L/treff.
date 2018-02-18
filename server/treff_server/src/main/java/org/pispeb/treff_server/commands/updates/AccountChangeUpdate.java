@@ -11,7 +11,7 @@ import java.util.Date;
 public class AccountChangeUpdate extends UpdateToSerialize {
     @JsonProperty("account")
     @JsonSerialize(using = AccountCompleteSerializer.class)
-    Account account;
+    public final Account account;
 
     public AccountChangeUpdate(Date date, int creator, Account account) {
         super(Update.UpdateType.ACCOUNT_CHANGE.toString(), date, creator);

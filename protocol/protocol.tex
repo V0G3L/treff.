@@ -527,7 +527,7 @@ This command can be used to query a group member's permissions.}
 user-id/int/The ID of the account}
 {membership/object/The complete description of the membership belonging to
 the specified user in the specified group (\ref{sec:Membership-desc})}
-{group-id-invalid, user-not-in-group}
+{group-id-invalid, user-not-in-group, user-id-invalid}
 {}
 
 \apiCommand{edit-membership}
@@ -542,7 +542,7 @@ replace the current one (see \ref{sec:Membership-desc}).
 The ID specified in the description must match the ID of the account whose
 membership is to be edited.}
 {}
-{group-id-invalid, no-permission-edit-permissions}
+{group-id-invalid, user-id-invalid, no-permission-edit-permissions}
 {group-membership-change}
 
 \apiCommand{create-event}

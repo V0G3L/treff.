@@ -3,15 +3,12 @@
   <component name="FacetManager">
     <facet type="web" name="Web Gradle : treff_server-0.1.war">
       <configuration>
-        <descriptors>
-          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/../../treff_server/src/main/webapp/WEB-INFdd/web.xmldd" />
-        </descriptors>
         <webroots>
           <root url="file://$MODULE_DIR$/../../treff_server/src/main/webapp" relative="/" />
         </webroots>
         <sourceRoots>
-          <root url="file://$MODULE_DIR$/../../treff_server/src/main/resources" />
           <root url="file://$MODULE_DIR$/../../treff_server/src/main/java" />
+          <root url="file://$MODULE_DIR$/../../treff_server/src/main/resources" />
         </sourceRoots>
       </configuration>
     </facet>

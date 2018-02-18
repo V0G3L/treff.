@@ -13,7 +13,7 @@ public class PollOptionChangeUpdate extends UpdateToSerialize{
 
     @JsonProperty("poll-option")
     @JsonSerialize(using = PollOptionCompleteSerializer.class)
-    PollOption pollOption;
+    public final PollOption pollOption;
 
     public PollOptionChangeUpdate(Date date, int creator, PollOption pollOption) {
         super(Update.UpdateType.POLL_OPTION_CHANGE.toString(), date, creator);

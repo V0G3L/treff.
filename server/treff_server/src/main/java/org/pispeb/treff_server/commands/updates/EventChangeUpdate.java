@@ -12,7 +12,7 @@ public class EventChangeUpdate extends UpdateToSerialize {
 
     @JsonProperty("event")
     @JsonSerialize(using = EventCompleteSerializer.class)
-    Event event;
+    public final Event event;
 
     public EventChangeUpdate(Date date, int creator, Event event) {
         super(Update.UpdateType.EVENT_CHANGE.toString(), date, creator);

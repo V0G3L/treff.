@@ -9,9 +9,9 @@ import java.util.Date;
 public class ChatUpdate extends UpdateToSerialize {
 
     @JsonProperty("group-id")
-    int groupId;
+    public final int groupId;
     @JsonProperty("message")
-    String message;
+    public final String message;
 
     public ChatUpdate(Date date, int creator,
                              int groupId, String message) {

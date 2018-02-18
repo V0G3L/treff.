@@ -11,10 +11,10 @@ import java.util.Date;
 public class UsergroupChangeUpdate extends UpdateToSerialize{
     @JsonProperty("usergroup")
     @JsonSerialize(using = UsergroupCompleteSerializer.class)
-    Usergroup usergroup;
+    public final Usergroup usergroup;
 
     public UsergroupChangeUpdate(Date date, int creator, Usergroup group) {
         super(Update.UpdateType.USERGROUP_CHANGE.toString(), date, creator);
-        this.usergroup = usergroup;
+        this.usergroup = group;
     }
 }

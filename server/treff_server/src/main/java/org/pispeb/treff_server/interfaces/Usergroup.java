@@ -31,6 +31,8 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
     boolean checkPermissionOfMember(Account member, Permission permission)
             throws AccountNotInGroupException;
 
+    Map<Permission, Boolean> getPermissionsOfMember(Account account);
+
     void setPermissionOfMember(Account member, Permission permission,
                                boolean valid)
             throws AccountNotInGroupException;

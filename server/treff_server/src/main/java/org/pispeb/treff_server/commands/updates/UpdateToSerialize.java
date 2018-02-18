@@ -6,11 +6,11 @@ import java.util.Date;
 
 public class UpdateToSerialize {
     @JsonProperty("type")
-    String type;
+    public final String type;
     @JsonProperty("date")
-    Date date;
+    public final Date date;
     @JsonProperty("creator")
-    int creator;
+    public final int creator;
 
     public UpdateToSerialize(String type, Date date, int creator) {
         this.type = type;

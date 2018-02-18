@@ -4,33 +4,33 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.commands.descriptions.MembershipDescription;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.GroupMembershipChangeUpdate;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-/**
- * a command to update the Position of an Account in the database
- */
-public class UpdatePositionCommand extends AbstractCommand {
+public class PublishPositionCommand extends AbstractCommand {
     static {
         AbstractCommand.registerCommand(
-                "update-position",
-                UpdatePositionCommand.class);
+                "publish-position",
+                PublishPositionCommand.class);
     }
 
-    public UpdatePositionCommand(AccountManager accountManager,
+    public PublishPositionCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
     }
@@ -46,12 +46,15 @@ public class UpdatePositionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TOKENINVALID);
         }
 
-        if (checkTime(input.timeMeasured) > 0) {
-            return new ErrorOutput(ErrorCode.TIMEMEASUREDFUTURE);
+        // get group
+        Usergroup group = getSafeForWriting(
+                actingAccount.getAllGroups().get(input.groupId));
+        if (group == null) {
+            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
-        // update position and respond
-        actingAccount.updatePosition(input.position, input.timeMeasured);
+        // publish position
+        group.setLocationSharingTimeEndOfMember(actingAccount, input.timeEnd);
 
         // create update
         Set<Account> affected = new HashSet<Account>();
@@ -62,12 +65,16 @@ public class UpdatePositionCommand extends AbstractCommand {
                 affected.addAll(g.getAllMembers().values());
             }
         }
-        for (Account a:affected)
+        for (Account a : affected)
             getSafeForWriting(a);
-        UpdatesWithoutSpecialParameters update =
-                new UpdatesWithoutSpecialParameters(new Date(),
+        MembershipDescription mB
+                = new MembershipDescription(actingAccount.getID(),
+                    group.getPermissionsOfMember(actingAccount),
+                input.timeEnd.getTime());
+        GroupMembershipChangeUpdate update =
+                new GroupMembershipChangeUpdate(new Date(),
                         actingAccount.getID(),
-                        Update.UpdateType.POSITION);
+                        mB);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
@@ -82,16 +89,15 @@ public class UpdatePositionCommand extends AbstractCommand {
 
     public static class Input extends CommandInputLoginRequired {
 
-        final Position position;
-        final Date timeMeasured;
+        final int groupId;
+        final Date timeEnd;
 
-        public Input(@JsonProperty("latitude") double latitude,
-                     @JsonProperty("longitude") double longitude,
-                     @JsonProperty("time-measured") long timeMeasured,
+        public Input(@JsonProperty("group-id") int groupId,
+                     @JsonProperty("time-end") long timeEnd,
                      @JsonProperty("token") String token) {
             super(token);
-            this.position = new Position(latitude, longitude);
-            this.timeMeasured = new Date(timeMeasured);
+            this.groupId = groupId;
+            this.timeEnd = new Date(timeEnd);
         }
     }
 

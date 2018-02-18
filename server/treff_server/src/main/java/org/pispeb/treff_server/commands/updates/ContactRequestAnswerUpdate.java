@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ContactRequestAnswerUpdate extends UpdateToSerialize{
     @JsonProperty("answer")
-    Boolean answer;
+    public final Boolean answer;
 
     public ContactRequestAnswerUpdate(Date date, int creator, Boolean answer) {
         super(Update.UpdateType.CONTACT_REQUEST_ANSWER.toString(),
