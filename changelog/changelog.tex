@@ -89,18 +89,17 @@ nicht spezifisch für die SQL-Implementation ist und auch allen alternativen
 Datenbank-Implementationen zur Verfügung stehen muss.
 
 \subsection{Verwendung eines Command-Entwurfsmusters}
-	\begin{itemize}
-	\item Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten
-		sind und deshalb vermieden werden sollten, wurde
-		die Funktionalität der Befehle in Form einer Befehlsstruktur aus der
-		Klasse "Requesthandler" ausgelagert.
-	\item Der String-Rückgabewert des RequestHandlers an den WebSocketEndPoint,
-		früher Connectionhandler, wurde zu einer eigenen Klasse.
-		Diese unterstützt neben der Weiterleitung der Antwort an den Klienten
-		weitere Informationen für den WebSocketEndPoint.
-		Diese wird genutzt, um beim Anfragen einer PersistentConnection durch
-		den Klienten das Verhalten des WebSocketEndpoint zu verändern.
-	\end{itemize}
+Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
+deshalb vermieden werden sollten, wurde die Funktionalität der Befehle in Form
+einer Befehlsstruktur aus der Klasse "Requesthandler" ausgelagert.
+
+\subsection{Rückgabewert des RequestHandlers}
+Der String-Rückgabewert des RequestHandlers an den WebSocketEndPoint, früher
+Connectionhandler, wurde zu einer eigenen Klasse. Diese unterstützt neben der
+Weiterleitung der Antwort an den Klienten weitere Informationen für den
+WebSocketEndPoint. Diese wird genutzt, um beim Anfragen einer
+PersistentConnection durch den Klienten das Verhalten des WebSocketEndpoint zu
+verändern.
 
 \subsection{Änderungen im SQL-Paket}
 	\begin{itemize}
