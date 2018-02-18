@@ -27,10 +27,13 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
+
+import javax.websocket.DeploymentException;
 
 /**
  * This class provides methods to perform the known server requests.
@@ -77,6 +80,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         mapper.enable(DeserializationFeature
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
+        try {
+            connectionHandler
+                    = new ConnectionHandler(
+                            "ws://192.168.0.136:8080/adasdasd/ws",
+                    this);
+        } catch (URISyntaxException | IOException | DeploymentException e) {
+            e.printStackTrace(); // TODO: TODONT
+        }
         HandlerThread thread = new HandlerThread("gbt",
                 HandlerThread.MIN_PRIORITY);
         thread.start();
@@ -207,7 +218,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         //TODO handle Errors
         Error error = Error.getValue(response.error);
         Log.e("RequestEncoder", error.getCode() +
-                    ": " + error.getMessage());
+                ": " + error.getMessage());
         if (error.isUserRelevant()) {
             Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
                     error);
