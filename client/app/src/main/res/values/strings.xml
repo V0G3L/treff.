@@ -118,5 +118,8 @@
     <string name="error_perm_edit_event">account doesn’t possess the permission to edit the event</string>
     <string name="error_perm_create_poll">account doesn’t possess the permission to create polls in this group</string>
     <string name="error_perm_edit_poll">account doesn’t possess the permission to edit the poll</string>
+    <string name="channel_name">treff.</string>
+    <string name="channel_description">Location transmitted to other users</string>
+    <string name="tap_for_back">Tap to get back</string>
 
 </resources>

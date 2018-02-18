@@ -1,22 +1,35 @@
 package org.pispeb.treff_client.data.gps_handling;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.BuildConfig;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
+import org.pispeb.treff_client.view.home.HomeActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -53,7 +66,8 @@ public class GPSProvider extends Service implements LocationListener {
     // modes in which the queue can be changed
     public static final int CMD_ADD = 1;
     public static final int CMD_REMOVE = 2;
-
+    private final String channelId = "my_channel_01";
+    private final int notificationId = 130898;
 
     @Override
     public void onCreate() {
@@ -79,6 +93,10 @@ public class GPSProvider extends Service implements LocationListener {
         // TODO define minimum update interval in config
         locationManager.requestLocationUpdates(locationProvider, 5000, 0,
                 this);
+
+        //setupNotificationChannel();
+        setupNotification();
+
         Log.i("GPSProvider", "Service starting done");
     }
 
@@ -125,6 +143,8 @@ public class GPSProvider extends Service implements LocationListener {
         super.onDestroy();
     }
 
+
+
     @Override
     public void onLocationChanged(Location location) {
         // update location if needed
@@ -145,12 +165,15 @@ public class GPSProvider extends Service implements LocationListener {
             }
             if (queue.isEmpty()) {
                 stopSelf();
+                NotificationManager mNotificationManager =
+                        (NotificationManager) this.getSystemService(Context
+                                .NOTIFICATION_SERVICE);
+                mNotificationManager.cancel(notificationId);
             } else {
-                // TODO send update to server via RequestEncoder
                 Log.i("GPSProvider", currentBestLocation.toString());
-                // TODO test
                 encoder.updatePosition(currentBestLocation.getLatitude(),
-                        currentBestLocation.getLongitude(), new Date(currentBestLocation.getTime()));
+                        currentBestLocation.getLongitude(),
+                        new Date(currentBestLocation.getTime()));
             }
         }
     }
@@ -169,8 +192,6 @@ public class GPSProvider extends Service implements LocationListener {
     public void onProviderDisabled(String provider) {
 
     }
-
-    // TODO add connect to RequestEncoder
 
     /**
      * Combination of group and date until which this group requests updates
@@ -202,9 +223,48 @@ public class GPSProvider extends Service implements LocationListener {
         }
     }
 
+    private void setupNotification() {
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this.getApplicationContext(),
+                        channelId);
+        Intent ii = new Intent(this.getApplicationContext(),
+                HomeActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii,
+                0);
+
+        NotificationCompat.BigTextStyle bigText = new NotificationCompat.BigTextStyle();
+        bigText.setBigContentTitle(getString(R.string.channel_description));
+
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setSmallIcon(R.mipmap.ic_launcher_round);
+        Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap
+                        .ic_launcher_round);
+        mBuilder.setLargeIcon(icon);
+        mBuilder.setContentTitle(getString(R.string.app_name));
+        mBuilder.setContentText(getString(R.string.tap_for_back));
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setStyle(bigText);
+        mBuilder.setOngoing(true);
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) this.getSystemService(Context
+                        .NOTIFICATION_SERVICE);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    getString(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(channel);
+        }
+
+        mNotificationManager.notify(notificationId, mBuilder.build());
+    }
+
     /**
      * Compares given location to current best location in terms of accuracy,
      * delay and provider credibility.
+     *
      * @param location new, alternative location
      * @return true if given location is "better"
      */
