@@ -73,18 +73,31 @@
 \section{Server}
 
 \subsection{Datenmodell}
+\begin{itemize}
+\item Da die Gruppenzugehörigkeit eines Benutzers zu einer Gruppe eindeutig
+durch die Verbindung der Benutzer-Id und Gruppen-Id identifiziert wird und die
+Id der Gruppenzugehörigkeit nirgends gebraucht wird, wurde sie entfernt und als
+Primärschlüssel durch die Verbindung von Benutzer-Id und Gruppen-Id ersetzt.
+\item Die Gruppenzugehörigkeit speichert nun zusätzlich den Zeitpunkt bis zu
+dem ein Benutzer seinen Standort mit der Gruppe teilt, da diese Zeit
+einzigartig für eine Gruppenzugehörigkeit ist.
+\end{itemize}
 
 \subsection{Verwendung eines Command-Entwurfsmusters}
-	\begin{itemize}
-	\item Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
-	aus vielen weiteren Gründen vermeidet werden sollten, wurde die Funktionalität
-	der Befehle in Form einer Befehlsstruktur aus der Klasse "Requesthandler"
-	ausgelagert.
-	\item Um unübersichtliche Fallunterscheidungen über Präfixe von Strings
-	zu vermeiden, wurde der Rückgabetyp des Requesthandlers in den speziell
-	hierfür angeferigten Typ "RequestHandlerResponse" geändert.
-	\end{itemize}
+Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
+aus vielen weiteren Gründen vermieden werden sollten, wurde die Funktionalität
+der Befehle in Form einer Befehlsstruktur aus der Klasse Requesthandler
+ausgelagert.
 
+\subsection{Rückgabetyp des Requesthandlers}
+Um unübersichtliche Fallunterscheidungen über Präfixe von Strings
+zu vermeiden, wurde der Rückgabetyp des Requesthandlers in den speziell
+hierfür angeferigten Typ RequestHandlerResponse geändert.
+
+\subsection{Permissions-Enum}
+Das Permission Enum wurde aus dem SQL-Paket in das Haupt-Paket bewegt, da es
+nicht spezifisch für die SQL-Implementation ist und auch allen alternativen
+Datenbank-Implementationen zur Verfügung stehen muss.
 
 \pagebreak
 \section{Klient}
@@ -104,28 +117,28 @@ werden diese Änderungen nur oberflächlich beleuchtet.
 	\begin{itemize}
 	\item Da viele der Befehle kleine Logikfehler vor allem
 	im Bereich der Parameter und Rückgabewerte enthielten,
-	welche leider erst im Laufe der Implementierung entdeckt worden waren,
+	welche erst im Laufe der Implementierung entdeckt wurden,
 	mussten diese geringfügig angepasst und verändert werden.
-	\item Da der Vorgang des Zurücksetzen des Passwortes aus zwei
-	und nicht wie anfangs angenommen aus einem,
+	\item Da der Vorgang des Zurücksetzens des Passwortes aus zwei
+	und nicht wie anfangs angenommen aus einem besteht,
 	wurde der zugehörige Befehl in 2 seperate aufgeteilt.
 	\item Die Verwendung von Freundschaftsanfragen anstelle des direkten
-	Hinzufügens konsequenterweise auch diverse Änderungen der Befehle.
-	So wurde der Befehl Befehl "add-contact" entfernt und stattdessen die Befehle
-	"send-contact-request", "cancel-cntact-request", "accept-contact-request" und
-	"reject-contact-request" hinzugefügt.
-	\item zur Vereinfachungen des Regestrierungsvorgangs auf Seiten der Benutzer
-	sowie auf Seiten der Entwickler wurde die Angabe einer E-Mail optional gemacht
-	und die Aktivierug sowie Bestätigung durch diese entfernt.
-	\item um das Übermitteln von Updates an die Klienten zu handhaben wird eine
-	sog. "persistant connection" verwendet, welche von Klienten über den neuen
-	Befehl "request-persistant-connection" angefordert werden kann.
+	Hinzufügens hat auch diverse Änderungen der Befehle mit sich gezogen.
+	So wurde der Befehl Befehl add-contact entfernt und stattdessen die
+    Befehle send-contact-request, cancel-contact-request,
+    accept-contact-request und reject-contact-request hinzugefügt.
+	\item Zur Vereinfachungen des Registrierungsvorgangs auf Seiten der
+    Benutzer sowie auf Seiten der Entwickler, wurde die Angabe einer E-Mail
+    optional gemacht und die Aktivierug sowie Bestätigung durch diese entfernt.
+	\item Um das Übermitteln von Updates an die Klienten zu handhaben wird eine
+	sogenannten persistent connection verwendet, welche von Klienten über den neuen
+	Befehl request-persistent-connection angefordert werden kann.
 	\end{itemize}
 
 \subsection{neues Design der Fehlercodes}
 	Aufgrund dem Ändern und Hinzufügen von API-Befehlen
 	sind diverse potentielle Fehler entstanden oder entdeckt worden.
-	Dies hatte zur Folge, dass Fehlercods angepasst
+	Dies hatte zur Folge, dass Fehlercodes angepasst
 	oder hinzugefügt werden mussten.
 	Desweiteren wurden diese in diesem Zusammenhang neu kategoresiert,
 	sortiert und passend nummeriert, wodurch sich ein vierstelliger Code
