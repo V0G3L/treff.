@@ -1,21 +1,37 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.commands.descriptions.PollCreateDescription;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.PollChangeUpdate;
+import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Poll;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
-
-// TODO needs to be tested
+import java.util.HashSet;
 
 /**
  * a command to create a Poll in a Usergroup
  */
 public class CreatePollCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "create-poll",
+                CreatePollCommand.class);
+    }
 
-    public CreatePollCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
+    public CreatePollCommand(AccountManager accountManager,
+                             ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
         throw new UnsupportedOperationException();
     }
 
@@ -32,32 +48,35 @@ public class CreatePollCommand extends AbstractCommand {
 
         // get group
         Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input.groupId));
+                getSafeForReading(actingAccount.getAllGroups().get(input
+                        .groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission.CREATE_POLL)) {
+        if (!group.checkPermissionOfMember(actingAccount, Permission
+                .CREATE_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEPOLL);
         }
 
-        // TODO check if all the parameters of all options are valid/existent
-
-        // check times for each poll option
-        for (PollOption option : input.options) {
-            if (option.getTimeEnd().getTime()
-                    < option.getTimeStart().getTime()) {
-                return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
-            }
-
-            //TODO timeEnd-in-past-check
-        }
-
         // create poll
-        Poll poll = group.createPoll(input.question,
-                actingAccount, input.multiChoice);
+        Poll poll = group.createPoll(input.poll.question,
+                actingAccount, input.poll.isMultiChoice);
 
+        // create update
+        PollChangeUpdate update =
+                new PollChangeUpdate(new Date(),
+                        actingAccount.getID(),
+                        poll);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    new HashSet<>(group.getAllMembers().values()));
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
 
         // respond
         return new Output(poll.getID());
@@ -66,26 +85,21 @@ public class CreatePollCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final String question;
-        final boolean multiChoice;
-        final PollOption[] options;
+        final PollCreateDescription poll;
 
-        //TODO options parameter
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("question") String question,
-                     @JsonProperty("multi-choice") boolean multiChoice,
-                     @JsonProperty("options") PollOption[] options,
+                     @JsonProperty("poll")
+                             PollCreateDescription poll,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
-            this.question = question;
-            this.multiChoice = multiChoice;
-            this.options = options;
+            this.poll = poll;
         }
     }
 
     public static class Output extends CommandOutput {
 
+        @JsonProperty("id")
         final int pollId;
 
         Output(int pollId) {

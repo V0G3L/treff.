@@ -12,7 +12,7 @@ public interface AccountUpdateListener {
     /**
      * Called when an {@link Update} that affects this listener's
      * {@link Account} is added.
-     * @param update The Update that was added
+     * @param update The UpdateToSerialize that was added
      */
     void onUpdateAdded(Update update);
 }

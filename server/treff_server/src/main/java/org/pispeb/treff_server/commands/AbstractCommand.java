@@ -1,6 +1,12 @@
 package org.pispeb.treff_server.commands;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.DataObject;
@@ -8,7 +14,10 @@ import org.pispeb.treff_server.networking.ErrorCode;
 
 import javax.json.JsonObject;
 import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -18,8 +27,12 @@ import java.util.function.Function;
  */
 public abstract class AbstractCommand {
 
+    private static Map<String, Class<? extends AbstractCommand>>
+            availableCommands = new HashMap<>();
+
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
+    protected final ObjectMapper mapper;
 
     private Set<Lock> acquiredLocks = new HashSet<>();
 
@@ -38,11 +51,14 @@ public abstract class AbstractCommand {
      * @param accountManager The AccountManager representing the database to
      *                       operate on
      * @param expectedInput
+     * @param mapper
      */
     protected AbstractCommand(AccountManager accountManager,
-                              Class<? extends CommandInput> expectedInput) {
+                              Class<? extends CommandInput> expectedInput,
+                              ObjectMapper mapper) {
         this.accountManager = accountManager;
         this.expectedInput = expectedInput;
+        this.mapper = mapper;
     }
 
     /**
@@ -54,12 +70,15 @@ public abstract class AbstractCommand {
      * @return A {@link } object representing the outcome of the
      * command execution
      */
-    public CommandOutput execute(String input, ObjectMapper mapper) {
-        CommandInput commandInput = null;
+    public String execute(String input) {
+
+        // try to construct input object
+        // if that fails, return a syntax error message
+        CommandInput commandInput;
         try {
             commandInput = mapper.readValue(input, expectedInput);
         } catch (IOException e) {
-            throw new AssertionError("shouldn't happen"); // TODO: really?
+            return errorToString(ErrorCode.SYNTAXINVALID, mapper);
         }
 
         // for commands that require login, set account manager and check token
@@ -69,31 +88,33 @@ public abstract class AbstractCommand {
 
             cmdInputLoginReq.setAccountManager(accountManager);
             if (cmdInputLoginReq.getActingAccount() == null) {
-                return new ErrorOutput(ErrorCode.TOKENINVALID);
+                return errorToString(ErrorCode.TOKENINVALID, mapper);
             }
         }
 
         // make sure to release all locks after execution
         try {
-            // TODO: serialize before releasing locks
-            return executeInternal(commandInput);
+            // serialize before releasing locks
+            CommandOutput output = executeInternal(commandInput);
+            return mapper.writeValueAsString(output);
+        } catch (JsonProcessingException e) {
+            // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
         } finally {
             releaseAllLocks();
         }
     }
 
-    /**
-     * executes the command
-     *
-     * @param input           TODO
-     * @param actingAccountID The ID of the account the the user who made the
-     *                        request is logged into.
-     *                        If a command does not require login,
-     *                        this is {@code -1}.
-     * @return a CommandResponse with a status code and
-     * the specific return value encoded as a JsonObject
-     */
-    protected abstract CommandOutput executeInternal(CommandInput commandInput);
+    protected abstract CommandOutput executeInternal(CommandInput commandInput) throws JsonProcessingException;
+
+    private String errorToString(ErrorCode errorCode, ObjectMapper mapper) {
+        try {
+            return mapper.writeValueAsString(new ErrorOutput(errorCode));
+        } catch (JsonProcessingException e) {
+            // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
+    }
 
     protected void acquireLock(Lock lock) {
         if (!acquiredLocks.contains(lock)) {
@@ -141,7 +162,7 @@ public abstract class AbstractCommand {
     }
 
     /**
-     * Like {@link #getSafeForWriting(DataObject)} but acquires the WriteLock
+     * Like {@link #getSafeForReading(DataObject)} but acquires the WriteLock
      * instead.
      *
      * @param obj The {@code DataObject} for which the checks are to be made.
@@ -149,10 +170,44 @@ public abstract class AbstractCommand {
      * @param <T> A subclass of {@code DataObject}.
      * @return The supplied {@code DataObject} if all checks were successful
      * and the lock has been acquired, null otherwise.
-     * @see #getSafeForWriting(DataObject)
+     * @see #getSafeForReading(DataObject)
      */
     protected <T extends DataObject> T getSafeForWriting(T obj) {
         return getSafe(obj, t -> t.getReadWriteLock().writeLock());
+    }
+
+    // TODO is this even working?
+
+    /**
+     * compares a given time to the system time with a tolerance
+     *
+     * @param time the time to compare with the system time
+     * @return -1   , if time < SysTime - tolerance;
+     * 0   , if SysTime - tolerance <= time <= SysTime + tolerance;
+     * 1   , if time > SysTime + tolerance;
+     */
+    protected static int checkTime(Date time) {
+        long tolerance = 0; //TODO need a tolerance
+        long SysTime = System.currentTimeMillis();
+        Date plusTolerance = new Date(SysTime + tolerance);
+        Date minusTolerance = new Date(SysTime - tolerance);
+        if (time.before(minusTolerance)) return -1;
+        else if (plusTolerance.before(time)) return 1;
+        return 0;
+    }
+
+    public static void registerCommand(String stringIdentifier,
+                                       Class<? extends AbstractCommand>
+                                               command) {
+        if (availableCommands.containsKey(stringIdentifier))
+            throw new DuplicateCommandIdentifier(stringIdentifier);
+        else
+            availableCommands.put(stringIdentifier, command);
+    }
+
+    public static Class<? extends AbstractCommand> getCommandByStringIdentifier(
+            String stringIdentifier) {
+        return availableCommands.get(stringIdentifier);
     }
 }
 

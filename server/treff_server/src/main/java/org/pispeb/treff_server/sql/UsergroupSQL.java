@@ -8,27 +8,29 @@ import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
+import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
 
     private static final TableName TABLE_NAME = TableName.USERGROUPS;
 
-    UsergroupSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    UsergroupSQL(int id, SQLDatabase database,
+                 EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -44,33 +46,42 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void addMember(Account member) {
-        // generate placeholders for all permissions
-        String placeholders = String.join(",",
+        // SQL string will contain a lot of placeholders and look like this:
+        // INSERT INTO groupmemberships(accountid, usergroupid,
+        // permission_columns...) VALUES (?,?,n*?);
+        // (n = amount of permission columns = amount of permissions)
+
+
+        // generate permission columns and n*?
+        String permissionColumns =
+                Arrays.stream(Permission.values())
+                        .map(p -> "permission_" + p.toString())
+                        .collect(Collectors.joining(","));
+        String permissionValuePlaceholders = String.join(",",
                 Collections.nCopies(Permission.values().length, "?"));
 
         // generate values for placeholders
+        //
+        // placeholders need to be matched values in the following order
+        // - accountid
+        // - usergroupid
+        // - all permission default values, same order as column names
+
         List<Object> values = new LinkedList<>();
-        values.add(TableName.GROUPMEMBERSHIPS.toString());
         // permission column names
-        values.add(Arrays.stream(Permission.values())
-                .map(Permission::toString)
-                .collect(Collectors.joining(",")));
         values.add(member.getID());
         values.add(this.id);
-        try {
-            // ignore resultset. If it doesn't simply state OK, then an
-            // exception is thrown anyways
-            database.getQueryRunner().insert(
-                    "INSERT INTO ?(accountid,usergroupid," +
-                            placeholders +
-                            ") VALUES (?,?," +
-                            placeholders +
-                            ");",
-                    (rs) -> null,
-                    values.toArray());
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        // permission default values
+        // TODO: define permission default values, currently all true
+        values.addAll(Collections.nCopies(Permission.values().length, true));
+
+        database.insert(
+                "INSERT INTO %s(accountid,usergroupid," + permissionColumns +
+                        ") VALUES (?,?," + permissionValuePlaceholders + ");",
+                TableName.GROUPMEMBERSHIPS,
+                // ignore resultset as no new ID is produced anyways
+                (rs) -> null,
+                values.toArray());
     }
 
     @Override
@@ -103,147 +114,146 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         }
 
         // remove membership from DB
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE accountid=? AND usergroupid=?;",
-                    TableName.GROUPMEMBERSHIPS.toString(),
-                    member.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE accountid=? AND usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                member.getID(),
+                this.id);
     }
 
     @Override
-    public Map<Integer, Account> getAllMembers() {
-        // get ID list
-        try {
-            return database.getQueryRunner()
-                    .query(
-                            "SELECT accountid FROM ? WHERE usergroupid=?;",
-                            new ColumnListHandler<Integer>(),
-                            TableName.GROUPMEMBERSHIPS,
-                            id)
-                    .stream()
-                    // create ID -> AccountSQL map
-                    .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+    public Map<Integer, AccountSQL> getAllMembers() {
+        return Collections.unmodifiableMap(database.query(
+                "SELECT accountid FROM %s WHERE usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new DataObjectMapHandler<AccountSQL>(AccountSQL.class,
+                        entityManager),
+                id));
     }
 
     @Override
     public Event createEvent(String title, Position position, Date timeStart,
                              Date timeEnd, Account creator) {
         int id;
-        try {
-            id = database.getQueryRunner().insert(
-                    "INSERT INTO ?(title,latitude,longitude,timestart," +
-                            "timeend,creator,usergroupid) VALUES " +
-                            "(?,?,?,?,?,?,?);",
-                    new ScalarHandler<Integer>(),
-                    TableName.EVENTS,
-                    title,
-                    position.latitude,
-                    position.longitude,
-                    timeStart,
-                    timeEnd,
-                    creator,
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return EntityManagerSQL.getInstance().getEvent(id);
+        id = database.insert(
+                "INSERT INTO %s(title,latitude,longitude,timestart," +
+                        "timeend,creator,usergroupid) VALUES " +
+                        "(?,?,?,?,?,?,?);",
+                TableName.EVENTS,
+                new ScalarHandler<Integer>(),
+                title,
+                position.latitude,
+                position.longitude,
+                timeStart,
+                timeEnd,
+                creator,
+                this.id);
+        return entityManager.getEvent(id);
     }
 
     @Override
-    public Map<Integer, Event> getAllEvents() {
-        try {
-            return database.getQueryRunner()
-                    .query(
-                            "SELECT id FROM ? WHERE usergroupid=?;",
-                            new ColumnListHandler<Integer>(),
-                            TableName.EVENTS,
-                            id)
-                    .stream()
-                    // create ID -> EventSQL map
-                    .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getEvent));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+    public Map<Integer, EventSQL> getAllEvents() {
+        return Collections.unmodifiableMap(database.query(
+                "SELECT id FROM %s WHERE usergroupid=?;",
+                TableName.EVENTS,
+                new DataObjectMapHandler<EventSQL>(EventSQL.class,
+                        entityManager),
+                id));
     }
 
     @Override
     public Poll createPoll(String question, Account creator,
                            boolean multichoice) {
         int id;
-        try {
-            id = database.getQueryRunner().insert(
-                    "INSERT INTO ?(question,creator,multichoice," +
-                            "usergroupid) VALUES (?,?,?,?);",
-                    new ScalarHandler<Integer>(),
-                    TableName.POLLS,
-                    question,
-                    creator,
-                    multichoice,
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-        return EntityManagerSQL.getInstance().getPoll(id);
+        id = database.insert(
+                "INSERT INTO %s(question,creator,multichoice," +
+                        "usergroupid) VALUES (?,?,?,?);",
+                TableName.POLLS,
+                new IDHandler(),
+                question,
+                creator,
+                multichoice,
+                this.id);
+        return entityManager.getPoll(id);
     }
 
     @Override
-    public Map<Integer, Poll> getAllPolls() {
-        try {
-            return database.getQueryRunner()
-                    .query(
-                            "SELECT id FROM ? WHERE usergroupid=?;",
-                            new ColumnListHandler<Integer>(),
-                            TableName.POLLS,
-                            id)
-                    .stream()
-                    // create ID -> PollSQL map
-                    .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getPoll));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+    public Map<Integer, PollSQL> getAllPolls() {
+        return Collections.unmodifiableMap(database.query(
+                "SELECT id FROM %s WHERE usergroupid=?;",
+                TableName.POLLS,
+                new DataObjectMapHandler<>(PollSQL.class, entityManager),
+                id));
     }
 
     @Override
     public boolean checkPermissionOfMember(Account member, Permission
             permission) throws AccountNotInGroupException {
-        try {
-            return database.getQueryRunner().query(
-                    "SELECT ? FROM ? WHERE accountid=? AND groupid=?;",
-                    new ScalarHandler<Boolean>(),
-                    "permission_" + permission.toString(),
-                    TableName.GROUPMEMBERSHIPS,
-                    member.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT ? FROM %s WHERE accountid=? AND usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new ScalarHandler<Boolean>(),
+                "permission_" + permission.toString(),
+                member.getID(),
+                this.id);
+    }
+
+    @Override
+    public Map<Permission, Boolean> getPermissionsOfMember(Account member) {
+        List<Permission> permissions = Arrays.asList(Permission.values());
+        String placeholders = permissions
+                .stream()
+                .map(p -> "permission_" + p.toString())
+                .collect(Collectors.joining(","));
+
+        List<Boolean> values = database.query(
+                "SELECT (" + placeholders + "FROM %s " +
+                        "WHERE usergroupid=? and accountid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new ColumnListHandler<>(),
+                id,
+                member.getID());
+
+        Map<Permission, Boolean> permissionMap = new HashMap<>();
+        for (int i = 0; i < permissions.size(); i++)
+            permissionMap.put(permissions.get(i), values.get(i));
+
+        return Collections.unmodifiableMap(permissionMap);
     }
 
     @Override
     public void setPermissionOfMember(Account member, Permission permission,
                                       boolean value)
             throws AccountNotInGroupException, DatabaseException {
-        try {
-            database.getQueryRunner().update(
-                    "UPDATE ? SET ?=? WHERE accountid=? AND groupid=?;",
-                    TableName.GROUPMEMBERSHIPS,
-                    "permission_" + permission.toString(),
-                    value,
-                    member.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "UPDATE %s SET ?=? WHERE accountid=? AND usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                "permission_" + permission.toString(),
+                value,
+                member.getID(),
+                this.id);
+    }
+
+    @Override
+    public Date getLocationSharingTimeEndOfMember(Account member)
+            throws AccountNotInGroupException {
+        return database.query("SELECT locsharetimeend FROM %s " +
+                        "WHERE accountid=? AND usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new ScalarHandler<>(),
+                member.getID(),
+                id);
+    }
+
+    @Override
+    public void setLocationSharingTimeEndOfMember(Account member, Date timeEnd)
+            throws AccountNotInGroupException {
+        database.update("UPDATE %s SET locsharetimeend=? " +
+                        "WHERE accountid=? AND usergroupid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                timeEnd,
+                member.getID(),
+                id);
     }
 
     @Override
@@ -252,7 +262,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         // is removed. If there are still members, remove them all but don't
         // perform the actual deletion in this invocation. Removal of the last
         // member will cause this method to be invoked again.
-        Collection<Account> members = getAllMembers().values();
+        Collection<AccountSQL> members = getAllMembers().values();
         if (members.size() > 0) {
             members.forEach(this::removeMember);
         } else {

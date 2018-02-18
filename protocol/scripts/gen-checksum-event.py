@@ -1,13 +1,14 @@
 #!/bin/python
 
 import hashlib
+import binascii
 import json
 from normalize import normalize
 
 testEvent = {
     "type" : "event",
     "id": 2,
-    "title": "Beispielverabredung 1010",
+    "title": "200k+ DPS or kick",
     "creator": 200,
     "time-start": 1514761200000,
     "time-end": 1515000600000,
@@ -19,7 +20,7 @@ testEvent = {
 testEvent2 = {
     "id": 2,
     "type" : "event",
-    "title": "Beispielverabredung 1010",
+    "title": "200k+ DPS or kick",
     "creator": 200,
     "time-start": 1514761200000,
     "time-end": 1515000600000,
@@ -38,6 +39,12 @@ s2 = str(testEvent2)
 
 n = normalize(testEvent)
 n2 = normalize(testEvent2)
+
+print(formatForLatex(n).decode())
+
+m = hashlib.md5()
+m.update(n)
+print("md5sum: %s" % binascii.hexlify(m.digest()))
 
 print("String equality: %s\nNormalized string equality: %s" %
       (s == s2, n == n2))

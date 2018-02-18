@@ -1,109 +1,59 @@
 package org.pispeb.treff_server.interfaces;
 
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.commands.updates.UpdateType;
 
-import javax.json.JsonObject;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * Represents a change to the database caused by user interaction that
- * affects other {@link Account}s.
- * This change can be either an edit to an entity or a chat message sent to a
- * {@link Usergroup}.
+ * Represents a change to {@link DataObject}s caused by user
+ * interaction that affects other {@link Account}s.
  * <p>
- * <p>Once an {@link Update} is sent to a client device using an {@link Account}
- * that is affected by that Update, the Account should be removed from the
- * Update's set of affected Accounts to ensure that the same Account isn't
- * handed
- * the same Update twice.
- * An Update that has no more affected Accounts should be isDeleted and no longer
- * referenced.</p>
- * <p>
- * <p>Updates are naturally ordered from oldest to newest.</p>
+ * Updates are naturally ordered from oldest to newest.
  */
 public interface Update extends Comparable<Update>, DataObject {
 
     /**
-     * Returns the time the {@link Update} was created, used for ordering
+     * Returns the time the {@code Update} was created
+     * <p>
+     * Requires a {@code ReadLock}.
      *
-     * @return The time the Update was created
+     * @return The time the {@code Update} was created
      */
     Date getTime();
 
-    UpdateType getType();
-
     /**
-     * Returns the content of the Update.
+     * Returns the content of the {@code Update}.
+     * <p>
+     * Requires a {@code ReadLock}.
      *
-     * @return A {@link JsonObject} containing
-     * all necessary IDs used for referencing in the
-     * communication protocol, and either the names of the edited fields and
-     * their
-     * values or the chat message.
-     * <p>The structure of the JsonObject depends on the type.
-     * For an {@link UpdateType#EDIT} Update, the format is a partial extensive
-     * description omitting all non-id fields that didn't change.</p>
-     * <p>For a {@link UpdateType#CHAT} Update, the format is as follows:</p>
-     * <code>{ "group-id": id-of-group, "message": the-message }</code>
+     * @return The content of the update in the format specified in the
+     * treffpunkt protocol document
      */
-    JsonObject getUpdate();
+    String getUpdate();
 
     /**
      * Removes an {@link Account} from the set of affected Accounts.
-     * Should the set be empty after the removal, this method will
-     * return true.
-     * In that case, the Update should be considered as isDeleted.
-     * It's methods should no longer be used and all references to it
-     * should be removed.
+     * If the set is empty after the removal, this {@code Update} is deleted.
+     * <p>
+     * Requires a {@code ReadLock}.
      *
      * @param account The Account to be removed
-     * @return <code>true</code> if the set of affected Accounts is
-     * empty after removal, <code>false</code> otherwise.
+     * @return {@code true} if and only if the set of affected Accounts is
+     * empty after removal.
      */
     boolean removeAffectedAccount(Account account);
 
     /**
-     * Returns the set of affected {@link Account}.
+     * Returns an unmodifiable [ID -> {@code Account}] map holding all
+     * {@code Account}s that this {@code Update} affects.
+     * <p>
+     * Requires a {@code ReadLock}.
      *
-     * @return The set of affected Accounts
+     * @return Map of {@code Accounts} that this {@code Update} affects.
+     * @see java.util.Collections#unmodifiableMap(Map)
      */
     Map<Integer, Account> getAffectedAccounts();
-
-    /**
-     * The type of an {@link Update}.
-     */
-    enum UpdateType {
-        /**
-         * The type of Updates that represent changes to the fields
-         * of database entities.
-         */
-        EDIT("edit"),
-        /**
-         * The type of Updates that represent chat messages sent to
-         * {@link Usergroup}s
-         */
-        CHAT("chat");
-
-        private final String name;
-
-        UpdateType(String name) {
-            this.name = name;
-        }
-
-        public static UpdateType fromString(String name) {
-            for (UpdateType ut : values())
-                if (ut.toString().equals(name ))
-                    return ut;
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
 
 }
