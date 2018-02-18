@@ -13,8 +13,16 @@ import java.io.IOException;
 public class UsergroupShallowSerializer extends JsonSerializer<Usergroup> {
 
     @Override
-    public void serialize(Usergroup value, JsonGenerator gen,
+    public void serialize(Usergroup usergroup, JsonGenerator gen,
                           SerializerProvider serializers) throws IOException {
-        throw new UnsupportedOperationException(); // TODO: implement
+        gen.writeStartObject();
+
+        gen.writeStringField("type", "usergroup");
+        gen.writeNumberField("id", usergroup.getID());
+
+        gen.writeStringField("checksum", "");
+        //TODO implement checksum
+
+        gen.writeEndObject();
     }
 }
