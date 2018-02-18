@@ -472,8 +472,10 @@ This does not lift any block that was issued against the executing user.}
 {Creates a new user group.}
 {group/object/Complete description of the new user group{,} omitting the ID{,}
 the events array{,} and the polls array.
-The members array must contain both the executing user's account ID and at
-least one other account ID.}
+The members array \textit{may} contain the executing user's account ID and
+\textit{must} contain at least one other account ID.
+The executing user is invited to the group regardless of whether his account
+ID is contained in the members array.}
 {id/int/ID of the newly created user group}
 {user-id-invalid,no-user-invited}
 {group-change}
@@ -481,7 +483,7 @@ least one other account ID.}
 \apiCommand{edit-group}
 {Edits a user group of which the executing user is a member.}
 {group/object/New complete description of the group{,} omitting the members
-array.
+array{,} the events array{,} and the polls array.
 The ID specified in the description must match the ID of the group that
 is to be edited.}
 {}

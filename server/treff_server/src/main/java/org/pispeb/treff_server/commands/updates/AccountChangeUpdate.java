@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treff_server.commands.serializers.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
-import org.pispeb.treff_server.interfaces.Update;
 
 import java.util.Date;
 
@@ -14,7 +13,7 @@ public class AccountChangeUpdate extends UpdateToSerialize {
     public final Account account;
 
     public AccountChangeUpdate(Date date, int creator, Account account) {
-        super(Update.UpdateType.ACCOUNT_CHANGE.toString(), date, creator);
+        super(UpdateType.ACCOUNT_CHANGE.toString(), date, creator);
         this.account = account;
     }
 }

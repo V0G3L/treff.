@@ -4,10 +4,8 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.exceptions.DatabaseException;
-import org.pispeb.treff_server.exceptions
-        .SQLDatabaseAlreadyInitializedException;
-import org.pispeb.treff_server.interfaces.Update;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -260,7 +258,7 @@ public class SQLDatabase {
                         UPDATES.toString(),
                         // set max size of 'type' field to size of longest
                         // UpdateType
-                        Arrays.stream(Update.UpdateType.values())
+                        Arrays.stream(UpdateType.values())
                                 .map(ut -> ut.toString().length())
                                 .max(Comparator.naturalOrder())
                                 .get()),

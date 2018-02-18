@@ -44,7 +44,6 @@ public class PollOptionCompleteSerializerTest {
                 .thenReturn(timeStart.getTime());
         when(pollOption.getTimeEnd())
                 .thenReturn(timeEnd.getTime());
-        when(pollOption.getTitle()).thenReturn("the-title");
         when(pollOption.getReadWriteLock())
                 .thenReturn(new ReentrantReadWriteLock());
 

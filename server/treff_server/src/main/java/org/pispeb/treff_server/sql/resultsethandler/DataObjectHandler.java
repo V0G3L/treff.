@@ -1,11 +1,5 @@
 package org.pispeb.treff_server.sql.resultsethandler;
 
-/**
- * @author tim
- */
-
-// TODO: make all classes use this
-
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.pispeb.treff_server.sql.EntityManagerSQL;
 import org.pispeb.treff_server.sql.SQLObject;

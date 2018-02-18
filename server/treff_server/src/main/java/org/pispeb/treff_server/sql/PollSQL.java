@@ -109,7 +109,7 @@ public class PollSQL extends SQLObject implements Poll {
                 = new TreeSet<>(getPollOptions().values());
         pollOptions.forEach(pO -> pO.getReadWriteLock().writeLock().lock());
         try {
-            // collect properties of most supported polloption TODO: tie-breaker
+            // collect properties of most supported polloption
             PollOption bestOption = getPollOptions().values().stream()
                     .max(Comparator.naturalOrder())
                     .get();

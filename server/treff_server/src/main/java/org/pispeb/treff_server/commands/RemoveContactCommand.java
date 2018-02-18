@@ -7,15 +7,13 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * a command to remove an Account from the contact-list of another Account
@@ -58,7 +56,7 @@ public class RemoveContactCommand extends AbstractCommand {
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
-                        Update.UpdateType.CANCEL_CONTACT_REQUEST);
+                        UpdateType.CANCEL_CONTACT_REQUEST);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(), account);

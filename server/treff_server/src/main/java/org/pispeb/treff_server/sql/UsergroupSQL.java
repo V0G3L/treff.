@@ -198,7 +198,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Map<Permission, Boolean> getPermissionsOfMember(Account account) {
+    public Map<Permission, Boolean> getPermissionsOfMember(Account member) {
         //TODO
         throw new UnsupportedOperationException();
     }

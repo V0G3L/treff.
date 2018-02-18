@@ -24,16 +24,6 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     }
 
     @Override
-    public String getTitle() {
-        return (String) getProperty("title");
-    }
-
-    @Override
-    public void setTitle(String title) {
-        setProperty("title", title);
-    }
-
-    @Override
     public Position getPosition() {
         Map<String, Object> properties
                 = getProperties("latitude", "longitude");

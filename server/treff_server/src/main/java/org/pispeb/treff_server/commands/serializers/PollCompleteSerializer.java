@@ -16,7 +16,6 @@ import java.util.TreeSet;
 public class PollCompleteSerializer extends JsonSerializer<Poll> {
 
     // TODO: document that locked readLock is asserted
-    // TODO: replace polloption descriptions with IDs
 
     @Override
     public void serialize(Poll poll, JsonGenerator gen, SerializerProvider

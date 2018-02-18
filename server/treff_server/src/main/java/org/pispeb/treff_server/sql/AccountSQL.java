@@ -190,22 +190,6 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public void addToGroup(Usergroup usergroup) {
-        // actual joining is handled in UsergroupSQL
-        usergroup.addMember(this);
-    }
-
-    @Override
-    public void removeFromGroup(Usergroup usergroup) {
-        if (!usergroup.getAllMembers().containsKey(this.id)) {
-            throw new AccountNotInGroupException();
-        }
-
-        // actual removal is done in UsergroupSQL
-        usergroup.removeMember(this);
-    }
-
-    @Override
     public void sendContactRequest(Account receiver) {
         // if existing sent contact request is still pending,
         // don't do anything

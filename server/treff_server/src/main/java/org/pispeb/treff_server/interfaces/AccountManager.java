@@ -1,25 +1,22 @@
 package org.pispeb.treff_server.interfaces;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
-import javax.json.JsonObject;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * <p>An interface for an underlying database. The user of this interface
- * can create accounts and supply a username or an email address to retrieve an
- * existing account, represented by an {@link Account} object.</p>
- * <p>The user can also request a dummy {@link Account} object with no actual
- * capabilities but similar method return times used in the protection against
- * timing attacks.</p>
+ * An interface for an underlying database that allows retrieval of
+ * creation of {@link Account}s and creation of {@link Update}s.
+ * The user of this interface can supply a username or an email address to
+ * retrieve an existing account, represented by an {@link Account} object.
  */
 public interface AccountManager {
 
-    // no has/contains method because simple getters are atomic
+    // no has/contains methods because simple getters are atomic
+    // this prevents having to lock the AccountManager
 
     /**
      * Returns the account that is associated with the given username.
@@ -48,7 +45,14 @@ public interface AccountManager {
      */
     Account getAccount(int id);
 
-    Map<Integer, Account> getAllAccounts();
+    /**
+     * Returns an unmodifiable [ID -> {@code Account}] map holding all
+     * {@code Account}s that have been registered and not deleted.
+     *
+     * @return Unmodifiable [ID -> {@code Account}] map
+     * @see java.util.Collections#unmodifiableMap(Map)
+     */
+    Map<Integer, ? extends Account> getAllAccounts();
 
     /**
      * Creates a new account with the supplied username and password.
@@ -57,22 +61,51 @@ public interface AccountManager {
      * @param password The password of the new account
      * @return The created {@link Account}
      * @throws DuplicateUsernameException if the supplied username is already
-     * associated with
-     *                                    another account. No account will be
-     *                                    created in this case.
-     * @throws DuplicateEmailException    if the supplied email address is
-     * already associated with
-     *                                    another account. No account will be
+     *                                    associated with another account.
+     *                                    No account will be
      *                                    created in this case.
      */
     Account createAccount(String username, String password)
-            throws DuplicateEmailException, DuplicateUsernameException;
+            throws DuplicateUsernameException;
 
+    /**
+     * Returns the account that is associated with the given login token.
+     *
+     * @param token The login token of the account
+     * @return An {@link Account} object representing the account with the
+     * supplied login token or <code>null</code> if no such account exists.
+     */
     Account getAccountByLoginToken(String token);
 
+    /**
+     * Create a new {@code Update} with the supplied content and the supplied
+     * creation time that affects the supplied set of {@code Account}s.
+     * The {@code Update} will automatically be added to the set of undelivered
+     * updates of each supplied affected {@code Account}.
+     * <p>
+     * Note that it is assumed the the supplied creation time is also encoded
+     * into the update content.
+     *
+     * @param updateContent The content of the {@code Update} in the format
+     *                      specified in the treffpunkt protocol document
+     * @param time The time at which the {@code Update} was created
+     * @param affectedAccounts The set of {@code Account} that are affected by
+     *                         this {@code Update}
+     */
     void createUpdate(String updateContent, Date time,
                       Set<? extends Account> affectedAccounts);
 
+    /**
+     * Convenience method for creating an {@code Update} that affects only a
+     * single {@code Account}.
+     *
+     * @param updateContent The content of the {@code Update} in the format
+     *                      specified in the treffpunkt protocol document
+     * @param time The time at which the {@code Update} was created
+     * @param affectedAccount The {@code Account} that is affected by this
+     *                        {@code Update}
+     * @see #createUpdate(String, Date, Set)
+     */
     void createUpdate(String updateContent, Date time,
                       Account affectedAccount);
 

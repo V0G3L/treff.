@@ -8,11 +8,11 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
@@ -67,7 +67,7 @@ public class UpdatePositionCommand extends AbstractCommand {
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
-                        Update.UpdateType.POSITION);
+                        UpdateType.POSITION);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),

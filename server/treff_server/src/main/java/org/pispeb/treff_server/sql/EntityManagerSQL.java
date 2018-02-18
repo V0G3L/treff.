@@ -201,10 +201,6 @@ public class EntityManagerSQL implements AccountManager {
         return getSQLObject(id, UpdateSQL.class);
     }
 
-    // TODO: Don't use ScalarHandler<Integer> anywhere
-    // because it returns
-    // a BigInteger instead and causes a ClassCastException
-
     @Override
     public Account createAccount(String username, String password)
             throws DuplicateEmailException, DuplicateUsernameException {

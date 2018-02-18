@@ -68,6 +68,8 @@ public class CreateGroupCommand extends AbstractCommand {
             members.add(currentAccount);
         }
 
+        // TODO: check if all other members are in contacts
+
         // create the group
         Usergroup usergroup = input.getActingAccount()
                 .createGroup(input.group.name, members);
