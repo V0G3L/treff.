@@ -67,6 +67,12 @@
 \pagebreak
 \section{Entwurf}
 
+\subsection{Kontakte}
+Ursprünglich wurde mit der Pflichtanforderung F20 im Pflichtenheft implizit 
+festgelegt, dass das Hinzufügen von Kontakten keiner Zustimmung bedarf. Da so 
+auch eine ungewollte Kontaktaufnahme durch Fremde leicht möglich ist, wird das 
+einfache Hinzufügen durch das Senden einer Freundschaftsanfrage ersetzt.
+
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -107,8 +113,11 @@ Für die bereits angesprochene JSON Serialisierung wird sowohl Server- , als
 auch Klientseitig die Jackson Library verwendet.
 
 \subsection{Karte}
-osmdroid bonuspack hinzugefügt, um clustering zu verwirklichen
-marker package im map package: UserMarker, EventMarker, +...
+Da bereits die Karte vom Open Street Map Projekt stammt, wurde noch das 
+osmdroid Bonuspaket hinzugefügt. Dieses Paket ermöglicht zum Beispiel 
+das Clustering von Positionen.\\
+Desweiteren wurde noch ein marker Paket erstellt, in dem unter anderem die 
+Marker für Benutzer oder Events enthalten sind.
 
 \subsection{Datenbank}
 Events enthalten nun die eindeutige Identifikationsnummer der Gruppe,
