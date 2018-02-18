@@ -12,11 +12,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
  * if that account was previously blocked
  */
 public class UnblockAccountCommand extends ManageBlockCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "unblock-account",
-                UnblockAccountCommand.class);
-    }
+
 
     public UnblockAccountCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

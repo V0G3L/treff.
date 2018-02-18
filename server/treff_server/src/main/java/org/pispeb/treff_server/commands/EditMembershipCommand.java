@@ -23,11 +23,7 @@ import java.util.Set;
  * a command to edit the permissions of an account
  */
 public class EditMembershipCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-membership",
-                EditMembershipCommand.class);
-    }
+
 
     public EditMembershipCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);

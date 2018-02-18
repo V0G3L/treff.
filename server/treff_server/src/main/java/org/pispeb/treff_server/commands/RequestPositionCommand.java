@@ -20,11 +20,7 @@ import java.util.HashSet;
  * a command to request the position of an account
  */
 public class RequestPositionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "request-position",
-                RequestPositionCommand.class);
-    }
+
 
     public RequestPositionCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {

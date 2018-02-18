@@ -21,11 +21,7 @@ import java.util.HashSet;
  * a command to add an poll option to a poll
  */
 public class AddPollOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "add-poll-option",
-                AddPollOptionCommand.class);
-    }
+
 
     public AddPollOptionCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {

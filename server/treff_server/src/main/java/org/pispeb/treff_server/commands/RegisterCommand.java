@@ -13,11 +13,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to create an account
  */
 public class RegisterCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "register",
-                RegisterCommand.class);
-    }
+
 
     public RegisterCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);

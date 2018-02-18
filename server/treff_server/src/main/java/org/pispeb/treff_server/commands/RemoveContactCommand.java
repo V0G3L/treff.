@@ -19,11 +19,7 @@ import java.util.Date;
  * a command to remove an account from the contact-list of another account
  */
 public class RemoveContactCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "remove-contact",
-                RemoveContactCommand.class);
-    }
+
 
     public RemoveContactCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {

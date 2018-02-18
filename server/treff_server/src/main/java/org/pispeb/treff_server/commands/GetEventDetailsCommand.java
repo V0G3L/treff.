@@ -18,11 +18,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a detailed description of an event of a user group
  */
 public class GetEventDetailsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-event-details",
-                GetEventDetailsCommand.class);
-    }
+
 
     public GetEventDetailsCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {

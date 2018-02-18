@@ -22,11 +22,7 @@ import java.util.TreeSet;
  * a command to add accounts to a user group
  */
 public class AddGroupMembersCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "add-group-members",
-                AddGroupMembersCommand.class);
-    }
+
 
     public AddGroupMembersCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {

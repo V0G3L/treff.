@@ -25,11 +25,7 @@ import java.util.TreeSet;
  * a command to create a user group
  */
 public class CreateGroupCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "create-group",
-                CreateGroupCommand.class);
-    }
+
 
     public CreateGroupCommand(AccountManager accountManager,
                               ObjectMapper mapper) {

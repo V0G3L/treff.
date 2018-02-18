@@ -16,11 +16,7 @@ import java.util.Date;
  * a command to block an account for the executing account
  */
 public class BlockAccountCommand extends ManageBlockCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "block-account",
-                BlockAccountCommand.class);
-    }
+
 
     public BlockAccountCommand(AccountManager accountManager,
                                ObjectMapper mapper) {

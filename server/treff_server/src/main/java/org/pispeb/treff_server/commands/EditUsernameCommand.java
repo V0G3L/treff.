@@ -21,11 +21,7 @@ import java.util.Set;
  * a command to edit the username of an account
  */
 public class EditUsernameCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-username",
-                EditUsernameCommand.class);
-    }
+
 
     public EditUsernameCommand(AccountManager accountManager,
                                ObjectMapper mapper) {

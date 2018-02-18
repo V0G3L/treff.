@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to create a poll in a user group
  */
 public class CreatePollCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "create-poll",
-                CreatePollCommand.class);
-    }
+
 
     public CreatePollCommand(AccountManager accountManager,
                              ObjectMapper mapper) {

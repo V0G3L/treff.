@@ -16,11 +16,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a detailed description of an account by its ID
  */
 public class GetUserDetailsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-user-details",
-                GetUserDetailsCommand.class);
-    }
+
 
     public GetUserDetailsCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

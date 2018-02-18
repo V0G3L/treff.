@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to withdraw a vote from a poll option
  */
 public class WithdrawVoteForOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "withdraw-vote-for-option",
-                WithdrawVoteForOptionCommand.class);
-    }
+
 
     public WithdrawVoteForOptionCommand(AccountManager accountManager,
                                         ObjectMapper mapper) {

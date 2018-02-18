@@ -21,11 +21,7 @@ import java.util.Set;
  * a command to delete an account
  */
 public class DeleteAccountCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "delete-account",
-                DeleteAccountCommand.class);
-    }
+
 
     public DeleteAccountCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {

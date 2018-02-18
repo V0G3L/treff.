@@ -22,11 +22,7 @@ import java.util.HashSet;
  * a command to edit the name of a user group
  */
 public class EditGroupCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-group",
-                EditGroupCommand.class);
-    }
+
 
     public EditGroupCommand(AccountManager accountManager,
                             ObjectMapper mapper) {

@@ -14,11 +14,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to edit the password of an Account
  */
 public class EditPasswordCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-password",
-                EditPasswordCommand.class);
-    }
+
 
     public EditPasswordCommand(AccountManager accountManager,
                                ObjectMapper mapper) {

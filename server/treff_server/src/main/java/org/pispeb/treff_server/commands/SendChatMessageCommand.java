@@ -21,11 +21,7 @@ import java.util.HashSet;
  * a command to send a chat message to a user group
  */
 public class SendChatMessageCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "send-chat-message",
-                SendChatMessageCommand.class);
-    }
+
 
     public SendChatMessageCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {

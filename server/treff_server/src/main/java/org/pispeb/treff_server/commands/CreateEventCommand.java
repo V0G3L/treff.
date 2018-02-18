@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to create an event
  */
 public class CreateEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "create-event",
-                CreateEventCommand.class);
-    }
+
 
     public CreateEventCommand(AccountManager accountManager,
                               ObjectMapper mapper) {

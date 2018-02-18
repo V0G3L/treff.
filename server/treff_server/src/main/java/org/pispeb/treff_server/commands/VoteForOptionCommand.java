@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to vote for a poll option
  */
 public class VoteForOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "vote-for-option",
-                VoteForOptionCommand.class);
-    }
+
 
     public VoteForOptionCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {

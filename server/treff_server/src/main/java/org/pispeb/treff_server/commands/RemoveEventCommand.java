@@ -22,11 +22,7 @@ import java.util.HashSet;
  * a command to delete an event
  */
 public class RemoveEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "remove-event",
-                RemoveEventCommand.class);
-    }
+
 
     public RemoveEventCommand(AccountManager accountManager,
                               ObjectMapper mapper) {

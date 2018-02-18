@@ -18,11 +18,7 @@ import java.util.Set;
  * a command to request updates from the server
  */
 public class RequestUpdatesCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "request-updates",
-                RequestUpdatesCommand.class);
-    }
+
 
     public RequestUpdatesCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

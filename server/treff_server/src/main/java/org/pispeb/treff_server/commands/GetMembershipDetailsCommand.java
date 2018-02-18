@@ -16,11 +16,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get the group membership of an account to a specific user group
  */
 public class GetMembershipDetailsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-membership-details",
-                GetMembershipDetailsCommand.class);
-    }
+
 
     public GetMembershipDetailsCommand(AccountManager accountManager,
                                        ObjectMapper mapper) {

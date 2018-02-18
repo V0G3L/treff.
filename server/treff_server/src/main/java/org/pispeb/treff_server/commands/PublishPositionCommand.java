@@ -23,11 +23,7 @@ import java.util.Set;
  * group during a specific time
  */
 public class PublishPositionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "publish-position",
-                PublishPositionCommand.class);
-    }
+
 
     public PublishPositionCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

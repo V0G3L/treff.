@@ -22,11 +22,7 @@ import java.util.TreeSet;
  * a command to remove accounts from a user group
  */
 public class RemoveGroupMembersCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "remove-group-members",
-                RemoveGroupMembersCommand.class);
-    }
+
 
     public RemoveGroupMembersCommand(AccountManager accountManager,
                                      ObjectMapper mapper) {

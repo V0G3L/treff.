@@ -14,11 +14,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get the ID of an account by its name
  */
 public class GetUserIdCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-user-id",
-                GetUserIdCommand.class);
-    }
+
 
     public GetUserIdCommand(AccountManager accountManager,
                             ObjectMapper mapper) {

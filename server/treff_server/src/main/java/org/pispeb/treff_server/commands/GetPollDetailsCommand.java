@@ -18,11 +18,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a detailed description of a poll of a user group
  */
 public class GetPollDetailsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-poll-details",
-                GetPollDetailsCommand.class);
-    }
+
 
     public GetPollDetailsCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

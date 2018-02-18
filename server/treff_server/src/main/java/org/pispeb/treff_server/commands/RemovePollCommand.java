@@ -22,11 +22,7 @@ import java.util.HashSet;
  * a command to delete a poll of a user group
  */
 public class RemovePollCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "remove-poll",
-                RemovePollCommand.class);
-    }
+
 
     public RemovePollCommand(AccountManager accountManager,
                              ObjectMapper mapper) {

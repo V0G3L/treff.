@@ -21,11 +21,7 @@ import java.util.HashSet;
  * a command to remove the executing account from an event of a user group
  */
 public class LeaveEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "leave-event",
-                LeaveEventCommand.class);
-    }
+
 
     public LeaveEventCommand(AccountManager accountManager,
                              ObjectMapper mapper) {

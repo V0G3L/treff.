@@ -23,11 +23,7 @@ import java.util.Set;
  * a command to update the position of the executing account in the database
  */
 public class UpdatePositionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "update-position",
-                UpdatePositionCommand.class);
-    }
+
 
     public UpdatePositionCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

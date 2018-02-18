@@ -24,11 +24,7 @@ import java.util.HashSet;
  * a command to edit an option of a poll
  */
 public class EditPollOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-poll-option",
-                EditPollOptionCommand.class);
-    }
+
 
     public EditPollOptionCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

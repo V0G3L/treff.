@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to edit an event of a user group
  */
 public class EditEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-event",
-                EditEventCommand.class);
-    }
+
 
     public EditEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {

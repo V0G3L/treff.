@@ -23,11 +23,7 @@ import java.util.HashSet;
  * a command to edit a poll of a user group
  */
 public class EditPollCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-poll",
-                EditPollCommand.class);
-    }
+
 
     public EditPollCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);

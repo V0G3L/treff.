@@ -17,11 +17,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a detailed description of a user group
  */
 public class GetGroupDetailsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-group-details",
-                GetGroupDetailsCommand.class);
-    }
+
 
     public GetGroupDetailsCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {

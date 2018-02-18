@@ -13,11 +13,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to login
  */
 public class LoginCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "login",
-                LoginCommand.class);
-    }
+
 
     public LoginCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);

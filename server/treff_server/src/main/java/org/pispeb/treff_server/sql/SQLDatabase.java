@@ -51,7 +51,7 @@ public class SQLDatabase {
     private void createTables()
             throws NoSuchAlgorithmException, SQLException {
 
-        //wipeDB();
+        wipeDB();
 
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
@@ -288,6 +288,7 @@ public class SQLDatabase {
         // child tables must be listed before their parent tables
         String[] tableNames = {
                 CONTACTS.toString(),
+                CONTACTREQUESTS.toString(),
                 BLOCKS.toString(),
                 UPDATEAFFECTIONS.toString(),
                 UPDATES.toString(),

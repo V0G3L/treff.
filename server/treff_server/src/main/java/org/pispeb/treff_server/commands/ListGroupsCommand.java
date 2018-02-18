@@ -21,11 +21,7 @@ import java.util.Set;
  * a command to get all user groups of an account
  */
 public class ListGroupsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "list-groups",
-                ListGroupsCommand.class);
-    }
+
 
     public ListGroupsCommand(AccountManager accountManager,
                              ObjectMapper mapper) {

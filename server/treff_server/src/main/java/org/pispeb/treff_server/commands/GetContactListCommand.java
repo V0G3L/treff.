@@ -14,11 +14,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
  * a command to get a list of all contacts of the executing account
  */
 public class GetContactListCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-contact-list",
-                GetContactListCommand.class);
-    }
+
 
     public GetContactListCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

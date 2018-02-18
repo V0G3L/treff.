@@ -21,11 +21,7 @@ import java.util.HashSet;
  * a command to add the executing account to an event of a user group
  */
 public class JoinEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "join-event",
-                JoinEventCommand.class);
-    }
+
 
     public JoinEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
