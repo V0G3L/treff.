@@ -69,16 +69,61 @@
 
 
 
+%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Server}
 
 
 
+%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Klient}
 
+\subsection{TreffPunkt}
+TreffPunkt Klasse als Superklasse für Application, bietet statisch überall einen context
+
+\subsection{Befehle}
+Command package shit (???)
+
+\subsection{Karte}
+osmdroid bonuspack hinzugefügt, um clustering zu verwirklichen
+marker package im map package: UserMarker, EventMarker, +...
+
+\subsection{Datenbank}
+Event entity hat jetzt Gruppen ID
+TypeConverter für Integer Sets hinzugefügt
+Position entity durch android.location.Location ersetzt
+
+\subsection{Ortung}
+GPSProvider nur Service, Map ist selbst auch LocationListener
+GPSProviderManager hinzugefügt, um den GPSProvider zu starten
+
+\subsection{Gruppeneinstellungen}
+GroupSettingsActivity statt Fragment (BackStack einfacher), ViewModel dazu entfernt/kein eigenes mehr
+MemberListAdapter hinzugefügt
+
+\subsection{Über uns}
+about package/activity hinzugefügt
+
+\subsection{Login}
+LoginFragment hinzufügt
+
+\subsection{Dependency Injection}
+AppModule Klasse entfernt (kein Dagger mehr für DI)
+Repos keine Singletons, werden einmal in der ViewModelFactory erstellt
+
+\subsection{ViewModels}
+util package: ViewCall und State enum
+Aufrufe im ViewModel, welche einen Context benötigen, werden in einem SingleLiveEvent State Objekt gespeichert, welches vom Context (Fragment/Activity) observed wird. Dieses kann dann entsprechend auf State-Änderungen reagieren.
+ViewModels (nicht die Fragments) erweitern ItemClickListener um alle Nutzerinteraktionen im ViewModel zu behandeln
+PagedListAdapter statt normalen Adaptern um unnötiges Laden von ListItems zu vermeiden
+
+\subsection{NavigationDrawer}
+TabbedNavigationActivity entfernt, nur noch NavigationActivity
+NavigationDrawerFragment nur noch xml, kein Fragment
 
 
+%%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Protokoll}
 
