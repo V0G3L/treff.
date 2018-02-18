@@ -4,8 +4,11 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,6 +20,7 @@ import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.view.home.TreffPunkt;
 
 import java.io.IOException;
 import java.util.Date;
@@ -31,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
 
     private final String TOKEN = "someToken";
+    private final int DISPLAY_ERROR_TOAST = 1;
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
@@ -39,6 +44,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     private boolean idle;
 
     private Handler bgHandler;
+    private Handler uiHandler;
 
 
     private UserRepository userRepository;
@@ -71,6 +77,16 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         thread.start();
         bgHandler = new Handler(thread.getLooper());
         cdl = new CountDownLatch(0);
+
+        uiHandler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == DISPLAY_ERROR_TOAST) {
+                    Error error = (Error) message.obj;
+                    TreffPunkt.showToast(error.getMessage());
+                }
+            }
+        };
 
         restartConnection();
         if (idle && !commands.isEmpty()) {
@@ -156,7 +172,6 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                     .readValue(message, ErrorResponse.class);
             handleError(error);
         } catch (IOException e) {
-//            e.printStackTrace();
             try {
                 AbstractResponse response = mapper.readValue(message, c
                         .getResponseClass());
@@ -181,13 +196,25 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     public static class ErrorResponse extends AbstractResponse {
         public final int error;
 
-        public ErrorResponse(int error) {
+        public ErrorResponse(@JsonProperty("error") int error) {
             this.error = error;
         }
     }
 
-    private void handleError(ErrorResponse error) {
+    private void handleError(ErrorResponse response) {
         //TODO handle Errors
+        Error error = Error.getValue(response.error);
+        Log.e("RequestEncoder", error.getCode() +
+                    ": " + error.getMessage());
+        if (error.isUserRelevant()) {
+            Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
+                    error);
+            message.sendToTarget();
+        }
+
+        if (error == Error.TOKEN_INV) {
+            // TODO handle user logged out
+        }
     }
 
     /**
@@ -218,6 +245,7 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
      */
     public void closeConnection() {
         // TODO check for Service still running
+
         connectionHandler.stopClient();
     }
 
@@ -227,19 +255,6 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         Log.i("Encoder", "ConnectTask execute");
         new ConnectTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         Log.i("Encoder", "ConnectTask execute done");
-    }
-
-    /**
-     * TODO doc
-     *
-     * @param code
-     * @return
-     */
-    public Error getErrorByCode(int code) {
-        for (Error e : Error.values()) {
-            if (e.getCode() == code) return e;
-        }
-        return Error.ERRORCODE_INVALID;
     }
 
     /**

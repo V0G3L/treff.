@@ -72,10 +72,13 @@ public class ConnectionHandler {
         handler.post(() -> {
             try {
                 if (socket.getInetAddress().isReachable(1000)) {
+                    Log.i("CH", "socket connected");
                     if (mBufferOut != null && !mBufferOut.checkError()) {
                         mBufferOut.println(message);
                         mBufferOut.flush();
                     }
+                } else {
+                    Log.i("CH", "socket disconnected");
                 }
             } catch (IOException e) {
                 mMessageListener.restartConnection();

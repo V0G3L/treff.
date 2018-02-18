@@ -89,6 +89,7 @@ public class GPSProvider extends Service implements LocationListener {
         int cmd = intent.getExtras().getInt(INTENT_CMD);
         int groupId = intent.getExtras().getInt(INTENT_GRP);
         Date end = (Date) intent.getExtras().get(INTENT_TIME);
+        encoder.publishPosition(groupId, end);
         ListEntry c = new ListEntry(groupId, end);
         synchronized (queue) {
             switch (cmd) {
