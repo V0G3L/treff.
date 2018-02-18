@@ -15,7 +15,7 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get a detailed description of a Poll of a Usergroup
+ * a command to get a detailed description of a poll of a user group
  */
 public class GetPollDetailsCommand extends AbstractCommand {
     static {

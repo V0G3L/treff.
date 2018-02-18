@@ -16,7 +16,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 
 /**
- * a command to remove an Account from the contact-list of another Account
+ * a command to remove an account from the contact-list of another account
  */
 public class RemoveContactCommand extends AbstractCommand {
     static {

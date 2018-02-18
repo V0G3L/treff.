@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to edit the permissions of an Account
+ * a command to edit the permissions of an account
  */
 public class EditMembershipCommand extends AbstractCommand {
     static {

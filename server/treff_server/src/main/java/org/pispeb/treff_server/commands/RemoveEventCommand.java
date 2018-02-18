@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to delete an Event
+ * a command to delete an event
  */
 public class RemoveEventCommand extends AbstractCommand {
     static {

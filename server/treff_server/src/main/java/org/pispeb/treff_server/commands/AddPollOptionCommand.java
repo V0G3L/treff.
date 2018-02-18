@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to add an PollOption to a Poll
+ * a command to add an poll option to a poll
  */
 public class AddPollOptionCommand extends AbstractCommand {
     static {

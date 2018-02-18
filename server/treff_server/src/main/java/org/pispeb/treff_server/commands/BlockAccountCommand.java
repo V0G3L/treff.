@@ -13,7 +13,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import java.util.Date;
 
 /**
- * a command to block an Account for another Account
+ * a command to block an account for the executing account
  */
 public class BlockAccountCommand extends ManageBlockCommand {
     static {

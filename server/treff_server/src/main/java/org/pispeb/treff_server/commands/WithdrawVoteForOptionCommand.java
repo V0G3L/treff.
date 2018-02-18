@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to withdraw a vote from a pollOption
+ * a command to withdraw a vote from a poll option
  */
 public class WithdrawVoteForOptionCommand extends AbstractCommand {
     static {

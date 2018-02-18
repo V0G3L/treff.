@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to get all Usergroups of an Account
+ * a command to get all user groups of an account
  */
 public class ListGroupsCommand extends AbstractCommand {
     static {

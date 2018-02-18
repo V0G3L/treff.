@@ -13,7 +13,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to edit the email of an Account
+ * a command to edit the email of the executing account
  */
 public class EditEmailCommand extends AbstractCommand {
     static {

@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to delete an Account
+ * a command to delete an account
  */
 public class DeleteAccountCommand extends AbstractCommand {
     static {

@@ -13,7 +13,7 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get the permissions of an Account
+ * a command to get the group membership of an account to a specific user group
  */
 public class GetMembershipDetailsCommand extends AbstractCommand {
     static {

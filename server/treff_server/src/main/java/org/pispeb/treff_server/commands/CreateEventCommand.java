@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to create an Event
+ * a command to create an event
  */
 public class CreateEventCommand extends AbstractCommand {
     static {

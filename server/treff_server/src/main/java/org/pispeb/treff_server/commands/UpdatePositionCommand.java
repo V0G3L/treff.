@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to update the Position of an Account in the database
+ * a command to update the position of the executing account in the database
  */
 public class UpdatePositionCommand extends AbstractCommand {
     static {

@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to add an Account to an Event of a Usergroup
+ * a command to add the executing account to an event of a user group
  */
 public class JoinEventCommand extends AbstractCommand {
     static {

@@ -10,7 +10,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to create an Account
+ * a command to create an account
  */
 public class RegisterCommand extends AbstractCommand {
     static {

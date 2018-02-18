@@ -23,7 +23,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
 
 /**
- * TODO description
+ * An api-command that can be sent by a client.
+ * The command is received by a server and is executing it if possible.
  */
 public abstract class AbstractCommand {
 

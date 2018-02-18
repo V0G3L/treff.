@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to vote for a pollOption
+ * a command to vote for a poll option
  */
 public class VoteForOptionCommand extends AbstractCommand {
     static {

@@ -18,7 +18,7 @@ import java.util.HashSet;
 
 
 /**
- * a command to send a chat message to a Usergroup
+ * a command to send a chat message to a user group
  */
 public class SendChatMessageCommand extends AbstractCommand {
     static {

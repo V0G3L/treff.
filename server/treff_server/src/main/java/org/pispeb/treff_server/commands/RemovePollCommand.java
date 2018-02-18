@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to delete a Poll of a Usergroup
+ * a command to delete a poll of a user group
  */
 public class RemovePollCommand extends AbstractCommand {
     static {

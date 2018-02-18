@@ -11,7 +11,8 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- *
+ * a command to manage the block list of the executing account.
+ * This can either be blocking or unblocking an account.
  */
 public abstract class ManageBlockCommand extends AbstractCommand {
 

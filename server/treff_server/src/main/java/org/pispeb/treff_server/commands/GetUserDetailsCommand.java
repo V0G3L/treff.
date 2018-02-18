@@ -13,7 +13,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get a detailed description of an Account by its ID
+ * a command to get a detailed description of an account by its ID
  */
 public class GetUserDetailsCommand extends AbstractCommand {
     static {

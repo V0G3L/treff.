@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to request the Position of an Account
+ * a command to request the position of an account
  */
 public class RequestPositionCommand extends AbstractCommand {
     static {

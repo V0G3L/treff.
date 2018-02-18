@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to edit the name of a Usergroup
+ * a command to edit the name of a user group
  */
 public class EditGroupCommand extends AbstractCommand {
     static {

@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to edit an Event of a Usergroup
+ * a command to edit an event of a user group
  */
 public class EditEventCommand extends AbstractCommand {
     static {

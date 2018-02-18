@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to edit the username of an Account
+ * a command to edit the username of an account
  */
 public class EditUsernameCommand extends AbstractCommand {
     static {

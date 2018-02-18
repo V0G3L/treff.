@@ -18,6 +18,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * a command to share the position of the executing account with a specific
+ * group during a specific time
+ */
 public class PublishPositionCommand extends AbstractCommand {
     static {
         AbstractCommand.registerCommand(

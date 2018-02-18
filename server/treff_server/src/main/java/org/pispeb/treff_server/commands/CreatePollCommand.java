@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to create a Poll in a Usergroup
+ * a command to create a poll in a user group
  */
 public class CreatePollCommand extends AbstractCommand {
     static {

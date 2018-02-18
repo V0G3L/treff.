@@ -22,7 +22,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * a command to create a Usergroup
+ * a command to create a user group
  */
 public class CreateGroupCommand extends AbstractCommand {
     static {

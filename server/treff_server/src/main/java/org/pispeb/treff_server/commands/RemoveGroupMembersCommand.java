@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 /**
- * a command to remove Accounts from a Usergroup
+ * a command to remove accounts from a user group
  */
 public class RemoveGroupMembersCommand extends AbstractCommand {
     static {

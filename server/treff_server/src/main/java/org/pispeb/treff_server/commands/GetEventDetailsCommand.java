@@ -15,7 +15,7 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get a detailed description of an Event of a Usergroup
+ * a command to get a detailed description of an event of a user group
  */
 public class GetEventDetailsCommand extends AbstractCommand {
     static {

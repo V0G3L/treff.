@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 /**
- * a command to add Accounts to a Usergroup
+ * a command to add accounts to a user group
  */
 public class AddGroupMembersCommand extends AbstractCommand {
     static {

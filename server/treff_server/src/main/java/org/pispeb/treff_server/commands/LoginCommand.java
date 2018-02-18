@@ -10,7 +10,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to login an Account
+ * a command to login
  */
 public class LoginCommand extends AbstractCommand {
     static {

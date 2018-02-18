@@ -20,10 +20,8 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
 
-//TODO needs to be tested
-
 /**
- * a command to edit an option of a Poll
+ * a command to edit an option of a poll
  */
 public class EditPollOptionCommand extends AbstractCommand {
     static {
