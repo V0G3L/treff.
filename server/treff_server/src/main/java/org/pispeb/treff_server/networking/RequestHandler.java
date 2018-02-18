@@ -53,6 +53,14 @@ public class RequestHandler {
         // if cmdString doesn't map to a command class, return an
         // unknown command error message
         String cmdString = request.getString("cmd");
+        if (cmdString.equals("request-persistent-connection")) {
+            if (accountManager
+                    .getAccountByLoginToken(request.getString("token"))
+                    == null)
+                return toErrorResponse(ErrorCode.TOKENINVALID);
+            return new Response(request.getString("id"));
+        }
+
         Class<? extends AbstractCommand> commandClass
                 = AbstractCommand.getCommandByStringIdentifier(cmdString);
         if (commandClass == null)
