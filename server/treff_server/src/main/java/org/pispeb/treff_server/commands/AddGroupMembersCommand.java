@@ -1,12 +1,21 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.UsergroupChangeUpdate;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.TreeSet;
 
 // TODO needs to be tested
@@ -15,10 +24,16 @@ import java.util.TreeSet;
  * a command to add Accounts to a Usergroup
  */
 public class AddGroupMembersCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "add-group-members",
+                AddGroupMembersCommand.class);
+    }
 
-    public AddGroupMembersCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-	}
+    public AddGroupMembersCommand(AccountManager accountManager,
+                                  ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
@@ -36,7 +51,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
             if (currentAccount == null) {
                 if (memberId == actingAccount.getID())
                     return new ErrorOutput(ErrorCode.TOKENINVALID);
-                else return new ErrorOutput(ErrorCode.USERIDINVALID);
+                return new ErrorOutput(ErrorCode.USERIDINVALID);
             }
             newMemberAccounts.add(currentAccount);
         }
@@ -44,10 +59,10 @@ public class AddGroupMembersCommand extends AbstractCommand {
         // remove the actingAccount from the set
         newMemberAccounts.remove(actingAccount);
 
-
         // get group
         Usergroup usergroup
-                = getSafeForWriting(actingAccount.getAllGroups().get(input.id));
+                = getSafeForWriting(actingAccount
+                .getAllGroups().get(input.groupId));
         if (usergroup == null)
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
@@ -68,20 +83,36 @@ public class AddGroupMembersCommand extends AbstractCommand {
             usergroup.addMember(newMember);
         }
 
+        // create update
+        UsergroupChangeUpdate update =
+                new UsergroupChangeUpdate(new Date(),
+                        actingAccount.getID(),
+                        usergroup);
+        for (Account a: usergroup.getAllMembers().values())
+            getSafeForWriting(a);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    new HashSet<>(usergroup.getAllMembers().values()));
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
+
         //respond
         return new Output();
     }
 
     public static class Input extends CommandInputLoginRequired {
 
-        final int id;
+        final int groupId;
         final TreeSet<Integer> memberIds;
 
-        public Input(@JsonProperty("id") int id,
+        public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("members") int[] memberIds,
                      @JsonProperty("token") String token) {
             super(token);
-            this.id = id;
+            this.groupId = groupId;
             this.memberIds = new TreeSet<>();
             for (int memberId : memberIds) {
                 this.memberIds.add(memberId);

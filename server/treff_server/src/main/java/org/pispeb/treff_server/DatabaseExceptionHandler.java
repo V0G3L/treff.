@@ -15,4 +15,8 @@ public class DatabaseExceptionHandler {
     public boolean hasExceptionHappened() {
         return caughtException != null;
     }
+
+    public DatabaseException getCaughtException() {
+        return caughtException;
+    }
 }

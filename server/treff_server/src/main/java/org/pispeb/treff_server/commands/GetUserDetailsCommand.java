@@ -1,25 +1,31 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pispeb.treff_server.commands.serializer.AccountCompleteSerializer;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.serializers.AccountCompleteSerializer;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
-
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-
-//TODO needs to be tested
 
 /**
  * a command to get a detailed description of an Account by its ID
  */
 public class GetUserDetailsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-user-details",
+                GetUserDetailsCommand.class);
+    }
 
-    public GetUserDetailsCommand(AccountManager accountManager) {
-        super(accountManager, CommandInput.class);
-	}
+    public GetUserDetailsCommand(AccountManager accountManager,
+                                 ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
+    }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
@@ -54,6 +60,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = AccountCompleteSerializer.class)
+        @JsonProperty("account")
         final Account account;
 
         Output(Account account) {

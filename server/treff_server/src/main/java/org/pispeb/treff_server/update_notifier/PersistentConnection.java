@@ -8,6 +8,8 @@ import org.pispeb.treff_server.interfaces.Update;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.websocket.Session;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -16,18 +18,18 @@ import java.io.PrintWriter;
  */
 public class PersistentConnection implements AccountUpdateListener {
 
-    private final PrintWriter out;
+    private final Session session;
     private final Account observedAccount;
 
     /**
      * Takes over the connection of the specified {@link PrintWriter}
      * and writes update notifications onto it.
      *
-     * @param out The {@link PrintWriter} of an active connection
+     * @param session The {@link Session} of an active connection
      */
-    public PersistentConnection(PrintWriter out, AccountManager accountManager,
+    public PersistentConnection(Session session, AccountManager accountManager,
                                 int userID)  {
-        this.out = out;
+        this.session = session;
         this.observedAccount = accountManager.getAccount(userID);
         observedAccount.addUpdateListener(this);
     }
@@ -37,6 +39,10 @@ public class PersistentConnection implements AccountUpdateListener {
         int updateCount = observedAccount.getUndeliveredUpdates().size();
         JsonObject message = Json.createObjectBuilder()
                 .add("count",updateCount).build();
-        out.println(message.toString());
+        try {
+            session.getBasicRemote().sendText(message.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

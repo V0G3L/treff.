@@ -18,8 +18,9 @@ public class UpdateSQL extends SQLObject implements Update {
 
     private static final TableName TABLE_NAME = TableName.UPDATES;
 
-    UpdateSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
+    UpdateSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -28,17 +29,8 @@ public class UpdateSQL extends SQLObject implements Update {
     }
 
     @Override
-    public UpdateType getType()  {
-        return UpdateType.fromString((String) getProperty("type"));
-    }
-
-    @Override
-    public JsonObject getUpdate()  {
-        String updatestring = (String) getProperty("updatestring");
-       try (JsonReader jsonReader
-                = Json.createReader(new StringReader(updatestring))) {
-           return jsonReader.readObject();
-       }
+    public String getUpdate()  {
+        return (String) getProperty("updatestring");
     }
 
     @Override
@@ -71,14 +63,10 @@ public class UpdateSQL extends SQLObject implements Update {
     public void delete() {
         assert getAffectedAccounts().size() == 0;
 
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE id=?;",
-                    TableName.UPDATES.toString(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE id=?;",
+                TableName.UPDATES,
+                this.id);
 
         deleted = true;
     }

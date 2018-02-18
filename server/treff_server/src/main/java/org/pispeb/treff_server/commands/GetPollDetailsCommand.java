@@ -1,20 +1,32 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pispeb.treff_server.commands.serializer.PollCompleteSerializer;
-import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.serializers.PollCompleteSerializer;
+import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Poll;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
-
-//TODO needs to be tested
 
 /**
  * a command to get a detailed description of a Poll of a Usergroup
  */
 public class GetPollDetailsCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "get-poll-details",
+                GetPollDetailsCommand.class);
+    }
 
-    public GetPollDetailsCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public GetPollDetailsCommand(AccountManager accountManager,
+                                 ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -59,6 +71,7 @@ public class GetPollDetailsCommand extends AbstractCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = PollCompleteSerializer.class)
+        @JsonProperty("poll")
         final Poll poll;
 
         Output(Poll poll) {

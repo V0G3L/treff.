@@ -1,17 +1,17 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Test;
-import org.pispeb.treff_server.JsonDependentTest;
+import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
 
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
+public class GetPollDetailsCommandTest extends MultipleUsersTest {
 
-/**
- * @author tim
- */
-public class GetPollDetailsCommandTest extends JsonDependentTest {
+    public GetPollDetailsCommandTest() {
+        super("get-poll-details");
+    }
 
     @Test
     public void deserializeInput() throws IOException {
@@ -30,11 +30,6 @@ public class GetPollDetailsCommandTest extends JsonDependentTest {
     }
 
     @Test
-    public void executeInternal() {
-    }
-
-    @Test
-    public void serializeOutput() {
-
+    public void execute() {
     }
 }

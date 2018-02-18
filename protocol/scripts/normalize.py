@@ -1,5 +1,7 @@
+from json import dumps
+
 order = {
-    "event": [
+    "event" : [
         "type",
         "id",
         "title",
@@ -12,16 +14,15 @@ order = {
     ]
 }
 
+for k in order:
+    order[k].sort()
+
 def normalize(o):
     if type(o) == dict:
         output = b"\x01"
-        sortedO = [0] * len(o)
-        t = o["type"]
-        for k, v in o.items():
-            sortedO[order[t].index(k)] = v
 
-        for v in sortedO:
-            output += normalize(v) + b"\x02"
+        for key in order[o["type"]]:
+            output += normalize(o[key]) + b"\x02"
 
         # remove trailing seperator
         output = output[:-1]
@@ -45,7 +46,9 @@ def normalize(o):
         output += b"\x06"
         return output
     elif type(o) == str:
-        return b'"' + o.encode() + b'"'
+        # cut off quotation marks after
+        # json serialization
+        return dumps(o)[1:-1].encode()
     else:
         return str(o).encode()
 

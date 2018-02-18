@@ -1,12 +1,23 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.interfaces.*;
+import org.pispeb.treff_server.commands.descriptions.EventCreateDescription;
+import org.pispeb.treff_server.commands.io.CommandInput;
+import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
+import org.pispeb.treff_server.commands.io.CommandOutput;
+import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.EventChangeUpdate;
+import org.pispeb.treff_server.interfaces.Account;
+import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Event;
+import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
+import java.util.HashSet;
 
 // TODO needs to be tested
 
@@ -14,9 +25,15 @@ import java.util.Date;
  * a command to create an Event
  */
 public class CreateEventCommand extends AbstractCommand {
+    static {
+        AbstractCommand.registerCommand(
+                "create-event",
+                CreateEventCommand.class);
+    }
 
-    public CreateEventCommand(AccountManager accountManager) {
-        super(accountManager, Input.class);
+    public CreateEventCommand(AccountManager accountManager,
+                              ObjectMapper mapper) {
+        super(accountManager, Input.class, mapper);
     }
 
     @Override
@@ -24,12 +41,11 @@ public class CreateEventCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check times
-        if (input.timeEnd < input.timeStart) {
+        if (input.event.timeEnd.before(input.event.timeStart)) {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO timeEnd-in-past-check
-        if (input.timeEnd < System.currentTimeMillis()) {
+        if (checkTime(input.event.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
@@ -42,21 +58,38 @@ public class CreateEventCommand extends AbstractCommand {
 
         // get group
         Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input.groupId));
+                getSafeForReading(actingAccount.getAllGroups().get(input
+                        .groupId));
         if (group == null) {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
         // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission.CREATE_EVENT)) {
+        if (!group.checkPermissionOfMember(actingAccount, Permission
+                .CREATE_EVENT)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEEVENT);
         }
 
-        // create event TODO times multiplied by 1000 due to ms?
-        Event event = group.createEvent(input.title,
-                new Position(input.latitude, input.longitude),
-                new Date(input.timeStart*1000),
-                new Date(input.timeEnd*1000), actingAccount);
+        // create event
+        Event event = group.createEvent(input.event.title,
+                input.event.position,
+                input.event.timeStart,
+                input.event.timeEnd,
+                input.getActingAccount());
+
+        // create update
+        EventChangeUpdate update =
+                new EventChangeUpdate(new Date(),
+                        actingAccount.getID(),
+                        event);
+        try {
+            accountManager.createUpdate(mapper.writeValueAsString(update),
+                    new Date(),
+                    new HashSet<>(group.getAllMembers().values()));
+        } catch (JsonProcessingException e) {
+             // TODO: really?
+            throw new AssertionError("This shouldn't happen.");
+        }
 
         // respond
         return new Output(event.getID());
@@ -65,31 +98,20 @@ public class CreateEventCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final int groupId;
-        final String title;
-        final double latitude;
-        final double longitude;
-        final long timeStart;
-        final long timeEnd;
+        final EventCreateDescription event;
 
         public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("title") String title,
-                     @JsonProperty("latitude") double latitude,
-                     @JsonProperty("longitude") double longitude,
-                     @JsonProperty("time-start") long timeStart,
-                     @JsonProperty("time-end") long timeEnd,
+                     @JsonProperty("event") EventCreateDescription event,
                      @JsonProperty("token") String token) {
             super(token);
             this.groupId = groupId;
-            this.title = title;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
+            this.event = event;
         }
     }
 
     public static class Output extends CommandOutput {
 
+        @JsonProperty("id")
         final int eventId;
 
         Output(int eventId) {

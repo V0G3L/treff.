@@ -18,18 +18,9 @@ public class PollOptionSQL extends SQLObject implements PollOption {
 
     private static final TableName TABLE_NAME = TableName.POLLOPTIONS;
 
-    PollOptionSQL(int id, SQLDatabase database, Properties config) {
-        super(id, database, config, TABLE_NAME);
-    }
-
-    @Override
-    public String getTitle() {
-        return (String) getProperty("title");
-    }
-
-    @Override
-    public void setTitle(String title) {
-        setProperty("title", title);
+    PollOptionSQL(int id, SQLDatabase database,
+               EntityManagerSQL entityManager, Properties config) {
+        super(id, TABLE_NAME, database, entityManager, config);
     }
 
     @Override
@@ -70,45 +61,33 @@ public class PollOptionSQL extends SQLObject implements PollOption {
 
     @Override
     public void addVoter(Account voter) {
-        try {
-            database.getQueryRunner().insert(
-                    "INSERT INTO ?(accountid,polloptionid) VALUES (?,?);",
-                    (rs -> null),
-                    TableName.POLLVOTES.toString(),
-                    voter.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.insert(
+                "INSERT INTO %s(accountid,polloptionid) VALUES (?,?);",
+                TableName.POLLVOTES,
+                (rs -> null),
+                voter.getID(),
+                this.id);
     }
 
     @Override
     public void removeVoter(Account voter) {
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE accountid=? AND polloptionid=?;",
-                    TableName.POLLVOTES.toString(),
-                    voter.getID(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE accountid=? AND polloptionid=?;",
+                TableName.POLLVOTES,
+                voter.getID(),
+                this.id);
     }
 
     @Override
     public Map<Integer, Account> getVoters() {
-        try {
-            return database.getQueryRunner().query(
-                    "SELECT FROM ? WHERE polloptionid=?;",
-                    new ColumnListHandler<Integer>(),
-                    TableName.POLLVOTES.toString(),
-                    this.id)
-                    .stream()
-                    .collect(Collectors.toMap(Function.identity(),
-                            EntityManagerSQL.getInstance()::getAccount));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        return database.query(
+                "SELECT FROM %s WHERE polloptionid=?;",
+                TableName.POLLVOTES,
+                new ColumnListHandler<Integer>(),
+                this.id)
+                .stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        entityManager::getAccount));
     }
 
     @Override
@@ -116,14 +95,10 @@ public class PollOptionSQL extends SQLObject implements PollOption {
         // remove all votes
         getVoters().values().forEach(this::removeVoter);
 
-        try {
-            database.getQueryRunner().update(
-                    "DELETE FROM ? WHERE id=?;",
-                    TableName.POLLS.toString(),
-                    this.id);
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        database.update(
+                "DELETE FROM %s WHERE id=?;",
+                TableName.POLLS,
+                this.id);
 
         deleted = true;
     }

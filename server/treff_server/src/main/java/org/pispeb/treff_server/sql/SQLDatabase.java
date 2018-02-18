@@ -2,10 +2,10 @@ package org.pispeb.treff_server.sql;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.exceptions
-        .SQLDatabaseAlreadyInitializedException;
-import org.pispeb.treff_server.interfaces.Update;
+import org.pispeb.treff_server.commands.updates.UpdateType;
+import org.pispeb.treff_server.exceptions.DatabaseException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -24,19 +24,10 @@ import static org.pispeb.treff_server.sql.SQLDatabase.TableName.*;
 public class SQLDatabase {
 
     private final Properties config;
-    private static SQLDatabase instance;
     private final QueryRunner queryRunner;
+    private final EntityManagerSQL entityManagerSQL;
 
-    public static void initialize(Properties config) throws SQLException,
-            NoSuchAlgorithmException {
-        if (instance == null) {
-            instance = new SQLDatabase(config);
-        } else {
-            throw new SQLDatabaseAlreadyInitializedException();
-        }
-    }
-
-    private SQLDatabase(Properties config) throws SQLException,
+    public SQLDatabase(Properties config) throws SQLException,
             NoSuchAlgorithmException {
         this.config = config;
 
@@ -54,13 +45,13 @@ public class SQLDatabase {
         // if db never initialized before:
         createTables();
 
-        EntityManagerSQL.initialize(this, config);
+        this.entityManagerSQL = new EntityManagerSQL(this, config);
     }
 
     private void createTables()
             throws NoSuchAlgorithmException, SQLException {
 
-        wipeDB();
+        //wipeDB();
 
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
@@ -73,7 +64,7 @@ public class SQLDatabase {
 
         String[] tableCreationStatements = {
                 // accounts
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "username VARCHAR(%d) NOT NULL UNIQUE," +
                                 "email VARCHAR(%d) UNIQUE," +
@@ -99,11 +90,11 @@ public class SQLDatabase {
                         PASSWORD_HASH_BYTES * 2,
                         Integer.parseInt(
                                 config.getProperty(LOGIN_TOKEN_BYTES
-                                        .toString())
-                        )),
+                                        .toString())) * 2
+                ),
 
                 // contacts
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "lowid INT NOT NULL," +
                                 "highid INT NOT NULL," +
                                 "FOREIGN KEY (lowid)" +
@@ -117,7 +108,7 @@ public class SQLDatabase {
                         CONTACTS.toString()),
 
                 // contactrequests
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "sender INT NOT NULL," +
                                 "receiver INT NOT NULL," +
                                 "FOREIGN KEY (sender)" +
@@ -131,7 +122,7 @@ public class SQLDatabase {
                         CONTACTREQUESTS.toString()),
 
                 // blocks
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "blocker INT NOT NULL," +
                                 "blocked INT NOT NULL," +
                                 "FOREIGN KEY (blocker)" +
@@ -145,7 +136,7 @@ public class SQLDatabase {
                         BLOCKS.toString()),
 
                 // usergroups
-                String.format("CREATE TABLE %s(" +
+                String.format("CREATE TABLE IF NOT EXISTS %s(" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "name VARCHAR(%d) NOT NULL" +
                                 ");",
@@ -155,7 +146,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // groupmemberships
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
                                 "   REFERENCES accounts(id)" +
@@ -165,17 +156,19 @@ public class SQLDatabase {
                                 "   REFERENCES usergroups(id)" +
                                 "   ON DELETE CASCADE," +
                                 "PRIMARY KEY (accountid, usergroupid)," +
+                                "locsharetimeend DATETIME," +
                                 "%s" +
                                 ");",
                         GROUPMEMBERSHIPS.toString(),
                         // add all permissions
                         Arrays.stream(Permission.values())
                                 .map((p) -> "permission_" +
-                                        p.toString() + " BIT NOT NULL")
+                                        p.toString()
+                                        + " BIT NOT NULL")
                                 .collect(Collectors.joining(","))),
 
                 // events
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -196,7 +189,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // eventparticipations
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "eventid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
@@ -210,7 +203,7 @@ public class SQLDatabase {
                         EVENTPARTICIPATIONS.toString()),
 
                 // polls
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -229,7 +222,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // polloptions
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "pollid INT NOT NULL," +
                                 "FOREIGN KEY (pollid)" +
@@ -243,7 +236,7 @@ public class SQLDatabase {
                         POLLOPTIONS.toString()),
 
                 // pollvotes
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "polloptionid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
@@ -257,22 +250,21 @@ public class SQLDatabase {
                         POLLVOTES.toString()),
 
                 // updates
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL," +
-                                "time DATETIME NOT NULL," +
-                                "type VARCHAR(%d) NOT NULL" +
+                                "time DATETIME NOT NULL" +
                                 ");",
                         UPDATES.toString(),
                         // set max size of 'type' field to size of longest
                         // UpdateType
-                        Arrays.stream(Update.UpdateType.values())
+                        Arrays.stream(UpdateType.values())
                                 .map(ut -> ut.toString().length())
                                 .max(Comparator.naturalOrder())
                                 .get()),
 
                 // updateaffections
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "updateid INT NOT NULL," +
                                 "FOREIGN KEY (updateid)" +
                                 "   REFERENCES updates(id)" +
@@ -316,8 +308,102 @@ public class SQLDatabase {
         }
     }
 
-    QueryRunner getQueryRunner() {
-        return queryRunner;
+    public EntityManagerSQL getEntityManagerSQL() {
+        return entityManagerSQL;
+    }
+
+    /**
+     * Like {@link QueryRunner#query(String, ResultSetHandler, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param rsHandler The {@code ResultSetHandler} to use
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @param <T> The type of return value returned by the
+     * {@code ResultSetHandler}
+     * @return The return value produced by the specified
+     * {@code ResultSetHandler}
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public <T> T query(String sqlQuery, TableName tableName,
+                       ResultSetHandler<T> rsHandler, Object... parameters) {
+        try {
+            return queryRunner.query(
+                    String.format(sqlQuery, tableName.toString()),
+                    rsHandler,
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Like {@link QueryRunner#insert(String, ResultSetHandler, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param rsHandler The {@code ResultSetHandler} to use
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @param <T> The type of return value returned by the
+     * {@code ResultSetHandler}
+     * @return The return value produced by the specified
+     * {@code ResultSetHandler}
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public <T> T insert(String sqlQuery, TableName tableName,
+                       ResultSetHandler<T> rsHandler, Object... parameters) {
+        try {
+            return queryRunner.insert(
+                    String.format(sqlQuery, tableName.toString()),
+                    rsHandler,
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    /**
+     * Like {@link QueryRunner#update(String, Object...)}
+     * but only supports simple queries on a single table, e.g. no
+     * <code>JOIN</code> statements.
+     * Will insert the specified {@link TableName} before sending.
+     * @param sqlQuery The SQL query to run.
+     *                 Must contain a single <code>%s</code>-placeholder for the
+     *                 table name.
+     *                 Must contain as many <code>?</code>-placeholders as
+     *                 {@code Object}s are specified in the
+     *                 <code>parameters</code>.
+     * @param tableName The name of the table to run the query on.
+     * @param parameters The parameters to insert into the
+     *                   <code>?</code>-placeholders
+     * @return The amount of rows updated.
+     * @throws DatabaseException if an {@link SQLException} occurs
+     */
+    public int update(String sqlQuery, TableName tableName,
+                          Object... parameters) {
+        try {
+            return queryRunner.update(
+                    String.format(sqlQuery, tableName.toString()),
+                    parameters);
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     enum TableName {
