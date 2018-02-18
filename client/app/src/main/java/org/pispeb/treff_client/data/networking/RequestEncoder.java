@@ -1,6 +1,5 @@
 package org.pispeb.treff_client.data.networking;
 
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -12,15 +11,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.*;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
-import org.pispeb.treff_client.view.home.TreffPunkt;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.io.IOException;
 import java.util.Date;
