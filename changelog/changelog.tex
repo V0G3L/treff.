@@ -73,6 +73,62 @@ festgelegt, dass das Hinzufügen von Kontakten keiner Zustimmung bedarf. Da so
 auch eine ungewollte Kontaktaufnahme durch Fremde leicht möglich ist, wird das 
 einfache Hinzufügen durch das Senden einer Freundschaftsanfrage ersetzt.
 
+%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Server}
+
+\subsection{Datenmodell}
+	\begin{itemize}
+	\item Da die Gruppenzugehörigkeit eines Benutzers zu einer Gruppe eindeutig
+		durch die Verbindung der Benutzer-ID und Gruppen-ID identifiziert wird
+		und die ID der Gruppenzugehörigkeit nicht gebraucht wird, wurde sie
+		entfernt und als Primärschlüssel durch die Verbindung von Benutzer-ID
+		und Gruppen-ID ersetzt.
+	\item Die Gruppenzugehörigkeit speichert nun zusätzlich den Zeitpunkt bis
+		zu dem ein Benutzer seinen Standort mit der Gruppe teilt.
+	\end{itemize}
+
+\subsection{Permissions-Enum}
+Das Permission Enum wurde aus dem SQL-Paket in das Haupt-Paket bewegt, da es
+nicht spezifisch für die SQL-Implementation ist und auch allen alternativen
+Datenbank-Implementationen zur Verfügung stehen muss.
+
+\subsection{Verwendung eines Command-Entwurfsmusters}
+Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
+deshalb vermieden werden sollten, wurde die Funktionalität der Befehle in Form
+einer Befehlsstruktur aus der Klasse "Requesthandler" ausgelagert.
+
+\subsection{Rückgabewert des RequestHandlers}
+Der String-Rückgabewert des RequestHandlers an den WebSocketEndPoint, früher
+Connectionhandler, wurde zu einer eigenen Klasse. Diese unterstützt neben der
+Weiterleitung der Antwort an den Klienten weitere Informationen für den
+WebSocketEndPoint. Diese wird genutzt, um beim Anfragen einer
+PersistentConnection durch den Klienten das Verhalten des WebSocketEndpoint zu
+verändern.
+
+\subsection{Änderungen im SQL-Paket}
+	\begin{itemize}
+		\item Die Erstellung der Datenbank-Tabellen wurde in die seperate
+			Klasse \enquote{SQLDatabase} ausgelagert.
+	\end{itemize}
+
+\subsection{Interessante Abhängigkeiten}
+	\begin{itemize}
+		\item \enquote{Jackson}:
+			(De-)Serialisierung von JSON-kodierter Ein- und Ausgabe
+		\item \enquote{Apache Commons DBUtils}:
+			Vereinfachter Zugang zu JDBC-Methoden
+		\item \enquote{MariaDB4j}:
+			MySQL-in-a-Jar für einfaches Testen von Methoden, die eine
+			Verbindung zur MySQL-Datenbank benötigen
+	\end{itemize}
+
+\subsection{Verschiedenes}
+	\begin{itemize}
+	\item Für einige früh abzufangende Fehlerzustände wurden neue Exceptions
+		eingeführt.
+	\end{itemize}
+
 
 %%%%%%%%%%%%%%%%%%%
 \pagebreak
@@ -102,8 +158,8 @@ weiterhin die jeweilige Methode des RequestEncoders veranlasst\\
 Zudem gibt es ein weiteres Package, welches die im Protokoll beschriebenen
 Entitäten enthält. Dieses ist nötig, um eine gewisse Konsistenz zwischen Server
 und Klient zu schaffen.\\
-Für die bereits angesprochene JSON Serialisierung wird sowohl Server- , als
-auch Klientseitig die Jackson Library verwendet.
+Für die bereits angesprochene JSON-Serialisierung wird sowohl server-, als
+auch klientseitig die Jackson-Library verwendet.
 
 \subsection{Karte}
 Da bereits die Karte vom Open Street Map Projekt stammt, wurde noch das 
@@ -188,72 +244,6 @@ Die Abstraktionsebene der TabbedNavigationActivity wurde entfernt, da
 sie keinen zusätzlichen Nutzen bietet. Die HomeActivity ist die einzige
 Activity, die den NavigationDrawer darstellt und Tabs hält.\\
 Das NavigationDrawerFragment wird nun nur im xml verwendet, nicht als Java-Klasse.
-
-
-%%%%%%%%%%%%%%%%%%%
-\pagebreak
-\section{Protokoll}
-
-
-\pagebreak
-\section{Server}
-
-\subsection{Datenmodell}
-	\begin{itemize}
-	\item Da die Gruppenzugehörigkeit eines Benutzers zu einer Gruppe eindeutig
-		durch die Verbindung der Benutzer-ID und Gruppen-ID identifiziert wird
-		und die ID der Gruppenzugehörigkeit nicht gebraucht wird, wurde sie
-		entfernt und als Primärschlüssel durch die Verbindung von Benutzer-ID
-		und Gruppen-ID ersetzt.
-	\item Die Gruppenzugehörigkeit speichert nun zusätzlich den Zeitpunkt bis
-		zu dem ein Benutzer seinen Standort mit der Gruppe teilt.
-	\end{itemize}
-
-\subsection{Permissions-Enum}
-Das Permission Enum wurde aus dem SQL-Paket in das Haupt-Paket bewegt, da es
-nicht spezifisch für die SQL-Implementation ist und auch allen alternativen
-Datenbank-Implementationen zur Verfügung stehen muss.
-
-\subsection{Verwendung eines Command-Entwurfsmusters}
-Da offensichtlicherweise Gottklassen schlecht zu testen und zu warten sind und
-deshalb vermieden werden sollten, wurde die Funktionalität der Befehle in Form
-einer Befehlsstruktur aus der Klasse "Requesthandler" ausgelagert.
-
-\subsection{Rückgabewert des RequestHandlers}
-Der String-Rückgabewert des RequestHandlers an den WebSocketEndPoint, früher
-Connectionhandler, wurde zu einer eigenen Klasse. Diese unterstützt neben der
-Weiterleitung der Antwort an den Klienten weitere Informationen für den
-WebSocketEndPoint. Diese wird genutzt, um beim Anfragen einer
-PersistentConnection durch den Klienten das Verhalten des WebSocketEndpoint zu
-verändern.
-
-\subsection{Änderungen im SQL-Paket}
-	\begin{itemize}
-		\item Die Erstellung der Datenbank-Tabellen wurde in die seperate
-			Klasse \enquote{SQLDatabase} ausgelagert.
-	\end{itemize}
-
-\subsection{Interessante Abhängigkeiten}
-	\begin{itemize}
-		\item \enquote{Jackson}:
-			(De-)Serialisierung von JSON-kodierter Ein- und Ausgabe
-		\item \enquote{Apache Commons DBUtils}:
-			Vereinfachter Zugang zu JDBC-Methoden
-		\item \enquote{MariaDB4j}:
-			MySQL-in-a-Jar für einfaches Testen von Methoden, die eine
-			Verbindung zur MySQL-Datenbank benötigen
-	\end{itemize}
-
-\subsection{Verschiedenes}
-	\begin{itemize}
-	\item Für einige früh abzufangende Fehlerzustände wurden neue Exceptions
-		eingeführt.
-	\end{itemize}
-
-\pagebreak
-\section{Klient}
-
-
 
 \pagebreak
 \section{Protokoll}
