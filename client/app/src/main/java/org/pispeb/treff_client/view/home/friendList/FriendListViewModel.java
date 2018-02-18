@@ -37,10 +37,26 @@ public class FriendListViewModel extends ViewModel
         state.setValue(new State(ViewCall.ADD_FRIEND, 0));
     }
 
+    public void decline(int userId) {
+        userRepository.requestAccept(userId);
+    }
+
+    public void accept(int userId) {
+        userRepository.requestDecline(userId);
+    }
+
     @Override
     public void onItemClicked(int position, User user) {
-        state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
-                user.getUserId()));
+        if (user.isRequestPending()) {
+            state.setValue(new State(ViewCall.SHOW_PENDING_DIALOG,
+                    user.getUserId()));
+        } else if (user.isRequesting()) {
+            state.setValue(new State(ViewCall.SHOW_REQUESTING_DIALOG,
+                    user.getUserId()));
+        } else {
+            state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
+                    user.getUserId()));
+        }
     }
 
     public SingleLiveEvent<State> getState() {

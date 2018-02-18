@@ -71,6 +71,11 @@
     <string name="error_incorrect_password">Password not correct</string>
     <string name="error_field_required">Required field</string>
     <string name="share_location">Share Location</string>
+    <string name="user_is_requesting">Contact Request</string>
+    <string name="request_from">Contact Request from </string>
+    <string name="request_pending">Request pending</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
 
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>

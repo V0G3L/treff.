@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.databinding.FriendItemBinding;
 
@@ -86,6 +87,11 @@ class FriendListViewHolder extends RecyclerView.ViewHolder
 
     public void bindTo(User user) {
         binding.setUser(user);
+        if (user.isRequesting()) {
+            binding.info.setText(R.string.user_is_requesting);
+        } else if (user.isRequestPending()) {
+            binding.info.setText(R.string.request_pending);
+        }
     }
 
     @Override

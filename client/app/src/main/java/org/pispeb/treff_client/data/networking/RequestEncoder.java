@@ -205,6 +205,13 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         return pref.getString(ctx.getString(R.string.key_token), "");
     }
 
+    private int getUserId() {
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        return pref.getInt(ctx.getString(R.string.key_userId), -1);
+    }
+
     /**
      * TODO: doc
      */

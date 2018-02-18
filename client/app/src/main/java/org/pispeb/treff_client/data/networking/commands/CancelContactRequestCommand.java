@@ -26,6 +26,7 @@ public class CancelContactRequestCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+        userRepository.setIsRequesting(output.id, false);
         userRepository.setIsFriend(output.id, false);
     }
 

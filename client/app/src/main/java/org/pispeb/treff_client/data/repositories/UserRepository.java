@@ -100,4 +100,12 @@ public class UserRepository {
             encoder.unblockAccount(userId);
         }
     }
+
+    public void requestAccept(int userId) {
+        encoder.acceptContactRequest(userId);
+    }
+
+    public void requestDecline(int userId) {
+        encoder.cancelContactRequest(userId);
+    }
 }

@@ -45,7 +45,7 @@ public interface UserDao {
     @Query("UPDATE user SET isFriend = :isFriend WHERE userId = :userId")
     void setIsFriend(int userId, boolean isFriend);
 
-    @Query("UPDATE user SET isPending = :isPending WHERE userId = :userId")
+    @Query("UPDATE user SET requestPending = :isPending WHERE userId = :userId")
     void setIsPending(int userId, boolean isPending);
 
     @Query("UPDATE user SET isRequesting = :isRequesting WHERE userId = " +
