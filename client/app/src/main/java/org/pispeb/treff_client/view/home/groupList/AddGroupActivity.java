@@ -38,5 +38,13 @@ public class AddGroupActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
+
+        CheckedFriendListAdapter adapter = new CheckedFriendListAdapter(vm);
+        binding.list.setAdapter(adapter);
+
+        vm.getFriends().observe(this, friends -> {
+            adapter.setList(friends);
+            adapter.notifyDataSetChanged();
+        });
     }
 }

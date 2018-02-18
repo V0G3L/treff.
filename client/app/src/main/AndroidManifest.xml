@@ -57,7 +57,9 @@
 
         <activity android:name=".view.friend.FriendActivity"/>
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
-        <activity android:name=".view.home.groupList.AddGroupActivity"/>
+        <activity
+            android:name=".view.home.groupList.AddGroupActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".view.group.eventList.AddEventActivity"/>
 
         <service
