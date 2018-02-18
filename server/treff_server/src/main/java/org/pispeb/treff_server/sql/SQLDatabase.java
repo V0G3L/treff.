@@ -51,7 +51,7 @@ public class SQLDatabase {
     private void createTables()
             throws NoSuchAlgorithmException, SQLException {
 
-        wipeDB();
+        //wipeDB();
 
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
@@ -64,7 +64,7 @@ public class SQLDatabase {
 
         String[] tableCreationStatements = {
                 // accounts
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "username VARCHAR(%d) NOT NULL UNIQUE," +
                                 "email VARCHAR(%d) UNIQUE," +
@@ -94,7 +94,7 @@ public class SQLDatabase {
                 ),
 
                 // contacts
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "lowid INT NOT NULL," +
                                 "highid INT NOT NULL," +
                                 "FOREIGN KEY (lowid)" +
@@ -108,7 +108,7 @@ public class SQLDatabase {
                         CONTACTS.toString()),
 
                 // contactrequests
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "sender INT NOT NULL," +
                                 "receiver INT NOT NULL," +
                                 "FOREIGN KEY (sender)" +
@@ -122,7 +122,7 @@ public class SQLDatabase {
                         CONTACTREQUESTS.toString()),
 
                 // blocks
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "blocker INT NOT NULL," +
                                 "blocked INT NOT NULL," +
                                 "FOREIGN KEY (blocker)" +
@@ -136,7 +136,7 @@ public class SQLDatabase {
                         BLOCKS.toString()),
 
                 // usergroups
-                String.format("CREATE TABLE %s(" +
+                String.format("CREATE TABLE IF NOT EXISTS %s(" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "name VARCHAR(%d) NOT NULL" +
                                 ");",
@@ -146,7 +146,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // groupmemberships
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
                                 "   REFERENCES accounts(id)" +
@@ -168,7 +168,7 @@ public class SQLDatabase {
                                 .collect(Collectors.joining(","))),
 
                 // events
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -189,7 +189,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // eventparticipations
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "eventid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
@@ -203,7 +203,7 @@ public class SQLDatabase {
                         EVENTPARTICIPATIONS.toString()),
 
                 // polls
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "usergroupid INT NOT NULL," +
                                 "FOREIGN KEY (usergroupid)" +
@@ -222,7 +222,7 @@ public class SQLDatabase {
                                         .toString()))),
 
                 // polloptions
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "pollid INT NOT NULL," +
                                 "FOREIGN KEY (pollid)" +
@@ -236,7 +236,7 @@ public class SQLDatabase {
                         POLLOPTIONS.toString()),
 
                 // pollvotes
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "accountid INT NOT NULL," +
                                 "polloptionid INT NOT NULL," +
                                 "FOREIGN KEY (accountid)" +
@@ -250,7 +250,7 @@ public class SQLDatabase {
                         POLLVOTES.toString()),
 
                 // updates
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL," +
                                 "time DATETIME NOT NULL" +
@@ -264,7 +264,7 @@ public class SQLDatabase {
                                 .get()),
 
                 // updateaffections
-                String.format("CREATE TABLE %s (" +
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "updateid INT NOT NULL," +
                                 "FOREIGN KEY (updateid)" +
                                 "   REFERENCES updates(id)" +

@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.sql;
 
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.Position;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +123,6 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public Map<Integer, AccountSQL> getAllMembers() {
-        // get ID list
         return Collections.unmodifiableMap(database.query(
                 "SELECT accountid FROM %s WHERE usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
@@ -199,8 +200,25 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public Map<Permission, Boolean> getPermissionsOfMember(Account member) {
-        //TODO
-        throw new UnsupportedOperationException();
+        List<Permission> permissions = Arrays.asList(Permission.values());
+        String placeholders = permissions
+                .stream()
+                .map(p -> "permission_" + p.toString())
+                .collect(Collectors.joining(","));
+
+        List<Boolean> values = database.query(
+                "SELECT (" + placeholders + "FROM %s " +
+                        "WHERE usergroupid=? and accountid=?;",
+                TableName.GROUPMEMBERSHIPS,
+                new ColumnListHandler<>(),
+                id,
+                member.getID());
+
+        Map<Permission, Boolean> permissionMap = new HashMap<>();
+        for (int i = 0; i < permissions.size(); i++)
+            permissionMap.put(permissions.get(i), values.get(i));
+
+        return Collections.unmodifiableMap(permissionMap);
     }
 
     @Override
