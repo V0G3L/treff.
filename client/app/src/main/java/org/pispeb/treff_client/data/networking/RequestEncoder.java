@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
  * This class provides methods to perform the known server requests.
  */
 
-public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
+public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     private final int DISPLAY_ERROR_TOAST = 1;
 
@@ -93,7 +93,6 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
             }
         };
 
-        restartConnection();
         if (idle && !commands.isEmpty()) {
             sendRequest(commands.peek().getRequest());
         }
@@ -132,20 +131,6 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     private synchronized void sendRequest(AbstractRequest request) {
         bgHandler.post(() -> {
             try {
-                if (connectionHandler == null || !connectionHandler
-                        .isRunning()) {
-                    // if connection is lost, establish new connection
-                    Log.i("Encoder", "reconnect");
-                    restartConnection();
-                    cdl = new CountDownLatch(1);
-                    try {
-                        // wait for reconnection to server
-                        cdl.await();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Log.i("Encoder", "reconnect done");
-                }
                 Log.i("Encoder", "sending Message");
                 Log.i("Encoder", "CH: " + connectionHandler);
                 connectionHandler.sendMessage(
@@ -157,45 +142,6 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
                 e.printStackTrace();
             }
         });
-    }
-
-    /**
-     * TODO: doc
-     *
-     * @param message
-     */
-    @Override
-    public synchronized void messageReceived(String message) {
-        // no commands waiting for response
-        if (commands.isEmpty()) {
-            //should never happen as long as server is working correctly
-            return;
-        }
-        Log.i("RequestEncoder", "Message received: " + message);
-        AbstractCommand c = commands.poll();
-        try {
-            ErrorResponse error = mapper
-                    .readValue(message, ErrorResponse.class);
-            Log.i("RequestEncoder", "Error");
-            handleError(error);
-        } catch (IOException e) {
-            // it is no Error
-            try {
-                AbstractResponse response = mapper.readValue(message, c
-                        .getResponseClass());
-                c.onResponse(response);
-            } catch (IOException ex) {
-                // This would mean, that the internal request encoding is messed
-                // up, which would be very bad indeed!
-                ex.printStackTrace();
-            }
-        }
-
-        if (!commands.isEmpty()) {
-            sendRequest(commands.peek().getRequest());
-        } else {
-            idle = true;
-        }
     }
 
     private String getToken() {
@@ -210,6 +156,40 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
         return pref.getInt(ctx.getString(R.string.key_userId), -1);
+    }
+
+    @Override
+    public void onResponse(String responseString) {
+        // no commands waiting for response
+        if (commands.isEmpty()) {
+            //should never happen as long as server is working correctly
+            return;
+        }
+        Log.i("RequestEncoder", "Message received: " + responseString);
+        AbstractCommand c = commands.poll();
+        try {
+            ErrorResponse error = mapper
+                    .readValue(responseString, ErrorResponse.class);
+            Log.i("RequestEncoder", "Error");
+            handleError(error);
+        } catch (IOException e) {
+            // it is no Error
+            try {
+                AbstractResponse response = mapper.readValue(responseString,
+                        c.getResponseClass());
+                c.onResponse(response);
+            } catch (IOException ex) {
+                // This would mean, that the internal request encoding is messed
+                // up, which would be very bad indeed!
+                ex.printStackTrace();
+            }
+        }
+
+        if (!commands.isEmpty()) {
+            sendRequest(commands.peek().getRequest());
+        } else {
+            idle = true;
+        }
     }
 
     /**
@@ -242,41 +222,10 @@ public class RequestEncoder implements ConnectionHandler.OnMessageReceived {
     /**
      * TODO: doc
      */
-    private class ConnectTask extends
-            AsyncTask<String, String, ConnectionHandler> {
-        private ConnectionHandler.OnMessageReceived listener;
-
-        public ConnectTask(ConnectionHandler.OnMessageReceived listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected ConnectionHandler doInBackground(String... message) {
-            Log.i("ConnectTask", "in Background");
-            connectionHandler = new ConnectionHandler(
-                    "100.85.16.29", 13337, listener);
-            connectionHandler.run();
-            cdl.countDown();
-
-            return null;
-        }
-    }
-
-    /**
-     * TODO: doc
-     */
     public void closeConnection() {
         // TODO check for Service still running
 
-        connectionHandler.stopClient();
-    }
-
-    @Override
-    public synchronized void restartConnection() {
-        // sets up the connectionHandler and starts it in a different thread
-        Log.i("Encoder", "ConnectTask execute");
-        new ConnectTask(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        Log.i("Encoder", "ConnectTask execute done");
+        connectionHandler.disconnect();
     }
 
     /**
