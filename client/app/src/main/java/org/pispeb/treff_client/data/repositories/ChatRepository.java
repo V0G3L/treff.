@@ -40,7 +40,6 @@ public class ChatRepository {
      * @param message the message
      */
     public void addMessage(ChatMessage message) {
-        //TODO network call
         backgroundHandler.post(() -> {
             chatDao.save(message);
         });
@@ -58,6 +57,11 @@ public class ChatRepository {
                 30).build();
     }
 
+    /**
+     * Sends a request to the server in order to send a message
+     * @param groupId group to which the message is sent
+     * @param message content of the message
+     */
     public void requestSendMessage(int groupId, String message) {
         encoder.sendChatMessage(groupId, message);
     }

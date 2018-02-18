@@ -68,7 +68,6 @@ public class MapFragment extends Fragment {
     private FolderOverlay master;
     private FolderOverlay pollOptionMarkers;
     private FolderOverlay eventMarkers;
-    // TODO replace with RadiusMarkerClusterer
     private RadiusMarkerClusterer contactMarkers;
     private Marker userMarker;
 

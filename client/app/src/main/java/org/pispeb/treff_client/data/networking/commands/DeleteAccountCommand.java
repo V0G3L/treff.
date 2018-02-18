@@ -1,5 +1,11 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.content.Context;
+import android.content.Intent;
+
+import org.pispeb.treff_client.view.login.LoginActivity;
+import org.pispeb.treff_client.view.util.TreffPunkt;
+
 /**
  * Class representing a JSON delete-account object
  */
@@ -21,7 +27,11 @@ public class DeleteAccountCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO logout
+        Context appctx = TreffPunkt.getAppContext();
+        Intent restartApp = new Intent(appctx, LoginActivity.class);
+        restartApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        appctx.startActivity(restartApp);
     }
 
     public static class Request extends AbstractRequest {

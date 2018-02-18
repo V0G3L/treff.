@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.networking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.view.login.LoginActivity;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.io.IOException;
@@ -122,9 +124,12 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * TODO: doc
+     * Add a command to the queue
+     * If the RequestEncoder is not currently expecting any response (i.e.
+     * all former commands are dealt with) send the oldest request to the server
      *
-     * @param command
+     * @param command Command to be executed as soon as all pending commands
+     *                receive a response
      */
     private synchronized void executeCommand(AbstractCommand command) {
         Log.i("Encoder", "execute Command" + commands.size());
@@ -135,9 +140,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * TODO: doc
+     * Pass a request to ConnectionHandler in order to be sent to the Server.
+     * Executed when the command before has received a response
      *
-     * @param request
+     * @param request Json-object of the next command's request
      */
     private synchronized void sendRequest(AbstractRequest request) {
         bgHandler.post(() -> {
@@ -204,7 +210,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * TODO: doc
+     * Json-description of an error response as the server returns it in case
+     * of Syntax, Database or any other error in the given command
      */
     public static class ErrorResponse extends AbstractResponse {
         public final int error;
@@ -215,7 +222,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     private void handleError(ErrorResponse response) {
-        //TODO handle Errors
         Error error = Error.getValue(response.error);
         Log.e("RequestEncoder", error.getCode() +
                 ": " + error.getMessage());
@@ -226,16 +232,19 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
 
         if (error == Error.TOKEN_INV) {
-            // TODO handle user logged out
+            Context appctx = TreffPunkt.getAppContext();
+            Intent restartApp = new Intent(appctx, LoginActivity.class);
+            restartApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            appctx.startActivity(restartApp);
         }
     }
 
     /**
-     * TODO: doc
+     * When exiting the App, clean up any network connections
      */
     public void closeConnection() {
         // TODO check for Service still running
-
         connectionHandler.disconnect();
     }
 
@@ -261,7 +270,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
 
     /**
-     * Method to perform an edit-username request
+     * Edit the username
      *
      * @param username the new username
      */
@@ -270,7 +279,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform an edit-email request
+     * Change the users email address
      *
      * @param email the new email
      */
@@ -279,7 +288,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform an edit-password request
+     * Change the users password directly
      *
      * @param password    the current password
      * @param newPassword the new password
@@ -289,16 +298,16 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a reset-password request
+     * Send a code to the users email in order to reset the password
      *
-     * @param email the new email
+     * @param email the users email
      */
     public synchronized void resetPassword(String email) {
         executeCommand(new ResetPasswordCommand(email));
     }
 
     /**
-     * Method to perform a reset-password-confirm request
+     * Reset the users password after requesting a reset via email
      *
      * @param code     the validation code of the user
      * @param password the new password
@@ -310,7 +319,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a delete-account request
+     * Delete the Account of the user that is currently logged in
      *
      * @param password the password of the user
      */
@@ -338,9 +347,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform an send-contact-request request
+     * Send a contact request to the given user
+     * Determines the id of the given user before requesting
      *
-     * @param userName Contact to be added to the friend list
+     * @param userName Name of the user to be added to the friend list
      */
     public synchronized void sendContactRequest(String userName) {
         executeCommand(new GetUserIdCommand(userName, getToken(), userRepository));
@@ -348,17 +358,24 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 userRepository));
     }
 
-
     public synchronized void cancelContactRequest(int userId) {
         executeCommand(new CancelContactRequestCommand(userId, getToken(),
                 userRepository));
     }
 
+    /**
+     * Accept a contact request from a given user
+     * @param userId user from which the request originated
+     */
     public synchronized void acceptContactRequest(int userId) {
         executeCommand(new AcceptContactRequestCommand(userId, getToken(),
                 userRepository));
     }
 
+    /**
+     * Reject a contact request
+     * @param userId user from which the request originated
+     */
     public synchronized void rejectContactRequest(int userId) {
         executeCommand(new RejectContactRequestCommand(userId, getToken(),
                 userRepository));
@@ -368,16 +385,23 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         executeCommand(new RemoveContactCommand(userId, getToken(), userRepository));
     }
 
+    /**
+     * update the list of contact as well as requests
+     */
     public synchronized void getContactList() {
         executeCommand(new GetContactListCommand(getToken(), userRepository));
     }
 
+    /**
+     * block an account
+     * @param userId
+     */
     public synchronized void blockAccount(int userId) {
         executeCommand(new BlockAccountCommand(userId, getToken(), userRepository));
     }
 
     /**
-     * Method to perform an unblock-account request
+     * unblock another Account
      *
      * @param userId The user to be unblocked
      */
@@ -387,7 +411,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a create-group request
+     * Create a new group with a list of members
      *
      * @param groupName Name of the new group
      * @param memberIds Array of the ID's of the members
@@ -398,7 +422,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform an edit-group-name request
+     * Edit the name of the given group
      *
      * @param groupId ID of the group
      */
@@ -408,7 +432,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform an requestAddUser-group-member request
+     * Add users to a given group
      *
      * @param groupId    ID of the group
      * @param newMembers ID of the new member
@@ -420,7 +444,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a remove-group-member request
+     * Remove users from a specified group
      *
      * @param groupId The ID of the group
      * @param members The ID of the member to be removed
@@ -435,7 +459,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a create-event request
+     * Method to add an event
      *
      * @param groupId   ID of the group of the event
      * @param title     The name of the event
@@ -522,7 +546,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to perform a send-chat-message request
+     * Method to send a chat message in a given group
      *
      * @param groupId ID of the group receiving the message
      * @param message The chat message
@@ -534,7 +558,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Metod to get information about the users groups
+     * Method to get information about the users groups
      */
     public synchronized void listGroups() {
         executeCommand(new ListGroupsCommad(getToken()));
@@ -562,12 +586,24 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         executeCommand(new RequestPositionCommand(groupId, endTime, getToken()));
     }
 
+    /**
+     * send the most recent location to the server
+     * @param latitude latitude
+     * @param longitude and longitude of the users position
+     * @param time time the position was measured at
+     */
     public synchronized void updatePosition(double latitude, double longitude,
                                             Date time) {
         executeCommand(
                 new UpdatePositionCommand(latitude, longitude, time, getToken()));
     }
 
+    /**
+     * start a transmission of the users location to the group lasting until
+     * the time given
+     * @param groupId grop with which the user shares his location
+     * @param endTime time at which the transmission is supposed to end
+     */
     public synchronized void publishPosition(int groupId, Date endTime) {
         executeCommand(new PublishPositionCommand(groupId, endTime,
                 getToken(), userGroupRepository));

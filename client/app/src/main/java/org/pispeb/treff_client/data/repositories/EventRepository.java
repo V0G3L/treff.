@@ -79,7 +79,11 @@ public class EventRepository {
                 .build();
     }
 
-    //TODO: remove or doc
+    /**
+     * Get a LiveData object of a single event, given
+     * @param eventID the events id
+     * @return LiveData object of that event
+     */
     public LiveData<Event> getEvent(int eventID) {
         return eventDao.getEventByID(eventID);
     }
@@ -95,17 +99,32 @@ public class EventRepository {
         });
     }
 
+    /**
+     * update an existing event with new information
+     * @param newEvent event to replace the old version of itself with
+     */
     public void update(Event newEvent) {
         eventDao.update(newEvent);
     }
 
+    /**
+     * delete an event from the local Database
+     * @param eventId id of the event to be deleted
+     */
     public void delete(int eventId) {
         eventDao.delete(new Event(eventId, null, null, null, null, 0, 0));
     }
 
+    /**
+     * request an id from server for a newly created event
+     * @param groupId group to which the event is added
+     * @param name name of the event
+     * @param start time at which the event starts
+     * @param end time at which the event ends
+     * @param l Location of the event
+     */
     public void requestAddEvent(int groupId, String name, Date start,
                                 Date end, Location l) {
-        // TODO test
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);

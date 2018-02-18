@@ -108,7 +108,6 @@ public class GroupSettingsActivity extends AppCompatActivity {
         builder.setItems(userNames, ((dialog, which) -> {
             // TODO does not handle changes to contacts during dialog
             User user = friends.get(which);
-            // TODO show confirmation dialog
             vm.addMember(user.getUserId());
             dialog.dismiss();
         }));

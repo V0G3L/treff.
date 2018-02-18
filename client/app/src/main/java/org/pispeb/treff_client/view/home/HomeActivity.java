@@ -46,7 +46,7 @@ public class HomeActivity extends NavigationActivity {
     }
 
     /**
-     * TODO doc
+     * set the content of the four Tabs on the home screen
      * @param viewPager
      */
     private void setupViewPager(ViewPager viewPager) {

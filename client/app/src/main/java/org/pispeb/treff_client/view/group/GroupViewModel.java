@@ -53,7 +53,6 @@ public class GroupViewModel extends ViewModel
     }
 
     public void onAddMemberClick() {
-        //TODO add member dialog (?)
         state.postValue(new State(ViewCall.SHOW_ADD_MEMBER_DIALOG, 0));
     }
 
@@ -73,7 +72,6 @@ public class GroupViewModel extends ViewModel
 
     @Override
     public void onItemClicked(int position, User user) {
-        //TODO friend details? or dialog like in mockups
         state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
                 user.getUserId()));
     }

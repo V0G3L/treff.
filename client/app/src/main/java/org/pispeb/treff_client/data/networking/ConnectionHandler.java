@@ -16,8 +16,6 @@ import javax.websocket.Session;
 
 /**
  * Class to handle the Connection to the server
- * Created by vogel on 1/5/18.
- * TODO mock implementation (or even actual implementation)
  */
 @ClientEndpoint
 public class ConnectionHandler {

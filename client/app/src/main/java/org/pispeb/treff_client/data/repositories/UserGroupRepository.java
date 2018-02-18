@@ -41,23 +41,24 @@ public class UserGroupRepository {
         this.backgroundHandler = backgroundHandler;
     }
 
+    /**
+     * receive groups in various formats
+     */
     public LiveData<UserGroup> getGroup(int id) {
         return userGroupDao.getGroupByID(id);
     }
 
     public LiveData<PagedList<UserGroup>> getGroups() {
-        //TODO network call
         return new LivePagedListBuilder<>(userGroupDao.getAllGroups(), 30)
                 .build();
     }
 
     public LiveData<List<UserGroup>> getGroupsInList() {
-        //TODO network call
         return userGroupDao.getAllGroupsInList();
     }
 
     public LiveData<PagedList<User>> getGroupMembers(int groupId) {
-        //TODO network call
+        encoder.getGroupDetails(groupId);
         return new LivePagedListBuilder<>(userGroupDao.getUsersByGroup(groupId), 30)
                 .build();
     }
@@ -68,26 +69,23 @@ public class UserGroupRepository {
         });
     }
 
+    /**
+     * add a group to the local database
+     * @param group group to be added
+     */
     public void add(UserGroup group) {
-        // TODO test
-        Context ctx = TreffPunkt.getAppContext();
-        SharedPreferences pref = PreferenceManager
-                .getDefaultSharedPreferences(ctx);
-        int user = pref.getInt(ctx.getString(R.string.key_userId), -1);
-
         backgroundHandler.post(() -> {
             //add group
             userGroupDao.save(group);
-            //add yourself to the group
-            //TODO uncomment!!!
-//            userGroupDao.save(new GroupMembership(user, group.getGroupId()));
         });
     }
 
+    /**
+     * Leave a group, delete it locally and propagate through all its events
+     * and Members
+     * @param group group which the user left
+     */
     public void remove(UserGroup group) {
-        //TODO network calls
-
-        // TODO test
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
@@ -114,6 +112,11 @@ public class UserGroupRepository {
         });
     }
 
+    /**
+     * Add new Members to a group
+     * @param groupId ids of members to add
+     * @param members id of group to add members to
+     */
     public void addGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
             GroupMembership gms = new GroupMembership(members[i], groupId);
@@ -123,20 +126,39 @@ public class UserGroupRepository {
         }
     }
 
+    /**
+     * remove members from a group
+     * @param groupId given group
+     * @param members array of users to remove
+     */
     public void removeGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
             userGroupDao.delete(new GroupMembership(members[i], groupId));
         }
     }
 
+    /**
+     * replace group in local database with updated one
+     * @param userGroup
+     */
     public void updateGroup(UserGroup userGroup) {
         userGroupDao.update(userGroup);
     }
 
+    /**
+     * request an id from the server to adda newly created group
+     * @param groupName name of the group
+     * @param members list of initial members (at least one)
+     */
     public void requestAddGroup(String groupName, int... members) {
         encoder.createGroup(groupName, members);
     }
 
+    /**
+     * request the server to remove members from group
+     * @param groupId effected group
+     * @param members effected members
+     */
     public void requestAddMembersToGroup(int groupId, int... members) {
         encoder.addGroupMembers(groupId, members);
     }
