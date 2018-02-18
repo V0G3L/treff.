@@ -38,8 +38,17 @@ public class BlockAccountCommand extends ManageBlockCommand {
 
         Account actingAccount = input.getActingAccount();
         Account blockAccount = accountManager.getAccount(input.accountId);
-        if (actingAccount.getAllContacts().containsKey(input.accountId)) {
+        Boolean a,b;
+        if (a = actingAccount.getAllContacts().containsKey(input.accountId)) {
             actingAccount.removeContact(blockAccount);
+        }
+        if (b = actingAccount.getAllOutgoingContactRequests()
+                .containsKey(input.accountId)
+                || actingAccount.getAllIncomingContactRequests()
+                .containsKey(input.accountId)) {
+            actingAccount.rejectContactRequest(blockAccount);
+        }
+        if (a || b) {
             // create update
             UpdatesWithoutSpecialParameters update =
                     new UpdatesWithoutSpecialParameters(new Date(),

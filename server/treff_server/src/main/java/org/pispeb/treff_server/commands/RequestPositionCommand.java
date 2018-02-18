@@ -50,8 +50,6 @@ public class RequestPositionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
-        //TODO
-
         // create update
         PositionRequestUpdate update =
                 new PositionRequestUpdate(new Date(),
@@ -65,7 +63,7 @@ public class RequestPositionCommand extends AbstractCommand {
             throw new AssertionError("This shouldn't happen.");
         }
 
-        return new Output(); //TODO
+        return new Output();
     }
 
     public static class Input extends CommandInputLoginRequired {
