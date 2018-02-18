@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeSet;
 
-// TODO needs to be tested
-
 /**
  * a command to add Accounts to a Usergroup
  */

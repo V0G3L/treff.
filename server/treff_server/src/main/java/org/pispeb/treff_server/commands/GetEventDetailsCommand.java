@@ -14,8 +14,6 @@ import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-// TODO needs to be tested
-
 /**
  * a command to get a detailed description of an Event of a Usergroup
  */

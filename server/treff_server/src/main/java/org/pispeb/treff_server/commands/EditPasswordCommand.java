@@ -10,8 +10,6 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-// TODO needs to be tested
-
 /**
  * a command to edit the password of an Account
  */

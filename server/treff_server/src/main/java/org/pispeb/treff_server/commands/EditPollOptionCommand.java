@@ -47,8 +47,7 @@ public class EditPollOptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
-        //TODO is this working?
-        if (input.inputOption.timeEnd.before(new Date())) {
+        if (checkTime(input.inputOption.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 

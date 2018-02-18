@@ -13,12 +13,9 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
-// TODO needs to be tested
 
 /**
  * a command to delete an Account

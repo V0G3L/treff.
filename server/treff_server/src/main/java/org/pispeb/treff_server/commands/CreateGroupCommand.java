@@ -21,8 +21,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-// TODO needs to be tested
-
 /**
  * a command to create a Usergroup
  */

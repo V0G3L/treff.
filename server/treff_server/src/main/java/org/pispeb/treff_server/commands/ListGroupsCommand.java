@@ -15,7 +15,6 @@ import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**

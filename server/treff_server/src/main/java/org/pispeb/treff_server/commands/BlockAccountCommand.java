@@ -12,8 +12,6 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 
 import java.util.Date;
 
-// TODO needs to be tested
-
 /**
  * a command to block an Account for another Account
  */
