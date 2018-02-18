@@ -96,13 +96,13 @@
     <string name="error_end_before_start">at least one end time is not after the corresponding start time</string>
     <string name="error_measure_in_future">the time of measurement is too far in the future</string>
     <string name="error_already_contact">account already in contact list</string>
-    <string name="error_not_contact">account isn’t part of the own contact list</string>
-    <string name="error_request_pending">account can’t be a contact of itself</string>
+    <string name="error_not_contact">account isn\'t part of the own contact list</string>
+    <string name="error_request_pending">account can\'t be a contact of itself</string>
     <string name="error_no_request">no contact request from specified user</string>
     <string name="error_user_blocked">this account was blocked by the given user</string>
     <string name="error_blocked_by_user">the given account was blocked by this account</string>
-    <string name="error_not_blocked">the given account wasn’t blocked by this account</string>
-    <string name="error_self_block">account can’t block itself</string>
+    <string name="error_not_blocked">the given account wasn\'t blocked by this account</string>
+    <string name="error_self_block">account can\'t block itself</string>
     <string name="error_no_user_invited">no account invited except the own account</string>
     <string name="error_user_already_in_group">at least one account is already part of the group</string>
     <string name="error_user_not_in_group">at least one account is not part of the group</string>
@@ -110,16 +110,16 @@
     <string name="error_not_in_event">account not part of this event</string>
     <string name="error_already_voted">account already voted for this option</string>
     <string name="error_no_multi_choice">multi-choice is not available for this poll</string>
-    <string name="error_not_voted_for">account didn’t vote for this option</string>
-    <string name="error_perm_edit_perm">account doesn’t possess the permission to edit permissions</string>
-    <string name="error_perm_edit_group">account doesn’t possess the permission to edit the group</string>
-    <string name="error_perm_edit_members">account doesn’t possess the permission to edit the list of group members</string>
-    <string name="error_perm_create_event">account doesn’t possess the permission to create events in this group</string>
-    <string name="error_perm_edit_event">account doesn’t possess the permission to edit the event</string>
-    <string name="error_perm_create_poll">account doesn’t possess the permission to create polls in this group</string>
-    <string name="error_perm_edit_poll">account doesn’t possess the permission to edit the poll</string>
-    <string name="channel_name">treff.</string>
-    <string name="channel_description">Location transmitted to other users</string>
+    <string name="error_not_voted_for">account didn\'t vote for this option</string>
+    <string name="error_perm_edit_perm">account doesn\'t possess the permission to edit permissions</string>
+    <string name="error_perm_edit_group">account doesn\'t possess the permission to edit the group</string>
+    <string name="error_perm_edit_members">account doesn\'t possess the permission to edit the list of group members</string>
+    <string name="error_perm_create_event">account doesn\'t possess the permission to create events in this group</string>
+    <string name="error_perm_edit_event">account doesn\'t possess the permission to edit the event</string>
+    <string name="error_perm_create_poll">account doesn\'t possess the permission to create polls in this group</string>
+    <string name="error_perm_edit_poll">account doesn\'t possess the permission to edit the poll</string>
+    <string name="channel_name" translatable="false">treff.</string>
+    <string name="channel_description" translatable="false">Location transmitted to other users</string>
     <string name="tap_for_back">Tap to get back</string>
 
 </resources>
