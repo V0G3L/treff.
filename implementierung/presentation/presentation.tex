@@ -63,8 +63,40 @@
 	\end{frame}
 
 	\begin{frame}[plain]
-		\frametitle{Klient}
+		\frametitle{Klient - State}
+		\textbf{Funktionsweise}
+		\begin{itemize}
+			\setlength\itemsep{0.3em}
+			\item[--] \textbf{class State:} Wrapper für ViewCall und int
+			\item[--] \textbf{enum ViewCall:} mögliche Anfragen an Context
+			\item[--] \textbf{SingleLiveEvent:} Observable, wartet auf 
+			genau einen Listener
+			\item[--] \textbf{in ViewModel:} setValue des state
+			\item[--] \textbf{in Activity:} observe des state um UI-Aufrufe 
+			zu starten
+		\end{itemize}
+	$\Rightarrow$ verhindert Aufrufe auf gelöschte Views \\
+	$\Rightarrow$ verhindert starke Kopplung zwischen ViewModel und View
+	\end{frame}
 
+	\begin{frame}[plain]
+	\frametitle{Klient - RequestEncoder}
+	\textbf{Fassade für Commands}
+	\begin{itemize}
+		\setlength\itemsep{0.3em}
+		\item[--] Entkopplung der Commands
+		\item[--] Einheitliches Verhalten
+		\item[--] werden als Queue abgearbeitet
+ 	\end{itemize}
+	\end{frame}
+
+	\begin{frame}[plain]
+	\frametitle{Klient - Repositories}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{images/UserRepository.PNG}
+		\caption{getrennte Methoden für ViewModels und Encoder}
+	\end{figure}
 	\end{frame}
 
 	\begin{frame}[plain]
