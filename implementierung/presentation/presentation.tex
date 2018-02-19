@@ -75,10 +75,10 @@
 			\setlength\itemsep{0.3em}
 			\item[--] \textbf{class State:} Wrapper für ViewCall und int
 			\item[--] \textbf{enum ViewCall:} mögliche Anfragen an Context
-			\item[--] \textbf{SingleLiveEvent:} Observable, wartet auf 
+			\item[--] \textbf{SingleLiveEvent:} Observable, wartet auf
 			genau einen Listener
 			\item[--] \textbf{in ViewModel:} setValue des state
-			\item[--] \textbf{in Activity:} observe des state um UI-Aufrufe 
+			\item[--] \textbf{in Activity:} observe des state um UI-Aufrufe
 			zu starten
 		\end{itemize}
 	$\Rightarrow$ verhindert Aufrufe auf gelöschte Views \\
@@ -111,8 +111,33 @@
 	\end{frame}
 
 	\begin{frame}[plain]
-		\frametitle{API}
+		\frametitle{API - Befehle}
+			\begin{itemize}
+				\item[--] Verwendung eines Command-Patterns
+				\item[--] Behebung kleiner Logikfehler in Parametern und Rückgabewerten
+				\item[--] neue Befehle durch Freundschaftsanfragen
+				\item[--] WebSocket statt TCP
+			\end{itemize}
+		\end{frame}
 
+		\begin{frame}[plain]
+			\frametitle{API - Updatestruktur}
+			\begin{minipage}{0.5\textwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.8\textwidth]{images/Updates.png}
+				\caption{Modellierung eines Updates}
+			\end{figure}
+			\end{minipage}%
+			\begin{minipage}{0.5\textwidth}
+			\begin{itemize}
+				\item[--] Updates als JsonObject dargestellt
+				\item<2->[--] Befehle verursachen Updates für betroffene Klienten
+				\item<3->[--] UpdateQueue für jeden Klienten
+				\item<4->[--] Server informiert Klienten über neue Updates
+				\item<5->[--] Klient kann UpdateQueue manuell anfragen
+			\end{itemize}
+			\end{minipage}
 	\end{frame}
 
 \end{document}
