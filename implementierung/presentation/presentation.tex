@@ -95,6 +95,25 @@
 		\item[--] werden als Queue abgearbeitet
  	\end{itemize}
 	\end{frame}
+	
+	\begin{frame}[plain]
+	\frametitle{Klient - Commands}
+	\begin{itemize}
+		\setlength\itemsep{0.3em}
+		\item[--] Halten innere Klassen, die den JSON Objekten der Befehle entsprechen
+		\item[--] Serialisierung durch Jackson Library
+		\item[--] Verarbeiten Serverantworten (Einpflegen in Datenbank o.Ä.)
+ 	\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[plain]
+	\frametitle{Klient - Commands}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\textwidth]{images/CreateGroupCommand.PNG}
+		\caption{Beispiel mit Request Klasse und onResponse Methode}
+	\end{figure}
+	\end{frame}
 
 	\begin{frame}[plain]
 	\frametitle{Klient - Repositories}
