@@ -113,29 +113,29 @@
 	\begin{frame}[plain]
 		\frametitle{API - Befehle}
 			\begin{itemize}
-				\item[--] Verwendung eines Command-Patterns
 				\item[--] Behebung kleiner Logikfehler in Parametern und Rückgabewerten
 				\item[--] neue Befehle durch Freundschaftsanfragen
-				\item[--] WebSocket statt TCP
+				\item[--] WebSocket statt TCP da nachrichtenbasiert
 			\end{itemize}
 		\end{frame}
 
 		\begin{frame}[plain]
 			\frametitle{API - Updatestruktur}
-			\begin{minipage}{0.5\textwidth}
+			\begin{minipage}{0.55\textwidth}
 			\begin{figure}[h]
 				\centering
-				\includegraphics[width=0.8\textwidth]{images/Updates.png}
-				\caption{Modellierung eines Updates}
+				\includegraphics[width=1\textwidth]{images/Updates.png}
+				\caption{Modellierung von Updates}
 			\end{figure}
 			\end{minipage}%
-			\begin{minipage}{0.5\textwidth}
+			\begin{minipage}{0.45\textwidth}
 			\begin{itemize}
 				\item[--] Updates als JsonObject dargestellt
-				\item<2->[--] Befehle verursachen Updates für betroffene Klienten
+				\item<2->[--] Befehle verursachen ggf. Updates für betroffene Klienten
 				\item<3->[--] UpdateQueue für jeden Klienten
-				\item<4->[--] Server informiert Klienten über neue Updates
-				\item<5->[--] Klient kann UpdateQueue manuell anfragen
+				\item<4->[--] Klient kann UpdateQueue per Befehl anfragen
+				\item<5->[--] Server informiert Klienten über neue Updates
+				
 			\end{itemize}
 			\end{minipage}
 	\end{frame}
