@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.update_notifier;
 
-import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
@@ -36,6 +35,12 @@ public class PersistentConnection implements AccountUpdateListener {
 
     @Override
     public void onUpdateAdded(Update update)  {
+        // if the persistent connection was closed, stop listening
+        if (!session.isOpen()) {
+            observedAccount.removeUpdateListener(this);
+            return;
+        }
+
         int updateCount = observedAccount.getUndeliveredUpdates().size();
         JsonObject message = Json.createObjectBuilder()
                 .add("count",updateCount).build();

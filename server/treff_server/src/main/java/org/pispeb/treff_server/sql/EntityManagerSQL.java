@@ -37,18 +37,18 @@ import java.util.stream.Collectors;
  */
 public class EntityManagerSQL implements AccountManager {
 
+    private final SQLDatabase database;
+    private final Properties config;
+
     public final Object usernameLock = new Object();
     public final Object emailLock = new Object();
 
-    private final Map<Class<? extends SQLObject>, Object> fetchLocks
+    private final Map<Class<? extends SQLObject>, TableName> tableNames
             = new HashMap<>();
-
-    private final SQLDatabase database;
-    private final Properties config;
     private final Map<Class<? extends SQLObject>,
             Map<Integer, ? extends SQLObject>> loadedObjectMaps
             = new HashMap<>();
-    private final Map<Class<? extends SQLObject>, TableName> tableNames
+    private final Map<Class<? extends SQLObject>, Object> fetchLocks
             = new HashMap<>();
 
     public EntityManagerSQL(SQLDatabase database, Properties config) {

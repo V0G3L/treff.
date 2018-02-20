@@ -45,6 +45,10 @@
 	\maketitle
 	\end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Entwurf
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 	\begin{frame}[plain]
 		\frametitle{Entwurf}
 
@@ -57,7 +61,7 @@
 			\setlength\itemsep{0.3em}
             \item[--] Verhindern ungewollte Massen-Gruppenhinzufügungen durch
                 einen Nutzer
-            \item[--] Dämmen Hinzufügungen durch viele User
+            \item[--] Dämmen Spam durch viele Nutzer
                 \begin{itemize}
                     \item[--] \enquote{Alle Kontaktanfragen ablehnen} hat
                         weniger gravierende Nebeneffekte als \enquote{Alle
@@ -67,6 +71,10 @@
 		\end{minipage}
 
 	\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Klient
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\begin{frame}[plain]
 		\frametitle{Klient - State}
@@ -124,10 +132,98 @@
 	\end{figure}
 	\end{frame}
 
-	\begin{frame}[plain]
-		\frametitle{Server}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% SERVER
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+	\begin{frame}[plain]
+		\frametitle{Server - Commands}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.6\textwidth]%
+            {build/uml/server-request-journey.png}
+            \caption{Ablauf der Anfragenbearbeitung}
+        \end{figure}
 	\end{frame}
+
+	\begin{frame}[plain]
+		\frametitle{Server - Command I/O}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-io.png}
+            \caption{Commands definieren ihren Input und Output}
+        \end{figure}
+	\end{frame}
+
+	\begin{frame}[plain]
+        \frametitle{Server - Deserialisierung in einfache POJOs}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-usergroup-create-description.png}
+            \caption{Alle für create-group verlangte Gruppenattribute}
+        \end{figure}
+	\end{frame}
+
+	\begin{frame}[plain]
+        \frametitle{Server - Serialisierung mittels eigener Serializer}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-usergroup-serializer.png}
+            \caption{Serializer fürs serialisieren von Gruppen in vollständige
+            Beschreibungen}
+        \end{figure}
+	\end{frame}
+
+	\begin{frame}[plain]
+        \frametitle{Server - Gemeinsame Vorbereitungsschritte in abstrakter
+        Überklasse}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.9\textwidth]%
+            {images/server-abstract-command.png}
+            \caption{Command-Klassen erben von AbstractCommand}
+        \end{figure}
+	\end{frame}
+
+	\begin{frame}[plain]
+		\frametitle{Server - Auswechselbares Backend}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-interfaces-sql.png}
+            \caption{Interfaces und SQL-Implementierungen für Objekte des
+            semantischen Datenmodells}
+        \end{figure}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-choice.png}
+            \caption{Wahl der SQL-Implementierung}
+        \end{figure}
+	\end{frame}
+
+	\begin{frame}[plain]
+		\frametitle{Server - SQL-Implementierung}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=1\textwidth]%
+            {images/server-get-all-groups.png}
+            \caption{Methoden der SQL-Klassen sind read-/write-through}
+        \end{figure}
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.8\textwidth]%
+            {images/server-set-position.png}
+            \caption{Abstraktion für simples Abfragen/Setzen von Eigenschaften}
+        \end{figure}
+	\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% API
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\begin{frame}[plain]
 		\frametitle{API - Befehle}

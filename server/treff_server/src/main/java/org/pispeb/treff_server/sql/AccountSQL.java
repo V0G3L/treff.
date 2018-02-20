@@ -53,8 +53,7 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public String getUsername() {
-        return (String) getProperties("username")
-                .get("username");
+        return (String) getProperties("username").get("username");
     }
 
     @Override
@@ -140,8 +139,7 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public String getEmail() {
-        return (String) getProperties("email")
-                .get("email");
+        return (String) getProperties("email").get("email");
     }
 
     @Override
@@ -163,8 +161,7 @@ public class AccountSQL extends SQLObject implements Account {
         return Collections.unmodifiableMap(database.query(
                 "SELECT usergroupid FROM %s WHERE accountid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new DataObjectMapHandler<UsergroupSQL>(UsergroupSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(UsergroupSQL.class, entityManager),
                 id));
     }
 
@@ -292,9 +289,10 @@ public class AccountSQL extends SQLObject implements Account {
                 // get all contact relations that this account is a part of
                 .query(
                         "SELECT (lowid,highid) FROM %s WHERE lowid=? " +
-                                "OR highid=?;;",
+                                "OR highid=?;",
                         TableName.CONTACTS,
                         new MapListHandler(),
+                        id,
                         id)
                 .stream()
                 // map to id of other account

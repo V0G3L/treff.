@@ -53,7 +53,6 @@ public abstract class SQLObject implements DataObject {
                 new MapHandler(),
                 id
         );
-
     }
 
     void setProperty(String key, Object value) {

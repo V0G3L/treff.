@@ -86,8 +86,8 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void removeMember(Account member) {
-        // clean up events, remove participation
-        // then, clean up polloptions, remove votes
+        // clean up events: remove participation
+        // then, clean up polloptions: remove votes
         SortedSet<Event> events = new TreeSet<>(getAllEvents().values());
         SortedSet<Poll> polls = new TreeSet<>(getAllPolls().values());
         events.forEach(e -> e.getReadWriteLock().writeLock().lock());
