@@ -1,0 +1,73 @@
+\documentclass[parskip=full,11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[german]{babel}
+\usepackage[useregional]{datetime2}
+\usepackage[pdfborderstyle={/S/U/W 0}]{hyperref}
+\usepackage[nameinlink]{cleveref}
+\usepackage[section]{placeins}
+\usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=3cm]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{amsmath} % for $\text{}$
+\usepackage{testbericht} % local .sty file
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\setlist{nosep}
+
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
+\raggedbottom
+\crefname{figure}{Abb}{Abb}
+
+\newcommand\producttitle{treff.}
+\newcommand\protocolversion{0.3}
+\hypersetup{
+	pdftitle={\producttitle~- Testbericht},
+	bookmarks=true,
+}
+
+% section numbers in margins:
+\renewcommand\sectionlinesformat[4]{%
+    \ifstr{#1}{subsubsection}{%
+        \makebox[0pt][r]{#4}%
+    }{%
+        \makebox[0pt][r]{#3}#4%
+    }%
+}%
+
+% header & footer
+\usepackage{scrlayer-scrpage}
+%\lofoot{\today}
+%\refoot{\today}
+\pagestyle{scrheadings}
+%\let\raggedsection\centering
+
+\title{\includegraphics[width = 80mm]{images/logo_crop.png}}
+\subtitle{\huge Testbericht}
+\author{Lukas Dippon
+        \and Jens Kienle
+        \and Matthias Noll
+        \and Fabian Röpke
+        \and Tim Schmidt
+        \and Simon Vögele}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty} % removed page number from title
+
+\pagebreak
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Erfüllung der Kriterien}
+
+\section{Testszenarien}
+
+
+\end{document}
