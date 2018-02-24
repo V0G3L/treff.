@@ -85,7 +85,11 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         try {
             connectionHandler
                     = new ConnectionHandler(
+<<<<<<< Updated upstream
                             "ws://192.168.0.136:8080/adasdasd/ws",
+=======
+                            "ws://129.13.23.230:8080/treff_server/ws",
+>>>>>>> Stashed changes
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT

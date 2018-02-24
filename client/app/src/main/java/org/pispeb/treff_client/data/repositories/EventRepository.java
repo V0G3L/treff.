@@ -103,7 +103,7 @@ public class EventRepository {
      * update an existing event with new information
      * @param newEvent event to replace the old version of itself with
      */
-    public void update(Event newEvent) {
+    public void updateEvent(Event newEvent) {
         eventDao.update(newEvent);
     }
 
@@ -111,7 +111,7 @@ public class EventRepository {
      * delete an event from the local Database
      * @param eventId id of the event to be deleted
      */
-    public void delete(int eventId) {
+    public void deleteEvent(int eventId) {
         eventDao.delete(new Event(eventId, null, null, null, null, 0, 0));
     }
 

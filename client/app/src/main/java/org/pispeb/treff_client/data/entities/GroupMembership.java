@@ -46,4 +46,22 @@ public class GroupMembership {
     public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupMembership that = (GroupMembership) o;
+
+        if (userId != that.userId) return false;
+        return groupId == that.groupId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId;
+        result = 31 * result + groupId;
+        return result;
+    }
 }

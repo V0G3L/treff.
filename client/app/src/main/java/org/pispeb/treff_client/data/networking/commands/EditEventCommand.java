@@ -43,7 +43,7 @@ public class EditEventCommand extends AbstractCommand {
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLongitude(output.event.position.longitude);
         l.setLatitude(output.event.position.latitude);
-        eventRepository.update(new Event(
+        eventRepository.updateEvent(new Event(
                 output.event.id,
                 output.event.title,
                 output.event.timeStart,

@@ -73,7 +73,7 @@ public class UserGroupRepository {
      * add a group to the local database
      * @param group group to be added
      */
-    public void add(UserGroup group) {
+    public void addGroup(UserGroup group) {
         backgroundHandler.post(() -> {
             //add group
             userGroupDao.save(group);
@@ -120,8 +120,8 @@ public class UserGroupRepository {
     public void addGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
             GroupMembership gms = new GroupMembership(members[i], groupId);
-            Log.i("AddGroupMember",
-                    "group: " + gms.getGroupId() + " member: " + gms.getUserId());
+//            Log.i("AddGroupMember",
+//                    "group: " + gms.getGroupId() + " member: " + gms.getUserId());
             userGroupDao.save(gms);
         }
     }

@@ -38,7 +38,7 @@ public class GetEventDetailsCommand extends AbstractCommand {
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLatitude(response.event.latitude);
         l.setLongitude(response.event.longitude);
-        eventRepository.update(new Event(
+        eventRepository.updateEvent(new Event(
                 output.id,
                 response.event.title,
                 response.event.timeStart,
