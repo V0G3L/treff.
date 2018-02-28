@@ -11,23 +11,22 @@ import static org.mockito.Mockito.*;
 public class AcceptContactRequestTest extends AbstractCommandTest {
 
     private AcceptContactRequestCommand command;
-    private int mockId = 1234;
 
     @Override
-    void initCommand() {
+    public void initCommand() {
         command = new AcceptContactRequestCommand(mockId, mockToken,
                 mockUserRepository);
     }
 
     @Override
-    void onResponseTest() {
+    public void onResponseTest() {
         command.onResponse(new AcceptContactRequestCommand.Response());
         verify(mockUserRepository).setIsRequesting(mockId, false);
         verify(mockUserRepository).setIsFriend(mockId, true);
     }
 
     @Override
-    void getRequestTest() {
+    public void getRequestTest() {
         AbstractRequest abs = command.getRequest();
         AcceptContactRequestCommand.Request request =
                 (AcceptContactRequestCommand.Request) abs;
