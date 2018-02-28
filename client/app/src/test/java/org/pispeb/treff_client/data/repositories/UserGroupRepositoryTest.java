@@ -1,9 +1,8 @@
-package org.pispeb.treff_client.repositories;
+package org.pispeb.treff_client.data.repositories;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.pispeb.treff_client.data.entities.GroupMembership;
-import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;

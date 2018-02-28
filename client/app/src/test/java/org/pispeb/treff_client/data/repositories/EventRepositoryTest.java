@@ -1,10 +1,9 @@
-package org.pispeb.treff_client.repositories;
+package org.pispeb.treff_client.data.repositories;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.repositories.EventRepository;
 
 import static org.mockito.Mockito.verify;
 

@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.repositories;
+package org.pispeb.treff_client.data.repositories;
 
 import android.location.Location;
 import android.location.LocationManager;

@@ -1,8 +1,7 @@
-package org.pispeb.treff_client.repositories;
+package org.pispeb.treff_client.data.repositories;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.pispeb.treff_client.data.repositories.ChatRepository;
 
 import static org.mockito.Mockito.*;
 
