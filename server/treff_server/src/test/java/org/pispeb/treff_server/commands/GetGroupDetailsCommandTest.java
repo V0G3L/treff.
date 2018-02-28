@@ -15,7 +15,7 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
     }
 
     @Test
-    public void execute() {
+    public void valid() {
         GetGroupDetailsCommand getGroupDetailsCommand
                 = new GetGroupDetailsCommand(accountManager, mapper);
         inputBuilder.add("id", groupId);
