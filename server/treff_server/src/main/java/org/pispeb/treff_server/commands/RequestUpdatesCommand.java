@@ -48,7 +48,7 @@ public class RequestUpdatesCommand extends AbstractCommand {
 
     public static class Input extends CommandInputLoginRequired {
 
-        protected Input(String token) {
+        protected Input(@JsonProperty("token") String token) {
             super(token);
         }
     }
