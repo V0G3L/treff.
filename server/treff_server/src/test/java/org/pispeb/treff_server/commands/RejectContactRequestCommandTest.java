@@ -2,6 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.pispeb.treff_server.commands.abstracttests.ContactList;
 import org.pispeb.treff_server.commands.abstracttests
         .ContactRequestDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
@@ -22,23 +23,30 @@ public class RejectContactRequestCommandTest
 
     @Test
     public void validContactRequest() {
-        JsonObject output = execute(users[1].id);
+        // Note that receiver is the one executing the
+        // reject-contact-request command
+        User sender = users[1];
+        User receiver = users[0];
+
+        JsonObject output = execute(sender.id);
         Assert.assertTrue(output.isEmpty());
 
-        Assert.assertTrue(myContacts.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(contactsOf1.getJsonArray("outgoing-requests")
-                .isEmpty());
+        ContactList receiverContacts = getContactsOfUser(receiver);
+        ContactList senderContacts = getContactsOfUser(sender);
 
-        Assert.assertTrue(myContacts.getJsonArray("contacts")
-                .contains(users[1].id));
-        Assert.assertTrue(contactsOf1.getJsonArray("contacts")
-                .contains(ownID));
+        // Assert that the request got removed
+        Assert.assertTrue(receiverContacts.incomingRequests.isEmpty());
+        Assert.assertTrue(senderContacts.outgoingRequests.isEmpty());
 
-        JsonObject update = getSingleUpdateForUser(1);
-        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER,
+        // Assert that both users were *not* added as contacts
+        Assert.assertFalse(receiverContacts.contacts.contains(sender.id));
+        Assert.assertFalse(senderContacts.contacts.contains(receiver.id));
+
+        // TODO: make convenience method for update checking
+        JsonObject update = getSingleUpdateForUser(sender);
+        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER.toString(),
                 update.getString("type"));
-        Assert.assertEquals(users[1].id, update.getInt("creator"));
+        Assert.assertEquals(receiver.id, update.getInt("creator"));
         Assert.assertTrue(checkTimeCreated(new Date(update
                 .getJsonNumber("time-created").longValue())));
         Assert.assertFalse(update.getBoolean("answer"));
@@ -46,20 +54,18 @@ public class RejectContactRequestCommandTest
 
     @Test
     public void noContactRequest() {
-        commandFailed(execute(users[2].id), 1504);
-        Assert.assertTrue(contactsOf2.getJsonArray("contacts")
-                .isEmpty());
-        Assert.assertEquals(0, getUpdatesForUser(users[2].id).length);
+        assertErrorOutput(execute(users[2].id), 1504);
+        assertNoContactChange();
+
+        // Assert that user 2 didn't get an update
+        Assert.assertEquals(0, getUpdatesForUser(users[2]).length);
     }
 
     @Test
     public void invalidId() {
         int invalidID = 42;
-        while (invalidID == users[0].id || invalidID == users[1].id
-                || invalidID == users[2].id || invalidID == users[3].id) {
-            invalidID++;
-        }
-        commandFailed(execute(invalidID), 1200);
+        assertErrorOutput(execute(invalidID), 1200);
+        assertNoContactChange();
     }
 
     @Test
@@ -71,7 +77,7 @@ public class RejectContactRequestCommandTest
         JsonObject output
                 = runCommand(rejectContactRequestCommand, inputBuilder);
 
-        Assert.assertEquals(1000, output.getInt("error"));
+        assertErrorOutput(output, 1000);
     }
 
     /**
@@ -90,11 +96,9 @@ public class RejectContactRequestCommandTest
         JsonObject output
                 = runCommand(rejectContactRequestCommand, inputBuilder);
 
-        myContacts = getContactsOfUser(0);
-        contactsOf1 = getContactsOfUser(1);
-        contactsOf2 = getContactsOfUser(2);
-
-        Assert.assertEquals(0, getUpdatesForUser(users[0].id).length);
+        // assert that receiver didn't get an update
+        // TODO: use User
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
 
         return output;
     }

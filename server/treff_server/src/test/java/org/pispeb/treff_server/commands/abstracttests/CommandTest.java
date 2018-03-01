@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands.abstracttests;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.DatabaseDependentTest;
 import org.pispeb.treff_server.commands.AbstractCommand;
@@ -16,7 +17,7 @@ public abstract class CommandTest extends DatabaseDependentTest {
 
     protected JsonObjectBuilder inputBuilder;
 
-    private final String cmd;
+    protected final String cmd;
     private Date startTime;
 
     public CommandTest(String cmd) {
@@ -27,6 +28,10 @@ public abstract class CommandTest extends DatabaseDependentTest {
     public void prepareInput() {
         inputBuilder = Json.createObjectBuilder();
         inputBuilder.add("cmd", cmd);
+    }
+
+    @Before
+    public void saveStartTime() {
         startTime = new Date();
     }
 
@@ -53,6 +58,11 @@ public abstract class CommandTest extends DatabaseDependentTest {
             return false;
         }
         return true;
+    }
+
+    protected void assertErrorOutput(JsonObject output, int expectedError) {
+        Assert.assertEquals(1, output.size());
+        Assert.assertEquals(expectedError, output.getInt("error"));
     }
 
 }

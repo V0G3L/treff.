@@ -49,7 +49,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         GetGroupDetailsCommand getGroupDetailsCommand
                 = new GetGroupDetailsCommand(accountManager, mapper);
         JsonObjectBuilder input =
-                getCommandStubForUser("get-group-details",0)
+                getCommandStubForUser("get-group-details", users[0])
                 .add("id", groupId);
         JsonObject groupDesc = runCommand(getGroupDetailsCommand, input)
                 .getJsonObject("group");
@@ -62,9 +62,10 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         || membersDesc.getInt(1) == ownID);
 
         // TODO updates for some reason aren't in the database
-        JsonObject update = getSingleUpdateForUser(users[1].id);
+        JsonObject update = getSingleUpdateForUser(users[1]);
         Assert.assertEquals(update.getString("type"),
                 UpdateType.USERGROUP_CHANGE.toString());
+
         // TODO check time-created
         Assert.assertEquals(update.getInt("creator"),ownID);
         JsonObject updateGroupDesc = update.getJsonObject("usergroup");
@@ -77,7 +78,10 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 || updateMembers.getInt(1) == users[1].id);
     }
 
-
+    // TODO: remove, not related to this command
+    // Missing property checks are made by AbstractCommand
+    // Only additional string syntax checks (see CommandInput)
+    // have to be tested here
     // TODO implement Syntax-checks
     @Test
     public void invalidSyntaxA() {
@@ -90,7 +94,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         inputBuilder.add("group", group);
         JsonObject output = runCommand(createGroupCommand, inputBuilder);
 
-        Assert.assertEquals(output.getInt("Error"), 1000);
+        Assert.assertEquals(1000, output.getInt("Error"));
     }
 
     @Test
@@ -100,10 +104,11 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         inputBuilder.add("All your base", "are belong to us");
         JsonObject output = runCommand(createGroupCommand, inputBuilder);
 
-        Assert.assertEquals(output.getInt("Error"), 1000);
+        Assert.assertEquals(1000, output.getInt("Error"));
     }
 
 
+    // TODO: remove, unrelated to CreateGroupCommand
     @Test
     public void invalidToken() {
         JsonObjectBuilder inputBuilder = Json.createObjectBuilder();

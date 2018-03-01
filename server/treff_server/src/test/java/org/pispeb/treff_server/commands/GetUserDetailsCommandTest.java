@@ -29,8 +29,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
         Assert.assertEquals(accountObject.getString("type"),
                 "account");
         Assert.assertEquals(accountObject.getInt("id"), users[1].id);
-        Assert.assertEquals(accountObject.getString("user"),
-                userNames[1]);
+        Assert.assertEquals(accountObject.getString("user"), users[1].username);
     }
 
     @Test

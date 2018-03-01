@@ -2,6 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.pispeb.treff_server.commands.abstracttests.ContactList;
 import org.pispeb.treff_server.commands.abstracttests
         .ContactRequestDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
@@ -22,23 +23,31 @@ public class AcceptContactRequestCommandTest
 
     @Test
     public void validContactRequest() {
+        // Note that receiver is the one executing the
+        // accept-contact-request command
+        User sender = users[1];
+        User receiver = users[0];
+
+        // TODO: use User instead of IDs
         JsonObject output = execute(users[1].id);
         Assert.assertTrue(output.isEmpty());
 
-        Assert.assertTrue(myContacts.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(contactsOf1.getJsonArray("outgoing-requests")
-                .isEmpty());
+        ContactList receiverContacts = getContactsOfUser(receiver);
+        ContactList senderContacts = getContactsOfUser(sender);
 
-        Assert.assertTrue(myContacts.getJsonArray("contacts")
-                .contains(users[1].id));
-        Assert.assertTrue(contactsOf1.getJsonArray("contacts")
-                .contains(ownID));
+        // Check that the request is no longer there
+        Assert.assertTrue(receiverContacts.incomingRequests.isEmpty());
+        Assert.assertTrue(senderContacts.outgoingRequests.isEmpty());
 
-        JsonObject update = getSingleUpdateForUser(1);
-        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER,
+        // Check that both users are now contacts
+        Assert.assertTrue(receiverContacts.contacts.contains(sender.id));
+        Assert.assertTrue(senderContacts.contacts.contains(receiver.id));
+
+        // Check update
+        JsonObject update = getSingleUpdateForUser(sender);
+        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER.toString(),
                 update.getString("type"));
-        Assert.assertEquals(users[1].id, update.getInt("creator"));
+        Assert.assertEquals(receiver.id, update.getInt("creator"));
         Assert.assertTrue(checkTimeCreated(new Date(update
                 .getJsonNumber("time-created").longValue())));
         Assert.assertTrue(update.getBoolean("answer"));
@@ -46,20 +55,16 @@ public class AcceptContactRequestCommandTest
 
     @Test
     public void noContactRequest() {
-        commandFailed(execute(users[2].id), 1504);
-        Assert.assertTrue(contactsOf2.getJsonArray("contacts")
-                .isEmpty());
-        Assert.assertEquals(0, getUpdatesForUser(users[2].id).length);
+        // try accepting from user 2
+        assertErrorOutput(execute(users[2].id), 1504);
+        assertNoContactChange();
+        Assert.assertEquals(0, getUpdatesForUser(users[2]).length);
     }
 
     @Test
     public void invalidId() {
         int invalidID = 666;
-        while (invalidID == users[0].id || invalidID == users[1].id
-                || invalidID == users[2].id || invalidID == users[3].id) {
-            invalidID++;
-        }
-        commandFailed(execute(invalidID), 1200);
+        assertErrorOutput(execute(invalidID), 1200);
     }
 
     @Test
@@ -90,11 +95,8 @@ public class AcceptContactRequestCommandTest
         JsonObject output
                 = runCommand(acceptContactRequestCommand, inputBuilder);
 
-        myContacts = getContactsOfUser(0);
-        contactsOf1 = getContactsOfUser(1);
-        contactsOf2 = getContactsOfUser(2);
-
-        Assert.assertEquals(0, getUpdatesForUser(users[0].id).length);
+        // Assert that sender didn't get an update
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
 
         return output;
     }

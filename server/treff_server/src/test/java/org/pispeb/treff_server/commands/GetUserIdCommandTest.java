@@ -21,7 +21,7 @@ public class GetUserIdCommandTest extends MultipleUsersTest {
     public void valid() {
         GetUserIdCommand getUserIdCommand
                 = new GetUserIdCommand(accountManager, mapper);
-        inputBuilder.add("user", userNames[1]);
+        inputBuilder.add("user", users[1].username);
         String outputString = getUserIdCommand.execute(buildInput());
         Assert.assertEquals(toJsonObject(outputString).getInt("id"),
                 users[1].id);
@@ -34,7 +34,7 @@ public class GetUserIdCommandTest extends MultipleUsersTest {
         JsonObjectBuilder inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "get-user-id")
                 .add("token", "0")
-                .add("user", userNames[1]);
+                .add("user", users[1].username);
 
         JsonObject output = runCommand(getUserIdCommand, inputBuilder);
         Assert.assertEquals(output.getInt("error"), 1100);

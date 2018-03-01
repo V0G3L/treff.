@@ -288,7 +288,7 @@ public class AccountSQL extends SQLObject implements Account {
         return database
                 // get all contact relations that this account is a part of
                 .query(
-                        "SELECT (lowid,highid) FROM %s WHERE lowid=? " +
+                        "SELECT lowid,highid FROM %s WHERE lowid=? " +
                                 "OR highid=?;",
                         TableName.CONTACTS,
                         new MapListHandler(),

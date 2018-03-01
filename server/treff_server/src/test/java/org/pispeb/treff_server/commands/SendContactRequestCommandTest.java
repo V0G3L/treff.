@@ -2,7 +2,9 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
+import org.pispeb.treff_server.commands.abstracttests.ContactList;
+import org.pispeb.treff_server.commands.abstracttests
+        .ContactRequestDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
@@ -13,11 +15,10 @@ import java.util.Date;
  * @author tim and jens
  * asserts the functionalty of BlockAccountCommand and GetContactListCommand
  */
-public class SendContactRequestCommandTest extends MultipleUsersTest {
+public class SendContactRequestCommandTest extends ContactRequestDependentTest {
 
     private JsonObject myContacts;
     private JsonObject hisContacts;
-    private JsonObjectBuilder alternativeInputBuilder;
 
     public SendContactRequestCommandTest() {
         super("send-contact-request");
@@ -25,18 +26,34 @@ public class SendContactRequestCommandTest extends MultipleUsersTest {
 
     @Test
     public void validContactRequest() {
-        JsonObject output = execute(users[1].id);
-        Assert.assertTrue(output.isEmpty());
+        // send request from user 2 to user 3
+        User sender = users[2];
+        User receiver = users[3];
+        execute(sender, receiver);
 
-        Assert.assertTrue(myContacts.getJsonArray("outgoing-requests")
-                .contains(users[1].id));
-        Assert.assertTrue(hisContacts.getJsonArray("incoming-requests")
-                .contains(ownID));
+        ContactList receiverContacts = getContactsOfUser(receiver);
+        ContactList senderContacts = getContactsOfUser(sender);
 
-        JsonObject update = getSingleUpdateForUser(1);
-        Assert.assertEquals(UpdateType.CONTACT_REQUEST,
+        // Asserts that request is visible from both sides
+        Assert.assertTrue(
+                receiverContacts.incomingRequests.contains(sender.id));
+        Assert.assertTrue(
+                senderContacts.outgoingRequests.contains(receiver.id));
+
+        // Asserts that the request was only sent in one direction
+        Assert.assertFalse(
+                receiverContacts.outgoingRequests.contains(sender.id));
+        Assert.assertFalse(
+                senderContacts.incomingRequests.contains(receiver.id));
+
+        // Assert that only the request was sent, no contact addition took place
+        Assert.assertFalse(receiverContacts.contacts.contains(sender.id));
+        Assert.assertFalse(senderContacts.contacts.contains(receiver.id));
+
+        JsonObject update = getSingleUpdateForUser(receiver);
+        Assert.assertEquals(UpdateType.CONTACT_REQUEST.toString(),
                 update.getString("type"));
-        Assert.assertEquals(users[1].id, update.getInt("creator"));
+        Assert.assertEquals(sender.id, update.getInt("creator"));
         Assert.assertTrue(checkTimeCreated(new Date(update
                 .getJsonNumber("time-created").longValue())));
     }
@@ -44,108 +61,92 @@ public class SendContactRequestCommandTest extends MultipleUsersTest {
     @Test
     public void invalidId() {
         int invalidID = 1337;
-        while (invalidID == users[0].id || invalidID == users[1].id
-                || invalidID == users[2].id || invalidID == users[3].id) {
-            invalidID++;
-        }
-        failureWithNoSending(invalidID, 1200);
+        JsonObject output
+                = execute(users[0],
+                // TODO: convenience method for invalidID-users
+                // maybe additional constructor in User
+                // or factory method in MultipleUsersTest?
+                new User("username", "password", invalidID, "no token"));
+        assertCommandFailed(output, 1200);
     }
 
     @Test
     public void blocking() {
-        block(ownID, users[1].id);
-        failureWithNoSending(users[1].id, 1506);
+        block(users[0], users[1]);
+        JsonObject output = execute(users[0], users[1]);
+        assertCommandFailed(output, 1506);
     }
 
     @Test
     public void gettingBlocked() {
-        block(users[1].id, ownID);
-        failureWithNoSending(users[1].id, 1505);
+        block(users[1], users[0]);
+        JsonObject output = execute(users[0], users[1]);
+        assertCommandFailed(output, 1505);
     }
 
     @Test
     public void alreadySent() {
-        execute(users[1].id);
-        commandFailed(users[1].id, 1503);
-
-        Assert.assertTrue(myContacts.getJsonArray("outgoing-requests")
-                .contains(users[1].id));
-        Assert.assertTrue(hisContacts.getJsonArray("incoming-requests")
-                .contains(ownID));
+        execute(users[0], users[1]);
+        JsonObject output = execute(users[0], users[1]);
+        // Can't use assertCommandFailed here because we expect to the first
+        // command to work
+        assertErrorOutput(output, 1503);
     }
 
     /**
-     * executes the block-account-command
+     * Executes the block-account-command.
+     * Makes no assertions on whether the command had any effect.
      *
+     * TODO: correct params
      * @param blockingID the id of the account that is blocking
      * @param blockedID  the id of the account that gets blocked
      */
-    private void block(int blockingID, int blockedID) {
-        alternativeInputBuilder
-                = getCommandStubForUser("block-account", blockingID);
+    private void block(User blocker, User blocked) {
+        JsonObjectBuilder input
+                = getCommandStubForUser("block-account", blocker);
         BlockAccountCommand blockAccountCommand
                 = new BlockAccountCommand(accountManager, mapper);
-        alternativeInputBuilder.add("id", blockedID);
-        runCommand(blockAccountCommand, alternativeInputBuilder);
+        input.add("id", blocked.id);
+        runCommand(blockAccountCommand, input);
     }
 
     /**
-     * executes the command
-     * asserts that nothing occurred what never should due to this command
+     * Executes a send-contact-request command.
+     * Does not make any assertions on whether the command had any effect.
+     * Asserts that the command returned an empty object.
      *
-     * @param id the id of the account that shall receive a contact request
      * @return the output of the command
      */
-    private JsonObject execute(int id) {
+    private JsonObject execute(User sender,
+                              User receiver) {
         SendContactRequestCommand sendContactRequestCommand
                 = new SendContactRequestCommand(accountManager, mapper);
 
-        inputBuilder.add("id", id);
-        JsonObject output = runCommand(sendContactRequestCommand, inputBuilder);
+        JsonObjectBuilder input
+                = getCommandStubForUser(this.cmd, sender);
+        input.add("id", receiver.id);
 
-        myContacts = getContactsOfUser(0);
-        hisContacts = getContactsOfUser(1);
-        Assert.assertTrue(myContacts.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(myContacts.getJsonArray("contacts").isEmpty());
-        Assert.assertTrue(hisContacts.getJsonArray("outgoing-requests")
-                .isEmpty());
-        Assert.assertTrue(hisContacts.getJsonArray("contacts").isEmpty());
-        Assert.assertEquals(0, getUpdatesForUser(users[0].id).length);
+        JsonObject output = runCommand(sendContactRequestCommand, input);
+
+        Assert.assertTrue(output.isEmpty());
 
         return output;
     }
 
     /**
-     * executes the command
-     * asserts the failure of the command
+     * Asserts that the send-contact-request command that was executed failed,
+     * returning an error and that it didn't change any contact lists and
+     * produced no update.
      *
-     * @param id            the id of the account that shall receive a contact
-     *                      request
-     * @param expectedError the error code that is expected
+     * @param output        The output produced by the executed command
+     * @param expectedError The expected error code
      */
-    private void commandFailed(int id, int expectedError) {
-        JsonObject output = execute(id);
+    private void assertCommandFailed(JsonObject output, int expectedError) {
         Assert.assertEquals(expectedError, output.getInt("error"));
 
-        Assert.assertEquals(0, getUpdatesForUser(users[1].id).length);
-    }
+        for (User user : users)
+            Assert.assertEquals(0, getUpdatesForUser(user).length);
 
-    /**
-     * executes the command
-     * asserts the failure of the command
-     * asserts that no request has been sent
-     *
-     * @param id            the id of the account that shall receive a contact
-     *                      request
-     * @param expectedError the error code that is expected
-     */
-    private void failureWithNoSending(int id, int expectedError) {
-        commandFailed(id, expectedError);
-
-        Assert.assertTrue(myContacts.getJsonArray("outgoing-requests")
-                .isEmpty());
-        Assert.assertTrue(hisContacts.getJsonArray("incoming-requests")
-                .isEmpty());
+        assertNoContactChange();
     }
 }

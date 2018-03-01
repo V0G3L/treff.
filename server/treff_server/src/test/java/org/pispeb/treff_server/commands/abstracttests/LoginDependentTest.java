@@ -3,16 +3,21 @@ package org.pispeb.treff_server.commands.abstracttests;
 
 import org.junit.Before;
 import org.pispeb.treff_server.commands.RegisterCommand;
-import org.pispeb.treff_server.commands.abstracttests.CommandTest;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 public abstract class LoginDependentTest extends CommandTest {
 
-    protected String ownUsername = "w4rum";
-    protected String ownPassword = "D4nz1g0rW4r";
+    protected User ownUser;
+
+    @Deprecated
+    protected String ownUsername;
+    @Deprecated
+    protected String ownPassword;
+    @Deprecated
     protected String token;
+    @Deprecated
     protected int ownID;
 
     public LoginDependentTest(String cmd) {
@@ -21,16 +26,15 @@ public abstract class LoginDependentTest extends CommandTest {
 
     @Before
     public void register() {
-        RegisteredUserData registeredUserData = registerAccount(
-                ownUsername, ownPassword);
-        token = registeredUserData.token;
-        ownID = registeredUserData.id;
+        ownUser = registerAccount("w4rum", "D4nz1g0rW4r");
+        token = ownUser.token;
+        ownID = ownUser.id;
 
-        inputBuilder.add("token", token);
+        inputBuilder.add("token", ownUser.token);
     }
 
-    protected RegisteredUserData registerAccount(String username,
-                                                 String password) {
+    protected User registerAccount(String username,
+                                   String password) {
 
         RegisterCommand registerCommand
                 = new RegisterCommand(accountManager, mapper);
@@ -39,19 +43,26 @@ public abstract class LoginDependentTest extends CommandTest {
                         .add("cmd", "register")
                         .add("user", username)
                         .add("pass", password));
-        return new RegisteredUserData(
-                output.getString("token"),
-                output.getInt("id"));
+        return new User(
+                username,
+                password,
+                output.getInt("id"),
+                output.getString("token"));
+
     }
 
-    protected class RegisteredUserData {
+    protected class User {
 
-        public final String token;
+        public final String username;
+        public final String password;
         public final int id;
+        public final String token;
 
-        public RegisteredUserData(String token, int id) {
-            this.token = token;
+        public User(String username, String password, int id, String token) {
+            this.username = username;
+            this.password = password;
             this.id = id;
+            this.token = token;
         }
     }
 }

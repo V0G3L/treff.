@@ -27,7 +27,7 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
         CreateGroupCommand createGroupCommand
                 = new CreateGroupCommand(accountManager, mapper);
         JsonArray members = Json.createArrayBuilder()
-                .add(ownID)
+                .add(ownUser.id)
                 .add(users[1].id)
                 .add(users[2].id)
                 .build();
@@ -38,7 +38,7 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
                 .build();
 
         JsonObjectBuilder input
-                = getCommandStubForUser("create-group", ownID)
+                = getCommandStubForUser("create-group", ownUser)
                 .add("group", group);
 
         groupId = runCommand(createGroupCommand, input).getInt("id");
