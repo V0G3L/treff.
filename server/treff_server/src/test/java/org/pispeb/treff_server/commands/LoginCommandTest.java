@@ -16,7 +16,7 @@ public class LoginCommandTest extends MultipleUsersTest {
     }
 
     @Test
-    public void execute() {
+    public void valid() {
         LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
         inputBuilder.add("user", userNames[1]);
         inputBuilder.add("pass", userPasswords[1]);
@@ -28,5 +28,25 @@ public class LoginCommandTest extends MultipleUsersTest {
         // Token must have changed
         Assert.assertNotEquals(output.getString("token"), users[1].token);
         Assert.assertEquals(output.getInt("id"), users[1].id);
+    }
+
+    @Test
+    public void invalidUsername() {
+        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
+        inputBuilder.add("user", "sevenforthedwarflords");
+        inputBuilder.add("pass", "inhallsofstone");
+        JsonObject output = runCommand(loginCommand,inputBuilder);
+
+        Assert.assertEquals(output.getInt("error"), 1302);
+    }
+
+    @Test
+    public void invalidCredentials() {
+        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
+        inputBuilder.add("user", userNames[1]);
+        inputBuilder.add("pass", "nineformortalmen");
+        JsonObject output = runCommand(loginCommand,inputBuilder);
+
+        Assert.assertEquals(output.getInt("error"), 1101);
     }
 }

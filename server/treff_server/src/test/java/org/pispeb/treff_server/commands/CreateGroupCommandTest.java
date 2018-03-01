@@ -45,22 +45,32 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         int groupId = output.getInt("id");
         Assert.assertThat(groupId,
                 Matchers.greaterThanOrEqualTo(0));
-        Usergroup Usergroup = accountManager.getAccount(ownID).getAllGroups().get(groupId);
-        Assert.assertEquals(Usergroup.getName(),"groupname");
-        HashSet<Integer> memberIds = new HashSet<Integer>();
-        memberIds.add(ownID);
-        memberIds.add(users[1].id);
-        Assert.assertTrue(Usergroup.getAllMembers().keySet().containsAll(memberIds)
-                && memberIds.containsAll(Usergroup.getAllMembers().keySet()));
+
+        GetGroupDetailsCommand getGroupDetailsCommand
+                = new GetGroupDetailsCommand(accountManager, mapper);
+        JsonObjectBuilder input =
+                getCommandStubForUser("get-group-details",0)
+                .add("id", groupId);
+        JsonObject groupDesc = runCommand(getGroupDetailsCommand, input)
+                .getJsonObject("group");
+        Assert.assertEquals(groupDesc.getString("name"),
+                "groupname");
+        JsonArray membersDesc = groupDesc.getJsonArray("members");
+        Assert.assertTrue(membersDesc.getInt(0) == users[1].id
+        || membersDesc.getInt(1) == users[1].id);
+        Assert.assertTrue(membersDesc.getInt(0) == ownID
+        || membersDesc.getInt(1) == ownID);
 
         // TODO updates for some reason aren't in the database
         JsonObject update = getSingleUpdateForUser(users[1].id);
-        Assert.assertEquals(update.getString("type"), UpdateType.USERGROUP_CHANGE.toString());
+        Assert.assertEquals(update.getString("type"),
+                UpdateType.USERGROUP_CHANGE.toString());
         // TODO check time-created
         Assert.assertEquals(update.getInt("creator"),ownID);
-        JsonObject groupDesc = update.getJsonObject("usergroup");
-        Assert.assertEquals(groupDesc.getString("name"), "groupname");
-        JsonArray updateMembers = groupDesc.getJsonArray("members");
+        JsonObject updateGroupDesc = update.getJsonObject("usergroup");
+        Assert.assertEquals(updateGroupDesc.getString("name"),
+                "groupname");
+        JsonArray updateMembers = updateGroupDesc.getJsonArray("members");
         Assert.assertTrue(updateMembers.getInt(0) == ownID
                 || updateMembers.getInt(0) == users[1].id);
         Assert.assertTrue(updateMembers.getInt(1) == ownID

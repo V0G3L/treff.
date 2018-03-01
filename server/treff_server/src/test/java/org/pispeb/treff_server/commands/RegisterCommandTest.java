@@ -14,13 +14,12 @@ public class RegisterCommandTest extends CommandTest {
     }
 
     @Test
-    public void execute() {
+    public void valid() {
         RegisterCommand registerCommand
                 = new RegisterCommand(accountManager, mapper);
         inputBuilder.add("user", "w4rum");
         inputBuilder.add("pass", "D4nz1g0rW4r");
-        String outputString = registerCommand.execute(buildInput());
-        JsonObject output = toJsonObject(outputString);
+        JsonObject output = runCommand(registerCommand, inputBuilder);
 
         Assert.assertTrue(output.containsKey("id"));
         // throws exception if not a number
@@ -28,6 +27,22 @@ public class RegisterCommandTest extends CommandTest {
         Assert.assertTrue(output.containsKey("token"));
         Assert.assertThat(output.getString("token"),
                 RegexMatchers.matchesPattern("[0-9a-f]{128}"));
+    }
+
+    @Test
+    public void usernameInUse() {
+        RegisterCommand registerCommand
+                = new RegisterCommand(accountManager, mapper);
+        inputBuilder.add("user", "w4rum");
+        inputBuilder.add("pass", "underthesky");
+        String input = inputBuilder.build().toString();
+        registerCommand.execute(input);
+
+        RegisterCommand registerCommand2
+                = new RegisterCommand(accountManager, mapper);
+        JsonObject output = toJsonObject(registerCommand2.execute(input));
+
+        Assert.assertEquals(output.getInt("error"), 1300);
     }
 
 }
