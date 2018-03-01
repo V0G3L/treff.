@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        AcceptContactRequestCommandTest.class,
         CreateGroupCommandTest.class,
         GetGroupDetailsCommandTest.class,
         GetPollDetailsCommandTest.class,
@@ -15,7 +16,9 @@ import org.junit.runners.Suite;
         GetUserIdCommandTest.class,
         LoginCommandTest.class,
         RegisterCommandTest.class,
+        RejectContactRequestCommandTest.class,
         SendContactRequestCommandTest.class,
         UpdatePositionCommandTest.class
 })
-public class CommandTestSuite { }
+public class CommandTestSuite {
+}

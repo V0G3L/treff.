@@ -13,11 +13,11 @@ import java.util.Date;
  * @author jens
  * asserts the functionalty of SendContactRequestCommand
  */
-public class AcceptContactRequestCommandTest
+public class RejectContactRequestCommandTest
         extends ContactRequestDependentTest {
 
-    public AcceptContactRequestCommandTest() {
-        super("accept-contact-request");
+    public RejectContactRequestCommandTest() {
+        super("reject-contact-request");
     }
 
     @Test
@@ -41,7 +41,7 @@ public class AcceptContactRequestCommandTest
         Assert.assertEquals(users[1].id, update.getInt("creator"));
         Assert.assertTrue(checkTimeCreated(new Date(update
                 .getJsonNumber("time-created").longValue())));
-        Assert.assertTrue(update.getBoolean("answer"));
+        Assert.assertFalse(update.getBoolean("answer"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class AcceptContactRequestCommandTest
 
     @Test
     public void invalidId() {
-        int invalidID = 666;
+        int invalidID = 42;
         while (invalidID == users[0].id || invalidID == users[1].id
                 || invalidID == users[2].id || invalidID == users[3].id) {
             invalidID++;
@@ -64,12 +64,12 @@ public class AcceptContactRequestCommandTest
 
     @Test
     public void invalidSyntax() {
-        AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+        RejectContactRequestCommand rejectContactRequestCommand
+                = new RejectContactRequestCommand(accountManager, mapper);
 
         inputBuilder.add("shit", "someShit");
         JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
+                = runCommand(rejectContactRequestCommand, inputBuilder);
 
         Assert.assertEquals(1000, output.getInt("error"));
     }
@@ -79,16 +79,16 @@ public class AcceptContactRequestCommandTest
      * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
-     * @param id the id of the account whose contact request shall be accepted
+     * @param id the id of the account whose contact request shall be rejected
      * @return the output of the command
      */
     protected JsonObject execute(int id) {
-        AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+        RejectContactRequestCommand rejectContactRequestCommand
+                = new RejectContactRequestCommand(accountManager, mapper);
 
         inputBuilder.add("id", id);
         JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
+                = runCommand(rejectContactRequestCommand, inputBuilder);
 
         myContacts = getContactsOfUser(0);
         contactsOf1 = getContactsOfUser(1);
