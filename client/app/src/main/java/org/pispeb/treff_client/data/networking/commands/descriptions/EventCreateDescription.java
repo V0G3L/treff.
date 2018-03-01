@@ -38,4 +38,12 @@ public class EventCreateDescription {
         this.position = position;
     }
 
+    public boolean equals(EventCreateDescription event) {
+        return (this.title == event.title
+                && this.creatorID == event.creatorID
+                && this.timeStart == event.timeStart
+                && this.timeEnd == event.timeEnd
+                && this.position == event.position);
+    }
+
 }

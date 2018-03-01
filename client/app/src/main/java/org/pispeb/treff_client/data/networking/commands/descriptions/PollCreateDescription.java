@@ -25,4 +25,10 @@ public class PollCreateDescription {
         this.isMultiChoice = isMultiChoice;
         this.timeVoteClose = timeVoteClose;
     }
+
+    public boolean equals(PollCreateDescription pollCreateDescription) {
+        return (this.question.equals(pollCreateDescription.question)
+                && this.isMultiChoice == pollCreateDescription.isMultiChoice
+                && this.timeVoteClose.equals(pollCreateDescription.timeVoteClose));
+    }
 }

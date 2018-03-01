@@ -19,4 +19,9 @@ public class UsergroupEditDescription {
         this.id = id;
         this.name = name;
     }
+
+    public boolean equals(UsergroupEditDescription usergroupEditDescription) {
+        return (this.id == usergroupEditDescription.id
+                && this.name.equals(usergroupEditDescription.name));
+    }
 }

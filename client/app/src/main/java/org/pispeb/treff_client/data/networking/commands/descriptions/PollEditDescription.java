@@ -23,4 +23,8 @@ public class PollEditDescription extends PollCreateDescription {
         super(question, isMultiChoice, timeVoteClose);
         this.id = id;
     }
+
+    public boolean equals(PollEditDescription pollEditDescription) {
+        return (super.equals(pollEditDescription) && this.id == pollEditDescription.id);
+    }
 }

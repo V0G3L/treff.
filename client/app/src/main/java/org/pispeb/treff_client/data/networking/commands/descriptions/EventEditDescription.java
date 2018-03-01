@@ -34,4 +34,8 @@ public class EventEditDescription extends EventCreateDescription {
         this.id = id;
     }
 
+    public boolean equals(EventEditDescription eventEditDescription) {
+        return (super.equals(eventEditDescription) && this.id == eventEditDescription.id);
+    }
+
 }

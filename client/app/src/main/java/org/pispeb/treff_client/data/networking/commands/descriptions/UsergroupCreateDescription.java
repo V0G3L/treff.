@@ -21,4 +21,10 @@ public class UsergroupCreateDescription {
         this.name = name;
         this.memberIDs = memberIDs;
     }
+
+
+    public boolean equals(UsergroupCreateDescription usergroupCreateDescription) {
+        return (this.name.equals(usergroupCreateDescription.name)
+                && this.memberIDs.equals(usergroupCreateDescription.memberIDs));
+    }
 }
