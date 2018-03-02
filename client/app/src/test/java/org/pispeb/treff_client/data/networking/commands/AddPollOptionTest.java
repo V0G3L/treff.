@@ -2,11 +2,11 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 
 /**
- * Created by matth on 28.02.2018.
+ * Test to check the main function of AddPollOptionCommand
  */
 
 public class AddPollOptionTest extends AbstractCommandTest {

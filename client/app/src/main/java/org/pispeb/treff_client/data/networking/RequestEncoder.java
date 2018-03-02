@@ -343,7 +343,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param userId Contact to be added to the friend list
      */
     public synchronized void sendContactRequest(int userId) {
-        executeCommand(new SendContactRequestCommand(userId, getToken()));
+        executeCommand(new SendContactRequestCommand(userId, getToken(), userRepository));
     }
 
     /**

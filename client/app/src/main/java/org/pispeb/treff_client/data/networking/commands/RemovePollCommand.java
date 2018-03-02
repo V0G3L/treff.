@@ -23,6 +23,7 @@ public class RemovePollCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+        //TODO handle response
 
     }
 

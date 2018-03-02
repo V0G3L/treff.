@@ -14,8 +14,9 @@ public class SendContactRequestCommand extends AbstractCommand{
     private String username;
     private String token;
 
-    public SendContactRequestCommand(int id, String token) {
+    public SendContactRequestCommand(int id, String token, UserRepository userRepository) {
         super(Response.class);
+        this.userRepository = userRepository;
         output = new Request(id, token);
     }
 

@@ -34,6 +34,7 @@ public abstract class AbstractCommandTest {
     protected String mockQuestion = "Why?";
     protected String mockName = "Test Event or whatever";
     protected String mockEmail = "mock@mockmail.com";
+    protected String mockMessage = "Hey Ho";
     protected int mockId = 1234567;
     protected int mockGroupId = 987654321;
     protected int mockEvetntId = 55555;
