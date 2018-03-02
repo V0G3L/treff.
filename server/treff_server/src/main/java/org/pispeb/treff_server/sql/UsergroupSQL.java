@@ -8,6 +8,7 @@ import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
 import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
@@ -126,21 +127,19 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         return Collections.unmodifiableMap(database.query(
                 "SELECT accountid FROM %s WHERE usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new DataObjectMapHandler<AccountSQL>(AccountSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
                 id));
     }
 
     @Override
     public Event createEvent(String title, Position position, Date timeStart,
                              Date timeEnd, Account creator) {
-        int id;
-        id = database.insert(
+        return database.insert(
                 "INSERT INTO %s(title,latitude,longitude,timestart," +
                         "timeend,creator,usergroupid) VALUES " +
                         "(?,?,?,?,?,?,?);",
                 TableName.EVENTS,
-                new ScalarHandler<Integer>(),
+                new DataObjectHandler<>(EventSQL.class, entityManager),
                 title,
                 position.latitude,
                 position.longitude,
@@ -148,7 +147,6 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                 timeEnd,
                 creator,
                 this.id);
-        return entityManager.getEvent(id);
     }
 
     @Override
@@ -156,25 +154,22 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         return Collections.unmodifiableMap(database.query(
                 "SELECT id FROM %s WHERE usergroupid=?;",
                 TableName.EVENTS,
-                new DataObjectMapHandler<EventSQL>(EventSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(EventSQL.class, entityManager),
                 id));
     }
 
     @Override
     public Poll createPoll(String question, Account creator,
                            boolean multichoice) {
-        int id;
-        id = database.insert(
+        return database.insert(
                 "INSERT INTO %s(question,creator,multichoice," +
                         "usergroupid) VALUES (?,?,?,?);",
                 TableName.POLLS,
-                new IDHandler(),
+                new DataObjectHandler<>(PollSQL.class, entityManager),
                 question,
                 creator,
                 multichoice,
                 this.id);
-        return entityManager.getPoll(id);
     }
 
     @Override

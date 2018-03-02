@@ -56,9 +56,9 @@ public class GetContactListCommand extends AbstractCommand {
 
         @JsonProperty("contacts")
         final int[] contacts;
-        @JsonProperty("incoming-request")
+        @JsonProperty("incoming-requests")
         final int[] incoming;
-        @JsonProperty("outgoing-request")
+        @JsonProperty("outgoing-requests")
         final int[] outgoing;
 
         Output(int[] contacts, int[] incoming, int[] outgoing) {

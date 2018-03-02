@@ -7,7 +7,7 @@ import java.util.Date;
 public class UpdateToSerialize {
     @JsonProperty("type")
     public final String type;
-    @JsonProperty("date")
+    @JsonProperty("time-created")
     public final Date date;
     @JsonProperty("creator")
     public final int creator;

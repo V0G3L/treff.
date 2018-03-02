@@ -29,7 +29,7 @@ public interface Poll extends DataObject, Comparable<Poll> {
      */
     void setQuestion(String question);
 
-    Map<Integer, PollOption> getPollOptions();
+    Map<Integer, ? extends PollOption> getPollOptions();
 
     /**
      * Creates a new {@code PollOption} with the supplied details

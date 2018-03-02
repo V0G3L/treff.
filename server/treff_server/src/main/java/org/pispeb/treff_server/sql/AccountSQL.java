@@ -235,27 +235,21 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllIncomingContactRequests() {
+    public Map<Integer, AccountSQL> getAllIncomingContactRequests() {
         return database.query(
                 "SELECT sender FROM %s WHERE receiver=?;",
                 TableName.CONTACTREQUESTS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     @Override
-    public Map<Integer, Account> getAllOutgoingContactRequests() {
+    public Map<Integer, AccountSQL> getAllOutgoingContactRequests() {
         return database.query(
                 "SELECT receiver FROM %s WHERE sender=?;",
                 TableName.CONTACTREQUESTS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     private void addContact(Account account) {
@@ -324,17 +318,13 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllBlocks() {
+    public Map<Integer, AccountSQL> getAllBlocks() {
         // get ID list
         return database.query(
                 "SELECT blocked FROM %s WHERE blocker=?;",
                 TableName.BLOCKS,
-                new ColumnListHandler<Integer>(),
-                id)
-                .stream()
-                // create ID -> AccountSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                id);
     }
 
     @Override
@@ -399,21 +389,13 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public SortedSet<Update> getUndeliveredUpdates() {
-        Set<Integer> updateIDs;
-        updateIDs = database.query(
+        // Retrieve updates via MapHandler and put the value set into a TreeSet
+        return new TreeSet<>(database.query(
                 "SELECT updateid FROM %s WHERE accountid=?;",
                 TableName.UPDATEAFFECTIONS,
-                rs -> {
-                    Set<Integer> ids = new HashSet<>();
-                    while (rs.next())
-                        ids.add(rs.getInt(1));
-                    return ids;
-                },
-                this.id
-        );
-        return updateIDs.stream()
-                .map(entityManager::getUpdate)
-                .collect(Collectors.toCollection(TreeSet::new));
+                new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
+                this.id)
+                .values());
     }
 
     @Override
@@ -475,10 +457,6 @@ public class AccountSQL extends SQLObject implements Account {
         deleted = true;
 
         // events and polls have to be able to handle non-existent creators
-    }
-
-    public Lock getRequestLock() {
-        return requestLock;
     }
 
     @Override

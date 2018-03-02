@@ -218,7 +218,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, Account> getAllBlocks();
+    Map<Integer, ? extends Account> getAllBlocks();
 
     /**
      * Returns the last position stored for this {@code Account}.

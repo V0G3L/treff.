@@ -50,7 +50,7 @@ public class PollCompleteSerializerTest {
         pollOptions.put(0, null);
         pollOptions.put(1, null);
         pollOptions.put(2, null);
-        when(poll.getPollOptions()).thenReturn(pollOptions);
+        doReturn(pollOptions).when(poll).getPollOptions();
 
         PollCompleteSerializer pollCompleteSerializer
                 = new PollCompleteSerializer();

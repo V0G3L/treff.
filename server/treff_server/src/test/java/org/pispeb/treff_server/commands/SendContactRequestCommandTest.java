@@ -147,7 +147,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         Assert.assertEquals(expectedError, output.getInt("error"));
 
         for (User user : users)
-            Assert.assertEquals(0, getUpdatesForUser(user).length);
+            Assert.assertEquals(0, getUpdatesForUser(user).size());
 
         assertNoContactChange();
     }

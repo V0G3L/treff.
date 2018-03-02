@@ -31,6 +31,8 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
                 = getCommandStubForUser("send-contact-request", users[1]);
         input.add("id", users[0].id);
 
+        runCommand(sendContactRequestCommand, input);
+
         // remove update produced by this command from update queue
         getSingleUpdateForUser(users[0]);
 
@@ -39,8 +41,6 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
         for (int i = 0; i < contactListsAfterInit.length; i++) {
             contactListsAfterInit[i] = getContactsOfUser(users[i]);
         }
-
-        runCommand(sendContactRequestCommand, input);
     }
 
     /**

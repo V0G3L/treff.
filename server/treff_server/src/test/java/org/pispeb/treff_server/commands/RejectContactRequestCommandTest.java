@@ -59,7 +59,7 @@ public class RejectContactRequestCommandTest
         assertNoContactChange();
 
         // Assert that user 2 didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[2]).length);
+        Assert.assertEquals(0, getUpdatesForUser(users[2]).size());
     }
 
     @Test
@@ -102,8 +102,9 @@ public class RejectContactRequestCommandTest
         JsonObject output
                 = runCommand(rejectContactRequestCommand, input);
 
-        // Assert that receiver didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
+        // assert that receiver didn't get an update
+        // TODO: use User
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
 
         return output;
     }

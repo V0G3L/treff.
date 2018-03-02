@@ -7,6 +7,10 @@ import org.pispeb.treff_server.commands.RequestUpdatesCommand;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
+import java.io.StringReader;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author tim
@@ -45,18 +49,23 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
                 .add("token", user.token);
     }
 
-    protected JsonObject[] getUpdatesForUser(User user) {
+    protected List<JsonObject> getUpdatesForUser(User user) {
         RequestUpdatesCommand requestUpdatesCommand
                 = new RequestUpdatesCommand(accountManager, mapper);
         JsonObject output = runCommand(requestUpdatesCommand,
                 getCommandStubForUser("request-updates", user));
-        return output.getJsonArray("updates").toArray(new JsonObject[0]);
+        return output.getJsonArray("updates")
+                .getValuesAs(JsonString.class)
+                .stream()
+                .map(s-> Json.createReader(
+                        new StringReader(s.getString())).readObject())
+                .collect(Collectors.toList());
     }
 
     protected JsonObject getSingleUpdateForUser(User user) {
-        JsonObject[] allUpdates = getUpdatesForUser(user);
-        Assert.assertTrue(allUpdates.length > 0);
-        return allUpdates[0];
+        List<JsonObject> allUpdates = getUpdatesForUser(user);
+        Assert.assertTrue(allUpdates.size() > 0);
+        return allUpdates.get(0);
     }
 
 }

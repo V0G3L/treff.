@@ -78,36 +78,6 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 || updateMembers.getInt(1) == users[1].id);
     }
 
-    // TODO: remove, not related to this command
-    // Missing property checks are made by AbstractCommand
-    // Only additional string syntax checks (see CommandInput)
-    // have to be tested here
-    // TODO implement Syntax-checks
-    @Test
-    public void invalidSyntaxA() {
-         CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
-        JsonObject group = Json.createObjectBuilder()
-                .add("All your base", "are belong to us")
-                .build();
-
-        inputBuilder.add("group", group);
-        JsonObject output = runCommand(createGroupCommand, inputBuilder);
-
-        Assert.assertEquals(1000, output.getInt("Error"));
-    }
-
-    @Test
-    public void invalidSyntaxB() {
-        CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
-        inputBuilder.add("All your base", "are belong to us");
-        JsonObject output = runCommand(createGroupCommand, inputBuilder);
-
-        Assert.assertEquals(1000, output.getInt("Error"));
-    }
-
-
     // TODO: remove, unrelated to CreateGroupCommand
     @Test
     public void invalidToken() {

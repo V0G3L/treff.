@@ -6,6 +6,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -79,15 +80,12 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     }
 
     @Override
-    public Map<Integer, Account> getVoters() {
+    public Map<Integer, AccountSQL> getVoters() {
         return database.query(
                 "SELECT FROM %s WHERE polloptionid=?;",
                 TableName.POLLVOTES,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     @Override

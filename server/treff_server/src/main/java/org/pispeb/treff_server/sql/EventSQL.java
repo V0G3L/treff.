@@ -6,6 +6,7 @@ import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Event;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 
 import java.sql.SQLException;
 import java.util.Date;
@@ -98,15 +99,12 @@ public class EventSQL extends SQLObject implements Event {
     }
 
     @Override
-    public Map<Integer, Account> getAllParticipants() {
+    public Map<Integer, AccountSQL> getAllParticipants() {
         return database.query(
                 "SELECT accountid FROM %s WHERE eventid=?;",
                 TableName.EVENTPARTICIPATIONS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     @Override
