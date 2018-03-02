@@ -52,9 +52,6 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
         for (int i = 0; i < users.length; i++)
             Assert.assertEquals(contactListsAfterInit[i],
                     getContactsOfUser(users[i]));
-
-        // TODO: assert this elsewhere
-//        Assert.assertEquals(0, getUpdatesForUser(users[1].id).length);
     }
 
     /**

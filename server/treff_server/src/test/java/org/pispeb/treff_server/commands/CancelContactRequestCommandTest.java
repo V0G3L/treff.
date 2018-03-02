@@ -86,7 +86,7 @@ public class CancelContactRequestCommandTest
                 = runCommand(cancelContactRequestCommand, input);
 
         // Assert that sender didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
+        Assert.assertEquals(0, getUpdatesForUser(sender).size());
 
         return output;
     }

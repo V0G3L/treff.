@@ -3,6 +3,7 @@ package org.pispeb.treff_server.interfaces;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.sql.AccountSQL;
 
 import java.util.Date;
 import java.util.Map;
@@ -109,6 +110,10 @@ public interface Account extends DataObject, Comparable<Account> {
 
     /**
      * Sends a contact request to the specified {@code Account}.
+     * If the specified account has previously sent this {@code Account} a
+     * contact request which is still pending, the contact request will
+     * not be sent.
+     * Instead, both accounts will be added as contacts.
      * <p>
      * Requires a {@code ReadLock}.
      *

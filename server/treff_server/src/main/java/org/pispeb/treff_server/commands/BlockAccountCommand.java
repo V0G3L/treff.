@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
+import org.pispeb.treff_server.exceptions.ProgrammingError;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
@@ -32,17 +34,19 @@ public class BlockAccountCommand extends ManageBlockCommand {
 
         Account actingAccount = input.getActingAccount();
         Account blockAccount = accountManager.getAccount(input.accountId);
-        Boolean a,b;
-        if (a = actingAccount.getAllContacts().containsKey(input.accountId)) {
+        boolean isContact
+                = actingAccount.getAllContacts().containsKey(input.accountId);
+        boolean activeIncomingRequest
+                = actingAccount.getAllIncomingContactRequests()
+                .containsKey(input.accountId);
+        boolean activeOutoingRequest
+                = actingAccount.getAllOutgoingContactRequests()
+                .containsKey(input.accountId);
+
+        // if both accounts are currently contacts, remove contact relation
+        // first
+        if (isContact) {
             actingAccount.removeContact(blockAccount);
-        }
-        if (b = actingAccount.getAllOutgoingContactRequests()
-                .containsKey(input.accountId)
-                || actingAccount.getAllIncomingContactRequests()
-                .containsKey(input.accountId)) {
-            actingAccount.rejectContactRequest(blockAccount);
-        }
-        if (a || b) {
             // create update
             UpdatesWithoutSpecialParameters update =
                     new UpdatesWithoutSpecialParameters(new Date(),
@@ -52,9 +56,28 @@ public class BlockAccountCommand extends ManageBlockCommand {
                 accountManager.createUpdate(mapper.writeValueAsString(update),
                         new Date(), blockAccount);
             } catch (JsonProcessingException e) {
-                // TODO: really?
-                throw new AssertionError("This shouldn't happen.");
+                throw new ProgrammingError();
             }
+        }
+
+        // if there's an active contact request, reject/cancel it first
+        if (activeIncomingRequest) {
+            actingAccount.rejectContactRequest(blockAccount);
+            // create update
+            ContactRequestAnswerUpdate update =
+                    new ContactRequestAnswerUpdate(new Date(),
+                            actingAccount.getID(),
+                            false);
+            try {
+                accountManager.createUpdate(mapper.writeValueAsString(update),
+                        new Date(), blockAccount);
+            } catch (JsonProcessingException e) {
+                throw new ProgrammingError();
+            }
+        }
+        else if (activeOutoingRequest) {
+            blockAccount.rejectContactRequest(actingAccount);
+            // no need to create an update for the acting account
         }
         actingAccount.addBlock(blockAccount);
 

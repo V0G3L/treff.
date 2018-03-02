@@ -392,10 +392,15 @@ any further commands that require authentication.}
 \apiCommand{send-contact-request}
 {Sends a contact request to the specified user.
 This will fail if either the specified user is already part of the executing
-user's contact list or one of the users is blocking the other.}
+user's contact list or one of the users is blocking the other.
+\\If the specified user has previously sent a contact request to the executing
+user and that contact request is still pending{,} this command will not send a
+contact request.
+Instead{,} both users will be added as contacts.}
 {id/int/ID of the account}
 {}
-{user-id-invalid,being-blocked,blocking-already,contact-request-pending}
+{user-id-invalid,already-in-contacts,contact-request-pending,being-blocked,
+blocking-already}
 {contact-request}
 
 \apiCommand{cancel-contact-request}
@@ -430,15 +435,17 @@ Will also remove the executing user from the specified user's contact list.}
 {remove-contact}
 
 \apiCommand{get-contact-list}
-{Lists all contacts and all incoming and outgoing contact requests of the
-executing user.}
+{Lists all contacts, all incoming and outgoing contact requests, and all blocks
+of the executing user.}
 {}
 {contacts/int array/IDs of all accounts in contact list,
-incoming-requests/int array/IDs all accounts that have sent a still pending
+incoming-requests/int array/IDs of all accounts that have sent a still pending
 contact request to the executing user,
-outgoing-requests/int array/IDs all accounts to which the executing user has
-sent a still pending contact request}
-{user-id-invalid}
+outgoing-requests/int array/IDs of all accounts to which the executing user has
+sent a still pending contact request,
+blocks/int array/IDs of all accounts that the executing user is currently
+blocking}
+{}
 {}
 
 \apiCommand{block-account}

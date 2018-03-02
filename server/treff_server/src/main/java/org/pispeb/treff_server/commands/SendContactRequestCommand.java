@@ -49,6 +49,10 @@ public class SendContactRequestCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
+        // check that both accounts are not currently contacts
+        if (actingAccount.getAllContacts().containsKey(input.id))
+            return new ErrorOutput(ErrorCode.ALREADYINCONTACT);
+
         // check blocks
         if (actingAccount.getAllBlocks().containsKey(input.id)) {
             return new ErrorOutput(ErrorCode.BLOCKINGALREADY);

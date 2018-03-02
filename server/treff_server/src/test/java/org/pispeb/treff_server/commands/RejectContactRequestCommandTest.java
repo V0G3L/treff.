@@ -13,7 +13,6 @@ import java.util.Date;
 
 /**
  * @author jens
- * asserts the functionalty of SendContactRequestCommand
  */
 public class RejectContactRequestCommandTest
         extends ContactRequestDependentTest {
@@ -69,18 +68,6 @@ public class RejectContactRequestCommandTest
                 4242, "Kira")),
                 1200);
         assertNoContactChange();
-    }
-
-    @Test
-    public void invalidSyntax() {
-        RejectContactRequestCommand rejectContactRequestCommand
-                = new RejectContactRequestCommand(accountManager, mapper);
-
-        inputBuilder.add("shit", "someShit");
-        JsonObject output
-                = runCommand(rejectContactRequestCommand, inputBuilder);
-
-        assertErrorOutput(output, 1000);
     }
 
     /**

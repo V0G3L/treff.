@@ -61,7 +61,7 @@ public class RejectContactRequestCommand extends AbstractCommand {
         ContactRequestAnswerUpdate update =
                 new ContactRequestAnswerUpdate(new Date(),
                         actingAccount.getID(),
-                        true);
+                        false);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(), newContact);

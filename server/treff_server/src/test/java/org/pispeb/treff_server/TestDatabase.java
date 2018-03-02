@@ -19,7 +19,8 @@ public final class TestDatabase {
     public static Properties startDBAndGetConfig()
             throws ManagedProcessException, IOException {
         if (db == null) {
-            System.out.println("Begin startup: " + new Date());
+            System.out.println("Begin SQL database startup: " + new Date());
+            System.out.println("This might take a few seconds...");
             // load default config
             Properties defaultConfig = new Properties();
             try (FileInputStream defaultConfigIn = new FileInputStream
@@ -42,7 +43,7 @@ public final class TestDatabase {
             config.setProperty(ConfigKeys.DB_PASS.toString(), "");
             config.setProperty(ConfigKeys.DB_DBNAME.toString(),
                     "treffpunkttest");
-            System.out.println("End startup: " + new Date());
+            System.out.println("Finished SQL database startup: " + new Date());
         }
         return config;
     }

@@ -29,7 +29,7 @@ public class AcceptContactRequestCommandTest
         User sender = users[1];
         User receiver = users[0];
 
-        JsonObject output = execute(sender, receiver);
+        JsonObject output = execute(receiver, sender);
         Assert.assertTrue(output.isEmpty());
 
         ContactList receiverContacts = getContactsOfUser(receiver);
@@ -67,18 +67,6 @@ public class AcceptContactRequestCommandTest
                 new User("Heil", "Satan",
                         666, "Lucifer our lord")),
                 1200);
-    }
-
-    @Test
-    public void invalidSyntax() {
-        AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
-
-        inputBuilder.add("shit", "someShit");
-        JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
-
-        Assert.assertEquals(1000, output.getInt("error"));
     }
 
     /**

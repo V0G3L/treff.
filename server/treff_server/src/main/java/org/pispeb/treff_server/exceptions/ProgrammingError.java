@@ -1,5 +1,8 @@
 package org.pispeb.treff_server.exceptions;
 
+// TODO: convert to Exception and catch on top-level
+// return internal server error message
+
 /**
  * @author tim
  */

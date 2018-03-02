@@ -7,11 +7,7 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.PasswordHash;
 import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
-import org.pispeb.treff_server.exceptions.ContactRequestNonexistantException;
-import org.pispeb.treff_server.exceptions.DatabaseException;
-import org.pispeb.treff_server.exceptions.DuplicateEmailException;
-import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.exceptions.*;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
@@ -189,10 +185,10 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public void sendContactRequest(Account receiver) {
         // if existing sent contact request is still pending,
-        // don't do anything
+        // throw exception
         if (this.getAllOutgoingContactRequests()
                 .containsKey(receiver.getID()))
-            return;
+            throw new ContactRequestAlreadySentException();
         // if this received a contact request from receiver, accept that
         // one instead and return
         if (this.getAllIncomingContactRequests()
