@@ -9,6 +9,9 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.io.IOException;
 
+/**
+ * @author jens and tim
+ */
 public abstract class ContactRequestDependentTest extends MultipleUsersTest {
 
     public ContactRequestDependentTest(String cmd) {
@@ -19,7 +22,6 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
 
     @Before
     public void setup() {
-        // TODO: switch to User instead of IDs
         // Sends a contact request from user 1 to user 0
 
         SendContactRequestCommand sendContactRequestCommand

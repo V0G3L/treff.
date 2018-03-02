@@ -8,6 +8,7 @@ import org.pispeb.treff_server.commands.abstracttests
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.Date;
 
 /**
@@ -28,8 +29,7 @@ public class AcceptContactRequestCommandTest
         User sender = users[1];
         User receiver = users[0];
 
-        // TODO: use User instead of IDs
-        JsonObject output = execute(users[1].id);
+        JsonObject output = execute(sender, receiver);
         Assert.assertTrue(output.isEmpty());
 
         ContactList receiverContacts = getContactsOfUser(receiver);
@@ -56,15 +56,17 @@ public class AcceptContactRequestCommandTest
     @Test
     public void noContactRequest() {
         // try accepting from user 2
-        assertErrorOutput(execute(users[2].id), 1504);
+        assertErrorOutput(execute(users[0], users[2]), 1504);
         assertNoContactChange();
         Assert.assertEquals(0, getUpdatesForUser(users[2]).length);
     }
 
     @Test
     public void invalidId() {
-        int invalidID = 666;
-        assertErrorOutput(execute(invalidID), 1200);
+        assertErrorOutput(execute(users[0],
+                new User("Heil", "Satan",
+                        666, "Lucifer our lord")),
+                1200);
     }
 
     @Test
@@ -84,16 +86,19 @@ public class AcceptContactRequestCommandTest
      * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
-     * @param id the id of the account whose contact request shall be accepted
+     * @param receiver the user who received a request and shall accept it
+     * @param sender the user whose contact request shall be accepted
      * @return the output of the command
      */
-    protected JsonObject execute(int id) {
+    protected JsonObject execute(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 
-        inputBuilder.add("id", id);
+        JsonObjectBuilder input
+                = getCommandStubForUser(this.cmd, receiver);
+        input.add("id", sender.id);
         JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
+                = runCommand(acceptContactRequestCommand, input);
 
         // Assert that sender didn't get an update
         Assert.assertEquals(0, getUpdatesForUser(users[0]).length);

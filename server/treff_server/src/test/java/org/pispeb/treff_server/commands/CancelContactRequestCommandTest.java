@@ -8,6 +8,7 @@ import org.pispeb.treff_server.commands.abstracttests
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.Date;
 
 /**
@@ -26,7 +27,7 @@ public class CancelContactRequestCommandTest
         User sender = users[1];
         User receiver = users[0];
 
-        JsonObject output = execute(sender.id);
+        JsonObject output = execute(sender, receiver);
         Assert.assertTrue(output.isEmpty());
 
         // TODO: C&P'd this thrice now, might want to do something about that
@@ -51,13 +52,15 @@ public class CancelContactRequestCommandTest
 
     @Test
     public void invalidId() {
-        int invalidID = 7353;
-        assertErrorOutput(execute(invalidID), 1200);
+        assertErrorOutput(execute(users[0],
+                new User("I am", "out of",
+                        7353, "ideas")),
+                1200);
     }
 
     @Test
     public void noRequestSent() {
-        assertErrorOutput(execute(users[2].id), 1504);
+        assertErrorOutput(execute(users[0], users[2]), 1504);
         assertNoContactChange();
         Assert.assertEquals(0, getUpdatesForUser(users[2]).length);
     }
@@ -67,18 +70,22 @@ public class CancelContactRequestCommandTest
      * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
-     * @param id the id of the account who got a contact request
-     *           that shall be canceled
+     * @param sender   the sender of the request that shall be canceled
+     * @param receiver the receiver of the request that shall be canceled
      * @return the output of the command
      */
-    protected JsonObject execute(int id) {
+    protected JsonObject execute(User sender, User receiver) {
         CancelContactRequestCommand cancelContactRequestCommand
                 = new CancelContactRequestCommand(accountManager, mapper);
 
-        inputBuilder.add("id", id);
-        JsonObject output
-                = runCommand(cancelContactRequestCommand, inputBuilder);
 
+        JsonObjectBuilder input
+                = getCommandStubForUser(this.cmd, sender);
+        input.add("id", receiver.id);
+        JsonObject output
+                = runCommand(cancelContactRequestCommand, input);
+
+        // Assert that sender didn't get an update
         Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
 
         return output;

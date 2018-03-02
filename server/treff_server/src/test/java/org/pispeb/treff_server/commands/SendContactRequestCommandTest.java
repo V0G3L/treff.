@@ -17,9 +17,6 @@ import java.util.Date;
  */
 public class SendContactRequestCommandTest extends ContactRequestDependentTest {
 
-    private JsonObject myContacts;
-    private JsonObject hisContacts;
-
     public SendContactRequestCommandTest() {
         super("send-contact-request");
     }
@@ -29,10 +26,13 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         // send request from user 2 to user 3
         User sender = users[2];
         User receiver = users[3];
-        execute(sender, receiver);
+        JsonObject output = execute(sender, receiver);
 
         ContactList receiverContacts = getContactsOfUser(receiver);
         ContactList senderContacts = getContactsOfUser(sender);
+
+        // Asserts that the output is empty
+        Assert.assertTrue(output.isEmpty());
 
         // Asserts that request is visible from both sides
         Assert.assertTrue(
@@ -50,6 +50,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         Assert.assertFalse(receiverContacts.contacts.contains(sender.id));
         Assert.assertFalse(senderContacts.contacts.contains(receiver.id));
 
+        // Assert that the receiver of the request also received a valid update
         JsonObject update = getSingleUpdateForUser(receiver);
         Assert.assertEquals(UpdateType.CONTACT_REQUEST.toString(),
                 update.getString("type"));
@@ -97,9 +98,8 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
      * Executes the block-account-command.
      * Makes no assertions on whether the command had any effect.
      *
-     * TODO: correct params
-     * @param blockingID the id of the account that is blocking
-     * @param blockedID  the id of the account that gets blocked
+     * @param blocker the blocking user
+     * @param blocked the user that gets blocked
      */
     private void block(User blocker, User blocked) {
         JsonObjectBuilder input
@@ -113,8 +113,9 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
     /**
      * Executes a send-contact-request command.
      * Does not make any assertions on whether the command had any effect.
-     * Asserts that the command returned an empty object.
      *
+     * @param sender the sender of the request
+     * @param receiver the receiver of the request
      * @return the output of the command
      */
     private JsonObject execute(User sender,
@@ -128,7 +129,8 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
 
         JsonObject output = runCommand(sendContactRequestCommand, input);
 
-        Assert.assertTrue(output.isEmpty());
+        // Assert that receiver didn't get an update
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
 
         return output;
     }
