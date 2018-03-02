@@ -78,12 +78,19 @@ public class RemoveGroupMembersCommand extends AbstractCommand {
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
                         usergroup);
-        for (Account a: usergroup.getAllMembers().values())
-            getSafeForWriting(a);
+        for (Account a : usergroup.getAllMembers().values()) {
+            if (a.getID() == actingAccount.getID())
+                continue;
+            getSafeForReading(a);
+        }
         try {
+            HashSet<Account> affected =
+                    new HashSet<>(usergroup.getAllMembers().values());
+            affected.remove(actingAccount);
+            affected.addAll(newMemberAccounts);
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    new HashSet<>(usergroup.getAllMembers().values()));
+                    affected);
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

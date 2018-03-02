@@ -74,9 +74,12 @@ public class CreateGroupCommand extends AbstractCommand {
                         actingAccountId,
                         usergroup);
         try {
+            HashSet<Account> affected =
+                    new HashSet<>(usergroup.getAllMembers().values());
+            affected.remove(input.getActingAccount());
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    new HashSet<>(usergroup.getAllMembers().values()));
+                    affected);
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

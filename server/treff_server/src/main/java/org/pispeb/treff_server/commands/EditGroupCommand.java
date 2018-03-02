@@ -60,9 +60,12 @@ public class EditGroupCommand extends AbstractCommand {
                         actingAccount.getID(),
                         group);
         try {
+            HashSet<Account> affected =
+                    new HashSet<>(group.getAllMembers().values());
+            affected.remove(input.getActingAccount());
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    new HashSet<>(group.getAllMembers().values()));
+                    affected);
         } catch (JsonProcessingException e) {
              // TODO: really?
             throw new AssertionError("This shouldn't happen.");

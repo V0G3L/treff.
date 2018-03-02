@@ -61,7 +61,8 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         Assert.assertTrue(membersDesc.getInt(0) == ownID
         || membersDesc.getInt(1) == ownID);
 
-        // TODO updates for some reason aren't in the database
+        Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
+
         JsonObject update = getSingleUpdateForUser(users[1]);
         Assert.assertEquals(update.getString("type"),
                 UpdateType.USERGROUP_CHANGE.toString());
@@ -78,41 +79,16 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 || updateMembers.getInt(1) == users[1].id);
     }
 
-    // TODO: remove, unrelated to CreateGroupCommand
-    @Test
-    public void invalidToken() {
-        JsonObjectBuilder inputBuilder = Json.createObjectBuilder();
-        CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
-        inputBuilder.add("cmd", "create-group")
-                .add("token", "0");
-
-        JsonArray members = Json.createArrayBuilder()
-                .add(ownID)
-                .add(users[1].id)
-                .build();
-        JsonObject group = Json.createObjectBuilder()
-                .add("type", "usergroup")
-                .add("name", "groupname")
-                .add("members", members)
-                .build();
-
-        inputBuilder.add("group", group);
-
-        JsonObject output = runCommand(createGroupCommand, inputBuilder);
-
-        Assert.assertEquals(output.getInt("error"), 1100);
-    }
-
     @Test
     public void invalidUserId() {
         int id = 23;
-        while (id == ownID || id == users[1].id || id == users[2].id || id == users[3].id)
+        while (id == ownUser.id || id == users[1].id
+                || id == users[2].id || id == users[3].id)
             id += 42;
         CreateGroupCommand createGroupCommand
                 = new CreateGroupCommand(accountManager, mapper);
         JsonArray members = Json.createArrayBuilder()
-                .add(ownID)
+                .add(ownUser.id)
                 .add(id)
                 .build();
         JsonObject group = Json.createObjectBuilder()

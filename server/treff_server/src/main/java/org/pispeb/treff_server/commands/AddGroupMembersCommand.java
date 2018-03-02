@@ -82,14 +82,20 @@ public class AddGroupMembersCommand extends AbstractCommand {
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
                         usergroup);
-        for (Account a: usergroup.getAllMembers().values())
-            getSafeForWriting(a);
+        for (Account a : usergroup.getAllMembers().values()) {
+            if (a.getID() == actingAccount.getID())
+                continue;
+            getSafeForReading(a);
+        }
         try {
+            HashSet<Account> affected =
+                    new HashSet<>(usergroup.getAllMembers().values());
+            affected.remove(actingAccount);
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(),
-                    new HashSet<>(usergroup.getAllMembers().values()));
+                    affected);
         } catch (JsonProcessingException e) {
-             // TODO: really?
+            // TODO: really?
             throw new AssertionError("This shouldn't happen.");
         }
 
