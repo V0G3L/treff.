@@ -6,6 +6,7 @@ import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * An interface for an underlying database that allows retrieval of
@@ -85,6 +86,9 @@ public interface AccountManager {
      * <p>
      * Note that it is assumed the the supplied creation time is also encoded
      * into the update content.
+     * <p>
+     * Requires the {@code ReadLock} of all affected {@link Account}s to be
+     * held.
      *
      * @param updateContent The content of the {@code Update} in the format
      *                      specified in the treffpunkt protocol document
@@ -98,6 +102,9 @@ public interface AccountManager {
     /**
      * Convenience method for creating an {@code Update} that affects only a
      * single {@code Account}.
+     * <p>
+     * Requires the {@code ReadLock} of the affected {@link Account} to be
+     * held.
      *
      * @param updateContent The content of the {@code Update} in the format
      *                      specified in the treffpunkt protocol document

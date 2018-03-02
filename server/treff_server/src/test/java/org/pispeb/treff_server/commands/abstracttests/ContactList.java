@@ -15,16 +15,20 @@ public class ContactList {
     public final Set<Integer> contacts;
     public final Set<Integer> incomingRequests;
     public final Set<Integer> outgoingRequests;
+    public final Set<Integer> blocks;
 
     public ContactList(@JsonProperty("contacts")
                                int[] contacts,
                        @JsonProperty("incoming-requests")
                                int[] incomingRequests,
                        @JsonProperty("outgoing-requests")
-                               int[] outgoingRequests) {
+                               int[] outgoingRequests,
+                       @JsonProperty("blocks")
+                               int[] blocks) {
         this.contacts = toIDSet(contacts);
         this.incomingRequests = toIDSet(incomingRequests);
         this.outgoingRequests = toIDSet(outgoingRequests);
+        this.blocks = toIDSet(blocks);
     }
 
     private Set<Integer> toIDSet(int[] ids) {
