@@ -19,7 +19,7 @@ public class UnblockAccountCommandTest
     }
 
     @Before
-    public void setup() {
+    public void block() {
         BlockAccountCommand blockAccountCommand
                 = new BlockAccountCommand(accountManager, mapper);
 
@@ -39,9 +39,16 @@ public class UnblockAccountCommandTest
         // Asserts that the output is empty
         Assert.assertTrue(output.isEmpty());
 
-        // Assert that user 1 is not in block list of user 0
+        // Assert that blocked is not in block list of blocker
         Assert.assertFalse(
                 blockerContacts.blocks.contains(blocked.id));
+
+        // Assert that blocked is not blocking blocker
+        Assert.assertFalse(
+                getContactsOfUser(blocked).blocks.contains(blocker.id));
+
+        // Assert that the unblocked user gets no update
+        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
     }
 
     @Test
@@ -57,14 +64,24 @@ public class UnblockAccountCommandTest
 
     @Test
     public void notBlocked() {
-        JsonObject output = execute(users[1], users[2]);
+        // user 1 tries to unblock user 2
+        User blocker = users[1];
+        User blocked = users[2];
+        JsonObject output = execute(blocker, blocked);
 
-        // Assert that error 1506 was thrown
-        Assert.assertEquals(1506, output.getInt("error"));
+        // Assert that error 1507 was thrown
+        Assert.assertEquals(1507, output.getInt("error"));
 
-        // Assert that user 2 is not in block list of user 1
+        // Assert that blocked is not in block list of blocker
         Assert.assertFalse(
-                blockerContacts.blocks.contains(users[2].id));
+                blockerContacts.blocks.contains(blocked.id));
+
+        // Assert that blocked is not blocking blocker
+        Assert.assertFalse(
+                getContactsOfUser(blocked).blocks.contains(blocker.id));
+
+        // Assert that blocked gets no update
+        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
     }
 
     /**
@@ -89,11 +106,6 @@ public class UnblockAccountCommandTest
 
         // Assert that neither blocker nor blocked got an update
         Assert.assertEquals(0, getUpdatesForUser(blocker).size());
-        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
-
-        // Assert that blocked is not blocking blocker
-        Assert.assertFalse(
-                getContactsOfUser(blocked).blocks.contains(blocker.id));
 
         return output;
     }

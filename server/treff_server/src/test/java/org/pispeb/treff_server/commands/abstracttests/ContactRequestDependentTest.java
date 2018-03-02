@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.SendContactRequestCommand;
 
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 /**
@@ -15,10 +16,10 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
         super(cmd);
     }
 
-    private ContactList[] contactListsAfterInit;
+    protected ContactList[] contactListsAfterInit;
 
     @Before
-    public void setup() {
+    public void sendRequest() {
         // Sends a contact request from user 1 to user 0
 
         SendContactRequestCommand sendContactRequestCommand
@@ -28,7 +29,7 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
                 = getCommandStubForUser("send-contact-request", users[1]);
         input.add("id", users[0].id);
 
-        runCommand(sendContactRequestCommand, input);
+        JsonObject output = runCommand(sendContactRequestCommand, input);
 
         // remove update produced by this command from update queue
         getSingleUpdateForUser(users[0]);
