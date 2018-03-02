@@ -2,12 +2,9 @@ package org.pispeb.treff_server.commands.abstracttests;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.pispeb.treff_server.commands.GetContactListCommand;
 import org.pispeb.treff_server.commands.SendContactRequestCommand;
 
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.io.IOException;
 
 /**
  * @author jens and tim
@@ -53,28 +50,4 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
             Assert.assertEquals(contactListsAfterInit[i],
                     getContactsOfUser(users[i]));
     }
-
-    /**
-     * executes the get-contact-list-command for the specified user
-     *
-     * @param user The user whose contact list to query
-     * @return the output of that command
-     */
-    public ContactList getContactsOfUser(User user) {
-        GetContactListCommand getContactListCommand
-                = new GetContactListCommand(accountManager, mapper);
-
-        JsonObjectBuilder input
-                = getCommandStubForUser("get-contact-list", user);
-
-        JsonObject output = runCommand(getContactListCommand, input);
-
-        try {
-            return mapper.readValue(output.toString(), ContactList.class);
-        } catch (IOException e) {
-            Assert.fail();
-            return null;
-        }
-    }
-
 }

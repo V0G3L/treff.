@@ -5,7 +5,7 @@ import org.pispeb.treff_server.commands.AcceptContactRequestCommand;
 
 import javax.json.JsonObjectBuilder;
 
-public class ContactDependentTest extends ContactRequestDependentTest {
+public abstract class ContactDependentTest extends ContactRequestDependentTest {
 
     private ContactList[] contactListsAfterInit;
 
