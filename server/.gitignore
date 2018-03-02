@@ -77,3 +77,6 @@ fabric.properties
 /captures
 .externalNativeBuild
 treff_server/out
+
+# Java Logs
+*.log
