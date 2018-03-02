@@ -130,7 +130,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         JsonObject output = runCommand(sendContactRequestCommand, input);
 
         // Assert that receiver didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
 
         return output;
     }

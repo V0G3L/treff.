@@ -82,7 +82,7 @@ public class RemoveContactCommandTest
                 = runCommand(removeContactCommand, input);
 
         // Assert that sender didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).length);
+        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
 
         return output;
     }
@@ -99,7 +99,7 @@ public class RemoveContactCommandTest
         Assert.assertEquals(expectedError, output.getInt("error"));
 
         for (User user : users)
-            Assert.assertEquals(0, getUpdatesForUser(user).length);
+            Assert.assertEquals(0, getUpdatesForUser(user).size());
 
         assertNoContactChange();
     }
