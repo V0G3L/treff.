@@ -22,6 +22,8 @@ public abstract class JsonDependentTest {
     public static void setUp() {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        mapper.enable(
+                DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
     }
 
     protected static JsonObject toJsonObject(String string) {

@@ -108,7 +108,7 @@ public class AddGroupMembersCommand extends AbstractCommand {
         final int groupId;
         final TreeSet<Integer> memberIds;
 
-        public Input(@JsonProperty("group-id") int groupId,
+        public Input(@JsonProperty("id") int groupId,
                      @JsonProperty("members") int[] memberIds,
                      @JsonProperty("token") String token) {
             super(token);
