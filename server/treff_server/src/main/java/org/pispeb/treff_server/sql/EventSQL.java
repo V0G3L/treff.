@@ -70,7 +70,7 @@ public class EventSQL extends SQLObject implements Event {
 
     @Override
     public Date getTimeEnd() {
-        return (Date) getProperties("timestart").get("timestart");
+        return (Date) getProperties("timeend").get("timeend");
     }
 
     @Override

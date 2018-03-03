@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
         AddGroupMembersCommandTest.class,
         BlockAccountCommandTest.class,
         CancelContactRequestCommandTest.class,
+        CreateEventCommandTest.class,
         CreateGroupCommandTest.class,
         EditGroupCommandTest.class,
         EditMembershipCommandTest.class,

@@ -135,7 +135,7 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                 position.longitude,
                 timeStart,
                 timeEnd,
-                creator,
+                creator.getID(),
                 this.id);
     }
 

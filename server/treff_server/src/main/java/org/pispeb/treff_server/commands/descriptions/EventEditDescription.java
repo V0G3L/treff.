@@ -18,19 +18,19 @@ public class EventEditDescription extends EventCreateDescription {
     /**
      * Creates a new {@code EventEditDescription} instance
      * @param title     The title of the event
-     * @param creatorID The ID of the event creator
      * @param timeStart The date and time at which the event starts
      * @param timeEnd   The date and time at which the event ends
-     * @param position  The position at which the event takes place
+     * @param latitude The latitude at which the event takes place
+     * @param longitude The longitude at which the event takes place
      * @param id        The ID of the event
      */
     public EventEditDescription(@JsonProperty("title") String title,
-                                @JsonProperty("creator") int creatorID,
                                 @JsonProperty("time-start") Date timeStart,
                                 @JsonProperty("time-end") Date timeEnd,
-                                @JsonProperty("position") Position position,
+                                @JsonProperty("latitude") double latitude,
+                                @JsonProperty("longitude") double longitude,
                                 @JsonProperty("id") int id) {
-        super(title, creatorID, timeStart, timeEnd, position);
+        super(title, timeStart, timeEnd, latitude, longitude);
         this.id = id;
     }
 
