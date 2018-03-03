@@ -6,6 +6,7 @@ import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import static org.junit.Assert.*;
 
@@ -38,11 +39,14 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
 
         GetMembershipDetailsCommand getMembershipDetailsCommand
                 = new GetMembershipDetailsCommand(accountManager, mapper);
-        inputBuilder.add("id", users[1].id)
+        JsonObjectBuilder input = Json.createObjectBuilder()
+                .add("cmd", "get-membership-details")
+                .add("token", ownUser.token)
+                .add("id", users[1].id)
                 .add("group-id", groupId);
 
         JsonObject output =
-                runCommand(getMembershipDetailsCommand, inputBuilder);
+                runCommand(getMembershipDetailsCommand, input);
         JsonObject membershipDesc = output.getJsonObject("membership");
         Assert.assertEquals(users[1].id,
                 membershipDesc.getInt("account-id"));

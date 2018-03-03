@@ -38,7 +38,8 @@ public class MembershipEditDescription {
                     = permissionStringMap.entrySet()
                     .stream()
                     .collect(Collectors
-                            .toMap(es -> Permission.valueOf(es.getKey()),
+                            .toMap(es -> Permission
+                                            .valueOf(es.getKey().toUpperCase()),
                                     Map.Entry::getValue));
             this.permissionMap
                     = Collections.unmodifiableMap(mutablePermissionMap);

@@ -215,11 +215,11 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     @Override
     public void setPermissionOfMember(Account member, Permission permission,
                                       boolean value)
-            throws AccountNotInGroupException, DatabaseException {
+            throws AccountNotInGroupException {
         database.update(
-                "UPDATE %s SET ?=? WHERE accountid=? AND usergroupid=?;",
+                "UPDATE %s SET permission_" + permission.toString()
+                        + "=? WHERE accountid=? AND usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                "permission_" + permission.toString(),
                 value,
                 member.getID(),
                 this.id);
