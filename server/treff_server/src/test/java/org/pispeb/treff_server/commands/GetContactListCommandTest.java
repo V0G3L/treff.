@@ -3,9 +3,11 @@ package org.pispeb.treff_server.commands;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.ContactDependentTest;
+import org.pispeb.treff_server.commands.abstracttests.ContactList;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import java.io.IOException;
 
 public class GetContactListCommandTest
         extends ContactDependentTest {
@@ -21,13 +23,13 @@ public class GetContactListCommandTest
         // assert that no error occurred
         Assert.assertFalse(output.containsKey("error"));
 
+        ContactList contactList = convertContactList(output);
+
         // assert that all lists are empty
-        Assert.assertTrue(output.getJsonArray("contacts").isEmpty());
-        Assert.assertTrue(output.getJsonArray("blocks").isEmpty());
-        Assert.assertTrue(output.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(output.getJsonArray("outgoing-requests")
-                .isEmpty());
+        Assert.assertTrue(contactList.contacts.isEmpty());
+        Assert.assertTrue(contactList.incomingRequests.isEmpty());
+        Assert.assertTrue(contactList.outgoingRequests.isEmpty());
+        Assert.assertTrue(contactList.blocks.isEmpty());
     }
 
     @Test
@@ -37,20 +39,17 @@ public class GetContactListCommandTest
         // assert that no error occurred
         Assert.assertFalse(output.containsKey("error"));
 
+        ContactList contactList = convertContactList(output);
+
         // assert that all lists are empty
-        Assert.assertTrue(output.getJsonArray("blocks").isEmpty());
-        Assert.assertTrue(output.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(output.getJsonArray("outgoing-requests")
-                .isEmpty());
+        Assert.assertTrue(contactList.blocks.isEmpty());
+        Assert.assertTrue(contactList.incomingRequests.isEmpty());
+        Assert.assertTrue(contactList.outgoingRequests.isEmpty());
 
         // assert that user 1 and 2 are in contact list
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .contains(users[1]));
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .contains(users[2]));
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .size() == 2);
+        Assert.assertTrue(contactList.contacts.contains(users[1].id));
+        Assert.assertTrue(contactList.contacts.contains(users[2].id));
+        Assert.assertTrue(contactList.contacts.size() == 2);
     }
 
     @Test
@@ -62,17 +61,16 @@ public class GetContactListCommandTest
         // assert that no error occurred
         Assert.assertFalse(output.containsKey("error"));
 
+        ContactList contactList = convertContactList(output);
+
         // assert that all lists are empty
-        Assert.assertTrue(output.getJsonArray("contacts").isEmpty());
-        Assert.assertTrue(output.getJsonArray("blocks").isEmpty());
-        Assert.assertTrue(output.getJsonArray("outgoing-requests")
-                .isEmpty());
+        Assert.assertTrue(contactList.contacts.isEmpty());
+        Assert.assertTrue(contactList.blocks.isEmpty());
+        Assert.assertTrue(contactList.outgoingRequests.isEmpty());
 
         // assert that user 0 is in incoming-request-list of user 3
-        Assert.assertTrue(output.getJsonArray("incoming-requests")
-                .contains(users[0]));
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .size() == 1);
+        Assert.assertTrue(contactList.incomingRequests.contains(users[0].id));
+        Assert.assertTrue(contactList.incomingRequests.size() == 1);
     }
 
     @Test
@@ -84,17 +82,16 @@ public class GetContactListCommandTest
         // assert that no error occurred
         Assert.assertFalse(output.containsKey("error"));
 
+        ContactList contactList = convertContactList(output);
+
         // assert that all lists are empty
-        Assert.assertTrue(output.getJsonArray("contacts").isEmpty());
-        Assert.assertTrue(output.getJsonArray("blocks").isEmpty());
-        Assert.assertTrue(output.getJsonArray("incoming-request")
-                .isEmpty());
+        Assert.assertTrue(contactList.contacts.isEmpty());
+        Assert.assertTrue(contactList.blocks.isEmpty());
+        Assert.assertTrue(contactList.incomingRequests.isEmpty());
 
         // assert that user 1 is in outgoing-request-list of user 3
-        Assert.assertTrue(output.getJsonArray("outgoing-requests")
-                .contains(users[1]));
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .size() == 1);
+        Assert.assertTrue(contactList.outgoingRequests.contains(users[1].id));
+        Assert.assertTrue(contactList.outgoingRequests.size() == 1);
     }
 
     @Test
@@ -108,27 +105,22 @@ public class GetContactListCommandTest
         input.add("id", users[2].id);
         runCommand(blockAccountCommand, input);
 
-        // remove the update that was produced by this block
-        getSingleUpdateForUser(users[2]);
-
         // get the contact list of user 3
         JsonObject output = execute(users[3]);
 
         // assert that no error occurred
         Assert.assertFalse(output.containsKey("error"));
 
+        ContactList contactList = convertContactList(output);
+
         // assert that all lists are empty
-        Assert.assertTrue(output.getJsonArray("contacts").isEmpty());
-        Assert.assertTrue(output.getJsonArray("incoming-request")
-                .isEmpty());
-        Assert.assertTrue(output.getJsonArray("outgoing-request")
-                .isEmpty());
+        Assert.assertTrue(contactList.contacts.isEmpty());
+        Assert.assertTrue(contactList.incomingRequests.isEmpty());
+        Assert.assertTrue(contactList.outgoingRequests.isEmpty());
 
         // assert that user 2 is in block-list of user 3
-        Assert.assertTrue(output.getJsonArray("blocks")
-                .contains(users[2]));
-        Assert.assertTrue(output.getJsonArray("contacts")
-                .size() == 1);
+        Assert.assertTrue(contactList.blocks.contains(users[2].id));
+        Assert.assertTrue(contactList.blocks.size() == 1);
     }
 
     /**
@@ -139,11 +131,11 @@ public class GetContactListCommandTest
      * @return the output of the command
      */
     protected JsonObject execute(User exec) {
-        BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+        GetContactListCommand getContactListCommand
+                = new GetContactListCommand(accountManager, mapper);
 
         JsonObject output
-                = runCommand(blockAccountCommand,
+                = runCommand(getContactListCommand,
                 getCommandStubForUser(this.cmd, exec));
 
         // Assert that the executing user didn't get an update
@@ -174,5 +166,14 @@ public class GetContactListCommandTest
         getSingleUpdateForUser(receiver);
 
         return output;
+    }
+
+    private ContactList convertContactList (JsonObject contactList) {
+        try {
+            return mapper.readValue(contactList.toString(), ContactList.class);
+        } catch (IOException e) {
+            Assert.fail();
+            return null;
+        }
     }
 }
