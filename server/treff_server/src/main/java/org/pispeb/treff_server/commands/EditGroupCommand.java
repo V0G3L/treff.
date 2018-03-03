@@ -21,66 +21,41 @@ import java.util.HashSet;
 /**
  * a command to edit the name of a user group
  */
-public class EditGroupCommand extends AbstractCommand {
+public class EditGroupCommand extends GroupCommand {
 
 
     public EditGroupCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.WRITE_LOCK,
+                Permission.EDIT_GROUP,
+                ErrorCode.NOPERMISSIONEDITGROUP);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        // check if account still exists
-        Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-
-        // get the group
-        Usergroup group
-                = getSafeForWriting(
-                actingAccount.getAllGroups().get(input.group.id));
-        if (group == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-
-        // check permissions
-        if (!group.checkPermissionOfMember(actingAccount,
-                Permission.EDIT_GROUP))
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITGROUP);
-
+    protected CommandOutput executeOnGroup(GroupInput commandInput) {
         // edit name
-        group.setName(input.group.name);
+        Input input = (Input) commandInput;
+        usergroup.setName(input.group.name);
 
         // create update
         UsergroupChangeUpdate update =
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
-                        group);
-        try {
-            HashSet<Account> affected =
-                    new HashSet<>(group.getAllMembers().values());
-            affected.remove(input.getActingAccount());
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    affected);
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+                        usergroup);
+
+        addUpdateToAllOtherMembers(update);
 
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends GroupInput {
 
         final UsergroupEditDescription group;
 
         public Input(@JsonProperty("group") UsergroupEditDescription group,
                      @JsonProperty("token") String token) {
-            super(token);
+            super(token, group.id, new int[0]);
             this.group = group;
         }
     }

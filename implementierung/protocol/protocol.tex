@@ -542,11 +542,12 @@ To revoke a membership, i.e. remove a user from a group, use the
 \textbf{remove-group-members} command.}
 {id/int/The ID of the user group,
 membership/object/The complete description of the new membership that is to
-replace the current one (see \ref{sec:Membership-desc}).
+replace the current one (see \ref{sec:Membership-desc}) ommiting the
+field shared-until.
 The ID specified in the description must match the ID of the account whose
 membership is to be edited.}
 {}
-{group-id-invalid, user-id-invalid, no-permission-edit-permissions}
+{group-id-invalid, user-id-invalid,user-not-in-group, no-permission-edit-permissions}
 {group-membership-change}
 
 \apiCommand{create-event}
