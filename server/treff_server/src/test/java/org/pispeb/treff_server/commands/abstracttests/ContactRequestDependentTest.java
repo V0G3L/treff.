@@ -34,6 +34,14 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
         // remove update produced by this command from update queue
         getSingleUpdateForUser(users[0]);
 
+        resetContactListCache();
+    }
+
+    /**
+     * Resets the cached {@link ContactList}s used for comparison in
+     * {@link #assertNoContactChange()} to the current state.
+     */
+    protected void resetContactListCache() {
         // save contact lists for later comparison with assertNoContactChange()
         this.contactListsAfterInit = new ContactList[users.length];
         for (int i = 0; i < contactListsAfterInit.length; i++) {
@@ -44,7 +52,6 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
     /**
      * Asserts that no contact changes have been made as a consequence of
      * the currently run test.
-     * The state after {@link #setup()} was run is used as a reference.
      */
     protected void assertNoContactChange() {
         for (int i = 0; i < users.length; i++)

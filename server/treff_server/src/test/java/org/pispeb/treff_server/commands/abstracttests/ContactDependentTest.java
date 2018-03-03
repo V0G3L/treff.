@@ -34,5 +34,7 @@ public abstract class ContactDependentTest extends ContactRequestDependentTest {
 
         // remove update produced by this command from update queue
         getSingleUpdateForUser(users[1]);
+
+        resetContactListCache();
     }
 }

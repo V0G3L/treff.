@@ -74,8 +74,6 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
     @Test
     public void blocking() {
         block(users[2], users[3]);
-        // clear update queue for assertCommandFailed to work
-        getUpdatesForUser(users[3]);
         JsonObject output = execute(users[2], users[3]);
         assertCommandFailed(output, 1506);
     }
@@ -83,8 +81,6 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
     @Test
     public void gettingBlocked() {
         block(users[3], users[2]);
-        // clear update queue for assertCommandFailed to work
-        getUpdatesForUser(users[2]);
         JsonObject output = execute(users[2], users[3]);
         assertErrorOutput(output, 1505);
     }

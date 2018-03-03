@@ -185,10 +185,10 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     public boolean checkPermissionOfMember(Account member, Permission
             permission) throws AccountNotInGroupException {
         return database.query(
-                "SELECT ? FROM %s WHERE accountid=? AND usergroupid=?;",
+                "SELECT permission_" + permission.toString()
+                        + " FROM %s WHERE accountid=? AND usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
                 new ScalarHandler<Boolean>(),
-                "permission_" + permission.toString(),
                 member.getID(),
                 this.id);
     }

@@ -52,7 +52,7 @@ public class RemoveContactCommand extends AbstractCommand {
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
-                        UpdateType.CANCEL_CONTACT_REQUEST);
+                        UpdateType.REMOVE_CONTACT);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
                     new Date(), account);

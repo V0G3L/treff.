@@ -100,7 +100,6 @@ public class AddGroupMembersCommandTest extends GroupDependentTest {
                 .add(users[2].id);
         inputBuilder.add("id", groupId)
                 .add("members", members.build());
-        // TODO WTF why does 1 become 0
         JsonObject output = runCommand(addGroupMembersCommand, inputBuilder);
 
         Assert.assertEquals(output.getInt("error"), 1510);

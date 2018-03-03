@@ -28,9 +28,6 @@ import java.util.function.Function;
  */
 public abstract class AbstractCommand {
 
-    private static Map<String, Class<? extends AbstractCommand>>
-            availableCommands = new HashMap<>();
-
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
     protected final ObjectMapper mapper;
@@ -197,18 +194,5 @@ public abstract class AbstractCommand {
         return 0;
     }
 
-    public static void registerCommand(String stringIdentifier,
-                                       Class<? extends AbstractCommand>
-                                               command) {
-        if (availableCommands.containsKey(stringIdentifier))
-            throw new DuplicateCommandIdentifier(stringIdentifier);
-        else
-            availableCommands.put(stringIdentifier, command);
-    }
-
-    public static Class<? extends AbstractCommand> getCommandByStringIdentifier(
-            String stringIdentifier) {
-        return availableCommands.get(stringIdentifier);
-    }
 }
 
