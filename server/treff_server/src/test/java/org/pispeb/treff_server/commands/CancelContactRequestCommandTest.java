@@ -35,8 +35,10 @@ public class CancelContactRequestCommandTest
         ContactList senderContacts = getContactsOfUser(sender);
 
         // Assert that the request got removed
-        Assert.assertTrue(receiverContacts.incomingRequests.isEmpty());
-        Assert.assertTrue(senderContacts.outgoingRequests.isEmpty());
+        Assert.assertFalse(
+                receiverContacts.incomingRequests.contains(sender.id));
+        Assert.assertFalse(
+                senderContacts.outgoingRequests.contains(receiver.id));
 
         // Assert that both users were *not* added as contacts
         Assert.assertFalse(receiverContacts.contacts.contains(sender.id));

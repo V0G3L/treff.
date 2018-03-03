@@ -12,17 +12,7 @@ import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
 import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
@@ -202,10 +192,16 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                 .collect(Collectors.joining(","));
 
         List<Boolean> values = database.query(
-                "SELECT (" + placeholders + "FROM %s " +
+                "SELECT " + placeholders + " FROM %s " +
                         "WHERE usergroupid=? and accountid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new ColumnListHandler<>(),
+                rs -> {
+                    List<Boolean> ret = new ArrayList<>();
+                    rs.next();
+                    for (int i = 1; i <= permissions.size(); i++)
+                        ret.add(rs.getBoolean(i));
+                    return ret;
+                },
                 id,
                 member.getID());
 

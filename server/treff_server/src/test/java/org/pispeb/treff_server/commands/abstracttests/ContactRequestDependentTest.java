@@ -6,6 +6,8 @@ import org.pispeb.treff_server.commands.SendContactRequestCommand;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jens and tim
@@ -16,26 +18,36 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
         super(cmd);
     }
 
-    protected ContactList[] contactListsAfterInit;
+    private Map<User, ContactList> contactListsAfterInit;
 
     @Before
-    public void sendRequest() {
-        // Sends a contact request from user 1 to user 0
+    public void prepareRequests() {
+        // Requests:
+        // 0  <-----  1
+        // ^          |
+        // |--- 2 <---|
+        sendRequest(users[1], users[0]);
+        sendRequest(users[2], users[0]);
+        sendRequest(users[1], users[2]);
 
+        resetContactListCache();
+    }
+
+    private void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
                 = new SendContactRequestCommand(accountManager, mapper);
 
         JsonObjectBuilder input
-                = getCommandStubForUser("send-contact-request", users[1]);
-        input.add("id", users[0].id);
+                = getCommandStubForUser("send-contact-request", sender);
+        input.add("id", receiver.id);
 
-        JsonObject output = runCommand(sendContactRequestCommand, input);
+        runCommand(sendContactRequestCommand, input);
 
         // remove update produced by this command from update queue
-        getSingleUpdateForUser(users[0]);
-
-        resetContactListCache();
+        getSingleUpdateForUser(receiver);
     }
+
+
 
     /**
      * Resets the cached {@link ContactList}s used for comparison in
@@ -43,10 +55,9 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
      */
     protected void resetContactListCache() {
         // save contact lists for later comparison with assertNoContactChange()
-        this.contactListsAfterInit = new ContactList[users.length];
-        for (int i = 0; i < contactListsAfterInit.length; i++) {
-            contactListsAfterInit[i] = getContactsOfUser(users[i]);
-        }
+        this.contactListsAfterInit = new HashMap<>();
+        for (User user : users)
+            contactListsAfterInit.put(user, getContactsOfUser(user));
     }
 
     /**
@@ -54,8 +65,12 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
      * the currently run test.
      */
     protected void assertNoContactChange() {
-        for (int i = 0; i < users.length; i++)
-            Assert.assertEquals(contactListsAfterInit[i],
-                    getContactsOfUser(users[i]));
+        for (User user : users)
+            assertNoContactChangeForUser(user);
+    }
+
+    protected void assertNoContactChangeForUser(User user) {
+        Assert.assertEquals(contactListsAfterInit.get(user),
+                getContactsOfUser(user));
     }
 }

@@ -50,15 +50,13 @@ public class RemoveContactCommandTest
     @Test
     public void invalidId() {
         assertCommandFailed(execute(users[0],
-                new User("I am", "no virus",
-                        404, "pls trust me")),
+                new User("I am", "no virus", 404, "pls trust me")),
                 1200);
     }
 
     @Test
     public void notPartOfList() {
-        assertCommandFailed(execute(users[0], users[2]),
-                1501);
+        assertCommandFailed(execute(users[3], users[2]), 1501);
     }
 
     /**

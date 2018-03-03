@@ -117,6 +117,25 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         assertErrorOutput(output, 1500);
     }
 
+    @Test
+    public void symmetricSend() {
+        // 1 -> 0 is sent in @Before
+        execute(users[0], users[1]);
+
+        ContactList contactsOf0 = getContactsOfUser(users[0]);
+        ContactList contactsOf1 = getContactsOfUser(users[1]);
+
+        // check that none of the two contact requests exist anymore
+        Assert.assertFalse(contactsOf0.incomingRequests.contains(users[1].id));
+        Assert.assertFalse(contactsOf0.outgoingRequests.contains(users[1].id));
+        Assert.assertFalse(contactsOf1.incomingRequests.contains(users[0].id));
+        Assert.assertFalse(contactsOf1.outgoingRequests.contains(users[0].id));
+
+        // check that both users are now contacts
+        Assert.assertTrue(contactsOf0.contacts.contains(users[1].id));
+        Assert.assertTrue(contactsOf1.contacts.contains(users[0].id));
+    }
+
     /**
      * Executes the block-account-command.
      * Makes no assertions on whether the command had any effect.

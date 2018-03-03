@@ -13,7 +13,6 @@ import java.util.Date;
 
 /**
  * @author jens
- * asserts the functionalty of SendContactRequestCommand
  */
 public class AcceptContactRequestCommandTest
         extends ContactRequestDependentTest {
@@ -36,8 +35,10 @@ public class AcceptContactRequestCommandTest
         ContactList senderContacts = getContactsOfUser(sender);
 
         // Check that the request is no longer there
-        Assert.assertTrue(receiverContacts.incomingRequests.isEmpty());
-        Assert.assertTrue(senderContacts.outgoingRequests.isEmpty());
+        Assert.assertFalse(
+                receiverContacts.incomingRequests.contains(sender.id));
+        Assert.assertFalse(
+                senderContacts.outgoingRequests.contains(receiver.id));
 
         // Check that both users are now contacts
         Assert.assertTrue(receiverContacts.contacts.contains(sender.id));
@@ -55,7 +56,7 @@ public class AcceptContactRequestCommandTest
     @Test
     public void noContactRequest() {
         // try accepting from user 2
-        assertErrorOutput(execute(users[0], users[2]), 1504);
+        assertErrorOutput(execute(users[3], users[2]), 1504);
         assertNoContactChange();
         Assert.assertEquals(0, getUpdatesForUser(users[2]).size());
     }
@@ -63,8 +64,7 @@ public class AcceptContactRequestCommandTest
     @Test
     public void invalidId() {
         assertErrorOutput(execute(users[0],
-                new User("Heil", "Satan",
-                        666, "Lucifer our lord")),
+                new User("Hail", "Satan", 666, "Lucifer our lord")),
                 1200);
     }
 

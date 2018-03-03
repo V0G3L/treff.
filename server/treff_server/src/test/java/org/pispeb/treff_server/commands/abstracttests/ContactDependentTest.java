@@ -13,28 +13,27 @@ public abstract class ContactDependentTest extends ContactRequestDependentTest {
     }
 
     @Before
-    public void acceptRequest() {
-        // accepts the contact request from user 1 to user 0
+    public void prepareContacts() {
+        // Contacts:
+        // 0, 1, and 2 pairwise
+        acceptRequest(users[0], users[1]);
+        acceptRequest(users[0], users[2]);
+        acceptRequest(users[2], users[1]);
 
+        resetContactListCache();
+    }
+
+    private void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 
         JsonObjectBuilder input
-                = getCommandStubForUser("accept-contact-request",
-                users[0]);
-        input.add("id", users[1].id);
+                = getCommandStubForUser("accept-contact-request", receiver);
+        input.add("id", sender.id);
 
-        // save contact lists for later comparison with assertNoContactChange()
-        this.contactListsAfterInit = new ContactList[users.length];
-        for (int i = 0; i < contactListsAfterInit.length; i++) {
-            contactListsAfterInit[i] = getContactsOfUser(users[i]);
-        }
-
-        JsonObject output = runCommand(acceptContactRequestCommand, input);
+        runCommand(acceptContactRequestCommand, input);
 
         // remove update produced by this command from update queue
-        getSingleUpdateForUser(users[1]);
-
-        resetContactListCache();
+        getSingleUpdateForUser(sender);
     }
 }
