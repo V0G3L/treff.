@@ -114,14 +114,28 @@ public abstract class AbstractCommand {
         }
     }
 
-    protected void acquireLock(Lock lock) {
-        if (!acquiredLocks.contains(lock)) {
-            acquiredLocks.add(lock);
-            lock.lock();
-        }
+    private void acquireLock(Lock lock) {
+        acquiredLocks.add(lock);
+        lock.lock();
     }
 
-    protected void releaseAllLocks() {
+    private void releaseLock(Lock lock) {
+        if (!acquiredLocks.contains(lock))
+            throw new IllegalArgumentException(
+                    "A lock was to be released that was not acquired before.");
+        acquiredLocks.remove(lock);
+        lock.unlock();
+    }
+
+    protected void releaseReadLock(DataObject obj) {
+        releaseLock(obj.getReadWriteLock().readLock());
+    }
+
+    protected void releaseWriteLock(DataObject obj) {
+        releaseLock(obj.getReadWriteLock().writeLock());
+    }
+
+    private void releaseAllLocks() {
         acquiredLocks.forEach(Lock::unlock);
         acquiredLocks.clear();
     }

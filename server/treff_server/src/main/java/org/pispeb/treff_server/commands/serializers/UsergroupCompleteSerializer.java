@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.pispeb.treff_server.interfaces.Usergroup;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class UsergroupCompleteSerializer extends JsonSerializer<Usergroup> {
 
@@ -19,7 +20,8 @@ public class UsergroupCompleteSerializer extends JsonSerializer<Usergroup> {
         gen.writeNumberField("id", usergroup.getID());
         gen.writeStringField("name", usergroup.getName());
 
-        SerializerUtil.writeIDArray(usergroup.getAllMembers().keySet(),
+        Set<Integer> idSet = usergroup.getAllMembers().keySet();
+        SerializerUtil.writeIDArray(idSet,
                 "members", gen);
         SerializerUtil.writeIDArray(usergroup.getAllEvents().keySet(),
                 "events", gen);

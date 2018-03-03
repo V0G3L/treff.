@@ -48,8 +48,7 @@ public class AcceptContactRequestCommandTest
         Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER.toString(),
                 update.getString("type"));
         Assert.assertEquals(receiver.id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        checkTimeCreated(update);
         Assert.assertTrue(update.getBoolean("answer"));
     }
 

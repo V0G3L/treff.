@@ -46,8 +46,7 @@ public class CancelContactRequestCommandTest
         Assert.assertEquals(UpdateType.CANCEL_CONTACT_REQUEST.toString(),
                 update.getString("type"));
         Assert.assertEquals(sender.id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        checkTimeCreated(update);
     }
 
     @Test

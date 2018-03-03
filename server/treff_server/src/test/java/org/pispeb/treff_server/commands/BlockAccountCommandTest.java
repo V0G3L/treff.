@@ -32,8 +32,7 @@ public class BlockAccountCommandTest
         Assert.assertEquals(UpdateType.REMOVE_CONTACT.toString(),
                 update.getString("type"));
         Assert.assertEquals(blocker.id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        checkTimeCreated(update);
     }
 
     @Test

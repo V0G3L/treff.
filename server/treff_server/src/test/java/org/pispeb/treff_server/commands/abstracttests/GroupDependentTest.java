@@ -1,12 +1,13 @@
 package org.pispeb.treff_server.commands.abstracttests;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.CreateGroupCommand;
+import org.pispeb.treff_server.commands.updates.UpdateType;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import javax.json.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Abstract test class creating a group containing {@link MultipleUsersTest}s
@@ -26,15 +27,19 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
     public void createGroup() {
         CreateGroupCommand createGroupCommand
                 = new CreateGroupCommand(accountManager, mapper);
-        JsonArray members = Json.createArrayBuilder()
-                .add(ownUser.id)
-                .add(users[1].id)
-                .add(users[2].id)
-                .build();
+        Set<User> members = new HashSet<>();
+        members.add(ownUser);
+        members.add(users[1]);
+        members.add(users[2]);
+        JsonArrayBuilder membersArrayBuilder = Json.createArrayBuilder();
+
+        for (User member : members)
+            membersArrayBuilder.add(member.id);
+
         JsonObject group = Json.createObjectBuilder()
                 .add("type", "usergroup")
                 .add("name", groupName)
-                .add("members", members)
+                .add("members", membersArrayBuilder.build())
                 .build();
 
         JsonObjectBuilder input
@@ -42,5 +47,12 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
                 .add("group", group);
 
         groupId = runCommand(createGroupCommand, input).getInt("id");
+
+        // remove updates produced by group creation to avoid interfering
+        // with other commands
+        members.remove(ownUser);
+        for (User member : members)
+            getSingleUpdateForUser(member);
+
     }
 }

@@ -44,8 +44,7 @@ public class RemoveContactCommandTest
         Assert.assertEquals(UpdateType.REMOVE_CONTACT.toString(),
                 update.getString("type"));
         Assert.assertEquals(removing.id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        checkTimeCreated(update);
     }
 
     @Test

@@ -48,15 +48,12 @@ public class EditGroupCommandTest extends GroupDependentTest {
         // TODO check time-created
         Assert.assertEquals(update.getInt("creator"), ownUser.id);
         JsonObject updateGroupDesc = update.getJsonObject("usergroup");
-        Assert.assertEquals(updateGroupDesc.getString("name"),
-                "groupname");
+        Assert.assertEquals("doomedtodie", updateGroupDesc.getString("name"));
     }
 
     @Test
     public void invalidGroupId() {
-        int id = 23;
-        while (id == groupId)
-            id += 42;
+        int id = groupId + 1; // invalid ID
         EditGroupCommand editGroupCommand
                 = new EditGroupCommand(accountManager, mapper);
         JsonArray members = Json.createArrayBuilder()
@@ -65,7 +62,7 @@ public class EditGroupCommandTest extends GroupDependentTest {
                 .build();
         JsonObject group = Json.createObjectBuilder()
                 .add("type", "usergroup")
-                .add("id",groupId)
+                .add("id", id)
                 .add("name", "onhisdarkthrone")
                 .build();
 
@@ -73,7 +70,7 @@ public class EditGroupCommandTest extends GroupDependentTest {
 
         JsonObject output = runCommand(editGroupCommand, inputBuilder);
 
-        Assert.assertEquals(output.getInt("error"), 1201);
+        assertErrorOutput(output, 1201);
     }
 
     @Test

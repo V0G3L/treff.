@@ -51,13 +51,13 @@ public abstract class CommandTest extends DatabaseDependentTest {
      * @param timeCreated the value of the time-created parameter to check
      * @return true if it's valid, false if not
      */
-    protected boolean checkTimeCreated(Date timeCreated) {
+    protected void checkTimeCreated(JsonObject update) {
+        Date timeCreated
+                = new Date(update.getJsonNumber("time-created").longValue());
         //TODO tolerance
         Date currentTime = new Date();
-        if (timeCreated.before(startTime) || currentTime.before(timeCreated)) {
-            return false;
-        }
-        return true;
+        Assert.assertFalse(timeCreated.before(startTime)
+                || currentTime.before(timeCreated));
     }
 
     protected void assertErrorOutput(JsonObject output, int expectedError) {

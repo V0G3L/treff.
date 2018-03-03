@@ -14,118 +14,65 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * a command to remove accounts from a user group
  */
-public class RemoveGroupMembersCommand extends AbstractCommand {
+public class RemoveGroupMembersCommand extends GroupCommand {
 
 
     public RemoveGroupMembersCommand(AccountManager accountManager,
                                      ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.WRITE_LOCK,
+                Permission.MANAGE_MEMBERS,
+                ErrorCode.NOPERMISSIONMANAGEMEMBERS);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        Account actingAccount = input.getActingAccount();
-
-        // lock the accounts in the correct order and add them all to a set
-        input.memberIds.add(actingAccount.getID());
-        TreeSet<Account> newMemberAccounts = new TreeSet<>();
-        for (int memberId : input.memberIds) {
-            // lock the account with smallest id to the set,
-            // check if it still exists and add it to the set
-            Account currentAccount = getSafeForReading(this.accountManager
-                    .getAccount(memberId));
-            if (currentAccount == null) {
-                if (memberId == actingAccount.getID())
-                    return new ErrorOutput(ErrorCode.TOKENINVALID);
-                else return new ErrorOutput(ErrorCode.USERIDINVALID);
-            }
-            newMemberAccounts.add(currentAccount);
-        }
-
-        // remove the actingAccount from the set
-        newMemberAccounts.remove(actingAccount);
-
-
-        // get group
-        Usergroup usergroup
-                = getSafeForWriting(actingAccount.getAllGroups().get(input.id));
-        if (usergroup == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-
-        // check permission
-        if (!usergroup.checkPermissionOfMember(actingAccount,
-                Permission.MANAGE_MEMBERS)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONMANAGEMEMBERS);
-        }
-
-        // check if a new member is not part of the group
-        for (int memberID : usergroup.getAllMembers().keySet()) {
-            if (!input.memberIds.contains(memberID))
+    protected CommandOutput executeOnGroup(GroupInput groupInput) {
+        // make sure all referenced users are actually part of the group
+        for (Account referencedAccount : referencedAccounts) {
+            if (!usergroup.getAllMembers()
+                    .containsKey(referencedAccount.getID()))
                 return new ErrorOutput(ErrorCode.USERNOTINGROUP);
         }
 
-        // create update
+        // save previous set of members for update addition
+        Set<Account> previousMembers
+                = new HashSet<>(usergroup.getAllMembers().values());
+
+        Set<Integer> idSet = usergroup.getAllMembers().keySet();
+        // remove members from the group
+        for (Account member : referencedAccounts) {
+            usergroup.removeMember(member);
+        }
+        idSet = usergroup.getAllMembers().keySet();
+
+        // create update for all members except the acting account
         UsergroupChangeUpdate update =
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
                         usergroup);
-        for (Account a : usergroup.getAllMembers().values()) {
-            if (a.getID() == actingAccount.getID())
-                continue;
-            getSafeForReading(a);
-        }
-        try {
-            HashSet<Account> affected =
-                    new HashSet<>(usergroup.getAllMembers().values());
-            affected.remove(actingAccount);
-            affected.addAll(newMemberAccounts);
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    affected);
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
 
-        // remove members from the group
-        for (Account member : newMemberAccounts) {
-            usergroup.removeMember(member);
-        }
+        addUpdateToOtherMembers(update, previousMembers);
 
         //respond
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int id;
-        final TreeSet<Integer> memberIds;
+    public static class Input extends GroupCommand.GroupInput {
 
         public Input(@JsonProperty("id") int id,
                      @JsonProperty("members") int[] memberIds,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.id = id;
-            this.memberIds = new TreeSet<>();
-            for (int memberId : memberIds) {
-                this.memberIds.add(memberId);
-            }
+            super(token, id, memberIds);
         }
     }
 
     public static class Output extends CommandOutput {
-
-        Output() {
-        }
+        Output() { }
     }
 
 }

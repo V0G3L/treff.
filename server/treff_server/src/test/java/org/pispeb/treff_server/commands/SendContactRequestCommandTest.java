@@ -55,8 +55,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         Assert.assertEquals(UpdateType.CONTACT_REQUEST.toString(),
                 update.getString("type"));
         Assert.assertEquals(sender.id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        checkTimeCreated(update);
     }
 
     @Test

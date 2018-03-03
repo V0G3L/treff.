@@ -10,6 +10,9 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
 public class RemoveGroupMembersCommandTest extends GroupDependentTest {
@@ -20,6 +23,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
 
     @Test
     public void valid() {
+        // removed user 2 from group
         RemoveGroupMembersCommand removeGroupMembersCommand
                 = new RemoveGroupMembersCommand(accountManager, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
@@ -29,6 +33,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
 
         runCommand(removeGroupMembersCommand, inputBuilder);
 
+        // check that user 2 was removed
         GetGroupDetailsCommand getGroupDetailsCommand
                 = new GetGroupDetailsCommand(accountManager, mapper);
         JsonObjectBuilder input =
@@ -37,29 +42,38 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
         JsonObject groupDesc = runCommand(getGroupDetailsCommand, input)
                 .getJsonObject("group");
         Assert.assertEquals(groupDesc.getString("name"),
-                "doomedtodie");
+                groupName);
         JsonArray membersDesc = groupDesc.getJsonArray("members");
-        Assert.assertTrue(membersDesc.getInt(0) == users[1].id
-        || membersDesc.getInt(1) == users[1].id);
-        Assert.assertTrue(membersDesc.getInt(0) == ownID
-        || membersDesc.getInt(1) == ownID);
-        Assert.assertEquals(2, membersDesc.size());
 
+        // compare expected set of members (0 and 1) with actual member array
+        Set<Integer> expectedMembers = new HashSet<>();
+        expectedMembers.add(users[0].id);
+        expectedMembers.add(users[1].id);
+
+        Assert.assertEquals(2, membersDesc.size());
+        Assert.assertTrue(expectedMembers.contains(membersDesc.getInt(0)));
+        Assert.assertTrue(expectedMembers.contains(membersDesc.getInt(1)));
+
+        // check that executing user didn't get an update
         Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
 
-        JsonObject update = getSingleUpdateForUser(users[1]);
-        Assert.assertEquals(update.getString("type"),
-                UpdateType.USERGROUP_CHANGE.toString());
+        // check that the other two users got an update
+        for (int i  = 1; i <= 2; i++) {
+            JsonObject update = getSingleUpdateForUser(users[i]);
+            Assert.assertEquals(update.getString("type"),
+                    UpdateType.USERGROUP_CHANGE.toString());
 
-        update = getSingleUpdateForUser(users[1]);
-        Assert.assertEquals(update.getString("type"),
-                UpdateType.USERGROUP_CHANGE.toString());
+            // TODO check time-created
+            Assert.assertEquals(update.getInt("creator"), ownUser.id);
+            JsonObject updateGroupDesc = update.getJsonObject("usergroup");
+            Assert.assertEquals(updateGroupDesc.getString("name"),
+                    groupName);
 
-        // TODO check time-created
-        Assert.assertEquals(update.getInt("creator"), ownUser.id);
-        JsonObject updateGroupDesc = update.getJsonObject("usergroup");
-        Assert.assertEquals(updateGroupDesc.getString("name"),
-                "groupname");
+            membersDesc = updateGroupDesc.getJsonArray("members");
+            Assert.assertEquals(2, membersDesc.size());
+            Assert.assertTrue(expectedMembers.contains(membersDesc.getInt(0)));
+            Assert.assertTrue(expectedMembers.contains(membersDesc.getInt(1)));
+        }
     }
 
     @Test

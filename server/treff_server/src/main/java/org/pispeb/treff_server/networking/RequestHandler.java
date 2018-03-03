@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.pispeb.treff_server.commands.*;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
-import org.pispeb.treff_server.exceptions.ProgrammingError;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
@@ -82,7 +82,7 @@ public class RequestHandler {
                 | NoSuchMethodException | InvocationTargetException e) {
             // This should only happen when a command class uses a
             // non-standard constructor
-            throw new ProgrammingError();
+            throw new ProgrammingException();
         }
 
         String outputString = command.execute(requestString);
@@ -94,7 +94,7 @@ public class RequestHandler {
             return new Response(mapper.writeValueAsString(
                     new ErrorOutput(errorCode)));
         } catch (JsonProcessingException e) {
-            throw new ProgrammingError();
+            throw new ProgrammingException();
         }
     }
 

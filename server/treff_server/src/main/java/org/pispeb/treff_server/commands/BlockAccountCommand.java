@@ -8,7 +8,7 @@ import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treff_server.exceptions.ProgrammingError;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
@@ -56,7 +56,7 @@ public class BlockAccountCommand extends ManageBlockCommand {
                 accountManager.createUpdate(mapper.writeValueAsString(update),
                         new Date(), blockAccount);
             } catch (JsonProcessingException e) {
-                throw new ProgrammingError();
+                throw new ProgrammingException();
             }
         }
 
@@ -72,7 +72,7 @@ public class BlockAccountCommand extends ManageBlockCommand {
                 accountManager.createUpdate(mapper.writeValueAsString(update),
                         new Date(), blockAccount);
             } catch (JsonProcessingException e) {
-                throw new ProgrammingError();
+                throw new ProgrammingException();
             }
         }
         else if (activeOutoingRequest) {

@@ -21,60 +21,28 @@ import java.util.TreeSet;
 /**
  * a command to add accounts to a user group
  */
-public class AddGroupMembersCommand extends AbstractCommand {
+public class AddGroupMembersCommand extends GroupCommand {
 
 
     public AddGroupMembersCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.WRITE_LOCK,
+                Permission.MANAGE_MEMBERS,
+                ErrorCode.NOPERMISSIONMANAGEMEMBERS);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-        Account actingAccount = input.getActingAccount();
-
-        // lock the accounts in the correct order and add them all to a set
-        input.memberIds.add(actingAccount.getID());
-        TreeSet<Account> newMemberAccounts = new TreeSet<>();
-        for (int memberId : input.memberIds) {
-            // lock the account with smallest id to the set,
-            // check if it still exists and add it to the set
-            Account currentAccount = getSafeForReading(this.accountManager
-                    .getAccount(memberId));
-            if (currentAccount == null) {
-                if (memberId == actingAccount.getID())
-                    return new ErrorOutput(ErrorCode.TOKENINVALID);
-                return new ErrorOutput(ErrorCode.USERIDINVALID);
-            }
-            newMemberAccounts.add(currentAccount);
-        }
-
-        // remove the actingAccount from the set
-        newMemberAccounts.remove(actingAccount);
-
-        // get group
-        Usergroup usergroup
-                = getSafeForWriting(actingAccount
-                .getAllGroups().get(input.groupId));
-        if (usergroup == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-
-        // check permission
-        if (!usergroup.checkPermissionOfMember(actingAccount,
-                Permission.MANAGE_MEMBERS)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONMANAGEMEMBERS);
-        }
-
+    protected CommandOutput executeOnGroup(GroupInput groupInput) {
         // check if a new member is already part of the group
-        for (int memberID : usergroup.getAllMembers().keySet()) {
-            if (input.memberIds.contains(memberID))
+        for (Account referenced : referencedAccounts) {
+            if (usergroup.getAllMembers().containsKey(referenced.getID()))
                 return new ErrorOutput(ErrorCode.USERALREADYINGROUP);
         }
 
         // add all new members to the group
-        for (Account newMember : newMemberAccounts) {
-            usergroup.addMember(newMember);
+        for (Account referenced : referencedAccounts) {
+            usergroup.addMember(referenced);
         }
 
         // create update
@@ -82,41 +50,19 @@ public class AddGroupMembersCommand extends AbstractCommand {
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
                         usergroup);
-        for (Account a : usergroup.getAllMembers().values()) {
-            if (a.getID() == actingAccount.getID())
-                continue;
-            getSafeForReading(a);
-        }
-        try {
-            HashSet<Account> affected =
-                    new HashSet<>(usergroup.getAllMembers().values());
-            affected.remove(actingAccount);
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    affected);
-        } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+
+        addUpdateToAllOtherMembers(update);
 
         //respond
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int groupId;
-        final TreeSet<Integer> memberIds;
+    public static class Input extends GroupInput {
 
         public Input(@JsonProperty("id") int groupId,
                      @JsonProperty("members") int[] memberIds,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.memberIds = new TreeSet<>();
-            for (int memberId : memberIds) {
-                this.memberIds.add(memberId);
-            }
+            super(token, groupId, memberIds);
         }
     }
 
