@@ -1,44 +1,32 @@
 package org.pispeb.treff_client.data.database;
 
-import android.arch.persistence.room.Room;
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pispeb.treff_client.data.entities.ChatMessage;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Testing functionality of saving and reading ChatMessages in the database
  */
 
 @RunWith(AndroidJUnit4.class)
-public class ChatDaoTest {
+public class ChatDaoTest extends DaoTest {
 
     private ChatDao testChatDao;
-    private TreffDatabase testDb;
 
 
+    @Override
     @Before
-    public void createDb() {
-        Context context = InstrumentationRegistry.getTargetContext();
-        testDb = Room.inMemoryDatabaseBuilder(context, TreffDatabase.class)
-                .build();
-        testChatDao = testDb.getChatDao();
-    }
-
-    @After
-    public void closeDb() throws IOException {
-        testDb.close();
+    public void setDao() {
+        testChatDao = getTestDb().getChatDao();
     }
 
     @Test
