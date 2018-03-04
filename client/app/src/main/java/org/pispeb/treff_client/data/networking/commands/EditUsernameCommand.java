@@ -31,7 +31,7 @@ public class EditUsernameCommand extends AbstractCommand{
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
-        pref.edit().putString(ctx.getString(R.string.key_userName), output.username);
+        pref.edit().putString(ctx.getString(R.string.key_userName), output.username).apply();
     }
 
     public static class Request extends AbstractRequest {

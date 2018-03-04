@@ -32,7 +32,7 @@ public class EditEmailCommand extends AbstractCommand{
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
-        pref.edit().putString(ctx.getString(R.string.key_email), output.email);
+        pref.edit().putString(ctx.getString(R.string.key_email), output.email).apply();
     }
 
     public static class Request extends AbstractRequest {

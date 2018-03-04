@@ -19,6 +19,9 @@ public class EditEmailTest extends AbstractCommandTest {
     @Override
     public void onResponseTest() {
         command.onResponse(new EditEmailCommand.Response());
+        verify(mockSharedPref).edit();
+        verify(mockEditor).putString("email", mockEmail);
+        verify(mockEditor).apply();
     }
 
     @Override

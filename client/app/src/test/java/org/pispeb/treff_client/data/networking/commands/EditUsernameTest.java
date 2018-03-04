@@ -18,8 +18,10 @@ public class EditUsernameTest extends AbstractCommandTest {
 
     @Override
     public void onResponseTest() {
-        //Cant be tested because of shared preferences
-        assertTrue(false);
+        command.onResponse(new EditUsernameCommand.Response());
+        verify(mockSharedPref).edit();
+        verify(mockEditor).putString("userName", mockName);
+        verify(mockEditor).apply();
     }
 
     @Override

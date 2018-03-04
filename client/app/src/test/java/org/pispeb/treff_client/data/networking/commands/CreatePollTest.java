@@ -23,10 +23,7 @@ public class CreatePollTest extends AbstractCommandTest {
     @Override
     public void onResponseTest() {
         command.onResponse(new CreatePollCommand.Response(mockPollId));
-
-
-        assertTrue(false);
-        //TODO test onResponse
+        //nothing to test...
     }
 
     @Override

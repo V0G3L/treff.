@@ -1,38 +1,40 @@
 package org.pispeb.treff_client.data.networking.commands;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Test to check the main function of RegisterCommand
+ * Test to check the main function of LoginCommand
  */
 
-public class RegisterTest extends AbstractCommandTest {
+public class LoginTest extends AbstractCommandTest {
 
-    private RegisterCommand command;
+    private LoginCommand command;
 
     @Override
     public void initCommand() {
-        command = new RegisterCommand(mockName, mockPassword);
+        command = new LoginCommand(mockName, mockPassword);
     }
 
     @Override
     public void onResponseTest() {
-        command.onResponse(new RegisterCommand.Response(mockToken, mockId));
+        command.onResponse(new LoginCommand.Response(mockToken, mockId));
         verify(mockSharedPref).edit();
         verify(mockEditor).putString("token", mockToken);
         verify(mockEditor).putInt("userId", mockId);
-        verify(mockEditor).commit();
+        verify(mockEditor).apply();
     }
 
     @Override
     public void getRequestTest() {
         AbstractRequest abs = command.getRequest();
-        RegisterCommand.Request request =
-                (RegisterCommand.Request) abs;
+        LoginCommand.Request request =
+                (LoginCommand.Request) abs;
 
         assertEquals(request.user, mockName);
         assertEquals(request.pass, mockPassword);
-        assertEquals(request.cmd, "register");
+        assertEquals(request.cmd, "login");
     }
 }

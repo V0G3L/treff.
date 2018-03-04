@@ -1,22 +1,38 @@
 package org.pispeb.treff_client.data.networking.commands;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.view.util.TreffPunkt;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Date;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Lukas on 2/28/2018.
  */
+
+// mock static methods of Treffpunkt
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({TreffPunkt.class,
+        PreferenceManager.class})
 
 public abstract class AbstractCommandTest {
     @Mock
@@ -27,6 +43,12 @@ public abstract class AbstractCommandTest {
     protected EventRepository mockEventRepository = mock(EventRepository.class);
     @Mock
     protected ChatRepository mockChatRepository = mock(ChatRepository.class);
+    @Mock
+    protected Context mockAppContext;
+    @Mock
+    protected SharedPreferences mockSharedPref;
+    @Mock
+    protected SharedPreferences.Editor mockEditor;
 
     protected String mockToken = "SomeRandomToken";
     protected String mockPassword = "w34k_P455w0rd";
@@ -39,18 +61,50 @@ public abstract class AbstractCommandTest {
     protected int mockGroupId = 987654321;
     protected int mockEvetntId = 55555;
     protected int[] mockUsers = {12345, 13579, 2468, 11111};
+    protected int[] mockEvents = {12345, 13579, 2468, 11111};
+    protected int[] mockPolls = {12345, 13579, 2468, 11111};
     protected int[] mockIncomingRequests = {888, 999, 777, 666};
     protected int[] mockOutgoingRequests = {123, 456, 810, 937};
     protected int mockPollId = 222675;
     protected long mockLatitude = 10;
     protected long mockLongitude = 50;
-    protected Position mockPosition = new Position(mockLatitude, mockLongitude);
+    protected double mockla = 10.0;
+    protected double mocklo = 50.0;
+    protected Position mockPosition = new Position(mockla, mocklo);
     protected boolean mockMultiChoice = true;
     protected Date mockTimeStart = new Date();
     protected Date mockTimeEnd = new Date();
 
     @Before
     public abstract void initCommand();
+
+    @Before
+    public void initPreferences(){
+        // mock static Context retrieval
+        PowerMockito.mockStatic(TreffPunkt.class);
+        when(TreffPunkt.getAppContext()).thenReturn(mockAppContext);
+
+        PowerMockito.mockStatic(PreferenceManager.class);
+        when(PreferenceManager.getDefaultSharedPreferences
+                (mockAppContext)).thenReturn(mockSharedPref);
+
+        //mock resource usage
+        when(mockAppContext.getString(R.string.key_token)).thenReturn("token");
+        when(mockAppContext.getString(R.string.key_userId)).thenReturn("userId");
+        when(mockAppContext.getString(R.string.key_email)).thenReturn("email");
+        when(mockAppContext.getString(R.string.key_userName)).thenReturn("userName");
+
+        when(mockSharedPref.edit()).thenReturn(mockEditor);
+        when(mockSharedPref.getInt("userId", -1)).thenReturn(mockId);
+
+        when(mockEditor.putString("token", mockToken)).thenReturn(mockEditor);
+        when(mockEditor.putInt("userId", mockId)).thenReturn(mockEditor);
+        when(mockEditor.putString("email", mockEmail)).thenReturn(mockEditor);
+        when(mockEditor.putString("userName", mockName)).thenReturn(mockEditor);
+        when(mockEditor.commit()).thenReturn(true);
+
+
+    }
 
     @Test
     public abstract void onResponseTest();

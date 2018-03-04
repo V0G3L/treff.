@@ -13,4 +13,8 @@ public class CompleteAccount {
         this.id = id;
         this.username = username;
     }
+
+    public boolean equals(CompleteAccount completeAccount) {
+        return (this.username.equals(completeAccount.username) && this.id == completeAccount.id);
+    }
 }

@@ -31,7 +31,6 @@ public class AddGroupMembersTest extends AbstractCommandTest {
         assertEquals(request.groupId, mockGroupId);
         assertEquals(request.token, mockToken);
         assertArrayEquals(request.members, mockUsers);
-        // TODO make Enum or something
         assertEquals(request.cmd, "add-group-members");
     }
 }
