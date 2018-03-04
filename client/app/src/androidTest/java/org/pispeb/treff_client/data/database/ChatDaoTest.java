@@ -58,7 +58,8 @@ public class ChatDaoTest {
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
         assertEquals(list.size(), 1);
-        assertEquals(msg, list.get(0));
+        assertTrue(msg.equalContent(list.get(0)));
+//        assertEquals(msg, list.get(0));
     }
 
     @Test
@@ -71,7 +72,8 @@ public class ChatDaoTest {
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
         assertEquals(list.size(), 1);
-        assertEquals(msg, list.get(0));
+        assertTrue(msg.equalContent(list.get(0)));
+//        assertEquals(msg, list.get(0));
     }
 
     @Test
@@ -83,8 +85,11 @@ public class ChatDaoTest {
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
         assertEquals(list.size(), 2);
-        assertEquals(msg, list.get(0));
-        assertEquals(msg, list.get(1));
+
+        assertTrue(msg.equalContent(list.get(0)));
+        assertTrue(msg.equalContent(list.get(1)));
+//        assertEquals(msg, list.get(0));
+//        assertEquals(msg, list.get(1));
     }
 
     @Test

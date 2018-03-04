@@ -61,7 +61,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private ChatRepository chatRepository;
 
     // Queue of commands waiting to be sent to Server
-    Queue<AbstractCommand> commands;
+    private Queue<AbstractCommand> commands;
     private CountDownLatch cdl;
 
     private static RequestEncoder INSTANCE;
@@ -83,10 +83,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
         try {
-            connectionHandler
-                    = new ConnectionHandler(
-                            "ws://129.13.23.230:8080/treff_server/ws",
-                    this);
+            makeConnectionHandler();
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
         }
@@ -109,6 +106,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         if (idle && !commands.isEmpty()) {
             sendRequest(commands.peek().getRequest());
         }
+    }
+
+    void makeConnectionHandler() throws DeploymentException,
+            IOException, URISyntaxException {
+        connectionHandler
+                = new ConnectionHandler(
+                "ws://129.13.23.230:8080/treff_server/ws",
+                this);
     }
 
     // must be called right after creating the encoder

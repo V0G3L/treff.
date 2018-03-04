@@ -66,6 +66,16 @@ public class ChatMessage {
         this.timeSent = timeSent;
     }
 
+    public boolean equalContent(ChatMessage o) {
+        if (groupId != o.groupId) return false;
+        if (userId != o.userId) return false;
+        if (content != null ? !content.equals(o.content) : o.content != null) {
+            return false;
+        }
+        return timeSent != null ? timeSent.equals(o.timeSent) : o.timeSent ==
+                null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,8 +86,12 @@ public class ChatMessage {
         if (messageId != that.messageId) return false;
         if (groupId != that.groupId) return false;
         if (userId != that.userId) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        return timeSent != null ? timeSent.equals(that.timeSent) : that.timeSent == null;
+        if (content != null ? !content
+                .equals(that.content) : that.content != null) {
+            return false;
+        }
+        return timeSent != null ? timeSent
+                .equals(that.timeSent) : that.timeSent == null;
     }
 
     @Override
