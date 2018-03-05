@@ -83,7 +83,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
         try {
-            makeConnectionHandler();
+            connectionHandler
+                    = new ConnectionHandler(
+                    "ws://129.13.23.230:8080/treff_server/ws",
+                    this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
         }
@@ -108,12 +111,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
-    void makeConnectionHandler() throws DeploymentException,
-            IOException, URISyntaxException {
-        connectionHandler
-                = new ConnectionHandler(
-                "ws://129.13.23.230:8080/treff_server/ws",
-                this);
+    // change ConnectionHandler in case of Server change or testing
+    public void setConnectionHandler(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
 
     // must be called right after creating the encoder
@@ -141,28 +141,38 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         commands.add(command);
         if (idle) {
             sendRequest(commands.peek().getRequest());
+            idle = false;
         }
     }
 
     /**
-     * Pass a request to ConnectionHandler in order to be sent to the Server.
-     * Executed when the command before has received a response
+     * Convert a Request into a String using the json mapper
      *
      * @param request Json-object of the next command's request
      */
     private synchronized void sendRequest(AbstractRequest request) {
+        String message;
+        try {
+            message = mapper.writeValueAsString(request);
+            sendToCH(message);
+        } catch (JsonProcessingException e) {
+            // This would mean, that the internal request encoding is messed
+            // up, which would be very bad indeed!
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * pass a message to the connectionHandler in order to be sent to the server
+     *
+     * @param message content of that message (in correct command format)
+     */
+    protected synchronized void sendToCH(String message) {
         bgHandler.post(() -> {
-            try {
-                Log.i("Encoder", "sending Message");
-                Log.i("Encoder", "CH: " + connectionHandler);
-                connectionHandler.sendMessage(
-                        mapper.writeValueAsString(request));
-                idle = false;
-            } catch (JsonProcessingException e) {
-                // This would mean, that the internal request encoding is messed
-                // up, which would be very bad indeed!
-                e.printStackTrace();
-            }
+
+            Log.i("Encoder", "sending Message");
+            Log.i("Encoder", "CH: " + connectionHandler);
+            connectionHandler.sendMessage(message);
         });
     }
 
