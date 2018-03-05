@@ -100,11 +100,12 @@ public class User {
 
         if (userId != user.userId) return false;
         if (isFriend != user.isFriend) return false;
+        if (isBlocked != user.isBlocked) return false;
+        if (isRequesting != user.isRequesting) return false;
+        if (requestPending != user.requestPending) return false;
         if (username != null ? !username.equals(user.username) : user.username != null)
             return false;
-        if (location != null ? !location.equals(user.location) : user.location != null)
-            return false;
-        return isBlocked == user.isBlocked;
+        return location != null ? location.equals(user.location) : user.location == null;
     }
 
     @Override
@@ -113,6 +114,8 @@ public class User {
         result = 31 * result + (username != null ? username.hashCode() : 0);
         result = 31 * result + (isFriend ? 1 : 0);
         result = 31 * result + (isBlocked ? 1 : 0);
+        result = 31 * result + (isRequesting ? 1 : 0);
+        result = 31 * result + (requestPending ? 1 : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
         return result;
     }

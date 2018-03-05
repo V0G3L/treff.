@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Testing functionality of UserGroups database operations
+ * Testing functionality of UserGroup database operations
  */
 public class UserGroupDaoTest extends DaoTest {
 
@@ -17,7 +17,7 @@ public class UserGroupDaoTest extends DaoTest {
     }
 
     @Test
-    public void insertMessageTest() {
+    public void insertUserGroupTest() {
         //TODO test
     }
 }

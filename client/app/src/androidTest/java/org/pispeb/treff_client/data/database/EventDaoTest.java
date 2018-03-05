@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Testing functionality of UserGroups database operations
+ * Testing functionality of EventDao database operations
  */
 public class EventDaoTest extends DaoTest {
 
@@ -18,7 +18,7 @@ public class EventDaoTest extends DaoTest {
     }
 
     @Test
-    public void insertMessageTest() {
+    public void insertEventTest() {
         //TODO test
     }
 }
