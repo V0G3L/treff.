@@ -2,18 +2,23 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
+import org.pispeb.treff_server.commands.abstracttests.AccountChangeTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-public class EditUsernameCommandTest extends MultipleUsersTest{
+public class EditUsernameCommandTest extends AccountChangeTest {
 
     private final String NEWNAME = "newName";
 
     public EditUsernameCommandTest() {
         super("edit-username");
+    }
+
+    @Test
+    public void usernameInUse() {
+        Assert.assertTrue(false); //TODO
     }
 
     @Test
@@ -85,53 +90,5 @@ public class EditUsernameCommandTest extends MultipleUsersTest{
         Assert.assertEquals(0, getUpdatesForUser(exec).size());
 
         return output;
-    }
-
-    /**
-     * executes the get-user-details command.
-     *
-     * @param exec the user to get the details of
-     * @return the output of the command
-     */
-    private JsonObject getUserDetails(User exec) {
-        GetUserDetailsCommand getUserDetailsCommand
-                = new GetUserDetailsCommand(accountManager, mapper);
-
-        JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
-        input.add("id", exec.id);
-
-        return runCommand(getUserDetailsCommand, input);
-    }
-
-    /**
-     * executes the send-contact-request-command
-     *
-     * @param sender the sender of the request
-     * @param receiver the receiver of the request
-     */
-    private void sendRequest(User sender, User receiver) {
-        SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
-
-        JsonObjectBuilder input
-                = getCommandStubForUser(this.cmd, sender);
-        input.add("id", receiver.id);
-        runCommand(sendContactRequestCommand, input);
-    }
-
-    /**
-     * executes the accept-contact-request-command
-     *
-     * @param sender the sender of the request
-     * @param receiver the receiver of the request
-     */
-    private void acceptRequest(User sender, User receiver) {
-        AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
-
-        JsonObjectBuilder input
-                = getCommandStubForUser(this.cmd, receiver);
-        input.add("id", sender.id);
-        runCommand(acceptContactRequestCommand, input);
     }
 }
