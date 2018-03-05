@@ -8,13 +8,7 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Date;
 
-/**
- * @author jens
- * asserts the functionalty of SendContactRequestCommand
- * and AcceptContactRequestCommand
- */
 public class RemoveContactCommandTest
         extends ContactDependentTest {
 
@@ -61,14 +55,13 @@ public class RemoveContactCommandTest
 
     /**
      * executes the command
-     * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
      * @param removing the user that is removing a contact
      * @param removed  the contact that gets removed
      * @return the output of the command
      */
-    protected JsonObject execute(User removing, User removed) {
+    private JsonObject execute(User removing, User removed) {
         RemoveContactCommand removeContactCommand
                 = new RemoveContactCommand(accountManager, mapper);
 

@@ -9,11 +9,7 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Date;
 
-/**
- * @author jens
- */
 public class AcceptContactRequestCommandTest
         extends ContactRequestDependentTest {
 
@@ -70,14 +66,13 @@ public class AcceptContactRequestCommandTest
 
     /**
      * executes the command
-     * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
      * @param receiver the user who received a request and shall accept it
      * @param sender the user whose contact request shall be accepted
      * @return the output of the command
      */
-    protected JsonObject execute(User receiver, User sender) {
+    private JsonObject execute(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 

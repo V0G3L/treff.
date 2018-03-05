@@ -26,7 +26,6 @@ public class EditUsernameCommand extends AbstractCommand {
     public EditUsernameCommand(AccountManager accountManager,
                                ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
-        throw new UnsupportedOperationException();
     }
 
     @Override

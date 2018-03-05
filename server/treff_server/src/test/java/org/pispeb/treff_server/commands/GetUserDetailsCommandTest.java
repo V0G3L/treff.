@@ -45,6 +45,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
         Assert.assertEquals(output.getInt("error"), 1100);
     }
 
+    @Test
     public void invalidUserId() {
         GetUserDetailsCommand getUserDetailsCommand
                 = new GetUserDetailsCommand(accountManager, mapper);

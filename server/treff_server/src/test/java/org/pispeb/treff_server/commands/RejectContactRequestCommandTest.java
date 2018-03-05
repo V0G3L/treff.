@@ -73,14 +73,13 @@ public class RejectContactRequestCommandTest
 
     /**
      * executes the command
-     * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
      * @param receiver the user who received a request and shall reject it
      * @param sender the user whose contact request shall be rejected
      * @return the output of the command
      */
-    protected JsonObject execute(User receiver, User sender) {
+    private JsonObject execute(User receiver, User sender) {
         RejectContactRequestCommand rejectContactRequestCommand
                 = new RejectContactRequestCommand(accountManager, mapper);
 
@@ -91,8 +90,7 @@ public class RejectContactRequestCommandTest
                 = runCommand(rejectContactRequestCommand, input);
 
         // assert that receiver didn't get an update
-        // TODO: use User
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
+        Assert.assertEquals(0, getUpdatesForUser(receiver).size());
 
         return output;
     }

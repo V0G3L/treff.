@@ -92,7 +92,7 @@ public class UnblockAccountCommandTest
      * @param blocked the user that is blocked and gets unblocked
      * @return the output of the command
      */
-    protected JsonObject execute(User blocker, User blocked) {
+    private JsonObject execute(User blocker, User blocked) {
         UnblockAccountCommand unblockAccountCommand
                 = new UnblockAccountCommand(accountManager, mapper);
 

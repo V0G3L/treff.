@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
         CreateGroupCommandTest.class,
         EditGroupCommandTest.class,
         EditMembershipCommandTest.class,
+        EditUsernameCommandTest.class,
         GetContactListCommandTest.class,
         GetGroupDetailsCommandTest.class,
         GetMembershipDetailsCommandTest.class,
@@ -27,6 +28,7 @@ import org.junit.runners.Suite;
         RejectContactRequestCommandTest.class,
         RemoveContactCommandTest.class,
         RemoveGroupMembersCommandTest.class,
+        RequestUpdatesCommandTest.class,
         SendContactRequestCommandTest.class,
         UnblockAccountCommandTest.class,
         UpdatePositionCommandTest.class

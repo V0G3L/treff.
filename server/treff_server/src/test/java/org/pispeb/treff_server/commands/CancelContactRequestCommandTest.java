@@ -9,12 +9,7 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Date;
 
-/**
- * @author jens
- * asserts the functionalty of SendContactRequestCommand
- */
 public class CancelContactRequestCommandTest
         extends ContactRequestDependentTest {
 
@@ -68,17 +63,15 @@ public class CancelContactRequestCommandTest
 
     /**
      * executes the command
-     * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
      * @param sender   the sender of the request that shall be canceled
      * @param receiver the receiver of the request that shall be canceled
      * @return the output of the command
      */
-    protected JsonObject execute(User sender, User receiver) {
+    private JsonObject execute(User sender, User receiver) {
         CancelContactRequestCommand cancelContactRequestCommand
                 = new CancelContactRequestCommand(accountManager, mapper);
-
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);

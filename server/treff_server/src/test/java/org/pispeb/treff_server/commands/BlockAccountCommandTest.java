@@ -4,12 +4,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.ContactDependentTest;
 import org.pispeb.treff_server.commands.abstracttests.ContactList;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Date;
 
 public class BlockAccountCommandTest
         extends ContactDependentTest {
@@ -85,14 +83,14 @@ public class BlockAccountCommandTest
     }
 
     /**
-     * executes the block-account-command
+     * executes the command
      * asserts that nothing occurred what never should due to this command
      *
      * @param blocker the user that is blocking another user
      * @param blocked the user that gets blocked
      * @return the output of the command
      */
-    protected JsonObject execute(User blocker, User blocked) {
+    private JsonObject execute(User blocker, User blocked) {
         BlockAccountCommand blockAccountCommand
                 = new BlockAccountCommand(accountManager, mapper);
 
@@ -114,10 +112,10 @@ public class BlockAccountCommandTest
      * executes the block-account-command
      * asserts that no error occurred and the block lists are correct
      *
-     * @param blocker
-     * @param blocked
+     * @param blocker the blocking user
+     * @param blocked the blocked user
      */
-    protected void assertValidBlock(User blocker, User blocked) {
+    private void assertValidBlock(User blocker, User blocked) {
         JsonObject output = execute(blocker, blocked);
 
         // Asserts that the output is empty

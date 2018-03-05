@@ -9,7 +9,6 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.Date;
 
 /**
  * @author tim and jens

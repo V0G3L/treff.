@@ -124,13 +124,13 @@ public class GetContactListCommandTest
     }
 
     /**
-     * executes the get-contacts-command
+     * executes the command
      * asserts that nothing occurred what never should due to this command
      *
      * @param exec the executing user
      * @return the output of the command
      */
-    protected JsonObject execute(User exec) {
+    private JsonObject execute(User exec) {
         GetContactListCommand getContactListCommand
                 = new GetContactListCommand(accountManager, mapper);
 
@@ -150,22 +150,18 @@ public class GetContactListCommandTest
      *
      * @param sender the sender of the request
      * @param receiver the receiver of the request
-     * @return the output of the command
      */
-    private JsonObject sendRequest(User sender, User receiver) {
+    private void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
                 = new SendContactRequestCommand(accountManager, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);
         input.add("id", receiver.id);
-        JsonObject output
-                = runCommand(sendContactRequestCommand, input);
+        runCommand(sendContactRequestCommand, input);
 
         // remove the update that was produced by this
         getSingleUpdateForUser(receiver);
-
-        return output;
     }
 
     private ContactList convertContactList (JsonObject contactList) {

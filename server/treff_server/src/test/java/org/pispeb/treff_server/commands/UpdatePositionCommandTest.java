@@ -9,9 +9,6 @@ import javax.json.JsonObject;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-/**
- * @author tim
- */
 public class UpdatePositionCommandTest extends LoginDependentTest {
 
     public UpdatePositionCommandTest() {
