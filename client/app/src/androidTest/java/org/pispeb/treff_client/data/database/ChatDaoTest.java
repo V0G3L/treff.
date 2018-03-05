@@ -16,12 +16,10 @@ import static org.junit.Assert.assertTrue;
 /**
  * Testing functionality of saving and reading ChatMessages in the database
  */
-
 @RunWith(AndroidJUnit4.class)
 public class ChatDaoTest extends DaoTest {
 
     private ChatDao testChatDao;
-
 
     @Override
     @Before
@@ -36,6 +34,7 @@ public class ChatDaoTest extends DaoTest {
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
         assertEquals(list.size(), 1);
+        //TODO checck if it's the right message
     }
 
     @Test
