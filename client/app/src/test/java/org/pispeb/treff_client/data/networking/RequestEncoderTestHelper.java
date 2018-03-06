@@ -6,25 +6,23 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.repositories.ChatRepository;
+import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.contains;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
@@ -38,25 +36,33 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @PrepareForTest({TreffPunkt.class,
         PreferenceManager.class,
         RequestEncoder.class})
-public class RequestEncoderTest {
+public abstract class RequestEncoderTestHelper {
 
-    private String mockToken = "SomeRandomTokenFromSP";
-    private String mockUserName = "SomeUsername";
+    protected String mockToken = "SomeRandomTokenFromSP";
+    protected String mockUserName = "SomeUsername";
 
     @Mock
-    private Context mockAppContext;
+    protected Context mockAppContext;
     @Mock
-    private SharedPreferences mockSharedPref;
+    protected SharedPreferences mockSharedPref;
     @Mock
-    private ConnectionHandler mockConnectionHandler;
+    protected ConnectionHandler mockConnectionHandler;
     @Mock
-    private Handler mockHandler;
+    protected Handler mockHandler;
 
-    private RequestEncoder testEncoder;
+    @Mock
+    protected ChatRepository mockChatRepository;
+    @Mock
+    protected EventRepository mockEventRepository;
+    @Mock
+    protected UserRepository mockUserRepository;
+    @Mock
+    protected UserGroupRepository mockUserGroupRepository;
+
+    protected RequestEncoder testEncoder;
 
     @Before
     public void prepare() {
-
 
         // mock static Context retrieval
         PowerMockito.mockStatic(TreffPunkt.class);
@@ -83,7 +89,12 @@ public class RequestEncoderTest {
         }
 
         // init testEncoder
-        testEncoder = spy(RequestEncoder.getInstance());
+        // spy to mock some methods on the Encoder (most importantly the send
+        // to CH method in order to bypass multithreading)
+        testEncoder = spy(new RequestEncoder());
+        // set repos to handle database calls from commands
+        testEncoder.setRepos(mockUserRepository, mockUserGroupRepository,
+                mockEventRepository, mockChatRepository);
 
         // skip the backgroundHandler
         doAnswer(invocation -> {
@@ -92,36 +103,15 @@ public class RequestEncoderTest {
             return null;
         }).when(testEncoder).sendToCH(anyString());
 
+        // set mock ConnectionHandler for any actions that don't require
+        // running in a background thread
         testEncoder.setConnectionHandler(mockConnectionHandler);
 
+        // print any invocations on CH to Console
         doAnswer(invocation -> {
             System.out.println(invocation.getArgumentAt(0, String.class));
             return null;
         }).when(mockConnectionHandler).sendMessage(anyString());
 
     }
-
-    @Test
-    public void singletonTest() {
-        RequestEncoder enc1 = RequestEncoder.getInstance();
-        RequestEncoder enc2 = RequestEncoder.getInstance();
-
-        assertTrue(enc1 == enc2);
-    }
-
-    @Test
-    public void simpleCommandTest() {
-        testEncoder.sendChatMessage(1234, "message");
-        verify(mockConnectionHandler).sendMessage(anyString());
-        PowerMockito.verifyNoMoreInteractions(mockConnectionHandler);
-    }
-
-    @Test
-    public void commandQueueTest() {
-        testEncoder.sendChatMessage(1234, "message1");
-        testEncoder.sendChatMessage(1234, "message2");
-        verify(mockConnectionHandler).sendMessage(contains("message1"));
-        verifyNoMoreInteractions(mockConnectionHandler);
-    }
-
 }

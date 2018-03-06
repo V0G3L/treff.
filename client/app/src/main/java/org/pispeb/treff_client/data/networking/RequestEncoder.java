@@ -74,7 +74,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         return INSTANCE;
     }
 
-    private RequestEncoder() {
+    protected RequestEncoder() {
         commands = new LinkedList<>();
         idle = true;
 
