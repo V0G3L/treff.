@@ -7,6 +7,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.DataObject;
@@ -96,8 +97,7 @@ public abstract class AbstractCommand {
             CommandOutput output = executeInternal(commandInput);
             return mapper.writeValueAsString(output);
         } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         } finally {
             releaseAllLocks();
         }
@@ -109,8 +109,7 @@ public abstract class AbstractCommand {
         try {
             return mapper.writeValueAsString(new ErrorOutput(errorCode));
         } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         }
     }
 

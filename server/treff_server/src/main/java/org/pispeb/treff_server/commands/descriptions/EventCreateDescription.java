@@ -1,6 +1,5 @@
 package org.pispeb.treff_server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Event;
@@ -9,7 +8,8 @@ import java.util.Date;
 
 /**
  * Immutable complete description of an event as specified in the
- * treffpunkt protocol document, lacking the ID property and participants array.
+ * treffpunkt protocol document, lacking the ID and creator ID properties and
+ * the participants array.
  * <p>
  * Event creation commands should require an instance of this class as input.
  */

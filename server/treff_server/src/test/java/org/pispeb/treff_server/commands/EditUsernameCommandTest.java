@@ -1,5 +1,6 @@
 package org.pispeb.treff_server.commands;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,15 +18,16 @@ public class EditUsernameCommandTest extends AccountChangeTest {
         super("edit-username");
     }
 
-    @Ignore
     @Test
     public void usernameInUse() {
-        Assert.assertTrue(false); //TODO
+        // try setting 1's name to 0's name
+        JsonObject output = execute(users[1], users[0].username);
+        assertErrorOutput(output, 1300);
     }
 
     @Test
     public void noContacts() {
-        Assert.assertTrue(execute(ownUser).isEmpty());
+        Assert.assertTrue(execute(ownUser, NEWNAME).isEmpty());
 
         //check the name
         Assert.assertEquals(NEWNAME, getUserDetails(ownUser)
@@ -49,7 +51,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
         acceptRequest(users[2], ownUser);
         getSingleUpdateForUser(ownUser);
 
-        Assert.assertTrue(execute(ownUser).isEmpty());
+        Assert.assertTrue(execute(ownUser, NEWNAME).isEmpty());
 
         //check the name
         Assert.assertEquals(NEWNAME, getUserDetails(ownUser)
@@ -80,12 +82,12 @@ public class EditUsernameCommandTest extends AccountChangeTest {
      * @param exec the executing user
      * @return the output of the command
      */
-    private JsonObject execute(User exec) {
+    private JsonObject execute(User exec, String newUsername) {
         EditUsernameCommand editUsernameCommand
                 = new EditUsernameCommand(accountManager, mapper);
 
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
-        input.add("user", NEWNAME);
+        input.add("user", newUsername);
         JsonObject output = runCommand(editUsernameCommand, input);
 
         // Assert that the executing user didn't get any updates

@@ -51,7 +51,6 @@ public class LoginCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
-        // TODO: make all fields to be serialized public or annotate
         public final String token;
         public final int id;
 

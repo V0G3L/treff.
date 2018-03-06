@@ -9,6 +9,7 @@ import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.AccountChangeUpdate;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
@@ -60,11 +61,9 @@ public class EditUsernameCommand extends AbstractCommand {
                 actingAccount.getID(), actingAccount);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
                     affected);
         } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         }
 
         return new Output();

@@ -9,6 +9,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
@@ -77,11 +78,9 @@ public class RemovePollOptionCommand extends AbstractCommand {
             getSafeForWriting(a);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
                     new HashSet<>(group.getAllMembers().values()));
         } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+             throw new ProgrammingException(e);
         }
 
         // remove the option

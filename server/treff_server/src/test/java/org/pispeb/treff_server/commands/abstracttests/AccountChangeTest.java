@@ -48,10 +48,10 @@ public abstract class AccountChangeTest extends MultipleUsersTest {
     /**
      * executes the accept-contact-request-command
      *
-     * @param sender the sender of the request
      * @param receiver the receiver of the request
+     * @param sender the sender of the request
      */
-    protected void acceptRequest(User sender, User receiver) {
+    protected void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 

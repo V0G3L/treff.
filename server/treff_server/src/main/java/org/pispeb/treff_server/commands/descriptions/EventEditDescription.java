@@ -1,13 +1,13 @@
 package org.pispeb.treff_server.commands.descriptions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pispeb.treff_server.Position;
 
 import java.util.Date;
 
 /**
  * Immutable complete description of an event as specified in the
- * treffpunkt protocol document, lacking the participants array.
+ * treffpunkt protocol document, lacking the creator ID property and the
+ * participants array.
  * <p>
  * Event edit commands should require an instance of this class as input.
  */

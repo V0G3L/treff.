@@ -25,7 +25,6 @@ public class CancelContactRequestCommandTest
         JsonObject output = execute(sender, receiver);
         Assert.assertTrue(output.isEmpty());
 
-        // TODO: C&P'd this thrice now, might want to do something about that
         ContactList receiverContacts = getContactsOfUser(receiver);
         ContactList senderContacts = getContactsOfUser(sender);
 

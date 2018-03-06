@@ -10,6 +10,9 @@ import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.impl.Log4jLoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -40,6 +43,7 @@ public class RequestHandler {
             availableCommands = new HashMap<>();
 
     private final AccountManager accountManager;
+    private final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     public RequestHandler(AccountManager accountManager) {
         this.accountManager = accountManager;
@@ -47,46 +51,56 @@ public class RequestHandler {
     }
 
     public Response handleRequest(String requestString) {
+        try { // catch-all for internal server errors
+            JsonObject request = Json
+                    .createReader(new StringReader(requestString))
+                    .readObject();
 
-        JsonObject request = Json
-                .createReader(new StringReader(requestString))
-                .readObject();
+            // if cmd property is missing, return a syntax error message
+            if (!request.containsKey("cmd"))
+                return toErrorResponse(ErrorCode.SYNTAXINVALID);
 
-        // if cmd property is missing, return a syntax error message
-        if (!request.containsKey("cmd"))
-            return toErrorResponse(ErrorCode.SYNTAXINVALID);
+            // if cmdString doesn't map to a command class, return an
+            // unknown command error message
+            String cmdString = request.getString("cmd");
+            if (cmdString.equals("request-persistent-connection")) {
+                Account actingAccount = accountManager
+                        .getAccountByLoginToken(request.getString("token"));
+                if (actingAccount == null)
+                    return toErrorResponse(ErrorCode.TOKENINVALID);
+                return new Response(actingAccount.getID());
+            }
 
-        // if cmdString doesn't map to a command class, return an
-        // unknown command error message
-        String cmdString = request.getString("cmd");
-        if (cmdString.equals("request-persistent-connection")) {
-            Account actingAccount = accountManager
-                    .getAccountByLoginToken(request.getString("token"));
-            if (actingAccount == null)
-                return toErrorResponse(ErrorCode.TOKENINVALID);
-            return new Response(actingAccount.getID());
+            Class<? extends AbstractCommand> commandClass
+                    = getCommandByStringIdentifier(cmdString);
+            if (commandClass == null)
+                return toErrorResponse(ErrorCode.UNKNOWN_COMMAND);
+
+            // instantiate command
+            AbstractCommand command = null;
+            try {
+                command = commandClass
+                        .getConstructor(AccountManager.class, ObjectMapper.class)
+                        .newInstance(accountManager, mapper);
+            } catch (InstantiationException | IllegalAccessException
+                    | NoSuchMethodException | InvocationTargetException e) {
+                // This should only happen when a command class uses a
+                // non-standard constructor
+                throw new ProgrammingException();
+            }
+
+            String outputString = command.execute(requestString);
+            return new Response(outputString);
+        } catch (Exception e) {
+            logger.error("Internal server error on request\n\n" +
+                    "{}\n\n" +
+                    "Error message:\n" +
+                    "{}", requestString, e.getMessage());
+            return new Response(Json.createObjectBuilder()
+                    .add("error", ErrorCode.INTERNAL_SERVER_ERROR.getCode())
+                    .build()
+                    .toString());
         }
-
-        Class<? extends AbstractCommand> commandClass
-                = getCommandByStringIdentifier(cmdString);
-        if (commandClass == null)
-            return toErrorResponse(ErrorCode.UNKNOWN_COMMAND);
-
-        // instantiate command
-        AbstractCommand command = null;
-        try {
-            command = commandClass
-                    .getConstructor(AccountManager.class, ObjectMapper.class)
-                    .newInstance(accountManager, mapper);
-        } catch (InstantiationException | IllegalAccessException
-                | NoSuchMethodException | InvocationTargetException e) {
-            // This should only happen when a command class uses a
-            // non-standard constructor
-            throw new ProgrammingException();
-        }
-
-        String outputString = command.execute(requestString);
-        return new Response(outputString);
     }
 
     private Response toErrorResponse(ErrorCode errorCode) {

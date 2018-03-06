@@ -54,9 +54,9 @@ public class BlockAccountCommand extends ManageBlockCommand {
                             UpdateType.REMOVE_CONTACT);
             try {
                 accountManager.createUpdate(mapper.writeValueAsString(update),
-                        new Date(), blockAccount);
+                        blockAccount);
             } catch (JsonProcessingException e) {
-                throw new ProgrammingException();
+                throw new ProgrammingException(e);
             }
         }
 
@@ -70,7 +70,7 @@ public class BlockAccountCommand extends ManageBlockCommand {
                             false);
             try {
                 accountManager.createUpdate(mapper.writeValueAsString(update),
-                        new Date(), blockAccount);
+                        blockAccount);
             } catch (JsonProcessingException e) {
                 throw new ProgrammingException();
             }

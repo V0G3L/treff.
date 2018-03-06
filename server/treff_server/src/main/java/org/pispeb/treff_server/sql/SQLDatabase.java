@@ -252,8 +252,7 @@ public class SQLDatabase {
                 // updates
                 String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                                "updatestring TEXT NOT NULL," +
-                                "time DATETIME NOT NULL" +
+                                "updatestring TEXT NOT NULL" +
                                 ");",
                         UPDATES.toString(),
                         // set max size of 'type' field to size of longest

@@ -12,7 +12,7 @@ import java.util.GregorianCalendar;
 /**
  * @author tim
  */
-public class EventDependentTest extends GroupDependentTest {
+public abstract class EventDependentTest extends GroupDependentTest {
 
     protected final String eventTitle = "Chevron Seven, locked.";
     protected final long eventTimeStart = new GregorianCalendar(

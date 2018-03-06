@@ -2,11 +2,15 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.pispeb.treff_server.JsonDependentTest;
 import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequestUpdatesCommandTest extends MultipleUsersTest {
 
@@ -23,52 +27,63 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
 
     @Test
     public void multipleUpdates1() {
-        sendRequest(users[1], ownUser);
-        sendRequest(users[2], ownUser);
-        sendRequest(users[3], ownUser);
+        // send contact request from multiple users to 0
+        int[] senderIndices = {1, 2, 3};
+        for (int i : senderIndices)
+            sendRequest(users[i], ownUser);
 
+        // collect updates for 0 in list
         JsonObject output = execute(ownUser);
-        JsonArray updates = output.getJsonArray("updates");
+        List<JsonObject> updates
+                = output.getJsonArray("updates").getValuesAs(JsonString.class)
+                .stream()
+                .map(str -> toJsonObject(str.getString()))
+                .collect(Collectors.toList());
 
-        Assert.assertEquals(3, updates.size());
-        for (int i = 0; i < 3; i++) {
-            JsonObject currentUpdate = (JsonObject) updates.get(i);
-            Assert.assertEquals(users[i+1].id,
-                    currentUpdate.getInt("creator"));
+        // check that updates arrived in correct order by comparing creator IDs
+        Assert.assertEquals(senderIndices.length, updates.size());
+        for (int i = 0; i < senderIndices.length; i++) {
+            Assert.assertEquals(users[senderIndices[i]].id,
+                    updates.get(i).getInt("creator"));
         }
 
     }
 
     @Test
     public void multipleUpdate2() {
-        // get a contact-request-update by user 1
+        // get a contact-request-update from user 1
         sendRequest(users[1], ownUser);
-        acceptRequest(ownUser, users[1]);
 
-        // get a contact-request-answer-update by user 2
+        // get a contact-request-answer-update from user 2
         sendRequest(ownUser, users[2]);
         acceptRequest(users[2], ownUser);
 
-        // get a remove-contact-update by user 2
+        // get a remove-contact-update from user 2
         block(users[2], ownUser);
 
         JsonObject output = execute(ownUser);
-        JsonArray updates = output.getJsonArray("updates");
-        JsonObject currentUpdate;
+        List<JsonObject> updates
+                = output.getJsonArray("updates").getValuesAs(JsonString.class)
+                .stream()
+                .map(str -> toJsonObject(str.getString()))
+                .collect(Collectors.toList());
+        Assert.assertEquals(3, updates.size());
 
-        currentUpdate = (JsonObject) updates.get(0);
+        // check order, type, and creator IDs of all three updates
+        JsonObject currentUpdate;
+        currentUpdate = updates.get(0);
         Assert.assertEquals(users[1].id,
                 currentUpdate.getInt("creator"));
         Assert.assertEquals("contact-request",
                 currentUpdate.getString("type"));
 
-        currentUpdate = (JsonObject) updates.get(1);
+        currentUpdate = updates.get(1);
         Assert.assertEquals(users[2].id,
                 currentUpdate.getInt("creator"));
         Assert.assertEquals("contact-request-answer",
                 currentUpdate.getString("type"));
 
-        currentUpdate = (JsonObject) updates.get(2);
+        currentUpdate = updates.get(2);
         Assert.assertEquals(users[2].id,
                 currentUpdate.getInt("creator"));
         Assert.assertEquals("remove-contact",
@@ -115,10 +130,10 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
     /**
      * executes the accept-contact-request-command
      *
-     * @param sender the sender of the request
      * @param receiver the receiver of the request
+     * @param sender the sender of the request
      */
-    private void acceptRequest(User sender, User receiver) {
+    private void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 

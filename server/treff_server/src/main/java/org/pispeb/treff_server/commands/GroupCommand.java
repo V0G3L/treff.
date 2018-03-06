@@ -14,7 +14,6 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -123,9 +122,9 @@ public abstract class GroupCommand extends AbstractCommand {
     protected void addUpdateToOtherMembers(UpdateToSerialize update,
                                            Set<Account> affectedMembers) {
         try {
+            // actingAccount shouldn't get an update
             affectedMembers.remove(actingAccount);
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
                     affectedMembers);
         } catch (JsonProcessingException e) {
             throw new ProgrammingException();
