@@ -32,7 +32,7 @@ public class RequestPositionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, Date time, String token) {
-            super("request-position");
+            super(CmdDesc.REQUEST_POSITION.toString());
             this.id = id;
             this.time = time;
             this.token = token;

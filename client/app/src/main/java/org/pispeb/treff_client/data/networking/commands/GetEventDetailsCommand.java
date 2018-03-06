@@ -56,7 +56,7 @@ public class GetEventDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, int groupId, String token) {
-            super("get-event-details");
+            super(CmdDesc.GET_EVENT_DETAILS.toString());
             this.id = id;
             this.groupId = groupId;
             this.token = token;

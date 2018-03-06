@@ -35,7 +35,7 @@ public class RemoveContactCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("remove-contact");
+            super(CmdDesc.REMOVE_CONTACT.toString());
             this.id = id;
             this.token = token;
         }

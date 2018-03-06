@@ -36,7 +36,7 @@ public class VoteForOptionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int pollId, int id, String token) {
-            super("vote-for-option");
+            super(CmdDesc.VOTE_FOR_OPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
             this.id = id;

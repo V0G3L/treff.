@@ -40,7 +40,7 @@ public class DeleteAccountCommand extends AbstractCommand{
         public final String token;
 
         public Request(String pass, String token) {
-            super("delete-account");
+            super(CmdDesc.DELETE_ACCOUNT.toString());
             this.pass = pass;
             this.token = token;
         }

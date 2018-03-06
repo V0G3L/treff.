@@ -42,7 +42,7 @@ public class PublishPositionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, Date timeEnd, String token) {
-            super("publish-position");
+            super(CmdDesc.PUBLISH_POSITION.toString());
             this.groupId = groupId;
             this.timeEnd = timeEnd;
             this.token = token;

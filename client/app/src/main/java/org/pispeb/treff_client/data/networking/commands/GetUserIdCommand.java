@@ -48,7 +48,7 @@ public class GetUserIdCommand extends AbstractCommand {
         public final String token;
 
         public Request(String user, String token) {
-            super("get-user-id");
+            super(CmdDesc.GET_USER_ID.toString());
             this.user = user;
             this.token = token;
         }

@@ -35,7 +35,7 @@ public class UnblockAccountCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("unblock-account");
+            super(CmdDesc.UNBLOCK_ACCOUNT.toString());
             this.id = id;
             this.token = token;
         }

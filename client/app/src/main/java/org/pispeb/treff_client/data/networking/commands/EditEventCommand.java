@@ -63,7 +63,7 @@ public class EditEventCommand extends AbstractCommand {
         public Request(int groupId, String title, int creatorId, Date timeStart,
                        Date timeEnd, Position position, int eventId,
                        String token) {
-            super("edit-event");
+            super(CmdDesc.EDIT_EVENT.toString());
             this.groupId = groupId;
             event = new EventEditDescription(title, creatorId, timeStart,
                     timeEnd, position, eventId);

@@ -41,7 +41,7 @@ public class EditEmailCommand extends AbstractCommand{
         public final String token;
 
         public Request(String email, String token) {
-            super("edit-email");
+            super(CmdDesc.EDIT_EMAIL.toString());
             this.email = email;
             this.token = token;
         }

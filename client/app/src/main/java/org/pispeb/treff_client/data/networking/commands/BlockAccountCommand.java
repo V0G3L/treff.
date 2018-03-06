@@ -35,7 +35,7 @@ public class BlockAccountCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("block-account");
+            super(CmdDesc.BLOCK_ACCOUNT.toString());
             this.id = id;
             this.token = token;
         }

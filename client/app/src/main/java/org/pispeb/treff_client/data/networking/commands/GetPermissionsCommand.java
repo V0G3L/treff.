@@ -36,7 +36,7 @@ public class GetPermissionsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, int userId, String token) {
-            super("get-permissions");
+            super(CmdDesc.GET_PERMISSIONS.toString());
             this.id = id;
             this.userId = userId;
             this.token = token;

@@ -49,7 +49,7 @@ public class SendContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("send-contact-request");
+            super(CmdDesc.SEND_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

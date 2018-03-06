@@ -36,7 +36,7 @@ public class EditPasswordCommand extends AbstractCommand{
         public final String token;
 
         public Request(String pass, String newPass, String token) {
-            super("edit-password");
+            super(CmdDesc.EDIT_PASSWORD.toString());
             this.pass = pass;
             this.newPass = newPass;
             this.token = token;

@@ -47,7 +47,7 @@ public class GetContactListCommand extends AbstractCommand {
         public final String token;
 
         public Request(String token) {
-            super("get-contact-list");
+            super(CmdDesc.GET_CONTACT_LIST.toString());
             this.token = token;
         }
     }

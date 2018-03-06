@@ -35,7 +35,7 @@ public class RemovePollCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int id, String token) {
-            super("remove-poll");
+            super(CmdDesc.REMOVE_POLL.toString());
             this.groupId = groupId;
             this.id = id;
             this.token = token;

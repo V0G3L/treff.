@@ -33,7 +33,7 @@ public class ListGroupsCommad extends AbstractCommand {
         public final String token;
 
         public Request(String token) {
-            super("list-groups");
+            super(CmdDesc.LIST_GROUPS.toString());
             this.token = token;
         }
     }

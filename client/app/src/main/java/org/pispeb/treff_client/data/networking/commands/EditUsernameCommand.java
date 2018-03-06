@@ -40,7 +40,7 @@ public class EditUsernameCommand extends AbstractCommand{
         public final String token;
 
         public Request(String username, String token) {
-            super("edit-username");
+            super(CmdDesc.EDIT_USERNAME.toString());
             this.username = username;
             this.token = token;
         }

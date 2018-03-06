@@ -42,7 +42,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("get-group-details");
+            super(CmdDesc.GET_GROUP_DETAILS.toString());
             this.id = id;
             this.token = token;
         }

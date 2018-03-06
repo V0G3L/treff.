@@ -62,7 +62,7 @@ public class CreateEventCommand extends AbstractCommand {
 
         public Request(int groupId, String title, int creatorId, Date timeStart,
                        Date timeEnd, Position position, String token) {
-            super("create-event");
+            super(CmdDesc.CREATE_EVENT.toString());
             this.groupId = groupId;
             event = new EventCreateDescription(title, creatorId, timeStart,
                     timeEnd, position);

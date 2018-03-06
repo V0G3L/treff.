@@ -36,7 +36,7 @@ public class UpdatePositionCommand extends AbstractCommand {
         public final String token;
 
         public Request(double latitude, double longitude, Date timeMeasured, String token) {
-            super("update-position");
+            super(CmdDesc.UPDATE_POSITION.toString());
             this.latitude = latitude;
             this.longitude = longitude;
             this.timeMeasured = timeMeasured;

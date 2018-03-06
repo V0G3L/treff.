@@ -36,7 +36,7 @@ public class AcceptContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("accept-contact-request");
+            super(CmdDesc.ACCEPT_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

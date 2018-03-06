@@ -35,7 +35,7 @@ public class ResetPasswordConfirmCommand extends AbstractCommand{
 
 
         public Request(String code, String newPass) {
-            super("reset-password-confirm");
+            super(CmdDesc.RESET_PASSWORD_CONFIRM.toString());
             this.code = code;
             this.newPass = newPass;
         }

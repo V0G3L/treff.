@@ -36,7 +36,7 @@ public class CancelContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("cancel-contact-request");
+            super(CmdDesc.CANCEL_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

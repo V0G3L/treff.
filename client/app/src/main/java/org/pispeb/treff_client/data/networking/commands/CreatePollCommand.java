@@ -41,7 +41,7 @@ public class CreatePollCommand extends AbstractCommand{
 
         public Request(int groupId, String question, boolean isMultiChoice,
                        Date timeVoteClose, String token) {
-            super("create-poll");
+            super(CmdDesc.CREATE_POLL.toString());
             this.groupId = groupId;
             poll = new PollCreateDescription(question, isMultiChoice, timeVoteClose);
             this.token = token;

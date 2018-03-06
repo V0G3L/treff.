@@ -35,7 +35,7 @@ public class RejectContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("reject-contact-request");
+            super(CmdDesc.REJECT_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

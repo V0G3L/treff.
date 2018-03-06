@@ -42,7 +42,7 @@ public class CreateGroupCommand extends AbstractCommand {
         public final String token;
 
         public Request(String name, int[] members, String token) {
-            super("create-group");
+            super(CmdDesc.CREATE_GROUP.toString());
             group = new UsergroupCreateDescription(name, members);
             this.token = token;
         }

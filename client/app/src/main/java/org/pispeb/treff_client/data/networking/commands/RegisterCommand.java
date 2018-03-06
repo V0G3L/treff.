@@ -45,7 +45,7 @@ public class RegisterCommand extends AbstractCommand{
         public final String pass;
 
         public Request(String user, String pass) {
-            super("register");
+            super(CmdDesc.REGISTER.toString());
             this.user = user;
             this.pass = pass;
         }

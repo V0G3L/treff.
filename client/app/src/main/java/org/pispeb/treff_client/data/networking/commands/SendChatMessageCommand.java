@@ -57,7 +57,7 @@ public class SendChatMessageCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String message, String token) {
-            super("send-chat-message");
+            super(CmdDesc.SEND_CHAT_MESSAGE.toString());
             this.groupId = groupId;
             this.message = message;
             this.token = token;

@@ -34,7 +34,7 @@ public class LeaveEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int id, String token) {
-            super("leave-event");
+            super(CmdDesc.LEAVE_EVENT.toString());
             this.groupId = groupId;
             this.id = id;
             this.token = token;

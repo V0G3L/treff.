@@ -39,7 +39,7 @@ public class RemoveEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int id, String token) {
-            super("remove-event");
+            super(CmdDesc.REMOVE_EVENT.toString());
             this.groupId = groupId;
             this.id = id;
             this.token = token;

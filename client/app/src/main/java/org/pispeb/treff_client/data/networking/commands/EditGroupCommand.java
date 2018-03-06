@@ -42,7 +42,7 @@ public class EditGroupCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String name, String token) {
-            super("edit-group");
+            super(CmdDesc.EDIT_GROUP.toString());
             group = new UsergroupEditDescription(groupId, name);
             this.token = token;
         }

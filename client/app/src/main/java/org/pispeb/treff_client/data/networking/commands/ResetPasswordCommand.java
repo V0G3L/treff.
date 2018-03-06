@@ -29,7 +29,7 @@ public class ResetPasswordCommand extends AbstractCommand{
         public final String email;
 
         public Request(String email) {
-            super("reset-password");
+            super(CmdDesc.RESET_PASSWORD.toString());
             this.email = email;
         }
     }
