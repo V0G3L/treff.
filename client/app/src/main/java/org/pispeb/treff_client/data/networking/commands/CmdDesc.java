@@ -24,7 +24,7 @@ public enum CmdDesc {
     GET_CONTACT_LIST ("get-contact-list"),
     GET_EVENT_DETAILS ("get-event-details"),
     GET_GROUP_DETAILS ("get-group-details"),
-    GET_PERMISSIONS ("get-permission"),
+    GET_PERMISSIONS ("get-permissions"),
     GET_POLL_DETAILS ("get-poll-details"),
     GET_USER_DETAILS ("get-user-details"),
     GET_USER_ID ("get-user-id"),
