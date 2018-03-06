@@ -8,9 +8,12 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.AccountChangeUpdate;
+import org.pispeb.treff_server.commands.updates.UpdateType;
+import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
+import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
@@ -54,8 +57,9 @@ public class DeleteAccountCommand extends AbstractCommand {
         }
         for (Account a : affected)
             getSafeForWriting(a);
-        AccountChangeUpdate update = new AccountChangeUpdate(new Date(),
-                actingAccount.getID(), actingAccount);
+       UpdatesWithoutSpecialParameters update
+               = new UpdatesWithoutSpecialParameters(new Date(),
+                actingAccount.getID(), UpdateType.ACCOUNT_DELETION);
 
         // delete account
         actingAccount.delete();

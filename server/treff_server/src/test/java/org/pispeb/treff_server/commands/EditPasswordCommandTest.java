@@ -1,7 +1,6 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.LoginDependentTest;
 
@@ -32,7 +31,10 @@ public class EditPasswordCommandTest extends LoginDependentTest {
         // try to login with the old password
         LoginCommand loginCommand
                 = new LoginCommand(accountManager, mapper);
+
         inputBuilder = Json.createObjectBuilder()
+                .add("cmd", "login")
+                .add("token", ownUser.token)
                 .add("user", ownUser.username)
                 .add("pass", ownUser.password);
         Assert.assertEquals(1101,
@@ -40,6 +42,8 @@ public class EditPasswordCommandTest extends LoginDependentTest {
 
         // login with new password
         inputBuilder = Json.createObjectBuilder()
+                .add("cmd", "login")
+                .add("token", ownUser.token)
                 .add("user", ownUser.username)
                 .add("pass", NEWPASS);
         Assert.assertEquals(ownUser.id,
@@ -63,7 +67,10 @@ public class EditPasswordCommandTest extends LoginDependentTest {
         // try to login with the new password
         LoginCommand loginCommand
                 = new LoginCommand(accountManager, mapper);
+
         inputBuilder = Json.createObjectBuilder()
+                .add("cmd", "login")
+                .add("token", ownUser.token)
                 .add("user", ownUser.username)
                 .add("pass", NEWPASS);
         Assert.assertEquals(1101,
@@ -72,6 +79,8 @@ public class EditPasswordCommandTest extends LoginDependentTest {
 
         // login with the old password
         inputBuilder = Json.createObjectBuilder()
+                .add("cmd", "login")
+                .add("token", ownUser.token)
                 .add("user", ownUser.username)
                 .add("pass", ownUser.password);
         Assert.assertEquals(ownUser.id,
@@ -86,6 +95,8 @@ public class EditPasswordCommandTest extends LoginDependentTest {
                 = new RequestUpdatesCommand(accountManager, mapper);
 
         inputBuilder = Json.createObjectBuilder()
+                .add("cmd", "request-updates")
+                .add("token", ownUser.token)
                 .add("cmd", cmd)
                 .add("token", ownUser.token);
         Assert.assertTrue(runCommand(requestUpdatesCommand, inputBuilder)

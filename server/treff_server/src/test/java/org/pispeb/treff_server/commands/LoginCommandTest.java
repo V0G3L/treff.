@@ -37,7 +37,7 @@ public class LoginCommandTest extends MultipleUsersTest {
         inputBuilder.add("pass", "inhallsofstone");
         JsonObject output = runCommand(loginCommand,inputBuilder);
 
-        Assert.assertEquals(output.getInt("error"), 1302);
+        Assert.assertEquals(output.getInt("error"), 1101);
     }
 
     @Test

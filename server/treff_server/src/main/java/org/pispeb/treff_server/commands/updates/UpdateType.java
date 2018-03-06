@@ -12,6 +12,10 @@ public enum UpdateType {
      */
     ACCOUNT_CHANGE,
     /**
+     * The type of updates that represent a deletion of an account
+     */
+    ACCOUNT_DELETION,
+    /**
      * The type of updates that represent changes to an usergroup
      */
     USERGROUP_CHANGE,

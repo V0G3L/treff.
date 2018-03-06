@@ -28,7 +28,7 @@ public class LoginCommand extends AbstractCommand {
                 = getSafeForReading(
                         accountManager.getAccountByUsername(input.username));
         if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.USERNAMEINVALID);
+            return new ErrorOutput(ErrorCode.CREDWRONG);
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.password))

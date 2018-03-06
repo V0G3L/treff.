@@ -14,6 +14,7 @@ import org.junit.runners.Suite;
         CancelContactRequestCommandTest.class,
         CreateEventCommandTest.class,
         CreateGroupCommandTest.class,
+        DeleteAccountCommandTest.class,
         EditEmailCommandTest.class,
         EditEventCommandTest.class,
         EditGroupCommandTest.class,
