@@ -3,6 +3,7 @@ package org.pispeb.treff_server.commands.abstracttests;
 import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.CreateGroupCommand;
+import org.pispeb.treff_server.commands.EditMembershipCommand;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.*;
@@ -12,6 +13,7 @@ import java.util.Set;
 /**
  * Abstract test class creating a group containing {@link MultipleUsersTest}s
  * members 0, 1, and 2 <b>but not 3</b>.
+ * Members 0 and 1 have all permissions 2 has none at all.
  */
 public abstract class GroupDependentTest extends MultipleUsersTest {
 
@@ -48,11 +50,32 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
 
         groupId = runCommand(createGroupCommand, input).getInt("id");
 
+        EditMembershipCommand editMembershipCommand
+                = new EditMembershipCommand(accountManager, mapper);
+        JsonObject permissionInput = Json.createObjectBuilder()
+                .add("edit_any_event", false)
+                .add("create_poll",false)
+                .add("change_permissions",false)
+                .add("manage_members", false)
+                .add("create_event", false)
+                .add("edit_group", false)
+                .add("edit_any_poll", false)
+                .build();
+        JsonObjectBuilder permInput
+                = getCommandStubForUser("edit-membership", ownUser)
+                .add("id", groupId)
+                .add("membership", Json.createObjectBuilder()
+                        .add("account-id", users[2].id)
+                        .add("permissions", permissionInput)
+                        .build());
+
+        JsonObject output =
+                runCommand(editMembershipCommand, permInput);
+
         // remove updates produced by group creation to avoid interfering
         // with other commands
         members.remove(ownUser);
         for (User member : members)
             getSingleUpdateForUser(member);
-
     }
 }

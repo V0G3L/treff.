@@ -20,6 +20,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -386,6 +387,13 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public SortedSet<Update> getUndeliveredUpdates() {
         // Retrieve updates via MapHandler and put the value set into a TreeSet
+        Map r = database.query(
+                "SELECT updateid FROM %s WHERE accountid=?;",
+                TableName.UPDATEAFFECTIONS,
+                new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
+                this.id);
+
+
         return new TreeSet<>(database.query(
                 "SELECT updateid FROM %s WHERE accountid=?;",
                 TableName.UPDATEAFFECTIONS,

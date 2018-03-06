@@ -142,4 +142,8 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
         Assert.assertEquals(output.getInt("error"), 1511);
     }
 
+    @Test
+    public void noPermission() {
+        //TODO
+    }
 }
