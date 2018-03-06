@@ -89,7 +89,18 @@ public class AddGroupMembersCommandTest extends GroupDependentTest {
 
     @Test
     public void noPermission() {
-        //TODO
+        AddGroupMembersCommand addGroupMembersCommand
+                = new AddGroupMembersCommand(accountManager, mapper);
+        JsonArrayBuilder members = Json.createArrayBuilder()
+                .add(users[3].id);
+        JsonObjectBuilder input =
+                getCommandStubForUser("add-group-members", users[2]);
+        input.add("id", groupId)
+                .add("members", members.build());
+
+        JsonObject output = runCommand(addGroupMembersCommand, input);
+
+        Assert.assertEquals(output.getInt("error"), 2101);
     }
 
     @Test

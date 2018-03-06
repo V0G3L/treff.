@@ -144,6 +144,28 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
 
     @Test
     public void noPermission() {
-        //TODO
+        EditMembershipCommand editMembershipCommand
+                = new EditMembershipCommand(accountManager, mapper);
+        JsonObject permissionInput = Json.createObjectBuilder()
+                .add("edit_any_event", false)
+                .add("create_poll",false)
+                .add("change_permissions",false)
+                .add("manage_members", false)
+                .add("create_event", false)
+                .add("edit_group", false)
+                .add("edit_any_poll", false)
+                .build();
+        JsonObjectBuilder input =
+                getCommandStubForUser("edit-membership", users[2]);
+        input.add("id", groupId)
+                .add("membership", Json.createObjectBuilder()
+                        .add("account-id", users[3].id)
+                        .add("permissions", permissionInput)
+                        .build());
+
+        JsonObject output =
+                runCommand(editMembershipCommand, input);
+
+        Assert.assertEquals(output.getInt("error"), 2000);
     }
 }

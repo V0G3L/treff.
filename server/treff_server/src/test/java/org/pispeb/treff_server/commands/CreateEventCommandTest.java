@@ -130,4 +130,28 @@ public class CreateEventCommandTest extends EventDependentTest {
         Assert.assertEquals(1400,output.getInt("error"));
     }
 
+    @Test
+    public void noPermission(){
+        CreateEventCommand createEventCommand
+                = new CreateEventCommand(accountManager, mapper);
+
+        JsonObjectBuilder input =
+                getCommandStubForUser("create-event", users[2]);
+        input.add("group-id", groupId);
+
+        JsonObject eventDesc = Json.createObjectBuilder()
+                .add("type", "event")
+                .add("title", eventTitle)
+                .add("time-start", eventTimeStart)
+                .add("time-end", eventTimeStart)
+                .add("latitude", eventLatitude)
+                .add("longitude", eventLongitude)
+                .build();
+
+        input.add("event", eventDesc);
+
+        JsonObject output = runCommand(createEventCommand, input);
+
+        Assert.assertEquals(2200,output.getInt("error"));
+    }
 }

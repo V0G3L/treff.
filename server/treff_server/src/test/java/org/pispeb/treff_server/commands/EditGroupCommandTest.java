@@ -56,10 +56,6 @@ public class EditGroupCommandTest extends GroupDependentTest {
         int id = groupId + 1; // invalid ID
         EditGroupCommand editGroupCommand
                 = new EditGroupCommand(accountManager, mapper);
-        JsonArray members = Json.createArrayBuilder()
-                .add(ownUser.id)
-                .add(id)
-                .build();
         JsonObject group = Json.createObjectBuilder()
                 .add("type", "usergroup")
                 .add("id", id)
@@ -75,6 +71,20 @@ public class EditGroupCommandTest extends GroupDependentTest {
 
     @Test
     public void noPermissions() {
-        // TODO
+        EditGroupCommand editGroupCommand
+                = new EditGroupCommand(accountManager, mapper);
+        JsonObject group = Json.createObjectBuilder()
+                .add("type", "usergroup")
+                .add("id", groupId)
+                .add("name", "onhisdarkthrone")
+                .build();
+
+        JsonObjectBuilder input =
+                getCommandStubForUser("edit-group", users[2]);
+        input.add("group", group);
+
+        JsonObject output = runCommand(editGroupCommand, input);
+
+        assertErrorOutput(output, 2100);
     }
 }

@@ -6,8 +6,13 @@ import java.util.Date;
 
 /**
  * Immutable complete description of an event as specified in the
+<<<<<<< HEAD
  * treffpunkt protocol document, lacking the creator ID property and the
  * participants array.
+=======
+ * treffpunkt protocol document, lacking the creator id and the participants
+ * array.
+>>>>>>> Wrote EditEventCommandTest and rewrote EditEventCommand. Also wrote all missing tests for missing permissions.
  * <p>
  * Event edit commands should require an instance of this class as input.
  */

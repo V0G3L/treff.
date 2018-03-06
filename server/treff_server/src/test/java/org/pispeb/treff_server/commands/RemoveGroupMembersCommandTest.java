@@ -113,7 +113,18 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
 
     @Test
     public void noPermission() {
-        //TODO
+        RemoveGroupMembersCommand removeGroupMembersCommand
+                = new RemoveGroupMembersCommand(accountManager, mapper);
+        JsonArrayBuilder members = Json.createArrayBuilder()
+                .add(users[1].id);
+        JsonObjectBuilder input =
+                getCommandStubForUser("add-group-members", users[2]);
+        input.add("id", groupId)
+                .add("members", members.build());
+
+        JsonObject output = runCommand(removeGroupMembersCommand, input);
+
+        Assert.assertEquals(output.getInt("error"), 2101);
     }
 
     @Test
