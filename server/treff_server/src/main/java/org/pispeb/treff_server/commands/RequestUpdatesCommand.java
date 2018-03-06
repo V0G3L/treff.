@@ -12,7 +12,9 @@ import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * a command to request updates from the server
@@ -36,8 +38,9 @@ public class RequestUpdatesCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get the Updates
-        Set<Update> updates = actingAccount.getUndeliveredUpdates();
-        Set<String> updatecontents = new HashSet<>();
+        SortedSet<Update> updates = actingAccount.getUndeliveredUpdates();
+        // LinkedHashSet to preserve insertion order
+        Set<String> updatecontents = new LinkedHashSet<>();
         for (Update u : updates) {
             updatecontents.add(u.getUpdate());
             actingAccount.markUpdateAsDelivered(u);

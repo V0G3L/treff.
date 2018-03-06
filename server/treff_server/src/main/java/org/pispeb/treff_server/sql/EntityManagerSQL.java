@@ -87,7 +87,7 @@ public class EntityManagerSQL implements AccountManager {
     boolean usernameAvailable(String username) {
         synchronized (usernameLock) {
             return !database.query(
-                    "SELECT FROM %s WHERE username=?;",
+                    "SELECT id FROM %s WHERE username=?;",
                     TableName.ACCOUNTS,
                     new ContainsCheckHandler(),
                     username);
@@ -97,7 +97,7 @@ public class EntityManagerSQL implements AccountManager {
     boolean emailAvailable(String email) {
         synchronized (emailLock) {
             return !database.query(
-                    "SELECT FROM %s WHERE username=?;",
+                    "SELECT id FROM %s WHERE username=?;",
                     TableName.ACCOUNTS,
                     new ContainsCheckHandler(),
                     email);

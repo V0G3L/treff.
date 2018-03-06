@@ -91,7 +91,7 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
                 getCommandStubForUser(this.cmd, exec));
 
         // Assert that receiver has no more updates in his list
-        Assert.assertEquals(0, getUpdatesForUser(exec).size());
+        assertNoUpdatesForUser(exec);
 
         return output;
     }

@@ -8,6 +8,7 @@ import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -72,10 +73,12 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
         JsonObject output =
                 runCommand(editMembershipCommand, permInput);
 
-        // remove updates produced by group creation to avoid interfering
+        // remove updates produced by group creation etc. to avoid interfering
         // with other commands
         members.remove(ownUser);
-        for (User member : members)
-            getSingleUpdateForUser(member);
+        for (User member : members) {
+            List<JsonObject> updates = getUpdatesForUser(member);
+            Assert.assertEquals(2, updates.size());
+        }
     }
 }

@@ -58,7 +58,7 @@ public class CancelContactRequestCommandTest
     public void noRequestSent() {
         assertErrorOutput(execute(users[0], users[2]), 1504);
         assertNoContactChange();
-        Assert.assertEquals(0, getUpdatesForUser(users[2]).size());
+        assertNoUpdatesForUser(users[2]);
     }
 
     /**
@@ -80,7 +80,7 @@ public class CancelContactRequestCommandTest
                 = runCommand(cancelContactRequestCommand, input);
 
         // Assert that sender didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(sender).size());
+        assertNoUpdatesForUser(sender);
 
         return output;
     }

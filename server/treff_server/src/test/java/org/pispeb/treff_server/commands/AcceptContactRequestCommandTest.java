@@ -54,7 +54,7 @@ public class AcceptContactRequestCommandTest
         // try accepting from user 2
         assertErrorOutput(execute(users[3], users[2]), 1504);
         assertNoContactChange();
-        Assert.assertEquals(0, getUpdatesForUser(users[2]).size());
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class AcceptContactRequestCommandTest
                 = runCommand(acceptContactRequestCommand, input);
 
         // Assert that sender didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[0]).size());
+        assertNoUpdatesForUser(users[0]);
 
         return output;
     }

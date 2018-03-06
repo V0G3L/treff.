@@ -61,7 +61,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         Assert.assertTrue(membersDesc.getInt(0) == ownID
         || membersDesc.getInt(1) == ownID);
 
-        Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
+        assertNoUpdatesForUser(ownUser);
 
         JsonObject update = getSingleUpdateForUser(users[1]);
         Assert.assertEquals(update.getString("type"),

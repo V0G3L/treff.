@@ -139,7 +139,7 @@ public class GetContactListCommandTest
                 getCommandStubForUser(this.cmd, exec));
 
         // Assert that the executing user didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(exec).size());
+        assertNoUpdatesForUser(exec);
 
         return output;
     }

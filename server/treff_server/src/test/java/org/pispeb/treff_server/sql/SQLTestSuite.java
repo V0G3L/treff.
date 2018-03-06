@@ -9,6 +9,6 @@ import org.pispeb.treff_server.networking.RequestHandlerTest;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        SQLDatabaseInitTest.class
+        SQLDatabaseTest.class
 })
 public class SQLTestSuite { }

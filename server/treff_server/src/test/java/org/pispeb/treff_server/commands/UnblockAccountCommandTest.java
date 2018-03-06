@@ -48,7 +48,7 @@ public class UnblockAccountCommandTest
                 getContactsOfUser(blocked).blocks.contains(blocker.id));
 
         // Assert that the unblocked user gets no update
-        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
+        assertNoUpdatesForUser(blocked);
     }
 
     @Test
@@ -81,7 +81,7 @@ public class UnblockAccountCommandTest
                 getContactsOfUser(blocked).blocks.contains(blocker.id));
 
         // Assert that blocked gets no update
-        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
+        assertNoUpdatesForUser(blocked);
     }
 
     /**
@@ -105,7 +105,7 @@ public class UnblockAccountCommandTest
         blockerContacts = getContactsOfUser(blocker);
 
         // Assert that neither blocker nor blocked got an update
-        Assert.assertEquals(0, getUpdatesForUser(blocker).size());
+        assertNoUpdatesForUser(blocker);
 
         return output;
     }

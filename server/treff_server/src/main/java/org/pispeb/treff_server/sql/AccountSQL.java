@@ -60,10 +60,10 @@ public class AccountSQL extends SQLObject implements Account {
         synchronized (entityManager.usernameLock) {
             // check for duplicates
             if (entityManager.usernameAvailable(username)) {
-                throw new DuplicateUsernameException();
-            } else {
                 setProperties(new AssignmentList()
                         .put("username", username));
+            } else {
+                throw new DuplicateUsernameException();
             }
         }
     }
@@ -145,10 +145,10 @@ public class AccountSQL extends SQLObject implements Account {
         synchronized (entityManager.emailLock) {
             // check for duplicates
             if (entityManager.emailAvailable(email)) {
-                throw new DuplicateUsernameException();
-            } else {
                 setProperties(new AssignmentList()
                         .put("email", email));
+            } else {
+                throw new DuplicateEmailException();
             }
         }
     }
@@ -393,13 +393,7 @@ public class AccountSQL extends SQLObject implements Account {
                 new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
                 this.id);
 
-
-        return new TreeSet<>(database.query(
-                "SELECT updateid FROM %s WHERE accountid=?;",
-                TableName.UPDATEAFFECTIONS,
-                new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
-                this.id)
-                .values());
+        return new TreeSet<>(r.values());
     }
 
     @Override

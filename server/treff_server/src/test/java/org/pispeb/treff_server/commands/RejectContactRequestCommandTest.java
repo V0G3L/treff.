@@ -59,7 +59,7 @@ public class RejectContactRequestCommandTest
         assertNoContactChange();
 
         // Assert that user 2 didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[2]).size());
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class RejectContactRequestCommandTest
                 = runCommand(rejectContactRequestCommand, input);
 
         // assert that receiver didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(receiver).size());
+        assertNoUpdatesForUser(receiver);
 
         return output;
     }

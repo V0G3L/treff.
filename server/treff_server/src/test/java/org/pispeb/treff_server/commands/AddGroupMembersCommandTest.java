@@ -39,7 +39,7 @@ public class AddGroupMembersCommandTest extends GroupDependentTest {
         Assert.assertEquals(groupDesc.getString("name"),
                 "<script>confirm('press cancel to wipe all data')</script>");
 
-        Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
+        assertNoUpdatesForUser(ownUser);
 
         JsonObject update = getSingleUpdateForUser(users[1]);
         Assert.assertEquals(update.getString("type"),

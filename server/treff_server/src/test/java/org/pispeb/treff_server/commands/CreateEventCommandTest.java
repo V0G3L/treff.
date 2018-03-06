@@ -130,35 +130,4 @@ public class CreateEventCommandTest extends EventDependentTest {
         Assert.assertEquals(1400,output.getInt("error"));
     }
 
-    @Test
-    public void noPermission() {
-        System.out.println(getSingleUpdateForUser(users[1]));
-        System.out.println(getSingleUpdateForUser(users[2]));
-        CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
-        for (int i = 0; i<23; i++) {
-            JsonObjectBuilder input = getCommandStubForUser("create-event", ownUser)
-
-                    .add("group-id", groupId);
-
-            JsonObject eventDesc = Json.createObjectBuilder()
-                    .add("type", "event")
-                    .add("title", eventTitle + i)
-                    .add("time-start", eventTimeStart)
-                    .add("time-end", eventTimeEnd)
-                    .add("latitude", eventLatitude)
-                    .add("longitude", eventLongitude)
-                    .build();
-
-            input.add("event", eventDesc);
-
-            JsonObject output = runCommand(createEventCommand, input);
-        }
-
-        for (int i = 0; i < 23; i++) {
-            System.out.println(i);
-            for (JsonObject u : getUpdatesForUser(users[1]))
-                System.out.println(u);
-        }
-    }
 }

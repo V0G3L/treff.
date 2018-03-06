@@ -55,7 +55,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
         Assert.assertTrue(expectedMembers.contains(membersDesc.getInt(1)));
 
         // check that executing user didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
+        assertNoUpdatesForUser(ownUser);
 
         // check that the other two users got an update
         for (int i  = 1; i <= 2; i++) {

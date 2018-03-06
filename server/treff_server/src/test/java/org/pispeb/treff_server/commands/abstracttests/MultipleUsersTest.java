@@ -66,8 +66,12 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
 
     protected JsonObject getSingleUpdateForUser(User user) {
         List<JsonObject> allUpdates = getUpdatesForUser(user);
-        Assert.assertTrue(allUpdates.size() > 0);
+        Assert.assertTrue(allUpdates.size() == 1);
         return allUpdates.get(0);
+    }
+
+    protected void assertNoUpdatesForUser(User user) {
+        Assert.assertEquals(0, getUpdatesForUser(user).size());
     }
 
     /**

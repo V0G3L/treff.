@@ -38,7 +38,7 @@ public class BlockAccountCommandTest
         assertValidBlock(users[2], users[3]);
 
         // Assert that blocked didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(users[3]).size());
+        assertNoUpdatesForUser(users[3]);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class BlockAccountCommandTest
                 getContactsOfUser(blocked).blocks.contains(blocker.id));
 
         // Assert that the blocked account didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(blocked).size());
+        assertNoUpdatesForUser(blocked);
 
     }
 
@@ -103,7 +103,7 @@ public class BlockAccountCommandTest
         blockerContacts = getContactsOfUser(blocker);
 
         // Assert that the blocker didn't get an update
-        Assert.assertEquals(0, getUpdatesForUser(blocker).size());
+        assertNoUpdatesForUser(blocker);
 
         return output;
     }

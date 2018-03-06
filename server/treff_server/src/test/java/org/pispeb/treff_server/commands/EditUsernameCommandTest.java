@@ -1,6 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.AccountChangeTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
@@ -10,12 +11,13 @@ import javax.json.JsonObjectBuilder;
 
 public class EditUsernameCommandTest extends AccountChangeTest {
 
-    private final String NEWNAME = "newName";
+    private static final String NEWNAME = "newName";
 
     public EditUsernameCommandTest() {
         super("edit-username");
     }
 
+    @Ignore
     @Test
     public void usernameInUse() {
         Assert.assertTrue(false); //TODO
@@ -31,7 +33,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
 
         // check update lists of the users
         for (int i = 1; i <= 3; i++) {
-            Assert.assertEquals(0, getUpdatesForUser(users[i]).size());
+            assertNoUpdatesForUser(users[i]);
         }
     }
 
@@ -56,7 +58,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
         // check update lists of the users
         for (int i = 1; i <= 2; i++) {
             JsonObject update = getSingleUpdateForUser((users[i]));
-            Assert.assertEquals(0, getUpdatesForUser(users[i]).size());
+            assertNoUpdatesForUser(users[i]);
 
             Assert.assertEquals(UpdateType.ACCOUNT_CHANGE.toString(),
                     update.getString("type"));
@@ -68,7 +70,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
             Assert.assertEquals(ownUser.id, account.getInt("id"));
             Assert.assertEquals(NEWNAME, account.getString("user"));
         }
-        Assert.assertEquals(0, getUpdatesForUser(users[3]).size());
+        assertNoUpdatesForUser(users[3]);
     }
 
     /**
@@ -87,7 +89,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
         JsonObject output = runCommand(editUsernameCommand, input);
 
         // Assert that the executing user didn't get any updates
-        Assert.assertEquals(0, getUpdatesForUser(exec).size());
+        assertNoUpdatesForUser(exec);
 
         return output;
     }

@@ -39,7 +39,7 @@ public class EditGroupCommandTest extends GroupDependentTest {
         Assert.assertEquals(groupDesc.getString("name"),
                 "doomedtodie");
 
-        Assert.assertEquals(0, getUpdatesForUser(ownUser).size());
+        assertNoUpdatesForUser(ownUser);
 
         JsonObject update = getSingleUpdateForUser(users[1]);
         Assert.assertEquals(update.getString("type"),
