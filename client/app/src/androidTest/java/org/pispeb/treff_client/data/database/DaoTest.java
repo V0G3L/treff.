@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.database;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -18,6 +20,18 @@ public abstract class DaoTest {
 
     protected TreffDatabase getTestDb() {
         return testDb;
+    }
+
+    /**
+     * Returns the value of a LiveData object
+     * @param ld the LiveData
+     * @param observer an observer, can be a mock
+     * @param <T> the LiveData's datatype
+     * @return the LiveData's value
+     */
+    protected <T> T getValueFromLiveData(LiveData<T> ld, Observer observer) {
+        ld.observeForever(observer);
+        return ld.getValue();
     }
 
     @Before
