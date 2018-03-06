@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
         EditEventCommandTest.class,
         EditGroupCommandTest.class,
         EditMembershipCommandTest.class,
+        EditPasswordCommandTest.class,
         EditUsernameCommandTest.class,
         GetContactListCommandTest.class,
         GetGroupDetailsCommandTest.class,

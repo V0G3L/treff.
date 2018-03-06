@@ -4,14 +4,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.SendContactRequestCommand;
 
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author jens and tim
- */
 public abstract class ContactRequestDependentTest extends MultipleUsersTest {
 
     public ContactRequestDependentTest(String cmd) {

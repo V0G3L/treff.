@@ -1,8 +1,6 @@
 package org.pispeb.treff_server.commands;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.AccountChangeTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
@@ -80,6 +78,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
      * asserts that nothing occurred what never should due to this command
      *
      * @param exec the executing user
+     * @param newUsername the new user name to set
      * @return the output of the command
      */
     private JsonObject execute(User exec, String newUsername) {
