@@ -29,7 +29,27 @@ public class FriendListFragment extends Fragment {
     private FragmentFriendListBinding binding;
     private FriendListViewModel vm;
     private FriendListAdapter adapter;
-    private FloatingActionButton fab;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ViewModel which also serves as onClickListener for adapter
+        vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(getContext()))
+                .get(FriendListViewModel.class);
+
+        // adapter to display items
+        adapter = new FriendListAdapter(vm);
+
+        // update adapter when needed
+        vm.getFriends().observe(this, friends -> {
+            adapter.setList(friends);
+        });
+
+        // react to vm callbacks
+        vm.getState().observe(this, state -> callback(state));
+    }
 
     @Nullable
     @Override
@@ -37,22 +57,13 @@ public class FriendListFragment extends Fragment {
         // frameBinding to layout
         binding = FragmentFriendListBinding
                 .inflate(inflater, container, false);
-        // ViewModel which also serves as onClickListener for adapter
-        vm = ViewModelProviders
-                .of(this, ViewModelFactory.getInstance(getContext()))
-                .get(FriendListViewModel.class);
+
         binding.setVm(vm);
-        // adapter to display items
-        adapter = new FriendListAdapter(vm);
+
+        //configure adapter
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
-
-        vm.getFriends().observe(this, friends -> {
-            adapter.setList(friends);
-        });
-
-        vm.getState().observe(this, state -> callback(state));
 
         return binding.getRoot();
     }

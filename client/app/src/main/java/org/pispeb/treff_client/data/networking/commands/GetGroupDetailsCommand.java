@@ -32,8 +32,13 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userGroupRepository.updateGroup(
-                new UserGroup(output.id, response.usergroup.name));
+        UserGroup newGroup = new UserGroup(output.id, response.usergroup.name);
+        if (userGroupRepository.getGroup(output.id) == null) {
+            userGroupRepository.addGroup(newGroup);
+        } else {
+            userGroupRepository.updateGroup(
+                    new UserGroup(output.id, response.usergroup.name));
+        }
     }
 
     public static class Request extends AbstractRequest {

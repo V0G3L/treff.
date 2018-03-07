@@ -32,6 +32,10 @@ public class LoginFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(getContext()))
+                .get(LoginViewModel.class);
     }
 
     @Override
@@ -40,9 +44,6 @@ public class LoginFragment extends Fragment{
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-        vm = ViewModelProviders
-                .of(this, ViewModelFactory.getInstance(getContext()))
-                .get(LoginViewModel.class);
 
         vm.getState().observe(this, state -> callback(state));
         binding.setVm(vm);
@@ -86,6 +87,7 @@ public class LoginFragment extends Fragment{
             case SUCCESS:
                 SharedPreferences preferences = PreferenceManager
                         .getDefaultSharedPreferences(getContext());
+                // TODO fix
                 preferences.edit().putString(getString(R.string.username_path),
                         vm.getUsername()).apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);

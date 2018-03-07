@@ -84,8 +84,8 @@ public class EventRepository {
      * @param eventID the events id
      * @return LiveData object of that event
      */
-    public LiveData<Event> getEvent(int eventID) {
-        return eventDao.getEventByID(eventID);
+    public LiveData<Event> getEvent(int eventId) {
+        return eventDao.getEventByID(eventId);
     }
 
     /**
@@ -132,5 +132,13 @@ public class EventRepository {
 
         Position p = new Position(l.getLatitude(), l.getLongitude());
         encoder.createEvent(groupId, name, creator, start, end, p);
+    }
+
+    /**
+     * sync with server
+     * TODO
+     */
+    public void requestRefresh() {
+        // update events
     }
 }

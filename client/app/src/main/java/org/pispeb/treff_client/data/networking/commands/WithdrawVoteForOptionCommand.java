@@ -36,7 +36,7 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int pollId, int id, String token) {
-            super(CmdDesc.WITHDRAW_VOTE.toString());
+            super(CmdDesc.WITHDRAW_VOTE_FOR_OPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
             this.id = id;

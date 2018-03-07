@@ -576,7 +576,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * Method to get information about the users groups
      */
     public synchronized void listGroups() {
-        executeCommand(new ListGroupsCommad(getToken()));
+        executeCommand(new ListGroupsCommad(getToken(), userGroupRepository,
+                this));
     }
 
 

@@ -49,6 +49,7 @@ public class UserGroupRepository {
      * receive groups in various formats
      */
     public LiveData<UserGroup> getGroup(int id) {
+        encoder.getGroupDetails(id);
         return userGroupDao.getGroupByID(id);
     }
 
@@ -142,8 +143,6 @@ public class UserGroupRepository {
     public void addGroupMembers(int groupId, int[] members) {
         for (int i = 0; i < members.length; i++ ) {
             GroupMembership gms = new GroupMembership(members[i], groupId);
-//            Log.i("AddGroupMember",
-//                    "group: " + gms.getGroupId() + " member: " + gms.getUserId());
             userGroupDao.save(gms);
         }
     }
@@ -183,5 +182,12 @@ public class UserGroupRepository {
      */
     public void requestAddMembersToGroup(int groupId, int... members) {
         encoder.addGroupMembers(groupId, members);
+    }
+
+    /**
+     * request a list of all groups from the server
+     */
+    public void requestRefresh() {
+        encoder.listGroups();
     }
 }

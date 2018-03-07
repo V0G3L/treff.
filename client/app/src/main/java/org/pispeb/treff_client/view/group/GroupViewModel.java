@@ -19,9 +19,11 @@ import java.util.List;
 
 public class GroupViewModel extends ViewModel
         implements MemberListAdapter. MemberClickedListener{
+    // group currently displayed
     private LiveData<UserGroup> group;
     private LiveData<List<User>> members;
 
+    // repos
     private UserGroupRepository userGroupRepository;
     private UserRepository userRepository;
 
@@ -34,9 +36,43 @@ public class GroupViewModel extends ViewModel
         this.state = new SingleLiveEvent<>();
     }
 
+    /**
+     * set the group to be displayed
+     * @param groupId id of that group
+     */
     public void setGroupById(int groupId) {
         this.group = userGroupRepository.getGroup(groupId);
         this.members = userGroupRepository.getGroupMembers(groupId);
+    }
+
+    /**
+     * display dialog to add new members
+     */
+    public void onAddMemberClick() {
+        state.postValue(new State(ViewCall.SHOW_ADD_MEMBER_DIALOG, 0));
+    }
+
+    /**
+     * add member given its id
+     * @param userId id of user to be added
+     */
+    public void addMember(int userId) {
+        userGroupRepository.requestAddMembersToGroup(
+                group.getValue().getGroupId(), userId);
+    }
+
+    /**
+     * leave the group and delete it locally
+     */
+    public void leave() {
+        state.postValue(new State(ViewCall.LEFT_GROUP, 0));
+        userGroupRepository.remove(group.getValue());
+    }
+
+    @Override
+    public void onItemClicked(int position, User user) {
+        state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
+                user.getUserId()));
     }
 
     public LiveData<UserGroup> getGroup() {
@@ -51,28 +87,8 @@ public class GroupViewModel extends ViewModel
         return userRepository.getFriendsAsList();
     }
 
-    public void onAddMemberClick() {
-        state.postValue(new State(ViewCall.SHOW_ADD_MEMBER_DIALOG, 0));
-    }
-
-    public void addMember(int userId) {
-        userGroupRepository.requestAddMembersToGroup(
-                group.getValue().getGroupId(), userId);
-    }
-
-    public void leave() {
-        state.postValue(new State(ViewCall.LEFT_GROUP, 0));
-        userGroupRepository.remove(group.getValue());
-    }
-
     public SingleLiveEvent<State> getState() {
         return state;
-    }
-
-    @Override
-    public void onItemClicked(int position, User user) {
-        state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
-                user.getUserId()));
     }
 
 }

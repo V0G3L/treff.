@@ -165,4 +165,11 @@ public class UserRepository {
     public void requestDecline(int userId) {
         encoder.rejectContactRequest(userId);
     }
+
+    /**
+     * sync data with server
+     */
+    public void requestRefresh() {
+        encoder.getContactList();
+    }
 }

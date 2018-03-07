@@ -85,12 +85,15 @@ public class MapFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i("Map", "create");
-
         Context ctx = getActivity();
         //setting user agent to prevent getting banned from the osm servers
         Configuration.getInstance()
                 .load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+
+        // create ViewModel
+        vm = ViewModelProviders.of(this,
+                ViewModelFactory.getInstance(getContext()))
+                .get(MapViewModel.class);
     }
 
     @Override
@@ -103,13 +106,9 @@ public class MapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        Log.i("Map", "create View");
-
         binding = DataBindingUtil
                 .inflate(inflater, R.layout.fragment_map, container, false);
-        vm = ViewModelProviders.of(this,
-                ViewModelFactory.getInstance(getContext()))
-                .get(MapViewModel.class);
+
         binding.setVm(vm);
 
         Configuration.getInstance().load(getContext(),

@@ -27,6 +27,9 @@ public class FriendListViewModel extends ViewModel
         this.friends = userRepository.getFriendsAndPending();
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, -1));
+
+        // sync list with server
+        this.userRepository.requestRefresh();
     }
 
     public LiveData<PagedList<User>> getFriends() {

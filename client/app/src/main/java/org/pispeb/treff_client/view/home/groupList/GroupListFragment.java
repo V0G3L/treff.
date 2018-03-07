@@ -3,6 +3,7 @@ package org.pispeb.treff_client.view.home.groupList;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -22,28 +23,42 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class GroupListFragment extends Fragment {
 
+    private GroupListViewModel vm;
+    private GroupListAdapter adapter;
+
     public GroupListFragment() {
         // Required empty public constructor
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final FragmentGroupListBinding binding = FragmentGroupListBinding.inflate(inflater, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // create ViewModel
+        vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(GroupListViewModel.class);
 
-        GroupListViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(getContext())).get(GroupListViewModel.class);
+        // create adapter
+        adapter = new GroupListAdapter(vm);
 
-        final GroupListAdapter adapter = new GroupListAdapter(vm);
-
+        // update adapter when groups change
         vm.getGroups().observe(this, groups -> {
             adapter.setList(groups);
         });
 
+        // react to vm callbacks
         vm.getState().observe(this, state -> callback(state));
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        // Inflate the layout for this fragment
+        final FragmentGroupListBinding binding = FragmentGroupListBinding.inflate(inflater, container, false);
+
+        // set up databinding
         binding.setVm(vm);
 
+        // set up adapter in view
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
