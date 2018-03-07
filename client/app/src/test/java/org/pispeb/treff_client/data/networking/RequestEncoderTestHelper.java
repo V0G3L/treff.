@@ -40,6 +40,7 @@ public abstract class RequestEncoderTestHelper {
 
     protected String mockToken = "SomeRandomTokenFromSP";
     protected String mockUserName = "SomeUsername";
+    protected String mockPassword = "SomePassword";
 
     @Mock
     protected Context mockAppContext;

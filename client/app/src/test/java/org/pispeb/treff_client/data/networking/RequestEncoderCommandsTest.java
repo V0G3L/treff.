@@ -1,7 +1,9 @@
 package org.pispeb.treff_client.data.networking;
 
 import org.junit.Test;
+import org.pispeb.treff_client.data.networking.commands.CmdDesc;
 
+import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -12,16 +14,19 @@ public class RequestEncoderCommandsTest extends RequestEncoderTestHelper {
 
     @Test
     public void registerTest() {
-        String username = "username";
-        String password = "password";
-        testEncoder.register(username, password);
-//        verify()
+        testEncoder.register(mockUserName, mockPassword);
+        verify(mockConnectionHandler).sendMessage(contains("\"cmd\":\"" +
+                CmdDesc.REGISTER.toString() + "\""));
     }
 
     @Test
     public void loginTest() {
+        testEncoder.login(mockUserName, mockPassword);
+        verify(mockConnectionHandler).sendMessage(contains("\"cmd\":\"" +
+                CmdDesc.LOGIN.toString() + "\""));
     }
 
+    // TODO all the other tests, focus in the ones actually used
     @Test
     public void editUsernameTest() {
     }

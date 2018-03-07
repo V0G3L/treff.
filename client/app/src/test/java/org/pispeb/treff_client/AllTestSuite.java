@@ -1,4 +1,4 @@
-package org.pispeb.treff_client.data;
+package org.pispeb.treff_client;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

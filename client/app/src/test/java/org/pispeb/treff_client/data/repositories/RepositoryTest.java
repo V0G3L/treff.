@@ -65,7 +65,6 @@ public abstract class RepositoryTest {
         doAnswer(invocation -> {
             System.out.println(invocation.getArgumentAt(0, Runnable.class));
             invocation.getArgumentAt(0, Runnable.class).run();
-            System.out.println("Works fine!");
             return null;
         }).when(mockHandler).post(any(Runnable.class));
     }
