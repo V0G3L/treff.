@@ -2,7 +2,6 @@ package org.pispeb.treff_client.view.group;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
-import android.arch.paging.PagedList;
 
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
@@ -21,7 +20,7 @@ import java.util.List;
 public class GroupViewModel extends ViewModel
         implements MemberListAdapter. MemberClickedListener{
     private LiveData<UserGroup> group;
-    private LiveData<PagedList<User>> members;
+    private LiveData<List<User>> members;
 
     private UserGroupRepository userGroupRepository;
     private UserRepository userRepository;
@@ -44,7 +43,7 @@ public class GroupViewModel extends ViewModel
         return group;
     }
 
-    public LiveData<PagedList<User>> getMembers() {
+    public LiveData<List<User>> getMembers() {
         return members;
     }
 

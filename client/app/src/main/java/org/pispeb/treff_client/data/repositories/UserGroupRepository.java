@@ -1,10 +1,18 @@
 package org.pispeb.treff_client.data.repositories;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
+import android.arch.paging.LivePagedListBuilder;
+import android.arch.paging.PagedList;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.database.ChatDao;
 import org.pispeb.treff_client.data.database.EventDao;
+import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.entities.GroupMembership;
 import org.pispeb.treff_client.data.entities.User;
@@ -12,29 +20,25 @@ import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import android.arch.paging.LivePagedListBuilder;
-import android.arch.paging.PagedList;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class UserGroupRepository {
     private UserGroupDao userGroupDao;
+    private UserDao userDao;
     private EventDao eventDao;
     private ChatDao chatDao;
     private RequestEncoder encoder;
     private Handler backgroundHandler;
 
     public UserGroupRepository(UserGroupDao userGroupDao,
+                               UserDao userDao,
                                EventDao eventDao,
                                ChatDao chatDao,
                                RequestEncoder encoder,
                                Handler backgroundHandler) {
         this.userGroupDao = userGroupDao;
+        this.userDao = userDao;
         this.eventDao = eventDao;
         this.chatDao = chatDao;
         this.encoder = encoder;
@@ -57,10 +61,28 @@ public class UserGroupRepository {
         return userGroupDao.getAllGroupsInList();
     }
 
-    public LiveData<PagedList<User>> getGroupMembers(int groupId) {
+    public LiveData<List<User>> getGroupMembers(int groupId) {
         encoder.getGroupDetails(groupId);
+
+        LiveData<List<GroupMembership>> groupMemberships =
+                userGroupDao.getGroupMembershipsByGroupIdLiveData(groupId);
+
+        //convert LiveData list of group memberships to LiveData list of users
+        LiveData<List<User>> users = Transformations.map(groupMemberships, gmList -> {
+            List<User> userList = new ArrayList<>();
+            for (int i = 0; i < gmList.size(); i++) {
+                int userId = gmList.get(i).getUserId();
+                userList.add(userDao.getUserById(userId));
+            }
+            return userList;
+        });
+
+        return users;
+
+        /*
         return new LivePagedListBuilder<>(userGroupDao.getUsersByGroup(groupId), 30)
                 .build();
+        */
     }
 
     public void setIsSharing (int groupId, boolean isSharing) {

@@ -30,10 +30,16 @@ public interface UserDao {
     void reset(int userId);
 
     @Query("SELECT * FROM user WHERE userID = :userID")
+    User getUserById(int userID);
+
+    @Query("SELECT * FROM user WHERE userID = :userID")
     LiveData<User> getUserByIdLiveData(int userID);
 
     @Query("SELECT * FROM user WHERE username = :username")
     User getUserByName(String username);
+
+    @Query("SELECT * FROM user WHERE userID IN(:userIds)")
+    DataSource.Factory<Integer, User> getUsersByIdArray(int[] userIds);
 
     @Update
     void update(User user);

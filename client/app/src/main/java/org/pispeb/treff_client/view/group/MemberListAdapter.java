@@ -1,8 +1,8 @@
 package org.pispeb.treff_client.view.group;
 
-import android.arch.paging.PagedListAdapter;
 import android.support.annotation.NonNull;
 import android.support.v7.recyclerview.extensions.DiffCallback;
+import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +16,7 @@ import org.pispeb.treff_client.databinding.MemberItemBinding;
  */
 
 public class MemberListAdapter
-        extends PagedListAdapter<User, MemberListViewHolder> {
+        extends ListAdapter<User, MemberListViewHolder> {
 
     private MemberClickedListener memberClickedListener;
 
