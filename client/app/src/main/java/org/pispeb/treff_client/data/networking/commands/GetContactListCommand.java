@@ -40,6 +40,9 @@ public class GetContactListCommand extends AbstractCommand {
         for (int out : response.outgoingRequests) {
             userRepository.setIsPending(out, true);
         }
+        for (int b : response.blocks) {
+            userRepository.setIsBlocked(b, true);
+        }
     }
 
     public static class Request extends AbstractRequest {
@@ -58,13 +61,20 @@ public class GetContactListCommand extends AbstractCommand {
         public final int[] contacts;
         public final int[] incomingRequests;
         public final int[] outgoingRequests;
+        public final int[] blocks;
 
-        public Response(@JsonProperty("contacts") int[] contacts,
-                        @JsonProperty("incoming-requests") int[] incomingRequests,
-                        @JsonProperty("outgoing-requests") int[] outgoingRequests) {
+        public Response(@JsonProperty("contacts")
+                                int[] contacts,
+                        @JsonProperty("incoming-requests")
+                                int[] incomingRequests,
+                        @JsonProperty("outgoing-requests")
+                                int[] outgoingRequests,
+                        @JsonProperty("blocks")
+                                int[] blocks) {
             this.contacts = contacts;
             this.incomingRequests = incomingRequests;
             this.outgoingRequests = outgoingRequests;
+            this.blocks = blocks;
         }
     }
 }
