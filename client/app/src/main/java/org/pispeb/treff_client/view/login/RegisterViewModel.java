@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 import org.pispeb.treff_client.view.util.SingleLiveEvent;
@@ -43,15 +44,11 @@ public class RegisterViewModel extends ViewModel {
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
 
-        pref.edit().putString("token", "").apply();
+        pref.edit().putString(ctx.getString(R.string.key_token), "").apply();
 
-        prefListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
-            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-
-                if(key.equals("token"))
-                    state.setValue(new State(ViewCall.SUCCESS, 0));
-
-            }
+        prefListener = (prefs, key) -> {
+            if(key.equals(ctx.getString(R.string.key_token)))
+                state.setValue(new State(ViewCall.SUCCESS, 0));
         };
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);

@@ -87,8 +87,7 @@ public class LoginFragment extends Fragment{
             case SUCCESS:
                 SharedPreferences preferences = PreferenceManager
                         .getDefaultSharedPreferences(getContext());
-                // TODO fix
-                preferences.edit().putString(getString(R.string.username_path),
+                preferences.edit().putString(getString(R.string.key_userName),
                         vm.getUsername()).apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 this.startActivity(intent);
