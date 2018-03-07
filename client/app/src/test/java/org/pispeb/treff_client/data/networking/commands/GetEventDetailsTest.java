@@ -33,8 +33,7 @@ public class GetEventDetailsTest extends AbstractCommandTest {
         assertEquals(argument.getValue().getStart(), mockTimeStart);
         assertEquals(argument.getValue().getEnd(), mockTimeEnd);
 
-        //TODO fix Location error
-
+        //Location doesnt work without app
         //assertEquals(argument.getValue().getLocation(), mockPosition.getLocation());
         assertEquals(argument.getValue().getCreator(), mockId);
         assertEquals(argument.getValue().getGroupId(), mockGroupId);

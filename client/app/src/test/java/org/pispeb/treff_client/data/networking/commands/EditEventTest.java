@@ -1,5 +1,6 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import org.mockito.ArgumentCaptor;
 import org.pispeb.treff_client.data.entities.Event;
 import org.pispeb.treff_client.data.networking.commands.descriptions.EventEditDescription;
 
@@ -27,8 +28,17 @@ public class EditEventTest extends AbstractCommandTest {
     @Override
     public void onResponseTest() {
         command.onResponse(new EditEventCommand.Response());
-        //verify(mockEventRepository).updateEvent(mockEvent);
-        //TODO fix location bug
+        ArgumentCaptor<Event> argument = ArgumentCaptor.forClass(Event.class);
+        verify(mockEventRepository).updateEvent(argument.capture());
+        assertEquals(argument.getValue().getId(), mockEvetntId);
+        assertEquals(argument.getValue().getName(), mockName);
+        assertEquals(argument.getValue().getStart(), mockTimeStart);
+        assertEquals(argument.getValue().getEnd(), mockTimeEnd);
+
+        //Location doesnt work without app
+        //assertEquals(argument.getValue().getLocation(), mockPosition.getLocation());
+        assertEquals(argument.getValue().getCreator(), mockId);
+        assertEquals(argument.getValue().getGroupId(), mockGroupId);
     }
 
     @Override
