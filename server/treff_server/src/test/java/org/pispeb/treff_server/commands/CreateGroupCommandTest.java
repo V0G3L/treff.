@@ -30,7 +30,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         CreateGroupCommand createGroupCommand
                 = new CreateGroupCommand(accountManager, mapper);
         JsonArray members = Json.createArrayBuilder()
-                .add(ownID)
+                .add(ownUser.id)
                 .add(users[1].id)
                 .build();
         JsonObject group = Json.createObjectBuilder()

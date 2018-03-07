@@ -17,50 +17,28 @@ import org.pispeb.treff_server.networking.ErrorCode;
 /**
  * a command to get a detailed description of an event of a user group
  */
-public class GetEventDetailsCommand extends AbstractCommand {
+public class GetEventDetailsCommand extends EventCommand {
 
 
     public GetEventDetailsCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                EventLockType.READ_LOCK,
+                null,
+                null);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-
-        // get group
-        Usergroup usergroup = getSafeForReading(
-                actingAccount.getAllGroups().get(input.groupId));
-        if (usergroup == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-
-        // get event
-        Event event = getSafeForReading(
-                usergroup.getAllEvents().get(input.eventId));
-        if (event == null)
-            return new ErrorOutput(ErrorCode.EVENTIDINVALID);
-
+    protected CommandOutput executeOnEvent(EventInput commandInput) {
         return new Output(event);
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int eventId;
-        final int groupId;
+    public static class Input extends EventInput {
 
         public Input(@JsonProperty("id") int eventId,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.eventId = eventId;
-            this.groupId = groupId;
+            super(token, groupId, eventId);
         }
     }
 
