@@ -30,13 +30,19 @@ public class EditEventCommand extends EventCommand {
                             ObjectMapper mapper) {
         super(accountManager, Input.class, mapper,
                 EventLockType.WRITE_LOCK,
-                Permission.EDIT_ANY_EVENT,
-                ErrorCode.NOPERMISSIONEDITANYEVENT);
+                null, null); // edit needs special permission checking
     }
 
     @Override
     protected CommandOutput executeOnEvent(EventInput commandInput) {
         Input input = (Input) commandInput;
+
+        // check whether actingAccount is event creator or has edit permission
+        if (!event.getCreator().equals(actingAccount)
+                && !usergroup.checkPermissionOfMember(
+                        actingAccount, Permission.EDIT_ANY_EVENT)) {
+            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
+        }
 
         // check times
         if (input.inputEvent.timeEnd.before(input.inputEvent
@@ -73,7 +79,7 @@ public class EditEventCommand extends EventCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("event") EventEditDescription inputEvent,
                      @JsonProperty("token") String token) {
-            super(token, groupId, inputEvent.id, new int[0]);
+            super(token, groupId, inputEvent.id);
             this.inputEvent = inputEvent;
         }
     }

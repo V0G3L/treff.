@@ -36,12 +36,7 @@ public class CreateEventCommandTest extends EventDependentTest {
         Assert.assertEquals(eventID, eventIDinGroupDesc);
 
         // check event properties
-        JsonObject eventDesc = runCommand(
-                new GetEventDetailsCommand(accountManager, mapper),
-                getCommandStubForUser("get-event-details", ownUser)
-                        .add("group-id", groupId)
-                        .add("id", eventID))
-                .getJsonObject("event");
+        JsonObject eventDesc = getEventDesc(groupId, eventID, ownUser);
 
         Assert.assertEquals(eventID, eventDesc.getInt("id"));
         Assert.assertEquals(eventTitle, eventDesc.getString("title"));

@@ -1,8 +1,11 @@
 package org.pispeb.treff_server.sql;
 
+import ch.vorburger.exec.ManagedProcessException;
+import ch.vorburger.mariadb4j.DB;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
+import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.exceptions.DatabaseException;
@@ -12,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,29 @@ public class SQLDatabase {
     public SQLDatabase(Properties config) throws SQLException,
             NoSuchAlgorithmException {
         this.config = config;
+
+        //// TODO: TEST CODE REMOVE LATER
+/*
+        final int PORT = 13338;
+        try {
+            DB db = DB.newEmbeddedDB(PORT);
+            db.start();
+            db.run("CREATE DATABASE treffpunkttest;");
+        } catch (ManagedProcessException e) {
+            e.printStackTrace();
+        }
+
+        config.setProperty(ConfigKeys.DB_PORT.toString(), String.valueOf
+                (PORT));
+
+        config.setProperty(ConfigKeys.DB_ADDRESS.toString(), "localhost");
+        config.setProperty(ConfigKeys.DB_USER.toString(), "root");
+        config.setProperty(ConfigKeys.DB_PASS.toString(), "");
+        config.setProperty(ConfigKeys.DB_DBNAME.toString(),
+                "treffpunkttest");
+        System.out.println("Finished SQL database startup: " + new Date());
+*/
+        //// END OF TEST CODE
 
         // Create DataSource with supplied parameters
         MysqlDataSource dataSource = new MysqlDataSource();

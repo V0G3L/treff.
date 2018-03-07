@@ -82,29 +82,9 @@ public class EditEventCommandTest extends EventDependentTest {
             User user = users[i];
             if(user.id == ownUser.id)
                 continue;
-            JsonObject update = getSingleUpdateForUser(user);
-            Assert.assertEquals(update.getString("type"),
-                UpdateType.EVENT_CHANGE.toString());
-
-            // TODO check time-created
-            Assert.assertEquals(update.getInt("creator"), ownUser.id);
-            JsonObject updateEventDesc = update.getJsonObject("event");
-            Assert.assertEquals(eventTitle,
-                    updateEventDesc.getString("title"));
-            Assert.assertEquals(eventTimeStart,
-                    updateEventDesc.getJsonNumber("time-start")
-                            .longValue());
-            Assert.assertEquals(eventTimeEnd,
-                    updateEventDesc.getJsonNumber("time-end")
-                            .longValue());
-            Assert.assertEquals(eventLatitude,
-                    updateEventDesc.getJsonNumber("latitude")
-                            .doubleValue(),0);
-            Assert.assertEquals(eventLongitude,
-                    updateEventDesc.getJsonNumber("longitude")
-                            .doubleValue(),0);
-            Assert.assertEquals(0,
-                    updateEventDesc.getJsonArray("participants").size());
+            checkEventUpdateForUser(user, ownUser.id, eventTitle,
+                    ownUser.id, eventTimeStart, eventTimeEnd, eventLatitude,
+                    eventLongitude, new int[0]);
         }
     }
 

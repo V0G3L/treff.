@@ -24,6 +24,10 @@ public enum UpdateType {
      */
     EVENT_CHANGE,
     /**
+     * The type of updates that represent deletion of an event
+     */
+    EVENT_DELETION,
+    /**
      * The type of updates that represent changes to a poll
      */
     POLL_CHANGE,

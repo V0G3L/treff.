@@ -21,40 +21,19 @@ import java.util.HashSet;
 /**
  * a command to add the executing account to an event of a user group
  */
-public class JoinEventCommand extends AbstractCommand {
+public class JoinEventCommand extends EventCommand {
 
 
     public JoinEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                EventLockType.WRITE_LOCK,
+                null, null); // joining requires no permission
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input
-                        .groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // get event
-        Event event =
-                getSafeForWriting(group.getAllEvents().get(input
-                        .eventId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.EVENTIDINVALID);
-        }
+    protected CommandOutput executeOnEvent(EventInput eventInput) {
+        Input input = (Input) eventInput;
 
         // check if already participating
         if (event.getAllParticipants()
@@ -65,34 +44,22 @@ public class JoinEventCommand extends AbstractCommand {
         // join
         event.addParticipant(input.getActingAccount());
 
-         // create update
+        // create update
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
                         event);
-        for (Account a: group.getAllMembers().values())
-            getSafeForWriting(a);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+        addUpdateToAllOtherMembers(update);
 
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int groupId;
-        final int eventId;
+    public static class Input extends EventInput {
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("id") int eventId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.eventId = eventId;
+            super(token, groupId, eventId);
         }
     }
 

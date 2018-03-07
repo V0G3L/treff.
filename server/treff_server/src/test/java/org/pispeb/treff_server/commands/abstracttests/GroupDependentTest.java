@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.CreateGroupCommand;
 import org.pispeb.treff_server.commands.EditMembershipCommand;
+import org.pispeb.treff_server.commands.GetGroupDetailsCommand;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.*;
@@ -14,7 +15,7 @@ import java.util.Set;
 /**
  * Abstract test class creating a group containing {@link MultipleUsersTest}s
  * members 0, 1, and 2 <b>but not 3</b>.
- * Members 0 and 1 have all permissions 2 has none at all.
+ * Members 0 and 1 have all permissions while 2 has none at all.
  */
 public abstract class GroupDependentTest extends MultipleUsersTest {
 
@@ -51,12 +52,13 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
 
         groupId = runCommand(createGroupCommand, input).getInt("id");
 
+        // strip permissions from user 2
         EditMembershipCommand editMembershipCommand
                 = new EditMembershipCommand(accountManager, mapper);
         JsonObject permissionInput = Json.createObjectBuilder()
                 .add("edit_any_event", false)
-                .add("create_poll",false)
-                .add("change_permissions",false)
+                .add("create_poll", false)
+                .add("change_permissions", false)
                 .add("manage_members", false)
                 .add("create_event", false)
                 .add("edit_group", false)
@@ -80,5 +82,17 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
             List<JsonObject> updates = getUpdatesForUser(member);
             Assert.assertEquals(2, updates.size());
         }
+    }
+
+    protected JsonObject getGroupDesc() {
+        JsonObjectBuilder input
+                = getCommandStubForUser("get-group-details", ownUser)
+                .add("id", this.groupId);
+
+        JsonObject output
+                = runCommand(new GetGroupDetailsCommand(accountManager, mapper),
+                input);
+
+        return output.getJsonObject("group");
     }
 }

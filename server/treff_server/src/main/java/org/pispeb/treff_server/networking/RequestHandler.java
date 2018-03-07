@@ -12,7 +12,6 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.Log4jLoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonObject;
