@@ -1,10 +1,17 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.arch.lifecycle.MutableLiveData;
+
 import org.mockito.Mock;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
-import org.pispeb.treff_client.data.networking.commands.descriptions.ShallowUserGroup;
+import org.pispeb.treff_client.data.networking.commands.descriptions
+        .ShallowUserGroup;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test to check the main function of ListGroupsCommand
@@ -12,22 +19,34 @@ import static org.junit.Assert.assertEquals;
 
 public class ListGroupsTest extends AbstractCommandTest {
 
-    @Mock
-    private RequestEncoder requestEncoder;
     private ListGroupsCommand command;
-    private ShallowUserGroup mockUsergroup1 = new ShallowUserGroup(1111, "checksum1");
-    private ShallowUserGroup mockUsergroup2 = new ShallowUserGroup(2222, "checksum2");
-    private ShallowUserGroup[] mockUsergroups = {mockUsergroup1, mockUsergroup2};
+    private ShallowUserGroup mockUsergroup1
+            = new ShallowUserGroup(1111,"checksum1");
+    private ShallowUserGroup mockUsergroup2
+            = new ShallowUserGroup(2222,"checksum2");
+    private ShallowUserGroup[] mockUsergroups
+            = {mockUsergroup1, mockUsergroup2};
+
+    @Mock
+    private RequestEncoder mockEncoder;
 
     @Override
     public void initCommand() {
-        command = new ListGroupsCommand(mockToken, mockUserGroupRepository, requestEncoder);
+        command = new ListGroupsCommand(mockToken, mockUserGroupRepository,
+                mockEncoder);
     }
 
     @Override
     public void onResponseTest() {
+
+        when(mockUserGroupRepository.getGroup(mockUsergroups[0].id))
+                .thenReturn(new MutableLiveData<>());
+        when(mockUserGroupRepository.getGroup(mockUsergroups[1].id))
+                .thenReturn(null);
+
         command.onResponse(new ListGroupsCommand.Response(mockUsergroups));
-        //TODO nothing to test
+        verify(mockUserGroupRepository, times(2)).getGroup(anyInt());
+        verify(mockEncoder).getGroupDetails(mockUsergroups[1].id);
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.pispeb.treff_client.data.networking.commands.descriptions.ShallowUser
 
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
+
 public class ListGroupsCommand extends AbstractCommand {
 
     private Request output;

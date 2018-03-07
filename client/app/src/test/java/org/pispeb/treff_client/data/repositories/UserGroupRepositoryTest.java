@@ -23,7 +23,8 @@ public class UserGroupRepositoryTest extends RepositoryTest {
     @Before
     public void prepare() {
         testUserGroupRepository = new UserGroupRepository(mockUserGroupDao,
-                mockUserDao, mockEventDao, mockChatDao, mockEncoder, mockHandler);
+                mockUserDao, mockEventDao, mockChatDao, mockEncoder,
+                mockHandler);
     }
 
     @Test

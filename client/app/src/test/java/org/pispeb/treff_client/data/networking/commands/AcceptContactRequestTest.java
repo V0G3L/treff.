@@ -33,7 +33,6 @@ public class AcceptContactRequestTest extends AbstractCommandTest {
 
         assertEquals(request.id, mockId);
         assertEquals(request.token, mockToken);
-        // TODO make Enum or something
-        assertEquals(request.cmd, "accept-contact-request");
+        assertEquals(request.cmd, CmdDesc.ACCEPT_CONTACT_REQUEST.toString());
     }
 }
