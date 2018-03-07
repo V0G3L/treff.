@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
         RemoveEventCommandTest.class,
         RemoveGroupMembersCommandTest.class,
         RequestUpdatesCommandTest.class,
+        SendChatMessageCommandTest.class,
         SendContactRequestCommandTest.class,
         UnblockAccountCommandTest.class,
         UpdatePositionCommandTest.class
