@@ -65,6 +65,7 @@ public abstract class AbstractCommandTest {
     protected int[] mockPolls = {12345, 13579, 2468, 11111};
     protected int[] mockIncomingRequests = {888, 999, 777, 666};
     protected int[] mockOutgoingRequests = {123, 456, 810, 937};
+    protected int[] mockBlockings = {};
     protected int mockPollId = 222675;
     protected long mockLatitude = 10;
     protected long mockLongitude = 50;

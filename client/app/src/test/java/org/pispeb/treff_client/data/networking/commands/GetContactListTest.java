@@ -19,7 +19,7 @@ public class GetContactListTest extends AbstractCommandTest {
     @Override
     public void onResponseTest() {
         command.onResponse(new GetContactListCommand.Response(
-                mockUsers, mockIncomingRequests, mockOutgoingRequests));
+                mockUsers, mockIncomingRequests, mockOutgoingRequests, mockBlockings));
         verify(mockUserRepository).resetAllUsers();
         for (int c : mockUsers) {
             mockUserRepository.setIsFriend(c, true);
@@ -29,6 +29,9 @@ public class GetContactListTest extends AbstractCommandTest {
         }
         for (int out : mockOutgoingRequests) {
             mockUserRepository.setIsPending(out, true);
+        }
+        for (int b : mockBlockings) {
+            mockUserRepository.setIsBlocked(b, true);
         }
     }
 

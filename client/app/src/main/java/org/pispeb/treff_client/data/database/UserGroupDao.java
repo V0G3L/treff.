@@ -35,7 +35,7 @@ public interface UserGroupDao {
     @Query("SELECT * FROM usergroup")
     LiveData<List<UserGroup>> getAllGroupsInList();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void save(GroupMembership groupMembership);
 
     @Delete

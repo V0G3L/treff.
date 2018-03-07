@@ -2,15 +2,18 @@ package org.pispeb.treff_client.data.repositories;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.pispeb.treff_client.data.entities.GroupMembership;
 
-import static org.mockito.Matchers.eq;
+import java.util.List;
+
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**
  * TODO doc
  */
-
 public class UserGroupRepositoryTest extends RepositoryTest {
 
     private UserGroupRepository testUserGroupRepository;
@@ -18,7 +21,7 @@ public class UserGroupRepositoryTest extends RepositoryTest {
     @Before
     public void prepare() {
         testUserGroupRepository = new UserGroupRepository(mockUserGroupDao,
-                mockEventDao, mockChatDao, mockEncoder, mockHandler);
+                mockUserDao, mockEventDao, mockChatDao, mockEncoder, mockHandler);
     }
 
     @Test
@@ -34,10 +37,17 @@ public class UserGroupRepositoryTest extends RepositoryTest {
         testUserGroupRepository
                 .addGroupMembers(mockGroup.getGroupId(), memberIds);
 
-        for (int i = 0; i < memberIds.length; i++) {
-            int id = memberIds[i];
-            verify(mockUserGroupDao)
-                    .save(eq(new GroupMembership(mockGroup.getGroupId(), id)));
-        }
+        ArgumentCaptor<GroupMembership> gmCaptor = ArgumentCaptor.forClass(GroupMembership.class);
+        verify(mockUserGroupDao, times(2)).save(gmCaptor.capture());
+        List<GroupMembership> gms = gmCaptor.getAllValues();
+        assertTrue(gms.get(0).getGroupId() == mockGroup.getGroupId());
+        assertTrue(gms.get(1).getGroupId() == mockGroup.getGroupId());
+        assertTrue(gms.get(0).getUserId() == 7654);
+        assertTrue(gms.get(1).getUserId() == 8765);
+    }
+
+    @Test
+    public void getMembersTest() {
+        //TODO
     }
 }

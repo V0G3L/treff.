@@ -47,20 +47,20 @@ public class MemberListAdapter
     }
 
     public static final DiffCallback<User> diffCallback = new
-            DiffCallback<User>() {
+        DiffCallback<User>() {
 
-                @Override
-                public boolean areItemsTheSame(@NonNull User oldItem,
-                                               @NonNull User newItem) {
-                    return oldItem.getUserId() == newItem.getUserId();
-                }
+            @Override
+            public boolean areItemsTheSame(@NonNull User oldItem,
+                                           @NonNull User newItem) {
+                return oldItem.getUserId() == newItem.getUserId();
+            }
 
-                @Override
-                public boolean areContentsTheSame(@NonNull User oldItem,
-                                                  @NonNull User newItem) {
-                    return oldItem.equals(newItem);
-                }
-            };
+            @Override
+            public boolean areContentsTheSame(@NonNull User oldItem,
+                                              @NonNull User newItem) {
+                return oldItem.equals(newItem);
+            }
+        };
 }
 
 
