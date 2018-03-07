@@ -1,7 +1,6 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
@@ -20,8 +19,7 @@ public class SendChatMessageCommandTest extends GroupDependentTest {
 
     @Test
     public void validMessage() {
-        JsonObject output = execute(users[0], groupId, BENICE);
-        Assert.assertTrue(output.isEmpty());
+        Assert.assertTrue(execute(users[0], groupId, BENICE).isEmpty());
 
         for (int index : new int[]{1, 2}) {
             JsonObject update = getSingleUpdateForUser(users[index]);
@@ -58,15 +56,16 @@ public class SendChatMessageCommandTest extends GroupDependentTest {
      * executes the command
      *
      * @param author the author of the chat message
+     * @param group the id of the group
      * @return the output of the command
      */
-    private JsonObject execute(User author, int id, String message) {
+    private JsonObject execute(User author, int group, String message) {
         SendChatMessageCommand sendChatMessageCommand
                 = new SendChatMessageCommand(accountManager, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, author);
-        input.add("group-id", id).add("message", message);
+        input.add("group-id", group).add("message", message);
         JsonObject output
                 = runCommand(sendChatMessageCommand, input);
 

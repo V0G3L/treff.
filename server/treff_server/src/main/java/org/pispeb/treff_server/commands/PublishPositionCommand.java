@@ -49,6 +49,11 @@ public class PublishPositionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
+        // check time
+        if (checkTime(input.timeEnd) < 0) {
+            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+        }
+
         // publish position
         group.setLocationSharingTimeEndOfMember(actingAccount, input.timeEnd);
 

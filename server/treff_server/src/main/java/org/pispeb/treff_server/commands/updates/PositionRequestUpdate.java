@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class PositionRequestUpdate extends UpdateToSerialize {
 
-    @JsonProperty("event")
+    @JsonProperty("end-time")
     public final Date endTime;
 
     public PositionRequestUpdate(Date date, int creator, Date endTime) {

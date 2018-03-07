@@ -47,13 +47,22 @@ public class RequestPositionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
         }
 
+        // check time
+        if (checkTime(input.time) < 0) {
+            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+        }
+
         // create update
+        HashSet<? extends Account> affectedUsers
+                = new HashSet<>(group.getAllMembers().values());
+        affectedUsers.remove(actingAccount);
+
         PositionRequestUpdate update =
                 new PositionRequestUpdate(new Date(),
                         actingAccount.getID(), input.time);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new HashSet<>(group.getAllMembers().values()));
+                    affectedUsers);
         } catch (JsonProcessingException e) {
              throw new ProgrammingException(e);
         }
