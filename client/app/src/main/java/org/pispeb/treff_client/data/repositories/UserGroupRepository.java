@@ -79,11 +79,6 @@ public class UserGroupRepository {
         });
 
         return users;
-
-        /*
-        return new LivePagedListBuilder<>(userGroupDao.getUsersByGroup(groupId), 30)
-                .build();
-        */
     }
 
     public void setIsSharing (int groupId, boolean isSharing) {

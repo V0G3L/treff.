@@ -3,8 +3,6 @@ package org.pispeb.treff_client.data.networking;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -18,8 +16,53 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.data.database.TreffDatabase;
-import org.pispeb.treff_client.data.networking.commands.*;
+import org.pispeb.treff_client.data.networking.commands.AbstractCommand;
+import org.pispeb.treff_client.data.networking.commands.AbstractRequest;
+import org.pispeb.treff_client.data.networking.commands.AbstractResponse;
+import org.pispeb.treff_client.data.networking.commands.AcceptContactRequestCommand;
+import org.pispeb.treff_client.data.networking.commands.AddGroupMembersCommand;
+import org.pispeb.treff_client.data.networking.commands.AddPollOptionCommand;
+import org.pispeb.treff_client.data.networking.commands.BlockAccountCommand;
+import org.pispeb.treff_client.data.networking.commands.CancelContactRequestCommand;
+import org.pispeb.treff_client.data.networking.commands.CreateEventCommand;
+import org.pispeb.treff_client.data.networking.commands.CreateGroupCommand;
+import org.pispeb.treff_client.data.networking.commands.CreatePollCommand;
+import org.pispeb.treff_client.data.networking.commands.DeleteAccountCommand;
+import org.pispeb.treff_client.data.networking.commands.EditEmailCommand;
+import org.pispeb.treff_client.data.networking.commands.EditEventCommand;
+import org.pispeb.treff_client.data.networking.commands.EditGroupCommand;
+import org.pispeb.treff_client.data.networking.commands.EditPasswordCommand;
+import org.pispeb.treff_client.data.networking.commands.EditPollCommand;
+import org.pispeb.treff_client.data.networking.commands.EditPollOptionCommand;
+import org.pispeb.treff_client.data.networking.commands.EditUsernameCommand;
+import org.pispeb.treff_client.data.networking.commands.GetContactListCommand;
+import org.pispeb.treff_client.data.networking.commands.GetEventDetailsCommand;
+import org.pispeb.treff_client.data.networking.commands.GetGroupDetailsCommand;
+import org.pispeb.treff_client.data.networking.commands.GetPermissionsCommand;
+import org.pispeb.treff_client.data.networking.commands.GetPollDetailsCommand;
+import org.pispeb.treff_client.data.networking.commands.GetUserDetailsCommand;
+import org.pispeb.treff_client.data.networking.commands.GetUserIdCommand;
+import org.pispeb.treff_client.data.networking.commands.JoinEventCommand;
+import org.pispeb.treff_client.data.networking.commands.LeaveEventCommand;
+import org.pispeb.treff_client.data.networking.commands.ListGroupsCommand;
+import org.pispeb.treff_client.data.networking.commands.LoginCommand;
+import org.pispeb.treff_client.data.networking.commands.PublishPositionCommand;
+import org.pispeb.treff_client.data.networking.commands.RegisterCommand;
+import org.pispeb.treff_client.data.networking.commands.RejectContactRequestCommand;
+import org.pispeb.treff_client.data.networking.commands.RemoveContactCommand;
+import org.pispeb.treff_client.data.networking.commands.RemoveEventCommand;
+import org.pispeb.treff_client.data.networking.commands.RemoveGroupMembersCommand;
+import org.pispeb.treff_client.data.networking.commands.RemovePollCommand;
+import org.pispeb.treff_client.data.networking.commands.RemovePollOptionCommand;
+import org.pispeb.treff_client.data.networking.commands.RequestPositionCommand;
+import org.pispeb.treff_client.data.networking.commands.ResetPasswordCommand;
+import org.pispeb.treff_client.data.networking.commands.ResetPasswordConfirmCommand;
+import org.pispeb.treff_client.data.networking.commands.SendChatMessageCommand;
+import org.pispeb.treff_client.data.networking.commands.SendContactRequestCommand;
+import org.pispeb.treff_client.data.networking.commands.UnblockAccountCommand;
+import org.pispeb.treff_client.data.networking.commands.UpdatePositionCommand;
+import org.pispeb.treff_client.data.networking.commands.VoteForOptionCommand;
+import org.pispeb.treff_client.data.networking.commands.WithdrawVoteForOptionCommand;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
@@ -576,7 +619,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * Method to get information about the users groups
      */
     public synchronized void listGroups() {
-        executeCommand(new ListGroupsCommad(getToken(), userGroupRepository,
+        executeCommand(new ListGroupsCommand(getToken(), userGroupRepository,
                 this));
     }
 

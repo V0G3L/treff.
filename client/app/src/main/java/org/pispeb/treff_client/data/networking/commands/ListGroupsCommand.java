@@ -8,17 +8,13 @@ import org.pispeb.treff_client.data.networking.commands.descriptions.ShallowUser
 
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
-/**
- * Created by matth on 17.02.2018.
- */
-
-public class ListGroupsCommad extends AbstractCommand {
+public class ListGroupsCommand extends AbstractCommand {
 
     private Request output;
     private final UserGroupRepository userGroupRepository;
     private final RequestEncoder encoder;
 
-    public ListGroupsCommad(String token,
+    public ListGroupsCommand(String token,
                             UserGroupRepository userGroupRepository,
                             RequestEncoder encoder) {
         super(Response.class);
