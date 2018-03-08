@@ -14,7 +14,8 @@ public class UsergroupEditDescription {
     public final int id;
     public final String name;
 
-    public UsergroupEditDescription(@JsonProperty("id") int id,
+    public UsergroupEditDescription(@JsonProperty("type") String type,
+                                    @JsonProperty("id") int id,
                                     @JsonProperty("name") String name) {
         this.id = id;
         this.name = name;

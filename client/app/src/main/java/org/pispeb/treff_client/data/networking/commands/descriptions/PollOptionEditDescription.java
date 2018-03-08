@@ -14,12 +14,13 @@ public class PollOptionEditDescription extends PollOptionCreateDescription {
 
     public final int id;
 
-    public PollOptionEditDescription(@JsonProperty("latitude") long latitude,
+    public PollOptionEditDescription(@JsonProperty("type") String type,
+                                     @JsonProperty("latitude") long latitude,
                                      @JsonProperty("longitude") long longitude,
                                      @JsonProperty("time-start") Date timeStart,
                                      @JsonProperty("time-end") Date timeEnd,
                                      @JsonProperty("id") int id) {
-        super(latitude, longitude, timeStart, timeEnd);
+        super(type, latitude, longitude, timeStart, timeEnd);
         this.id = id;
     }
 }

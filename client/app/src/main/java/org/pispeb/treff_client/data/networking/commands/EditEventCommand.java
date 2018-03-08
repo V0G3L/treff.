@@ -66,7 +66,8 @@ public class EditEventCommand extends AbstractCommand {
                        String token) {
             super(CmdDesc.EDIT_EVENT.toString());
             this.groupId = groupId;
-            event = new EventEditDescription(title, creatorId, timeStart,
+            event = new EventEditDescription("type", title, creatorId,
+                    timeStart,
                     timeEnd, position, eventId);
             this.token = token;
         }

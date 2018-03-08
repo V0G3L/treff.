@@ -24,13 +24,14 @@ public class EventEditDescription extends EventCreateDescription {
      * @param position  The position at which the event takes place
      * @param id        The ID of the event
      */
-    public EventEditDescription(@JsonProperty("title") String title,
+    public EventEditDescription(@JsonProperty("type") String type,
+                                @JsonProperty("title") String title,
                                 @JsonProperty("creator") int creatorID,
                                 @JsonProperty("time-start") Date timeStart,
                                 @JsonProperty("time-end") Date timeEnd,
                                 @JsonProperty("position") Position position,
                                 @JsonProperty("id") int id) {
-        super(title, creatorID, timeStart, timeEnd, position);
+        super(type, title, creatorID, timeStart, timeEnd, position);
         this.id = id;
     }
 

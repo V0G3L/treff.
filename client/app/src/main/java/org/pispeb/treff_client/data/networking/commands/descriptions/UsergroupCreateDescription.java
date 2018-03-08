@@ -15,7 +15,8 @@ public class UsergroupCreateDescription {
     public final String name;
     public final int[] memberIDs;
 
-    public UsergroupCreateDescription(@JsonProperty("name") String name,
+    public UsergroupCreateDescription(@JsonProperty("type") String type,
+                                      @JsonProperty("name") String name,
                                       @JsonProperty("members")
                                               int[] memberIDs) {
         this.name = name;

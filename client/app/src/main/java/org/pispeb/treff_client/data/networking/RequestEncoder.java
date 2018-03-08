@@ -15,6 +15,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import junit.framework.Test;
+
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.commands.*;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
@@ -38,14 +40,14 @@ import javax.websocket.DeploymentException;
  * This class provides methods to perform the known server requests.
  */
 
-public class RequestEncoder implements ConnectionHandler.ResponseListener {
+public class RequestEncoder implements TestConnectionHandler.ResponseListener {
 
     private final int DISPLAY_ERROR_TOAST = 1;
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
 
-    private ConnectionHandler connectionHandler;
+    private TestConnectionHandler testConnectionHandler;
     private boolean idle;
 
     private Handler bgHandler;
@@ -80,8 +82,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
         try {
-            connectionHandler
-                    = new ConnectionHandler(
+            testConnectionHandler
+                    = new TestConnectionHandler(
                     "ws://100.85.16.29:8080/treff_server/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
@@ -108,9 +110,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
-    // change ConnectionHandler in case of Server change or testing
-    public void setConnectionHandler(ConnectionHandler connectionHandler) {
-        this.connectionHandler = connectionHandler;
+    // change TestConnectionHandler in case of Server change or testing
+    public void setConnectionHandler(TestConnectionHandler connectionHandler) {
+        this.testConnectionHandler = connectionHandler;
     }
 
     // must be called right after creating the encoder
@@ -160,7 +162,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * pass a message to the connectionHandler in order to be sent to the server
+     * pass a message to the testConnectionHandler in order to be sent to the server
      *
      * @param message content of that message (in correct command format)
      */
@@ -168,8 +170,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         bgHandler.post(() -> {
 
             Log.i("Encoder", "sending Message");
-            Log.i("Encoder", "CH: " + connectionHandler);
-            connectionHandler.sendMessage(message);
+            Log.i("Encoder", "CH: " + testConnectionHandler);
+            testConnectionHandler.sendMessage(message);
         });
     }
 
@@ -257,7 +259,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public void closeConnection() {
         // TODO check for Service still running
-        connectionHandler.disconnect();
+        testConnectionHandler.disconnect();
     }
 
     /**
@@ -401,7 +403,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * update the list of contact as well as requests
      */
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(getToken(), userRepository));
+        executeCommand(new GetContactListCommand(getToken(), userRepository,
+                this));
     }
 
     /**

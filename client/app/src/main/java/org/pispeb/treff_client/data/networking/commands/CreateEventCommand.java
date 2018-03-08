@@ -64,8 +64,8 @@ public class CreateEventCommand extends AbstractCommand {
                        Date timeEnd, Position position, String token) {
             super(CmdDesc.CREATE_EVENT.toString());
             this.groupId = groupId;
-            event = new EventCreateDescription(title, creatorId, timeStart,
-                    timeEnd, position);
+            event = new EventCreateDescription("type", title, creatorId,
+                    timeStart, timeEnd, position);
             this.token = token;
         }
     }

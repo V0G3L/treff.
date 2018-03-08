@@ -26,7 +26,8 @@ public class EventCreateDescription {
      * @param timeEnd The date and time at which the event ends
      * @param position The position at which the event takes place
      */
-    public EventCreateDescription(@JsonProperty("title") String title,
+    public EventCreateDescription(@JsonProperty("type") String type,
+                                  @JsonProperty("title") String title,
                                   @JsonProperty("creator") int creatorID,
                                   @JsonProperty("time-start") Date timeStart,
                                   @JsonProperty("time-end") Date timeEnd,
