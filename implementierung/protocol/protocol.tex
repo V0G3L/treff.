@@ -149,8 +149,7 @@ For the sake of consistency, they are listed here anyways.
 
 \apiDesc{Usergroup}{
     name/string/Name of the group,
-    members/membership array/Complete descriptions of all memberships that are
-    part of this group,
+    members/int array/IDs of all members that are part of this group,
     events/int array/IDs of all events that are part of this group,
     polls/int array/IDs of all polls that are part of this group
 }{
@@ -206,15 +205,51 @@ For the sake of consistency, they are listed here anyways.
 }{}{}
 
 % TODO: remove ID (defined in .sty)
-\apiDesc{Membership}{
-    account-id/int/ID of the account that this membership belongs to,
-    sharing-until/date/Point in time until which location sharing is active.
-    If this value is in the past then other members of the group will not be
-    notified of position updates unless they are also in another group in which
-    location sharing is active,
-    permissions/object/Object holding a \code{permission-name -> boolean} pair
-    for each permission defined in chapter \ref{sec:permissions}.
-}{}{}
+%\apiDesc{Membership}{
+%    account-id/int/ID of the account that this membership belongs to,
+%    sharing-until/date/Point in time until which location sharing is active.
+%    If this value is in the past then other members of the group will not be
+%    notified of position updates unless they are also in another group in which
+%    location sharing is active,
+%    permissions/object/Object holding a \code{permission-name -> boolean} pair
+%    for each permission defined in chapter \ref{sec:permissions}.
+%}{}{}
+
+\vbox{
+    \subsection{Membership}\label{subsec:membership-desc}
+        \apiDescSection{Shallow\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            checksum/string/Checksum of the recursively complete description of
+            this object (see chapter \ref{sec:checksum}).}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{
+        \apiDescSection{Complete\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            sharing-until/date/Point in time until which location sharing is active.
+            If this value is in the past then other members of the group will not be
+            notified of position updates unless they are also in another group in which
+            location sharing is active,
+            permissions/object/Object holding a \code{permission-name -> boolean} pair
+            for each permission defined in chapter \ref{sec:permissions}.
+}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{%
+        \apiDescSection{Recursively\\complete\\Description}%
+        All properties not listed here are the same as in the complete description
+    }
+
 
 \section{Commands}\label{sec:commands}
 
@@ -926,6 +961,28 @@ the following properties:
             -/-/-
 		}
 }
+
+\section{Permissions}
+List of the permissions a user can have within an usergroup:
+
+\begin{tabular}{l|l}
+    \hline
+    \textbf{Name} & \textbf{Description} \\
+    \hline
+        edit\_any\_event & Allows the user to edit events created by other
+        users. \\
+        create\_poll & Allows the user to create polls. \\
+        change\_permissions & Allows the user to change permissions. \\
+        manage\_members & Allows the user to manage the members of the
+        usergroup. \\
+        create\_event & Allows the user to create events. \\
+        edit\_group & Allows the user to edit the group. \\
+        edit\_any\_poll & Allows the user to edit polls created by other
+        users. \\
+\end{tabular}\\
+
+
+
 
 \section{Checksums for recursively complete descriptions}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}
