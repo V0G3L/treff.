@@ -10,6 +10,7 @@ import java.util.Date;
 
 public class CompleteEvent {
 
+    public final String type;
     public final int id;
     public final String title;
     public final int creator;
@@ -21,8 +22,16 @@ public class CompleteEvent {
     public final double longitude;
     public final int[] participants;
 
-    public CompleteEvent(int id, String title, int creator, Date timeStart,
-                         Date timeEnd, double latitude, double longitude, int[] participants){
+    public CompleteEvent(@JsonProperty("type") String type,
+                         @JsonProperty("id") int id,
+                         @JsonProperty("title") String title,
+                         @JsonProperty("creator") int creator,
+                         @JsonProperty("time-start") Date timeStart,
+                         @JsonProperty("time-end") Date timeEnd,
+                         @JsonProperty("latitude") double latitude,
+                         @JsonProperty("longitude") double longitude,
+                         @JsonProperty("participants") int[] participants){
+        this.type = "event";
         this.id = id;
         this.title = title;
         this.creator = creator;

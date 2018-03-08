@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class GetEventDetailsTest extends AbstractCommandTest {
 
     private GetEventDetailsCommand command;
-    private CompleteEvent mockCompleteEvent = new CompleteEvent(mockEvetntId, mockName, mockId,
+    private CompleteEvent mockCompleteEvent = new CompleteEvent(null, mockEvetntId, mockName, mockId,
             mockTimeStart, mockTimeEnd, mockLatitude, mockLongitude, mockUsers);
 
     @Override

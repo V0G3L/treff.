@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 public class GetUserDetailsTest extends AbstractCommandTest {
 
     private GetUserDetailsCommand command;
-    private CompleteAccount mockAccount = new CompleteAccount(mockId, mockName);
+    private CompleteAccount mockAccount = new CompleteAccount(null, mockId, mockName);
 
     @Override
     public void initCommand() {

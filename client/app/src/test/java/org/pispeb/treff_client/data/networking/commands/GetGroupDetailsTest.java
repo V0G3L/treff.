@@ -1,9 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands;
 
-import org.junit.Before;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteMembership;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteUsergroup;
@@ -25,7 +23,7 @@ public class GetGroupDetailsTest extends AbstractCommandTest {
     private CompleteMembership[] mockCompleteMemberships = {mockCompleteMembership};
 
     private CompleteUsergroup mockCompleteUserGroup = new CompleteUsergroup
-            (mockGroupId, mockName, mockCompleteMemberships, mockEvents, mockPolls);
+            (null, mockGroupId, mockName, mockCompleteMemberships, mockEvents, mockPolls);
 
     @Override
     public void initCommand() {

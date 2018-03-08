@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CompleteMembership {
 
+    public final String type;
     public final int id;
     @JsonProperty("account-id")
     public final int accountId;
@@ -16,7 +17,12 @@ public class CompleteMembership {
     //TODO permissions
     public final Object permissions;
 
-    public CompleteMembership(int membershipId, int accountId, Object permissions){
+    public CompleteMembership(@JsonProperty("type") String type,
+                              @JsonProperty("id") int membershipId,
+                              @JsonProperty("account-id") int accountId,
+                              @JsonProperty("permissions") Object permissions){
+
+        this.type = "membership";
         this.id = membershipId;
         this.accountId = accountId;
         this.permissions = permissions;

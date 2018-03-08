@@ -621,4 +621,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         executeCommand(new PublishPositionCommand(groupId, endTime,
                 getToken(), userGroupRepository));
     }
+
+    public synchronized void requestUpdates() {
+        executeCommand(new RequestUpdatesCommand(getToken(), chatRepository, eventRepository,
+                userGroupRepository, userRepository));
+    }
 }

@@ -1,7 +1,23 @@
 package org.pispeb.treff_client.data.networking.commands;
 
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+import org.pispeb.treff_client.data.networking.commands.updates.UpdateToSerialize;
+import org.pispeb.treff_client.data.repositories.ChatRepository;
+import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+import org.pispeb.treff_client.data.repositories.UserRepository;
+
+import javax.json.JsonObject;
+import javax.json.Json;
+
+import java.io.IOException;
+import java.io.StringReader;
+
 
 /**
  * Request an array of all updates that accumulated on the server since the
@@ -10,43 +26,84 @@ import java.util.Date;
 
 public class RequestUpdatesCommand extends AbstractCommand {
 
-    public RequestUpdatesCommand() {
+    private Request output;
+    private ChatRepository chatRepository;
+    private EventRepository eventRepository;
+    private UserGroupRepository userGroupRepository;
+    private UserRepository userRepository;
+
+    public RequestUpdatesCommand(String token,
+                                 ChatRepository chatRepository,
+                                 EventRepository eventRepository,
+                                 UserGroupRepository userGroupRepository,
+                                 UserRepository userRepository) {
         super(Response.class);
+        output = new Request(token);
+        this.chatRepository = chatRepository;
+        this.eventRepository = eventRepository;
+        this.userGroupRepository = userGroupRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public AbstractRequest getRequest() {
-        return null;
+    public Request getRequest() {
+        return output;
     }
+
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+
+        for(String updateString : response.updates) {
+
+            JsonObject update = Json
+                    .createReader(new StringReader(updateString))
+                    .readObject();
+
+            String updateType = update.getString("type");
+
+            Class<? extends UpdateToSerialize> updateClass
+                    = UpdateToSerialize.getUpdateByStringIdentifier(updateType);
+
+            if (updateClass == null) {
+                //TODO skip run
+            }
+
+            final ObjectMapper mapper;
+            mapper = new ObjectMapper();
+            mapper.enable(DeserializationFeature
+                    .FAIL_ON_MISSING_CREATOR_PROPERTIES);
+
+            UpdateToSerialize actualUpdate = null;
+
+
+            try {
+                actualUpdate = mapper.readValue(updateString,
+                        updateClass);
+            } catch (IOException e) {
+                //Should not happen
+                e.printStackTrace();
+            }
+        }
     }
 
-    // sends empty command
     public static class Request extends AbstractRequest {
-        public Request() {
+
+        String token;
+
+        public Request(String token) {
             super(CmdDesc.REQUEST_UPDATES.toString());
+            this.token = token;
         }
     }
 
     public static class Response extends AbstractResponse {
-        // TODO updates!
-        public Response() {
+        public String[] updates;
+        public Response(@JsonProperty("updates") String[] updates) {
+            this.updates = updates;
         }
     }
 
 
-    private static class Update {
-        public final String type;
-        public final Date created;
-        public final int creator;
-
-        public Update(String type, Date created, int creator) {
-            this.type = type;
-            this.created = created;
-            this.creator = creator;
-        }
-    }
 }
