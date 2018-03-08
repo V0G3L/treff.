@@ -38,6 +38,10 @@ public class UserRepository {
         return userDao.getUserByName(username);
     }
 
+    public User getUser(int id) {
+        return userDao.getUserById(id);
+    }
+
     public LiveData<PagedList<User>> getFriends() {
         encoder.getContactList();
         return new LivePagedListBuilder<>(userDao.getFriends(), 30).build();
@@ -47,6 +51,11 @@ public class UserRepository {
         encoder.getContactList();
         return new LivePagedListBuilder<>(userDao.getFriendsAndPending(), 30)
                 .build();
+    }
+
+    public LiveData<PagedList<User>> getAll() {
+        encoder.getContactList();
+        return new LivePagedListBuilder<>(userDao.getAll(), 30).build();
     }
 
     public LiveData<List<User>> getFriendsAsList() {
@@ -164,6 +173,14 @@ public class UserRepository {
      */
     public void requestDecline(int userId) {
         encoder.rejectContactRequest(userId);
+    }
+
+    /**
+     * decline a contact request from the given user
+     * @param userId id of that user
+     */
+    public void requestCancel(int userId) {
+        encoder.cancelContactRequest(userId);
     }
 
     /**

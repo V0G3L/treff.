@@ -71,6 +71,10 @@ public class TestConnectionHandler {
             onMessage("{}");
         } else if (message.contains("\"cmd\":\"create-event\"")) {
             onMessage("{\"id\":" + count++ + "}");
+        } else if (message.contains("\"cmd\":\"get-user-id\"")) {
+            onMessage("{\"id\":" + count++ + "}");
+        } else {
+            onMessage("{}");
         }
     }
 

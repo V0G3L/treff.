@@ -24,7 +24,7 @@ public class FriendListViewModel extends ViewModel
 
     public FriendListViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.friends = userRepository.getFriendsAndPending();
+        this.friends = userRepository.getAll();
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, -1));
 
@@ -41,11 +41,19 @@ public class FriendListViewModel extends ViewModel
     }
 
     public void decline(int userId) {
-        userRepository.requestAccept(userId);
+        userRepository.requestDecline(userId);
     }
 
     public void accept(int userId) {
-        userRepository.requestDecline(userId);
+        userRepository.requestAccept(userId);
+    }
+
+    public void unblock(int userId) {
+        userRepository.requestIsBlocked(userId, false);
+    }
+
+    public void cancel(int userId) {
+        userRepository.requestCancel(userId);
     }
 
     @Override
@@ -55,6 +63,9 @@ public class FriendListViewModel extends ViewModel
                     user.getUserId()));
         } else if (user.isRequesting()) {
             state.setValue(new State(ViewCall.SHOW_REQUESTING_DIALOG,
+                    user.getUserId()));
+        } else if (user.isBlocked()) {
+            state.setValue(new State(ViewCall.SHOW_BLOCKED_DIALOG,
                     user.getUserId()));
         } else {
             state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,

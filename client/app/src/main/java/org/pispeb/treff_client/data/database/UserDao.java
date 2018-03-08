@@ -44,14 +44,19 @@ public interface UserDao {
     @Update
     void update(User user);
 
-    @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE isFriend & NOT isBlocked ORDER BY " +
+            "username")
     DataSource.Factory<Integer, User> getFriends();
 
-    @Query("SELECT * FROM user WHERE (isFriend = 1 | requestPending = 1 | " +
-            "isRequesting = 1) & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE (isFriend | requestPending | " +
+            "isRequesting) & NOT isBlocked ORDER BY isBlocked, username")
     DataSource.Factory<Integer, User> getFriendsAndPending();
 
-    @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE (isFriend | requestPending | " +
+            "isRequesting | isBlocked) ORDER BY isBlocked, username")
+    DataSource.Factory<Integer, User> getAll();
+
+    @Query("SELECT * FROM user WHERE isFriend & NOT isBlocked")
     LiveData<List<User>> getFriendsAsList();
 
     @Query("SELECT * FROM user")

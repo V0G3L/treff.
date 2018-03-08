@@ -342,16 +342,6 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to get the ID belonging to a username
-     *
-     * @param username .
-     * @return The user id of the user
-     */
-    public synchronized void getUserId(String username) {
-        executeCommand(new GetUserIdCommand(username, getToken(), userRepository));
-    }
-
-    /**
      * Method to perform an send-contact-request request
      *
      * @param userId Contact to be added to the friend list
@@ -367,9 +357,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      * @param userName Name of the user to be added to the friend list
      */
     public synchronized void sendContactRequest(String userName) {
-        executeCommand(new GetUserIdCommand(userName, getToken(), userRepository));
-        executeCommand(new SendContactRequestCommand(userName, getToken(),
-                userRepository));
+        executeCommand(new GetUserIdCommand(userName, getToken(),
+                userRepository, this));
     }
 
     public synchronized void cancelContactRequest(int userId) {

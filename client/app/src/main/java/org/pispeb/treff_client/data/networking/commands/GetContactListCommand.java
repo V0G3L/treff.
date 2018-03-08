@@ -19,6 +19,8 @@ public class GetContactListCommand extends AbstractCommand {
     private UserRepository userRepository;
     private final RequestEncoder encoder;
 
+    private final Location l = new Location(LocationManager.GPS_PROVIDER);
+
     public GetContactListCommand(String token, UserRepository userRepository,
                                  RequestEncoder encoder) {
         super(Response.class);
@@ -40,33 +42,30 @@ public class GetContactListCommand extends AbstractCommand {
         userRepository.resetAllUsers();
 
         for (int c : response.contacts) {
-            checkUser(c);
-            userRepository.setIsFriend(c, true);
+            checkUser( new User(c, "", true, false, false, false, l));
         }
         for (int in : response.incomingRequests) {
-            checkUser(in);
-            userRepository.setIsRequesting(in, true);
+            checkUser( new User(in, "", false, false, true, false, l));
         }
         for (int out : response.outgoingRequests) {
-            checkUser(out);
-            userRepository.setIsPending(out, true);
+            checkUser( new User(out, "", false, false, false, true, l));
         }
         for (int b : response.blocks) {
-            checkUser(b);
-            userRepository.setIsBlocked(b, true);
+            checkUser( new User(b, "", false, true, false, false, l));
         }
     }
 
-    private void checkUser(int id) {
-        if (userRepository.getUserLiveData(id) != null) {
-            encoder.getUserDetails(id);
-            userRepository.addUser(newUser(id));
+    private void checkUser(User u) {
+        if (userRepository.getUser(u.getUserId()) == null) {
+            encoder.getUserDetails(u.getUserId());
+            Location l = new Location(LocationManager.GPS_PROVIDER);
+            userRepository.addUser(u);
+        } else {
+            userRepository.setIsFriend(u.getUserId(), u.isFriend());
+            userRepository.setIsRequesting(u.getUserId(), u.isRequesting());
+            userRepository.setIsPending(u.getUserId(), u.isRequestPending());
+            userRepository.setIsBlocked(u.getUserId(), u.isBlocked());
         }
-    }
-
-    private User newUser(int id) {
-        Location l = new Location(LocationManager.GPS_PROVIDER);
-        return new User(id, "", false, false, false, false, l);
     }
 
     public static class Request extends AbstractRequest {
