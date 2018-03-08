@@ -13,7 +13,7 @@ public class CompleteAccount {
 
     public CompleteAccount(@JsonProperty("type") String type,
                            @JsonProperty("id") int id,
-                           @JsonProperty("username") String username){
+                           @JsonProperty("user") String username){
         this.id = id;
         this.username = username;
     }

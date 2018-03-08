@@ -45,7 +45,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
 
-    //    private TestConnectionHandler connectionHandler;
     private ConnectionHandler connectionHandler;
     private boolean idle;
 
@@ -109,7 +108,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
-    // change TestConnectionHandler in case of Server change or testing
     public void setConnectionHandler(ConnectionHandler connectionHandler) {
         this.connectionHandler = connectionHandler;
     }

@@ -60,7 +60,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
         public final CompleteUsergroup usergroup;
 
-        public Response(@JsonProperty("user-group")
+        public Response(@JsonProperty("group")
                         CompleteUsergroup usergroup) {
             this.usergroup = usergroup;
         }

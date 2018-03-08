@@ -12,13 +12,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class UsergroupCreateDescription {
 
+    @JsonProperty("type")
+    public final String type;
+    @JsonProperty("name")
     public final String name;
+    @JsonProperty("members")
     public final int[] memberIDs;
 
-    public UsergroupCreateDescription(@JsonProperty("type") String type,
-                                      @JsonProperty("name") String name,
-                                      @JsonProperty("members")
-                                              int[] memberIDs) {
+    public UsergroupCreateDescription(String type, String name, int[] memberIDs) {
+        this.type = type;
         this.name = name;
         this.memberIDs = memberIDs;
     }
