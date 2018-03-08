@@ -11,8 +11,6 @@ public class SendContactRequestCommand extends AbstractCommand{
 
     private Request output;
     private UserRepository userRepository;
-    private String username;
-    private String token;
 
     public SendContactRequestCommand(int id, String token, UserRepository userRepository) {
         super(Response.class);
@@ -20,20 +18,8 @@ public class SendContactRequestCommand extends AbstractCommand{
         output = new Request(id, token);
     }
 
-    public SendContactRequestCommand(String username, String token,
-                                     UserRepository userRepository) {
-        super(Response.class);
-        this.userRepository = userRepository;
-        this.username = username;
-        this.token = token;
-    }
-
     @Override
     public Request getRequest() {
-        if (output == null) {
-            User user = userRepository.getUser(username);
-            output =  new Request(user.getUserId(), token);
-        }
         return output;
     }
 

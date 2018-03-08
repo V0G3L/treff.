@@ -39,6 +39,8 @@ public class GetGroupDetailsCommand extends AbstractCommand {
             userGroupRepository.updateGroup(
                     new UserGroup(output.id, response.usergroup.name));
         }
+        userGroupRepository.updateGroupMembers(output.id, response.usergroup
+                .members);
     }
 
     public static class Request extends AbstractRequest {

@@ -34,7 +34,11 @@ public class TestConnectionHandler {
             onMessage("{\"token\":\"aysdjhgafshd\"," +
                     "\"id\":162538}");
         } else if (message.contains("\"cmd\":\"list-groups\"")) {
-            onMessage("{}");
+            onMessage("{\"groups\":[" +
+                    "{\"type\":\"shallow-group\",\"id\":456," +
+                    "\"checksum\":\"as574s\"}," +
+                    "{\"type\":\"shallow-group\"," +
+                    "\"id\":789,\"checksum\":\"assty4s\"}]}");
         } else if (message.contains("\"cmd\":\"get-contact-list\"")) {
             onMessage("{\"contacts\":[1, 2, 3, 4]," +
                     "\"incoming-requests\":[5, 6]," +
@@ -65,14 +69,22 @@ public class TestConnectionHandler {
                     "\"id\":" + id + "}}");
         } else if (message.contains("\"cmd\":\"create-group\"")) {
             onMessage("{\"id\":" + count++ + "}");
-        } else if (message.contains("\"cmd\":\"get-group-details\"")) {
-            onMessage("{}");
         } else if (message.contains("\"cmd\":\"send-chat-message\"")) {
             onMessage("{}");
         } else if (message.contains("\"cmd\":\"create-event\"")) {
             onMessage("{\"id\":" + count++ + "}");
         } else if (message.contains("\"cmd\":\"get-user-id\"")) {
             onMessage("{\"id\":" + count++ + "}");
+        } else if (message.contains("\"cmd\":\"get-group-details\"")) {
+            if (message.contains("\"id\":456")) {
+                onMessage("{\"user-group\":{\"type\":\"complete-group\"," +
+                        "\"id\":456,\"name\":\"Lerngruppe\",\"members\":[1, " +
+                        "2, 3],\"events\":[],\"polls\":[]}}");
+            } else if (message.contains("\"id\":789")) {
+                onMessage("{\"user-group\":{\"type\":\"complete" +
+                        "-group\",\"id\":789,\"name\":\"Saufen\",\"members\":[4, " +
+                        "5, 6],\"events\":[],\"polls\":[]}}");
+            }
         } else {
             onMessage("{}");
         }

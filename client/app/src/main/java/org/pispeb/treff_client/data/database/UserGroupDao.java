@@ -27,7 +27,10 @@ public interface UserGroupDao {
     void delete(UserGroup... userGroups);
 
     @Query("SELECT * FROM usergroup WHERE groupID = :groupId")
-    LiveData<UserGroup> getGroupByID(int groupId);
+    LiveData<UserGroup> getGroupLiveDataById(int groupId);
+
+    @Query("SELECT * FROM usergroup WHERE groupID = :groupId")
+    UserGroup getGroupById(int groupId);
 
     @Query("SELECT * FROM usergroup")
     DataSource.Factory<Integer, UserGroup> getAllGroups();
@@ -40,6 +43,9 @@ public interface UserGroupDao {
 
     @Delete
     void delete(GroupMembership groupMembership);
+
+    @Query("DELETE FROM groupmembership WHERE groupId = :groupId")
+    void deleteMembershipsOfGroup(int groupId);
 
     /* TODO remove
     @Query("SELECT * FROM user INNER JOIN groupmembership " +

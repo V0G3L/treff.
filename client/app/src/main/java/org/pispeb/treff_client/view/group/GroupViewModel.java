@@ -41,7 +41,7 @@ public class GroupViewModel extends ViewModel
      * @param groupId id of that group
      */
     public void setGroupById(int groupId) {
-        this.group = userGroupRepository.getGroup(groupId);
+        this.group = userGroupRepository.getGroupLiveData(groupId);
         this.members = userGroupRepository.getGroupMembers(groupId);
     }
 

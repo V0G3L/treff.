@@ -48,9 +48,13 @@ public class UserGroupRepository {
     /**
      * receive groups in various formats
      */
-    public LiveData<UserGroup> getGroup(int id) {
+    public LiveData<UserGroup> getGroupLiveData(int id) {
         encoder.getGroupDetails(id);
-        return userGroupDao.getGroupByID(id);
+        return userGroupDao.getGroupLiveDataById(id);
+    }
+
+    public UserGroup getGroup(int id) {
+        return userGroupDao.getGroupById(id);
     }
 
     public LiveData<PagedList<UserGroup>> getGroups() {
@@ -151,6 +155,16 @@ public class UserGroupRepository {
         for (int i = 0; i < members.length; i++ ) {
             userGroupDao.delete(new GroupMembership(members[i], groupId));
         }
+    }
+
+    /**
+     * Remove all members from group and replace with new ones
+     * @param groupId
+     * @param newMembers
+     */
+    public void updateGroupMembers(int groupId, int[] newMembers) {
+        userGroupDao.deleteMembershipsOfGroup(groupId);
+        addGroupMembers(groupId, newMembers);
     }
 
     /**
