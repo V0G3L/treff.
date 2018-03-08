@@ -1,8 +1,8 @@
 package org.pispeb.treff_server.commands.descriptions;
 
 import org.junit.Test;
-import org.pispeb.treff_server.JsonDependentTest;
 import org.pispeb.treff_server.Permission;
+import org.pispeb.treff_server.abstracttests.JsonDependentTest;
 
 import java.io.IOException;
 import java.util.HashMap;

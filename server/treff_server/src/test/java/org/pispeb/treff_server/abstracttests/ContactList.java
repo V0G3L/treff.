@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.commands.abstracttests;
+package org.pispeb.treff_server.abstracttests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.junit.Assert;

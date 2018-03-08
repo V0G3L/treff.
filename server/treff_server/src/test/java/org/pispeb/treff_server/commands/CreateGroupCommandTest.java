@@ -3,18 +3,13 @@ package org.pispeb.treff_server.commands;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
-import org.pispeb.treff_server.commands.descriptions.UsergroupCreateDescription;
+import org.pispeb.treff_server.abstracttests.MultipleUsersTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
-import org.pispeb.treff_server.interfaces.Update;
-import org.pispeb.treff_server.interfaces.Usergroup;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author tim

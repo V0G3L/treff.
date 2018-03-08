@@ -2,10 +2,9 @@ package org.pispeb.treff_server.networking;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.JsonDependentTest;
+import org.pispeb.treff_server.abstracttests.JsonDependentTest;
 
 import javax.json.Json;
-import java.io.IOException;
 
 /**
  * @author tim

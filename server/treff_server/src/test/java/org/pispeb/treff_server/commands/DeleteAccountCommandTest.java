@@ -2,7 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.ContactDependentTest;
+import org.pispeb.treff_server.abstracttests.ContactDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.Json;

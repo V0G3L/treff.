@@ -1,9 +1,8 @@
-package org.pispeb.treff_server.commands.abstracttests;
+package org.pispeb.treff_server.abstracttests;
 
 import org.junit.Before;
 import org.pispeb.treff_server.commands.AcceptContactRequestCommand;
 
-import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 public abstract class ContactDependentTest extends ContactRequestDependentTest {

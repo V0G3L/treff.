@@ -2,11 +2,9 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.EventDependentTest;
+import org.pispeb.treff_server.abstracttests.EventDependentTest;
 
 import javax.json.JsonObject;
-
-import static org.junit.Assert.*;
 
 public class GetEventDetailsCommandTest extends EventDependentTest{
 

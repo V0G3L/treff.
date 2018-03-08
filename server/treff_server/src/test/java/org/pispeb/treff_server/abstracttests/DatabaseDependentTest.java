@@ -1,9 +1,10 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.abstracttests;
 
 import ch.vorburger.exec.ManagedProcessException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.pispeb.treff_server.TestDatabase;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.sql.SQLDatabase;
 

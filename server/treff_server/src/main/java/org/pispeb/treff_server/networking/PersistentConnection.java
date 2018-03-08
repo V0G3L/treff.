@@ -1,4 +1,4 @@
-package org.pispeb.treff_server.update_notifier;
+package org.pispeb.treff_server.networking;
 
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;

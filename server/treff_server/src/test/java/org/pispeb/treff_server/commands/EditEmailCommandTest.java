@@ -3,7 +3,7 @@ package org.pispeb.treff_server.commands;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.AccountChangeTest;
+import org.pispeb.treff_server.abstracttests.AccountChangeTest;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;

@@ -1,16 +1,13 @@
 package org.pispeb.treff_server.commands;
 
-import jdk.nashorn.api.scripting.JSObject;
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
+import org.pispeb.treff_server.abstracttests.GroupDependentTest;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-
-import static org.junit.Assert.*;
 
 public class ListGroupsCommandTest extends GroupDependentTest {
 

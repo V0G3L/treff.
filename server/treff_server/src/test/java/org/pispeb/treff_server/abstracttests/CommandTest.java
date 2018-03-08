@@ -1,8 +1,7 @@
-package org.pispeb.treff_server.commands.abstracttests;
+package org.pispeb.treff_server.abstracttests;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.pispeb.treff_server.DatabaseDependentTest;
 import org.pispeb.treff_server.commands.AbstractCommand;
 
 import javax.json.Json;

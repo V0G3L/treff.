@@ -2,13 +2,11 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.EventDependentTest;
+import org.pispeb.treff_server.abstracttests.EventDependentTest;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-
-import static org.junit.Assert.*;
 
 /**
  * @author tim

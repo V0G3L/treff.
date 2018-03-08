@@ -2,10 +2,8 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.JsonDependentTest;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
+import org.pispeb.treff_server.abstracttests.MultipleUsersTest;
 
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;

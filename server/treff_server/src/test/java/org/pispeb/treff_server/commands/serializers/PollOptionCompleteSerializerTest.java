@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
-import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
 
 import java.io.IOException;

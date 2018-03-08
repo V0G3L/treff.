@@ -2,18 +2,14 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.EventDependentTest;
-import org.pispeb.treff_server.commands.updates.UpdateType;
+import org.pispeb.treff_server.abstracttests.EventDependentTest;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import static org.junit.Assert.*;
 
 public class EditEventCommandTest extends EventDependentTest {
 

@@ -2,7 +2,7 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.EventDependentTest;
+import org.pispeb.treff_server.abstracttests.EventDependentTest;
 
 import javax.json.Json;
 import javax.json.JsonArray;

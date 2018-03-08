@@ -1,9 +1,8 @@
 package org.pispeb.treff_server.sql;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.pispeb.treff_server.DatabaseDependentTest;
+import org.pispeb.treff_server.abstracttests.DatabaseDependentTest;
 
 /**
  * @author tim

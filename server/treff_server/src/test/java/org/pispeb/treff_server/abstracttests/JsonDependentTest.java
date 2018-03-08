@@ -1,14 +1,12 @@
-package org.pispeb.treff_server;
+package org.pispeb.treff_server.abstracttests;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.junit.Before;
 import org.junit.BeforeClass;
 
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import java.io.StringReader;
 
 /**

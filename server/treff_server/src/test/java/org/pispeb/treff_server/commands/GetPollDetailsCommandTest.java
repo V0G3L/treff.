@@ -1,7 +1,7 @@
 package org.pispeb.treff_server.commands;
 
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.MultipleUsersTest;
+import org.pispeb.treff_server.abstracttests.MultipleUsersTest;
 
 import java.io.IOException;
 

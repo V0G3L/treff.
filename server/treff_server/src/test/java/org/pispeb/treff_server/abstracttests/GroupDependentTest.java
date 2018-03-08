@@ -1,13 +1,15 @@
-package org.pispeb.treff_server.commands.abstracttests;
+package org.pispeb.treff_server.abstracttests;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treff_server.commands.CreateGroupCommand;
 import org.pispeb.treff_server.commands.EditMembershipCommand;
 import org.pispeb.treff_server.commands.GetGroupDetailsCommand;
-import org.pispeb.treff_server.commands.updates.UpdateType;
 
-import javax.json.*;
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -51,9 +52,16 @@ public class RequestHandler {
 
     public Response handleRequest(String requestString) {
         try { // catch-all for internal server errors
-            JsonObject request = Json
-                    .createReader(new StringReader(requestString))
-                    .readObject();
+
+            // try converting input to JsonObject, abort on exception
+            JsonObject request;
+            try {
+                request = Json
+                        .createReader(new StringReader(requestString))
+                        .readObject();
+            } catch (JsonParsingException e) {
+                return toErrorResponse(ErrorCode.SYNTAXINVALID);
+            }
 
             // if cmd property is missing, return a syntax error message
             if (!request.containsKey("cmd"))

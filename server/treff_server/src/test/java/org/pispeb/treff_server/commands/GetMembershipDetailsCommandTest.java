@@ -2,14 +2,9 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
+import org.pispeb.treff_server.abstracttests.GroupDependentTest;
 
-import javax.json.*;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.*;
+import javax.json.JsonObject;
 
 public class GetMembershipDetailsCommandTest extends GroupDependentTest {
 

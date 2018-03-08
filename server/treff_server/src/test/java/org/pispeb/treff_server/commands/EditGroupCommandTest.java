@@ -1,14 +1,13 @@
 package org.pispeb.treff_server.commands;
 
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
+import org.pispeb.treff_server.abstracttests.GroupDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
-import javax.json.*;
-
-import static org.junit.Assert.*;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 public class EditGroupCommandTest extends GroupDependentTest {
 

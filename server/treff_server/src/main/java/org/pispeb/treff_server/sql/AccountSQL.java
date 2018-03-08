@@ -21,15 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.sql.ResultSet;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -379,9 +371,9 @@ public class AccountSQL extends SQLObject implements Account {
                 (rs -> null),
                 update.getID(),
                 this.id);
-        // inform updatelisteners asynchronously
-        listeners.forEach(
-                l -> new Thread(() -> l.onUpdateAdded(update)).start());
+
+        // inform listeners
+        listeners.forEach(l -> l.onUpdateAdded(update));
     }
 
     @Override

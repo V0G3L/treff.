@@ -1,7 +1,6 @@
 package org.pispeb.treff_server.networking;
 
 import org.pispeb.treff_server.Server;
-import org.pispeb.treff_server.update_notifier.PersistentConnection;
 
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
