@@ -30,7 +30,7 @@ public abstract class PollDependentTest extends GroupDependentTest {
     }
 
     @Before
-    public void prepareEvent() {
+    public void preparePoll() {
         // ownUser created the group and thus
         // has the permission to create polls
         JsonObjectBuilder input

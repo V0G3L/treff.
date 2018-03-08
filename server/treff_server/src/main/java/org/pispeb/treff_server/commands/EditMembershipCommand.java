@@ -31,8 +31,10 @@ public class EditMembershipCommand extends GroupCommand {
     protected CommandOutput executeOnGroup(GroupInput commandInput) {
         Input input = (Input) commandInput;
 
-        Account account = accountManager
-                .getAccount(input.membershipEditDescription.accountID);
+        Account account = getSafeForReading(accountManager
+                .getAccount(input.membershipEditDescription.accountID));
+        if (null == account)
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
         if(null == account.getAllGroups().get(usergroup.getID()))
             return new ErrorOutput(ErrorCode.USERNOTINGROUP);
 

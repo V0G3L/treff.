@@ -18,7 +18,7 @@ public class PollOptionDeletionUpdate extends UpdateToSerialize {
 
     public PollOptionDeletionUpdate(Date date, int creator, int groupID,
                                     int pollID, int pollOptionID) {
-        super(UpdateType.POLL_DELETION.toString(), date, creator);
+        super(UpdateType.POLL_OPTION_DELETION.toString(), date, creator);
         this.groupID = groupID;
         this.pollID = pollID;
         this.pollOptionID = pollOptionID;

@@ -14,6 +14,7 @@ public class MembershipEditDescriptionTest extends JsonDependentTest {
     public void deserialize() throws IOException {
         String input =
                 "{\"account-id\": 1," +
+                        "\"group-id\": 1,"+
                         "\"permissions\":{" +
                         "\"edit_any_event\":false,\"create_poll\":false," +
                         "\"change_permissions\":false," +

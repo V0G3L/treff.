@@ -27,9 +27,9 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
                 .add("edit_group", false)
                 .add("edit_any_poll", false)
                 .build();
-        inputBuilder.add("id", groupId)
-                .add("membership", Json.createObjectBuilder()
+        inputBuilder.add("membership", Json.createObjectBuilder()
                         .add("account-id", users[1].id)
+                        .add("group-id", groupId)
                         .add("permissions", permissionInput)
                         .build());
 
@@ -75,9 +75,9 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
                 .add("edit_group", false)
                 .add("edit_any_poll", false)
                 .build();
-        inputBuilder.add("id", groupId)
-                .add("membership", Json.createObjectBuilder()
+        inputBuilder.add("membership", Json.createObjectBuilder()
                         .add("account-id", id)
+                        .add("group-id", groupId)
                         .add("permissions", permissionInput)
                         .build());
 
@@ -103,9 +103,9 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
                 .add("edit_group", false)
                 .add("edit_any_poll", false)
                 .build();
-        inputBuilder.add("id", id)
-                .add("membership", Json.createObjectBuilder()
+        inputBuilder.add("membership", Json.createObjectBuilder()
                         .add("account-id", users[1].id)
+                        .add("group-id", id)
                         .add("permissions", permissionInput)
                         .build());
 
@@ -128,9 +128,9 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
                 .add("edit_group", false)
                 .add("edit_any_poll", false)
                 .build();
-        inputBuilder.add("id", groupId)
-                .add("membership", Json.createObjectBuilder()
+        inputBuilder.add("membership", Json.createObjectBuilder()
                         .add("account-id", users[3].id)
+                        .add("group-id", groupId)
                         .add("permissions", permissionInput)
                         .build());
 
@@ -155,9 +155,9 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
                 .build();
         JsonObjectBuilder input =
                 getCommandStubForUser("edit-membership", users[2]);
-        input.add("id", groupId)
-                .add("membership", Json.createObjectBuilder()
+        input.add("membership", Json.createObjectBuilder()
                         .add("account-id", users[3].id)
+                        .add("group-id", groupId)
                         .add("permissions", permissionInput)
                         .build());
 

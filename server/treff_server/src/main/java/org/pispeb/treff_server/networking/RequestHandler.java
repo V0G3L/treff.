@@ -148,6 +148,7 @@ public class RequestHandler {
         registerCommand("get-membership-details",
                 GetMembershipDetailsCommand.class);
         registerCommand("get-poll-details", GetPollDetailsCommand.class);
+        registerCommand("get-poll-option-details", GetPollOptionDetailsCommand.class);
         registerCommand("get-user-details", GetUserDetailsCommand.class);
         registerCommand("get-user-id", GetUserIdCommand.class);
         registerCommand("join-event", JoinEventCommand.class);

@@ -23,46 +23,18 @@ import java.util.HashSet;
 /**
  * a command to withdraw a vote from a poll option
  */
-public class WithdrawVoteForOptionCommand extends AbstractCommand {
+public class WithdrawVoteForOptionCommand extends PollOptionCommand {
 
 
     public WithdrawVoteForOptionCommand(AccountManager accountManager,
                                         ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                PollOptionLockType.WRITE_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
-            DatabaseException {
+    protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
         Input input = (Input) commandInput;
-
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups()
-                        .get(input.groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // get poll
-        Poll poll = getSafeForReading(group.getAllPolls().get(input.pollId));
-        if (poll == null) {
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-        }
-
-        // get poll option
-        PollOption pollOption = getSafeForWriting(poll
-                .getPollOptions().get(input.optionId));
-        if (pollOption == null) {
-            return new ErrorOutput(ErrorCode.POLLOPTIONIDINVALID);
-        }
 
         // check votes
         if (!pollOption.getVoters().containsKey(input
@@ -77,36 +49,22 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
         PollOptionChangeUpdate update =
                 new PollOptionChangeUpdate(new Date(),
                         actingAccount.getID(),
-                        group.getID(),
+                        usergroup.getID(),
                         poll.getID(),
                         pollOption);
-        for (Account a: group.getAllMembers().values())
-            getSafeForWriting(a);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+        addUpdateToAllOtherMembers(update);
 
         // respond
         return new VoteForOptionCommand.Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int groupId;
-        final int pollId;
-        final int optionId;
+    public static class Input extends PollOptionInput {
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
                      @JsonProperty("id") int optionId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.pollId = pollId;
-            this.optionId = optionId;
+            super(token, groupId, pollId, optionId);
         }
     }
 

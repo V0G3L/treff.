@@ -25,67 +25,40 @@ import java.util.HashSet;
 /**
  * a command to delete an option of a poll of a user group
  */
-public class RemovePollOptionCommand extends AbstractCommand {
+public class RemovePollOptionCommand extends PollCommand {
 
 
     public RemovePollOptionCommand(AccountManager accountManager,
                                    ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper, PollLockType.WRITE_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected CommandOutput executeOnPoll(PollInput commandInput) {
         Input input = (Input) commandInput;
 
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups()
-                        .get(input.groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // get poll
-        Poll poll = getSafeForWriting(group.getAllPolls().get(input.pollId));
-        if (poll == null) {
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-        }
-
-        // get poll option
-        PollOption pollOption = getSafeForWriting(poll
-                .getPollOptions().get(input.optionId));
-        if (pollOption == null) {
-            return new ErrorOutput(ErrorCode.POLLOPTIONIDINVALID);
-        }
-
         // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission
+        if (!usergroup.checkPermissionOfMember(actingAccount, Permission
                 .EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-         // create update
+        // get poll option
+        PollOption pollOption = poll.getPollOptions().get(input.optionId);
+        // lock poll option and check if it still exists
+        // get read- or write-lock depending on what subcommand poll needs
+        pollOption = getSafeForWriting(pollOption);
+        if (pollOption == null)
+            return new ErrorOutput(ErrorCode.POLLIDINVALID);
+
+        // create update
         PollOptionDeletionUpdate update =
                 new PollOptionDeletionUpdate(new Date(),
                         actingAccount.getID(),
-                        group.getID(),
+                        usergroup.getID(),
                         poll.getID(),
                         pollOption.getID());
-        for (Account a: group.getAllMembers().values())
-            getSafeForWriting(a);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+        addUpdateToAllOtherMembers(update);
 
         // remove the option
         pollOption.delete();
@@ -94,19 +67,15 @@ public class RemovePollOptionCommand extends AbstractCommand {
         return new RemovePollCommand.Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends PollInput {
 
-        final int groupId;
-        final int pollId;
         final int optionId;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
                      @JsonProperty("id") int optionId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.pollId = pollId;
+            super(token, groupId, pollId);
             this.optionId = optionId;
         }
     }

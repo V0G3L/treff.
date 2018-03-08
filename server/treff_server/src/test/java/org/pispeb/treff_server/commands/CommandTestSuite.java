@@ -10,6 +10,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         AcceptContactRequestCommandTest.class,
         AddGroupMembersCommandTest.class,
+        AddPollOptionCommandTest.class,
         BlockAccountCommandTest.class,
         CancelContactRequestCommandTest.class,
         CreateEventCommandTest.class,
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
         RemoveEventCommandTest.class,
         RemoveGroupMembersCommandTest.class,
         RemovePollCommandTest.class,
+        RemovePollOptionCommandTest.class,
         RequestPositionCommandTest.class,
         RequestUpdatesCommandTest.class,
         SendChatMessageCommandTest.class,
