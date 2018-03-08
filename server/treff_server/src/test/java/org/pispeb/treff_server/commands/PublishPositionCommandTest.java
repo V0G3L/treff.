@@ -16,7 +16,6 @@ public class PublishPositionCommandTest extends PositionTest {
         super("publish-position");
     }
 
-    @Ignore
     @Test
     public void validPublication() {
         // get the current membership
@@ -27,7 +26,8 @@ public class PublishPositionCommandTest extends PositionTest {
 
         input.add("group-id", groupId).add("id", ownUser.id);
         JsonObject oldMembership
-                = runCommand(getMembershipDetailsCommand, input);
+                = runCommand(getMembershipDetailsCommand, input)
+                .getJsonObject("membership");
 
         // execute the command
         long endTime = new Date().getTime() + DAY;
@@ -37,7 +37,7 @@ public class PublishPositionCommandTest extends PositionTest {
         // check the updates
         for (int index : new int[]{1, 2}) {
             JsonObject update = getSingleUpdateForUser(users[index]);
-            Assert.assertEquals(UpdateType.POSITION_REQUEST.toString(),
+            Assert.assertEquals(UpdateType.GROUP_MEMBERSHIP_CHANGE.toString(),
                     update.getString("type"));
             Assert.assertEquals(ownUser.id, update.getInt("creator"));
             checkTimeCreated(update);
@@ -46,8 +46,6 @@ public class PublishPositionCommandTest extends PositionTest {
             JsonObject newMembership = update.getJsonObject("membership");
             Assert.assertEquals("membership",
                     newMembership.getString("type"));
-            Assert.assertEquals(oldMembership.getInt("id"),
-                    newMembership.getInt("id"));
             Assert.assertEquals(ownUser.id,
                     newMembership.getInt("account-id"));
             Assert.assertEquals(endTime, newMembership

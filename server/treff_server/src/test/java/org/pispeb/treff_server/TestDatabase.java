@@ -11,8 +11,8 @@ import java.util.Properties;
 public final class TestDatabase {
 
     private static final String CONFIG_DEFAULT_FILE_PATH
-            = Server.class.getClassLoader().getResource("config_default" +
-            ".properties").getFile();
+            = Server.class.getClassLoader()
+            .getResource("config_default.properties").getFile();
     private static Properties config;
     private static DB db = null;
 

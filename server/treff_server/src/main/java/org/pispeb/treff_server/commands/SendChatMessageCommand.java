@@ -1,81 +1,46 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treff_server.commands.io.CommandInput;
-import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
-import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.ChatUpdate;
-import org.pispeb.treff_server.exceptions.ProgrammingException;
-import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Usergroup;
-import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
-
 
 /**
  * a command to send a chat message to a user group
  */
-public class SendChatMessageCommand extends AbstractCommand {
+public class SendChatMessageCommand extends GroupCommand {
 
 
     public SendChatMessageCommand(AccountManager accountManager,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.READ_LOCK,
+                null, null); // chatting requires no permission
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups()
-                        .get(input.groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // create update
-        HashSet<? extends Account> affectedUsers
-                = new HashSet<>(group.getAllMembers().values());
-        affectedUsers.remove(actingAccount);
+    protected CommandOutput executeOnGroup(GroupInput groupInput) {
+        Input input = (Input) groupInput;
 
         ChatUpdate update =
-                new ChatUpdate(new Date(),
-                        actingAccount.getID(), input.groupId, input.message);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    affectedUsers);
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+                new ChatUpdate(new Date(), actingAccount.getID(),
+                        usergroup.getID(), input.message);
+        addUpdateToAllOtherMembers(update);
 
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends GroupInput {
 
-        final int groupId;
         final String message;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("message") String message,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
+            super(token, groupId, new int[0]);
             this.message = message;
         }
     }

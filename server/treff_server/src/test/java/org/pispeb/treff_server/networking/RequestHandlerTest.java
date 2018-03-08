@@ -5,8 +5,7 @@ import org.junit.Test;
 import org.pispeb.treff_server.JsonDependentTest;
 
 import javax.json.Json;
-import javax.json.JsonObject;
-import java.io.StringReader;
+import java.io.IOException;
 
 /**
  * @author tim
@@ -38,6 +37,7 @@ public class RequestHandlerTest extends JsonDependentTest {
         String inputString = Json.createObjectBuilder()
                 .add("cmd", "abstract")
                 .build().toString();
+
         String response
                 = requestHandler.handleRequest(inputString).responseString;
         Assert.assertEquals(toJsonObject(response).getInt("error"),

@@ -14,6 +14,19 @@ import java.util.HashSet;
 @ServerEndpoint("/ws")
 public class WebSocketEndpoint {
     private HashSet<Session> persistentConnections = new HashSet<>();
+    private Server server;
+
+    public WebSocketEndpoint() {
+        this.server = Server.getInstance();
+    }
+
+    /**
+     * Used for testing.
+     * @param server
+     */
+    public WebSocketEndpoint(Server server) {
+        this.server = server;
+    }
 
     @OnMessage
     public String onMessage(String message, Session session) {
@@ -23,7 +36,6 @@ public class WebSocketEndpoint {
             return null;
 
         // Handle the request
-        Server server = Server.getInstance();
         Response response = server.getRequestHandler().handleRequest(message);
 
         // send back the answer
