@@ -1,15 +1,19 @@
 package org.pispeb.treff_server.networking;
 
+import com.jcabi.matchers.RegexMatchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.pispeb.treff_server.abstracttests.DatabaseDependentTest;
 import org.pispeb.treff_server.abstracttests.JsonDependentTest;
 
 import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  * @author tim
  */
-public class RequestHandlerTest extends JsonDependentTest {
+public class RequestHandlerTest extends DatabaseDependentTest{
 
     @Test
     public void unknownCommand() {
@@ -41,5 +45,25 @@ public class RequestHandlerTest extends JsonDependentTest {
                 = requestHandler.handleRequest(inputString).responseString;
         Assert.assertEquals(toJsonObject(response).getInt("error"),
                 ErrorCode.UNKNOWN_COMMAND.getCode());
+    }
+
+    @Test
+    public void validCommand() {
+        RequestHandler requestHandler = new RequestHandler(accountManager);
+        JsonObjectBuilder inputBuilder = Json.createObjectBuilder();
+        inputBuilder.add("cmd","register");
+
+        inputBuilder.add("user", "w4rum");
+        inputBuilder.add("pass", "D4nz1g0rW4r");
+        JsonObject response = toJsonObject(
+                requestHandler.handleRequest(inputBuilder.build().toString())
+                        .responseString);
+
+        Assert.assertTrue(response.containsKey("id"));
+        // throws exception if not a number
+        response.getInt("id");
+        Assert.assertTrue(response.containsKey("token"));
+        Assert.assertThat(response.getString("token"),
+                RegexMatchers.matchesPattern("[0-9a-f]{128}"));
     }
 }
