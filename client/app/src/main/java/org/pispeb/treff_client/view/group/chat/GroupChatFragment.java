@@ -10,9 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.databinding.FragmentGroupChatBinding;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
+
+import java.util.Date;
 
 /**
  * Display chat messages from members of the group

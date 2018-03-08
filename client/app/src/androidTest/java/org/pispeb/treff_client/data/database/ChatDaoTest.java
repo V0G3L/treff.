@@ -29,7 +29,7 @@ public class ChatDaoTest extends DaoTest {
 
     @Test
     public void insertMessageTest() {
-        ChatMessage msg = new ChatMessage(1234, "Hello", 5678, new Date());
+        ChatMessage msg = new ChatMessage(1234, "Hello", 5678,"User",  new Date());
         testChatDao.save(msg);
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
@@ -40,7 +40,7 @@ public class ChatDaoTest extends DaoTest {
     @Test
     public void readMessageTest() {
         // depends on insert
-        ChatMessage msg = new ChatMessage(1234, "Hello", 5678, new Date());
+        ChatMessage msg = new ChatMessage(1234, "Hello", 5678,"User",  new Date());
         testChatDao.save(msg);
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);
@@ -52,8 +52,8 @@ public class ChatDaoTest extends DaoTest {
     @Test
     public void groupMessagesTest() {
         // depends on insert
-        ChatMessage msg = new ChatMessage(1234, "Hello", 5678, new Date());
-        ChatMessage msg2 = new ChatMessage(2345, "Hello2", 5678, new Date());
+        ChatMessage msg = new ChatMessage(1234, "Hello", 5678,"User",  new Date());
+        ChatMessage msg2 = new ChatMessage(2345, "Hello2", 5678,"User",  new Date());
         testChatDao.save(msg);
         testChatDao.save(msg2);
 
@@ -66,7 +66,7 @@ public class ChatDaoTest extends DaoTest {
     @Test
     public void duplicateTest() {
         // depends on insert
-        ChatMessage msg = new ChatMessage(1234, "Hello", 5678, new Date());
+        ChatMessage msg = new ChatMessage(1234, "Hello", 5678,"User",  new Date());
         testChatDao.save(msg);
         testChatDao.save(msg);
 
@@ -82,7 +82,8 @@ public class ChatDaoTest extends DaoTest {
     @Test
     public void deleteTest() {
         // depends on insert
-        ChatMessage msg = new ChatMessage(1234, "Hello", 5678, new Date());
+        ChatMessage msg
+                = new ChatMessage(1234, "Hello", 5678, "User", new Date());
         testChatDao.save(msg);
 
         List<ChatMessage> list = testChatDao.getMessageListByGroupId(1234);

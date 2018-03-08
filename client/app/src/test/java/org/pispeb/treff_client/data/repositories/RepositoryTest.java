@@ -41,7 +41,8 @@ public abstract class RepositoryTest {
             Date(), new Date(), loc, mockUserId, mockGroupId);
     protected static String mockMessageContent = "Hello World";
     protected static final ChatMessage mockMessage = new ChatMessage
-            (mockGroupId, mockMessageContent, mockUserId, new Date());
+            (mockGroupId, mockMessageContent, mockUserId, mockUser
+                    .getUsername(), new Date());
 
     @Mock
     protected RequestEncoder mockEncoder = mock(RequestEncoder.class);
