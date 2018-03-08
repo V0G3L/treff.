@@ -89,6 +89,8 @@ public class EditPollOptionCommand extends AbstractCommand {
         PollOptionChangeUpdate update =
                 new PollOptionChangeUpdate(new Date(),
                         account.getID(),
+                        group.getID(),
+                        poll.getID(),
                         currentOption);
         for (Account a: group.getAllMembers().values())
             getSafeForWriting(a);

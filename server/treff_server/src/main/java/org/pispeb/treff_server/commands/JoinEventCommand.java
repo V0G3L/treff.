@@ -27,8 +27,7 @@ public class JoinEventCommand extends EventCommand {
     public JoinEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
         super(accountManager, Input.class, mapper,
-                EventLockType.WRITE_LOCK,
-                null, null); // joining requires no permission
+                EventLockType.WRITE_LOCK);
     }
 
     @Override
@@ -48,6 +47,7 @@ public class JoinEventCommand extends EventCommand {
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event);
         addUpdateToAllOtherMembers(update);
 

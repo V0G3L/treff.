@@ -29,8 +29,7 @@ public class EditEventCommand extends EventCommand {
     public EditEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
         super(accountManager, Input.class, mapper,
-                EventLockType.WRITE_LOCK,
-                null, null); // edit needs special permission checking
+                EventLockType.WRITE_LOCK);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class EditEventCommand extends EventCommand {
         Input input = (Input) commandInput;
 
         // check whether actingAccount is event creator or has edit permission
-        if (!event.getCreator().equals(actingAccount)
+        if (!(event.getCreator().getID() == actingAccount.getID())
                 && !usergroup.checkPermissionOfMember(
                         actingAccount, Permission.EDIT_ANY_EVENT)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
@@ -65,6 +64,7 @@ public class EditEventCommand extends EventCommand {
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event);
         addUpdateToAllOtherMembers(update);
 

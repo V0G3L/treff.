@@ -101,7 +101,8 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *                    for multiple {@link PollOption}s at once
      * @return The newly created {@code Poll}
      */
-    Poll createPoll(String question, Account creator, boolean multichoice);
+    Poll createPoll(String question, Account creator, Date timeVoteClose,
+                    boolean multichoice);
 
     /**
      * Returns an unmodifiable [ID -> {@code Poll}] map holding all
@@ -181,7 +182,7 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * <p>
      * Requires a {@code ReadLock}.
      *
-     * @param member The member
+     * @param member  The member
      * @param timeEnd The location sharing end time
      * @throws AccountNotInGroupException if the supplied {@code Account} is not
      *                                    a member of this group

@@ -299,7 +299,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The set of undelivered {@code Update}s, sorted in ascending
      * order of their creation time.
      */
-    SortedSet<Update> getUndeliveredUpdates();
+    SortedSet<? extends Update> getUndeliveredUpdates();
 
     /**
      * Marks an {@code Update} that affects this {@code Account} as

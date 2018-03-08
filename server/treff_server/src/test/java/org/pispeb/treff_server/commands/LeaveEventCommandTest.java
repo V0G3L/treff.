@@ -32,8 +32,9 @@ public class LeaveEventCommandTest extends EventDependentTest {
 
         // Check that the other users got the update
         for (int userIndex : new int[]{1, 2}) {
-            checkEventUpdateForUser(users[userIndex], groupId, eventTitle,
-                    eventCreatorID, eventTimeStart, eventTimeEnd,
+            checkEventUpdateForUser(users[userIndex], groupId, eventID,
+                    eventCreatorID, eventTitle,
+                    eventTimeStart, eventTimeEnd,
                     eventLatitude, eventLongitude, new int[0]);
         }
 

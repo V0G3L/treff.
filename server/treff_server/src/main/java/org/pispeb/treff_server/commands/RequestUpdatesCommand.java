@@ -38,7 +38,8 @@ public class RequestUpdatesCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get the Updates
-        SortedSet<Update> updates = actingAccount.getUndeliveredUpdates();
+        SortedSet<? extends Update> updates
+                = actingAccount.getUndeliveredUpdates();
         // LinkedHashSet to preserve insertion order
         Set<String> updatecontents = new LinkedHashSet<>();
         for (Update u : updates) {

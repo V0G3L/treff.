@@ -15,6 +15,7 @@ public class GetPollDetailsCommandTest extends MultipleUsersTest {
 
     @Test
     public void deserializeInput() throws IOException {
+        // TODO: rework
         String jsonIn = "{" +
                 "\"cmd\": \"get-poll-details\"," +
                 "\"token\": \"sometoken\"," +
@@ -25,8 +26,8 @@ public class GetPollDetailsCommandTest extends MultipleUsersTest {
         GetPollDetailsCommand.Input input
                 = mapper.readValue(jsonIn, GetPollDetailsCommand.Input.class);
 
-        assertEquals(input.pollId, 13);
-        assertEquals(input.groupId, 37);
+        assertEquals(input.pollID, 13);
+        assertEquals(input.groupID, 37);
     }
 
     @Test

@@ -13,6 +13,9 @@ import javax.json.JsonObjectBuilder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+
 /**
  * @author tim
  */
@@ -62,8 +65,8 @@ public abstract class EventDependentTest extends GroupDependentTest {
             User user = users[i];
             if (user.id == ownUser.id)
                 continue;
-            checkEventUpdateForUser(user, ownUser.id, eventTitle, ownUser.id,
-                    eventTimeStart, eventTimeEnd, eventLatitude,
+            checkEventUpdateForUser(user, ownUser.id, eventID, ownUser.id,
+                    eventTitle, eventTimeStart, eventTimeEnd, eventLatitude,
                     eventLongitude, new int[0]);
         }
     }
@@ -79,56 +82,65 @@ public abstract class EventDependentTest extends GroupDependentTest {
                                   double eventLongitude,
                                   int[] participantIDs) {
         JsonObject eventDesc = getEventDesc(groupID, eventID, executingUser);
-        checkEventDesc(eventDesc, eventTitle, creatorID, eventTimeStart,
-                eventTimeEnd, eventLatitude, eventLongitude, participantIDs);
+        checkEventDesc(eventDesc, eventID, creatorID, eventTitle,
+                eventTimeStart, eventTimeEnd, eventLatitude, eventLongitude,
+                participantIDs);
 
     }
 
     protected void checkEventUpdateForUser(User user,
                                            int updateCreatorID,
-                                           String eventTitle,
+                                           int eventID,
                                            int creatorID,
+                                           String eventTitle,
                                            long eventTimeStart,
                                            long eventTimeEnd,
                                            double eventLatitude,
                                            double eventLongitude,
                                            int[] participantIDs) {
         JsonObject update = getSingleUpdateForUser(user);
-        Assert.assertEquals(update.getString("type"),
-                UpdateType.EVENT_CHANGE.toString());
+        assertEquals(UpdateType.EVENT_CHANGE.toString(),
+                update.getString("type"));
         checkTimeCreated(update);
-        Assert.assertEquals(update.getInt("creator"), updateCreatorID);
+        assertEquals(updateCreatorID, update.getInt("creator"));
+        assertEquals(groupId, update.getInt("group-id"));
         JsonObject updateEventDesc = update.getJsonObject("event");
-        checkEventDesc(updateEventDesc, eventTitle, creatorID, eventTimeStart,
-                eventTimeEnd, eventLatitude, eventLongitude, participantIDs);
+        checkEventDesc(updateEventDesc, eventID, creatorID, eventTitle,
+                eventTimeStart, eventTimeEnd, eventLatitude, eventLongitude,
+                participantIDs);
 
     }
 
     private void checkEventDesc(JsonObject eventDesc,
-                                String eventTitle,
+                                int eventID,
                                 int creatorID,
+                                String eventTitle,
                                 long eventTimeStart,
                                 long eventTimeEnd,
                                 double eventLatitude,
                                 double eventLongitude,
                                 int[] participantIDs) {
-        Assert.assertEquals(eventTitle,
-                eventDesc.getString("title"));
-        Assert.assertEquals(creatorID,
+        assertEquals("event",
+                eventDesc.getString("type"));
+        assertEquals(eventID,
+                eventDesc.getInt("id"));
+        assertEquals(creatorID,
                 eventDesc.getInt("creator"));
-        Assert.assertEquals(eventTimeStart,
+        assertEquals(eventTitle,
+                eventDesc.getString("title"));
+        assertEquals(eventTimeStart,
                 eventDesc.getJsonNumber("time-start")
                         .longValue());
-        Assert.assertEquals(eventTimeEnd,
+        assertEquals(eventTimeEnd,
                 eventDesc.getJsonNumber("time-end")
                         .longValue());
-        Assert.assertEquals(eventLatitude,
+        assertEquals(eventLatitude,
                 eventDesc.getJsonNumber("latitude")
                         .doubleValue(), 0);
-        Assert.assertEquals(eventLongitude,
+        assertEquals(eventLongitude,
                 eventDesc.getJsonNumber("longitude")
                         .doubleValue(), 0);
-        Assert.assertArrayEquals(participantIDs,
+        assertArrayEquals(participantIDs,
                 eventDesc.getJsonArray("participants")
                         .getValuesAs(JsonNumber.class)
                         .stream()

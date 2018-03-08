@@ -39,7 +39,7 @@ public class RemoveEventCommand extends GroupCommand {
         // check permission (edit_any_event or creator)
         if (!usergroup.checkPermissionOfMember(actingAccount, Permission
                 .EDIT_ANY_EVENT)
-                && !event.getCreator().equals(actingAccount)) {
+                && !(event.getCreator().getID() == actingAccount.getID())) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
         }
 
@@ -50,6 +50,7 @@ public class RemoveEventCommand extends GroupCommand {
         EventDeletionUpdate update =
                 new EventDeletionUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event.getID());
         addUpdateToAllOtherMembers(update);
 

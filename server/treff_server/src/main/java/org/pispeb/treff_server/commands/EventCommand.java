@@ -16,11 +16,9 @@ public abstract class EventCommand extends GroupCommand {
     protected EventCommand(AccountManager accountManager,
                            Class<? extends EventInput> expectedInput,
                            ObjectMapper mapper,
-                           EventLockType eventLockType,
-                           Permission necessaryPermission, ErrorCode
-                                   errorIfMissingPermission) {
+                           EventLockType eventLockType) {
         super(accountManager, expectedInput, mapper, GroupLockType.READ_LOCK,
-                necessaryPermission, errorIfMissingPermission);
+                null, null); // events need special permission checking
         this.eventLockType = eventLockType;
     }
 

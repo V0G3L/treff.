@@ -28,8 +28,9 @@ public class JoinEventCommandTest extends EventDependentTest {
 
         // Check that the users got the update
         for (int userIndex : new int[]{1, 2}) {
-            checkEventUpdateForUser(users[userIndex], groupId, eventTitle,
-                    eventCreatorID, eventTimeStart, eventTimeEnd,
+            checkEventUpdateForUser(users[userIndex], groupId, eventID,
+                    eventCreatorID, eventTitle,
+                    eventTimeStart, eventTimeEnd,
                     eventLatitude, eventLongitude, new int[]{ users[0].id });
         }
 

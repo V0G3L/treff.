@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
 public class EditEventCommandTest extends EventDependentTest {
 
     public EditEventCommandTest() {
-        super("edit-membership");
+        super("edit-event");
     }
 
     @Test
@@ -78,8 +78,8 @@ public class EditEventCommandTest extends EventDependentTest {
             User user = users[i];
             if(user.id == ownUser.id)
                 continue;
-            checkEventUpdateForUser(user, ownUser.id, eventTitle,
-                    ownUser.id, eventTimeStart, eventTimeEnd, eventLatitude,
+            checkEventUpdateForUser(user, ownUser.id, eventID, ownUser.id,
+                    eventTitle, eventTimeStart, eventTimeEnd, eventLatitude,
                     eventLongitude, new int[0]);
         }
     }

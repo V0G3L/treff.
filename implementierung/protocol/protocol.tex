@@ -596,16 +596,15 @@ id/int/The ID of the event}
 id/int/The ID of the event}
 {}
 {group-id-invalid,event-id-invalid,no-permission-edit-any-event}
-{event-change}
+{event-deletion}
 
 \apiCommand{create-poll}
 {Creates a new poll in a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
-poll/object/A new complete description of the poll without the ID, the
-creator ID, and the options array}
+    poll/object/A new complete description of the poll without the ID{,} the
+creator ID{,} and the options array}
 {id/int/The ID of the poll}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,
-no-permission-create-poll}
+{group-id-invalid,no-permission-create-poll}
 {poll-change}
 
 \apiCommand{edit-poll}
@@ -673,9 +672,8 @@ is a member.}
 poll-id/int/The ID of the poll,
 id/int/The ID of the poll option}
 {}
-{group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
-poll-option-id-invalid,no-permission-edit-any-poll}
-{poll-option-change}
+{group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
+{poll-option-deletion}
 
 \apiCommand{remove-poll}
 {Removes a poll from a user group of which the executing user is a member.}
@@ -683,7 +681,7 @@ poll-option-id-invalid,no-permission-edit-any-poll}
 id/int/The ID of the poll}
 {}
 {group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
-{poll-change}
+{poll-deletion}
 
 \apiCommand{send-chat-message}
 {Sends a chat message to a user group of which the executing user is a member.}
@@ -828,6 +826,7 @@ the following properties:
 
 \updateType{event-change}{
 		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
 				event/object/Complete description of the event that changed{,}
 				omitting all properties that didn't change.
 		}
@@ -835,28 +834,47 @@ the following properties:
 
 \updateType{event-deletion}{
 		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
                 id/int/ID of the event that was deleted.
 		}
 }
 
 \updateType{poll-change}{
 		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
 				poll/object/Complete description of the poll that changed{,}
 				omitting all properties that didn't change.
 		}
 }
 
+\updateType{poll-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                id/int/ID of the poll that was deleted.
+		}
+}
+
 \updateType{poll-option-change}{
 		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
 				pollOption/object/Complete description of the poll option
 				that changed{,} omitting all properties that didn't change.
 		}
 }
 
+\updateType{poll-option-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
+                id/int/ID of the poll option that was deleted.
+		}
+}
+
 \updateType{group-membership-change}{
 		\apiArgument{
-				membership/object/Complete description of the membership that changed{,}
-				omitting all properties that didn't change.
+                membership/object/Complete description of the membership that
+                changed{,} omitting all properties that didn't change.
 		}
 }
 

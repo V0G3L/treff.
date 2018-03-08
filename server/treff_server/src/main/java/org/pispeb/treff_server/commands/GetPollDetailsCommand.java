@@ -17,50 +17,24 @@ import org.pispeb.treff_server.networking.ErrorCode;
 /**
  * a command to get a detailed description of a poll of a user group
  */
-public class GetPollDetailsCommand extends AbstractCommand {
-
+public class GetPollDetailsCommand extends PollCommand {
 
     public GetPollDetailsCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper, PollLockType.READ_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-
-        // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-
-        // get group
-        Usergroup usergroup = getSafeForReading(
-                actingAccount.getAllGroups().get(input.groupId));
-        if (usergroup == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-
-        // get poll
-        Poll poll = getSafeForReading(
-                usergroup.getAllPolls().get(input.pollId));
-        if (poll == null)
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-
+    protected CommandOutput executeOnPoll(PollInput pollInput) {
         return new Output(poll);
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int pollId;
-        final int groupId;
+    public static class Input extends PollInput {
 
         public Input(@JsonProperty("id") int pollId,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.pollId = pollId;
-            this.groupId = groupId;
+            super(token, groupId, pollId);
         }
     }
 

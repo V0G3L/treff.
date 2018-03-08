@@ -26,9 +26,9 @@ public class PollCompleteSerializer extends JsonSerializer<Poll> {
         gen.writeNumberField("id", poll.getID());
         gen.writeNumberField("creator", poll.getCreator().getID());
         gen.writeStringField("question", poll.getQuestion());
-        gen.writeBooleanField("multichoice", poll.isMultiChoice());
-        gen.writeNumberField("time-vote-close",
-                poll.getTimeVoteClose().toInstant().getEpochSecond());
+        gen.writeBooleanField("multi-choice", poll.isMultiChoice());
+        gen.writeNumberField("time-close",
+                poll.getTimeVoteClose().getTime());
 
         // collect polloptions
         SerializerUtil.writeIDArray(poll.getPollOptions().keySet(),

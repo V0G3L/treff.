@@ -14,7 +14,8 @@ import java.io.IOException;
 public class PollOptionCompleteSerializer extends JsonSerializer<PollOption> {
 
     @Override
-    public void serialize(PollOption pollOption, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(PollOption pollOption, JsonGenerator gen,
+                          SerializerProvider serializers) throws IOException {
         gen.writeStartObject();
 
         // collect polloption properties

@@ -77,6 +77,8 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
         PollOptionChangeUpdate update =
                 new PollOptionChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        group.getID(),
+                        poll.getID(),
                         pollOption);
         for (Account a: group.getAllMembers().values())
             getSafeForWriting(a);

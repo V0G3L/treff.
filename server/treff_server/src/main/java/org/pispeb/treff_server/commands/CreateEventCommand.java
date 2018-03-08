@@ -57,6 +57,7 @@ public class CreateEventCommand extends GroupCommand {
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event);
 
         addUpdateToAllOtherMembers(update);

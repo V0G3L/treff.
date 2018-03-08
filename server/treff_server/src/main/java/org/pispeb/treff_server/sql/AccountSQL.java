@@ -377,15 +377,13 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public SortedSet<Update> getUndeliveredUpdates() {
+    public SortedSet<UpdateSQL> getUndeliveredUpdates() {
         // Retrieve updates via MapHandler and put the value set into a TreeSet
-        Map r = database.query(
+        return new TreeSet<>(database.query(
                 "SELECT updateid FROM %s WHERE accountid=?;",
                 TableName.UPDATEAFFECTIONS,
                 new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
-                this.id);
-
-        return new TreeSet<>(r.values());
+                this.id).values());
     }
 
     @Override

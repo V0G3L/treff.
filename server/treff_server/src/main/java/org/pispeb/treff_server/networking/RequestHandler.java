@@ -99,6 +99,7 @@ public class RequestHandler {
             String outputString = command.execute(requestString);
             return new Response(outputString);
         } catch (Exception e) {
+            // TODO: wtf, don't log plaintext credentials
             logger.error("Internal server error on request\n\n" +
                     "{}\n\n" +
                     "Error message:\n" +

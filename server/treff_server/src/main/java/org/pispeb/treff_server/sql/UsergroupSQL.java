@@ -149,15 +149,16 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     }
 
     @Override
-    public Poll createPoll(String question, Account creator,
+    public Poll createPoll(String question, Account creator, Date timeVoteClose,
                            boolean multichoice) {
         return database.insert(
-                "INSERT INTO %s(question,creator,multichoice," +
-                        "usergroupid) VALUES (?,?,?,?);",
+                "INSERT INTO %s(question,creator,timevoteclose,multichoice," +
+                        "usergroupid) VALUES (?,?,?,?,?);",
                 TableName.POLLS,
                 new DataObjectHandler<>(PollSQL.class, entityManager),
                 question,
-                creator,
+                creator.getID(),
+                timeVoteClose,
                 multichoice,
                 this.id);
     }

@@ -8,7 +8,9 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
+import org.pispeb.treff_server.commands.updates.PollDeletionUpdate;
 import org.pispeb.treff_server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treff_server.commands.updates.PollOptionDeletionUpdate;
 import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
@@ -70,10 +72,12 @@ public class RemovePollOptionCommand extends AbstractCommand {
         }
 
          // create update
-        PollOptionChangeUpdate update =
-                new PollOptionChangeUpdate(new Date(),
+        PollOptionDeletionUpdate update =
+                new PollOptionDeletionUpdate(new Date(),
                         actingAccount.getID(),
-                        pollOption);
+                        group.getID(),
+                        poll.getID(),
+                        pollOption.getID());
         for (Account a: group.getAllMembers().values())
             getSafeForWriting(a);
         try {

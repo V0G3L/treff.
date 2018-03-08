@@ -32,6 +32,10 @@ public enum UpdateType {
      */
     POLL_CHANGE,
     /**
+     * The type of updates that represent deletion of a poll
+     */
+    POLL_DELETION,
+    /**
      * The type of updates that represent changes to a poll-option
      */
     POLL_OPTION_CHANGE,

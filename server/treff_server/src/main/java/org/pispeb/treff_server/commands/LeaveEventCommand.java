@@ -18,8 +18,7 @@ public class LeaveEventCommand extends EventCommand {
     public LeaveEventCommand(AccountManager accountManager,
                              ObjectMapper mapper) {
         super(accountManager, Input.class, mapper,
-                EventLockType.WRITE_LOCK,
-                null, null); // leaving requires no permission
+                EventLockType.WRITE_LOCK);
     }
 
     @Override
@@ -39,6 +38,7 @@ public class LeaveEventCommand extends EventCommand {
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event);
         addUpdateToAllOtherMembers(update);
 

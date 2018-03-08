@@ -9,11 +9,15 @@ import java.util.Date;
  */
 public class EventDeletionUpdate extends UpdateToSerialize {
 
+    @JsonProperty("group-id")
+    public final int groupID;
     @JsonProperty("id")
     public final int eventID;
 
-    public EventDeletionUpdate(Date date, int creator, int eventID) {
+    public EventDeletionUpdate(Date date, int creator, int groupID,
+                               int eventID) {
         super(UpdateType.EVENT_DELETION.toString(), date, creator);
+        this.groupID = groupID;
         this.eventID = eventID;
     }
 }

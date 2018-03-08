@@ -142,13 +142,24 @@ public abstract class GroupCommand extends AbstractCommand {
         final int groupID;
         final Set<Integer> referencedIDs;
 
-        protected GroupInput(String token, int groupID,
-                             int[] referencedIDs) {
+        protected GroupInput(String token, int groupID, int[] referencedIDs) {
             super(token);
             this.groupID = groupID;
             this.referencedIDs = new HashSet<>();
             for (int id : referencedIDs)
                 this.referencedIDs.add(id);
+        }
+
+        /**
+         * Constructs a new GroupInput for commands that don't affect
+         * non-member accounts.
+         * @param token Login token
+         * @param groupID Group ID
+         */
+        protected GroupInput(String token, int groupID) {
+            super(token);
+            this.groupID = groupID;
+            this.referencedIDs = new HashSet<>();
         }
     }
 
