@@ -2,6 +2,8 @@ package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
 
+import java.util.Date;
+
 /**
  * Room {@link Entity} that represents the relationship between {@link User}s and {@link UserGroup}s
  */
@@ -10,10 +12,13 @@ import android.arch.persistence.room.Entity;
 public class GroupMembership {
     private int userId;
     private int groupId;
+    private Date sharingUntil;
+    private boolean sharing;
 
     public GroupMembership(int userId, int groupId) {
         this.userId = userId;
         this.groupId = groupId;
+        this.sharingUntil = new Date(0L);
     }
 
     public int getUserId() {
@@ -30,6 +35,22 @@ public class GroupMembership {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public Date getSharingUntil() {
+        return sharingUntil;
+    }
+
+    public void setSharingUntil(Date sharingUntil) {
+        this.sharingUntil = sharingUntil;
+    }
+
+    public boolean isSharing() {
+        return sharing;
+    }
+
+    public void setSharing(boolean sharing) {
+        this.sharing = sharing;
     }
 
     @Override

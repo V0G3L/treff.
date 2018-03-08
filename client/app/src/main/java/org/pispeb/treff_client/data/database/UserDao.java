@@ -62,6 +62,13 @@ public interface UserDao {
     @Query("SELECT * FROM user")
     List<User> getAllAsList();
 
+    @Query("SELECT * FROM user INNER JOIN groupmembership ON user.userId = " +
+            "groupmembership.userId WHERE groupmembership.sharing")
+    LiveData<List<User>> getCurrentlySending();
+
+    @Query("UPDATE groupmembership SET sharing = (:currentDate < sharingUntil)")
+    void updateSending(long currentDate);
+
     @Query("UPDATE user SET isBlocked = :isBlocked WHERE userId = :userId")
     void setBlocked(int userId, boolean isBlocked);
 

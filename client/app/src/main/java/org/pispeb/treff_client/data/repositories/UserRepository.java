@@ -10,6 +10,7 @@ import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
 
+import java.util.Date;
 import java.util.List;
 
 public class UserRepository {
@@ -18,7 +19,8 @@ public class UserRepository {
     private RequestEncoder encoder;
     private Handler backgroundHandler;
 
-    public UserRepository(UserDao userDao, RequestEncoder encoder, Handler backgroundHandler) {
+    public UserRepository(UserDao userDao, RequestEncoder encoder,
+                          Handler backgroundHandler) {
         this.userDao = userDao;
         this.encoder = encoder;
         this.backgroundHandler = backgroundHandler;
@@ -26,6 +28,7 @@ public class UserRepository {
 
     /**
      * get user object from local database in different formats
+     *
      * @param userID
      * @return
      */
@@ -60,6 +63,16 @@ public class UserRepository {
 
     public LiveData<List<User>> getFriendsAsList() {
         return userDao.getFriendsAsList();
+    }
+
+    public LiveData<List<User>> getCurrentlySharing() {
+        return userDao.getCurrentlySending();
+    }
+
+    public void updateSharing() {
+        backgroundHandler.post(() -> {
+            userDao.updateSending(new Date().getTime());
+        });
     }
 
     /**
@@ -130,6 +143,7 @@ public class UserRepository {
 
     /**
      * replace user with updated one
+     *
      * @param user new user
      */
     public void updateUser(User user) {
@@ -140,6 +154,7 @@ public class UserRepository {
 
     /**
      * send a contact request to the user given its
+     *
      * @param username username
      */
     public void requestAddUser(String username) {
@@ -148,7 +163,8 @@ public class UserRepository {
 
     /**
      * request to unblock/block a user
-     * @param userId effected user
+     *
+     * @param userId    effected user
      * @param isBlocked whether to block or unblock
      */
     public void requestIsBlocked(int userId, boolean isBlocked) {
@@ -161,6 +177,7 @@ public class UserRepository {
 
     /**
      * accept a contact request from the given user
+     *
      * @param userId id of that user
      */
     public void requestAccept(int userId) {
@@ -169,6 +186,7 @@ public class UserRepository {
 
     /**
      * decline a contact request from the given user
+     *
      * @param userId id of that user
      */
     public void requestDecline(int userId) {
@@ -177,6 +195,7 @@ public class UserRepository {
 
     /**
      * decline a contact request from the given user
+     *
      * @param userId id of that user
      */
     public void requestCancel(int userId) {

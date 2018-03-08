@@ -1,7 +1,6 @@
 package org.pispeb.treff_client.data.networking;
 
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import javax.websocket.DeploymentException;
@@ -48,21 +47,29 @@ public class TestConnectionHandler {
             String name = "ERROR";
             int id = -1;
             if (message.contains("1")) {
-                name = "Sample User"; id = 1;
+                name = "Sample User";
+                id = 1;
             } else if (message.contains("2")) {
-                name = "Peter"; id = 2;
+                name = "Peter";
+                id = 2;
             } else if (message.contains("3")) {
-                name = "Jens"; id = 3;
+                name = "Jens";
+                id = 3;
             } else if (message.contains("4")) {
-                name = "Tim"; id = 4;
+                name = "Tim";
+                id = 4;
             } else if (message.contains("5")) {
-                name = "Simon"; id = 5;
+                name = "Simon";
+                id = 5;
             } else if (message.contains("6")) {
-                name = "Matthias"; id = 6;
+                name = "Matthias";
+                id = 6;
             } else if (message.contains("7")) {
-                name = "Fabian"; id = 7;
+                name = "Fabian";
+                id = 7;
             } else if (message.contains("8")) {
-                name = "Lukas"; id = 8;
+                name = "Lukas";
+                id = 8;
             }
             onMessage("{\"account\":{\"type\":\"account\"," +
                     "\"username\":\"" + name + "\"," +
@@ -82,7 +89,8 @@ public class TestConnectionHandler {
                         "2, 3],\"events\":[],\"polls\":[]}}");
             } else if (message.contains("\"id\":789")) {
                 onMessage("{\"user-group\":{\"type\":\"complete" +
-                        "-group\",\"id\":789,\"name\":\"Saufen\",\"members\":[4, " +
+                        "-group\",\"id\":789,\"name\":\"Saufen\"," +
+                        "\"members\":[4, " +
                         "5, 6],\"events\":[],\"polls\":[]}}");
             }
         } else {
@@ -98,7 +106,7 @@ public class TestConnectionHandler {
     public void disconnect() {
     }
 
-public interface ResponseListener {
-    void onResponse(String response);
-}
+    public interface ResponseListener {
+        void onResponse(String response);
+    }
 }

@@ -15,8 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import junit.framework.Test;
-
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.commands.*;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
@@ -40,14 +38,15 @@ import javax.websocket.DeploymentException;
  * This class provides methods to perform the known server requests.
  */
 
-public class RequestEncoder implements TestConnectionHandler.ResponseListener {
+public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     private final int DISPLAY_ERROR_TOAST = 1;
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
 
-    private TestConnectionHandler testConnectionHandler;
+    //    private TestConnectionHandler connectionHandler;
+    private ConnectionHandler connectionHandler;
     private boolean idle;
 
     private Handler bgHandler;
@@ -82,9 +81,9 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
         try {
-            testConnectionHandler
-                    = new TestConnectionHandler(
-                    "ws://100.85.16.29:8080/treff_server/ws",
+            connectionHandler
+                    = new ConnectionHandler(
+                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080/treff_server-0.1/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
@@ -111,8 +110,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     // change TestConnectionHandler in case of Server change or testing
-    public void setConnectionHandler(TestConnectionHandler connectionHandler) {
-        this.testConnectionHandler = connectionHandler;
+    public void setConnectionHandler(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
     }
 
     // must be called right after creating the encoder
@@ -162,7 +161,7 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     /**
-     * pass a message to the testConnectionHandler in order to be sent to the server
+     * pass a message to the connectionHandler in order to be sent to the server
      *
      * @param message content of that message (in correct command format)
      */
@@ -170,8 +169,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
         bgHandler.post(() -> {
 
             Log.i("Encoder", "sending Message");
-            Log.i("Encoder", "CH: " + testConnectionHandler);
-            testConnectionHandler.sendMessage(message);
+            Log.i("Encoder", "CH: " + connectionHandler);
+            connectionHandler.sendMessage(message);
         });
     }
 
@@ -259,7 +258,7 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      */
     public void closeConnection() {
         // TODO check for Service still running
-        testConnectionHandler.disconnect();
+        connectionHandler.disconnect();
     }
 
     /**
@@ -308,7 +307,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      * @param newPassword the new password
      */
     public synchronized void editPassword(String password, String newPassword) {
-        executeCommand(new EditPasswordCommand(password, newPassword, getToken()));
+        executeCommand(
+                new EditPasswordCommand(password, newPassword, getToken()));
     }
 
     /**
@@ -347,7 +347,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      * @param userId Contact to be added to the friend list
      */
     public synchronized void sendContactRequest(int userId) {
-        executeCommand(new SendContactRequestCommand(userId, getToken(), userRepository));
+        executeCommand(new SendContactRequestCommand(userId, getToken(),
+                userRepository));
     }
 
     /**
@@ -368,6 +369,7 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
 
     /**
      * Accept a contact request from a given user
+     *
      * @param userId user from which the request originated
      */
     public synchronized void acceptContactRequest(int userId) {
@@ -377,6 +379,7 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
 
     /**
      * Reject a contact request
+     *
      * @param userId user from which the request originated
      */
     public synchronized void rejectContactRequest(int userId) {
@@ -385,7 +388,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     public synchronized void removeContact(int userId) {
-        executeCommand(new RemoveContactCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new RemoveContactCommand(userId, getToken(), userRepository));
     }
 
     /**
@@ -398,10 +402,12 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
 
     /**
      * block an account
+     *
      * @param userId
      */
     public synchronized void blockAccount(int userId) {
-        executeCommand(new BlockAccountCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new BlockAccountCommand(userId, getToken(), userRepository));
     }
 
     /**
@@ -443,8 +449,9 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      * @return true if the request was successful, false if not
      */
     public synchronized void addGroupMembers(int groupId, int[] newMembers) {
-        executeCommand(new AddGroupMembersCommand(groupId, newMembers, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new AddGroupMembersCommand(groupId, newMembers, getToken(),
+                        userGroupRepository));
     }
 
     /**
@@ -454,8 +461,9 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
      * @param members The ID of the member to be removed
      */
     public synchronized void removeGroupMembers(int groupId, int[] members) {
-        executeCommand(new RemoveGroupMembersCommand(groupId, members, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new RemoveGroupMembersCommand(groupId, members, getToken(),
+                        userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
@@ -485,7 +493,8 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
                                        int eventId) {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, eventId, getToken(), eventRepository));
+                        timeEnd, position, eventId, getToken(),
+                        eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
@@ -532,17 +541,20 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     public synchronized void voteForOption(int groupId, int pollId, int id) {
-        executeCommand(new VoteForOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new VoteForOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void withdrawVoteForOption(int groupId, int pollId,
                                                    int id) {
         executeCommand(
-                new WithdrawVoteForOptionCommand(groupId, pollId, id, getToken()));
+                new WithdrawVoteForOptionCommand(groupId, pollId, id,
+                        getToken()));
     }
 
     public synchronized void removePollOption(int groupId, int pollId, int id) {
-        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new RemovePollOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void removePoll(int groupId, int pollId) {
@@ -571,11 +583,13 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
 
 
     public synchronized void getGroupDetails(int groupId) {
-        executeCommand(new GetGroupDetailsCommand(groupId, getToken(), userGroupRepository));
+        executeCommand(new GetGroupDetailsCommand(groupId, getToken(),
+                userGroupRepository));
     }
 
     public synchronized void getUserDetails(int userId) {
-        executeCommand(new GetUserDetailsCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new GetUserDetailsCommand(userId, getToken(), userRepository));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
@@ -588,24 +602,28 @@ public class RequestEncoder implements TestConnectionHandler.ResponseListener {
     }
 
     public synchronized void requestPosition(int groupId, Date endTime) {
-        executeCommand(new RequestPositionCommand(groupId, endTime, getToken()));
+        executeCommand(
+                new RequestPositionCommand(groupId, endTime, getToken()));
     }
 
     /**
      * send the most recent location to the server
-     * @param latitude latitude
+     *
+     * @param latitude  latitude
      * @param longitude and longitude of the users position
-     * @param time time the position was measured at
+     * @param time      time the position was measured at
      */
     public synchronized void updatePosition(double latitude, double longitude,
                                             Date time) {
         executeCommand(
-                new UpdatePositionCommand(latitude, longitude, time, getToken()));
+                new UpdatePositionCommand(latitude, longitude, time,
+                        getToken()));
     }
 
     /**
      * start a transmission of the users location to the group lasting until
      * the time given
+     *
      * @param groupId grop with which the user shares his location
      * @param endTime time at which the transmission is supposed to end
      */
