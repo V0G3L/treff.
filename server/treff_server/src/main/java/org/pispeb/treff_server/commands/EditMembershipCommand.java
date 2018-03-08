@@ -1,24 +1,18 @@
 package org.pispeb.treff_server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.Permission;
 import org.pispeb.treff_server.commands.descriptions.MembershipDescription;
 import org.pispeb.treff_server.commands.descriptions.MembershipEditDescription;
-import org.pispeb.treff_server.commands.io.CommandInput;
-import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.GroupMembershipChangeUpdate;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * a command to edit the permissions of an account
@@ -52,9 +46,10 @@ public class EditMembershipCommand extends GroupCommand {
         Date d = usergroup.getLocationSharingTimeEndOfMember(account);
         long locationSharingTime = (d == null)?0:d.getTime();
         MembershipDescription mB =
-                new MembershipDescription(account.getID(),
-                        usergroup.getPermissionsOfMember(account),
-                        locationSharingTime);
+                new MembershipDescription(usergroup.getID(), account.getID(),
+                        locationSharingTime,
+                        usergroup.getPermissionsOfMember(account)
+                );
         GroupMembershipChangeUpdate update =
                 new GroupMembershipChangeUpdate(new Date(),
                         actingAccount.getID(),
@@ -66,15 +61,12 @@ public class EditMembershipCommand extends GroupCommand {
 
     public static class Input extends GroupInput {
 
-        final int groupId;
         final MembershipEditDescription membershipEditDescription;
 
-        public Input(@JsonProperty("id") int groupId,
-                     @JsonProperty("membership")
+        public Input(@JsonProperty("membership")
                              MembershipEditDescription mB,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[]{mB.accountID});
-            this.groupId = groupId;
+            super(token, mB.groupID);
             this.membershipEditDescription = mB;
         }
     }

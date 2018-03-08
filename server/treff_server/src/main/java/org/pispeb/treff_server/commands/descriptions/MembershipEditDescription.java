@@ -1,32 +1,33 @@
 package org.pispeb.treff_server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Immutable complete description of a membership as specified in the
- * treffpunkt protocol document.
+ * treffpunkt protocol document, lacking the sharing-until property.
  */
 public class MembershipEditDescription {
     public final Map<Permission, Boolean> permissionMap;
     public final String type = "membership";
+    public final int groupID;
     public final int accountID;
 
 
-    public MembershipEditDescription(@JsonProperty("account-id") int accountID,
-                                 @JsonProperty("permissions")
-                                         Map<String, Boolean>
-                                         permissionStringMap)
+    public MembershipEditDescription(@JsonProperty("group-id") int groupID,
+                                     @JsonProperty("account-id") int accountID,
+                                     @JsonProperty("permissions")
+                                             Map<String, Boolean>
+                                             permissionStringMap)
             throws IOException {
 
         this.accountID = accountID;
+        this.groupID = groupID;
 
         // translate String->Boolean map to Permission->Boolean map
         // throw IOException if permission unknown. JsonDeserializer will

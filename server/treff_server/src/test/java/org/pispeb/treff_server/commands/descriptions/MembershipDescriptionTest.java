@@ -26,7 +26,7 @@ public class MembershipDescriptionTest extends JsonDependentTest {
         permMap.put(EDIT_GROUP, false);
         permMap.put(EDIT_ANY_POLL, false);
         MembershipDescription desc
-                = new MembershipDescription(1337, permMap, 0);
+                = new MembershipDescription(7355608, 1337, 0, permMap);
 
         String serialized = mapper.writeValueAsString(desc);
 

@@ -577,12 +577,11 @@ executing user is a member.
 This command can be used to edit a group member's permissions.
 To revoke a membership, i.e. remove a user from a group, use the
 \textbf{remove-group-members} command.}
-{id/int/The ID of the user group,
-membership/object/The complete description of the new membership that is to
+{membership/object/The complete description of the new membership that is to
 replace the current one (see \ref{sec:Membership-desc}) ommiting the
-field shared-until.
-The ID specified in the description must match the ID of the account whose
-membership is to be edited.}
+sharing-until property.
+The account and group IDs specified in the description must match the ID of
+the group{/}account whose membership is to be edited.}
 {}
 {group-id-invalid, user-id-invalid,user-not-in-group, no-permission-edit-permissions}
 {group-membership-change}
@@ -757,7 +756,8 @@ message/string/The chat message}
 a member.}
 {id/int/The ID of the event,
 group-id/int/The ID of the group}
-{event/object/The complete description of the event (see \ref{subsec:Event-desc})}
+{event/object/The complete description of the event (see
+\ref{subsec:Event-desc})}
 {group-id-invalid,event-id-invalid}
 {}
 
@@ -768,6 +768,17 @@ a member.}
 group-id/int/The ID of the group}
 {poll/object/The complete description of the poll (see \ref{subsec:Poll-desc})}
 {group-id-invalid,poll-id-invalid}
+{}
+
+\apiCommand{get-poll-option-details}
+{Gets the details of a poll option in a user group of which the executing user
+is a member.}
+{id/int/The ID of the poll option,
+poll-id/int/The ID of the poll,
+group-id/int/The ID of the group}
+{poll-option/object/The complete description of the poll option
+(see \ref{subsec:Poll option-desc})}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid}
 {}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren

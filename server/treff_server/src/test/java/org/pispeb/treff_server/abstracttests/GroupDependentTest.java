@@ -68,8 +68,8 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
                 .build();
         JsonObjectBuilder permInput
                 = getCommandStubForUser("edit-membership", ownUser)
-                .add("id", groupId)
                 .add("membership", Json.createObjectBuilder()
+                        .add("group-id", groupId)
                         .add("account-id", users[2].id)
                         .add("permissions", permissionInput)
                         .build());

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -19,15 +18,17 @@ public class MembershipDescription {
     public final Map<Permission, Boolean> permissionMap;
     @JsonProperty("type")
     public final String type = "membership";
+    @JsonProperty("group-id")
+    public final int groupID;
     @JsonProperty("account-id")
     public final int accountID;
     @JsonProperty("sharing-until")
     public Date sharingUntil;
 
-    public MembershipDescription(int accountID,
-                                 Map<Permission, Boolean> permissionMap,
-                                 long sharingUntil) {
-
+    public MembershipDescription(int groupID, int accountID,
+                                 long sharingUntil,
+                                 Map<Permission, Boolean> permissionMap) {
+        this.groupID = groupID;
         this.accountID = accountID;
         this.sharingUntil = new Date(sharingUntil);
         this.permissionMap = permissionMap;

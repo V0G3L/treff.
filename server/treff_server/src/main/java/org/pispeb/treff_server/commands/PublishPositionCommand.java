@@ -39,9 +39,10 @@ public class PublishPositionCommand extends GroupCommand {
 
         // create update
         MembershipDescription mB
-                = new MembershipDescription(actingAccount.getID(),
-                usergroup.getPermissionsOfMember(actingAccount),
-                input.timeEnd.getTime());
+                = new MembershipDescription(usergroup.getID(),
+                actingAccount.getID(), input.timeEnd.getTime(),
+                usergroup.getPermissionsOfMember(actingAccount)
+        );
         GroupMembershipChangeUpdate update =
                 new GroupMembershipChangeUpdate(new Date(),
                         actingAccount.getID(),
