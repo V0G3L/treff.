@@ -14,8 +14,8 @@ public class CompleteAccount {
 
     public CompleteAccount(@JsonProperty("type") String type,
                            @JsonProperty("id") int id,
-                           @JsonProperty("username") String username){
-        this.type = "account";
+                           @JsonProperty("user") String username){
+        this.type = type;
         this.id = id;
         this.username = username;
     }

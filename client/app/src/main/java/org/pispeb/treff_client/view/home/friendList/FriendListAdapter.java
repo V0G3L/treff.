@@ -86,13 +86,20 @@ class FriendListViewHolder extends RecyclerView.ViewHolder
     }
 
     public void bindTo(User user) {
+        // databinding
         binding.setUser(user);
         if (user.isRequesting()) {
             binding.info.setText(R.string.user_is_requesting);
         } else if (user.isRequestPending()) {
             binding.info.setText(R.string.request_pending);
+        } else if (user.isBlocked()) {
+            binding.info.setText(R.string.blocked);
+        } else {
+            binding.info.setText("");
         }
     }
+
+
 
     @Override
     public void onClick(View v) {

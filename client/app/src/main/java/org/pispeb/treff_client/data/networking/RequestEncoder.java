@@ -82,7 +82,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         try {
             connectionHandler
                     = new ConnectionHandler(
-                    "ws://100.85.16.29:8080/treff_server/ws",
+                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080/treff_server-0.1/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
@@ -108,7 +108,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
-    // change ConnectionHandler in case of Server change or testing
     public void setConnectionHandler(ConnectionHandler connectionHandler) {
         this.connectionHandler = connectionHandler;
     }
@@ -306,7 +305,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param newPassword the new password
      */
     public synchronized void editPassword(String password, String newPassword) {
-        executeCommand(new EditPasswordCommand(password, newPassword, getToken()));
+        executeCommand(
+                new EditPasswordCommand(password, newPassword, getToken()));
     }
 
     /**
@@ -340,22 +340,13 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to get the ID belonging to a username
-     *
-     * @param username .
-     * @return The user id of the user
-     */
-    public synchronized void getUserId(String username) {
-        executeCommand(new GetUserIdCommand(username, getToken(), userRepository));
-    }
-
-    /**
      * Method to perform an send-contact-request request
      *
      * @param userId Contact to be added to the friend list
      */
     public synchronized void sendContactRequest(int userId) {
-        executeCommand(new SendContactRequestCommand(userId, getToken(), userRepository));
+        executeCommand(new SendContactRequestCommand(userId, getToken(),
+                userRepository));
     }
 
     /**
@@ -365,9 +356,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param userName Name of the user to be added to the friend list
      */
     public synchronized void sendContactRequest(String userName) {
-        executeCommand(new GetUserIdCommand(userName, getToken(), userRepository));
-        executeCommand(new SendContactRequestCommand(userName, getToken(),
-                userRepository));
+        executeCommand(new GetUserIdCommand(userName, getToken(),
+                userRepository, this));
     }
 
     public synchronized void cancelContactRequest(int userId) {
@@ -377,6 +367,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     /**
      * Accept a contact request from a given user
+     *
      * @param userId user from which the request originated
      */
     public synchronized void acceptContactRequest(int userId) {
@@ -386,6 +377,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     /**
      * Reject a contact request
+     *
      * @param userId user from which the request originated
      */
     public synchronized void rejectContactRequest(int userId) {
@@ -394,22 +386,26 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void removeContact(int userId) {
-        executeCommand(new RemoveContactCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new RemoveContactCommand(userId, getToken(), userRepository));
     }
 
     /**
      * update the list of contact as well as requests
      */
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(getToken(), userRepository));
+        executeCommand(new GetContactListCommand(getToken(), userRepository,
+                this));
     }
 
     /**
      * block an account
+     *
      * @param userId
      */
     public synchronized void blockAccount(int userId) {
-        executeCommand(new BlockAccountCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new BlockAccountCommand(userId, getToken(), userRepository));
     }
 
     /**
@@ -451,8 +447,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @return true if the request was successful, false if not
      */
     public synchronized void addGroupMembers(int groupId, int[] newMembers) {
-        executeCommand(new AddGroupMembersCommand(groupId, newMembers, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new AddGroupMembersCommand(groupId, newMembers, getToken(),
+                        userGroupRepository));
     }
 
     /**
@@ -462,8 +459,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param members The ID of the member to be removed
      */
     public synchronized void removeGroupMembers(int groupId, int[] members) {
-        executeCommand(new RemoveGroupMembersCommand(groupId, members, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new RemoveGroupMembersCommand(groupId, members, getToken(),
+                        userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
@@ -493,7 +491,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                                        int eventId) {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, eventId, getToken(), eventRepository));
+                        timeEnd, position, eventId, getToken(),
+                        eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
@@ -540,17 +539,20 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void voteForOption(int groupId, int pollId, int id) {
-        executeCommand(new VoteForOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new VoteForOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void withdrawVoteForOption(int groupId, int pollId,
                                                    int id) {
         executeCommand(
-                new WithdrawVoteForOptionCommand(groupId, pollId, id, getToken()));
+                new WithdrawVoteForOptionCommand(groupId, pollId, id,
+                        getToken()));
     }
 
     public synchronized void removePollOption(int groupId, int pollId, int id) {
-        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new RemovePollOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void removePoll(int groupId, int pollId) {
@@ -579,11 +581,13 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
 
     public synchronized void getGroupDetails(int groupId) {
-        executeCommand(new GetGroupDetailsCommand(groupId, getToken(), userGroupRepository));
+        executeCommand(new GetGroupDetailsCommand(groupId, getToken(),
+                userGroupRepository));
     }
 
     public synchronized void getUserDetails(int userId) {
-        executeCommand(new GetUserDetailsCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new GetUserDetailsCommand(userId, getToken(), userRepository));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
@@ -596,24 +600,28 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void requestPosition(int groupId, Date endTime) {
-        executeCommand(new RequestPositionCommand(groupId, endTime, getToken()));
+        executeCommand(
+                new RequestPositionCommand(groupId, endTime, getToken()));
     }
 
     /**
      * send the most recent location to the server
-     * @param latitude latitude
+     *
+     * @param latitude  latitude
      * @param longitude and longitude of the users position
-     * @param time time the position was measured at
+     * @param time      time the position was measured at
      */
     public synchronized void updatePosition(double latitude, double longitude,
                                             Date time) {
         executeCommand(
-                new UpdatePositionCommand(latitude, longitude, time, getToken()));
+                new UpdatePositionCommand(latitude, longitude, time,
+                        getToken()));
     }
 
     /**
      * start a transmission of the users location to the group lasting until
      * the time given
+     *
      * @param groupId grop with which the user shares his location
      * @param endTime time at which the transmission is supposed to end
      */

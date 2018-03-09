@@ -34,7 +34,7 @@ public class ListGroupsCommand extends AbstractCommand {
         Response response = (Response) abstractResponse;
         // update groups that are not yet in the local database
         for (ShallowUserGroup g : response.groups) {
-            if (userGroupRepository.getGroup(g.id) == null) {
+            if (userGroupRepository.getGroupLiveData(g.id) == null) {
                 encoder.getGroupDetails(g.id);
             }
         }

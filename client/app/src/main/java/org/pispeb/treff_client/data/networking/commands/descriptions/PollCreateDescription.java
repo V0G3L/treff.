@@ -17,7 +17,8 @@ public class PollCreateDescription {
     public final boolean isMultiChoice;
     public final Date timeVoteClose;
 
-    public PollCreateDescription(@JsonProperty("question") String question,
+    public PollCreateDescription(@JsonProperty("type") String type,
+                                 @JsonProperty("question") String question,
                                  @JsonProperty("multi-choice")
                                          boolean isMultiChoice,
                                  @JsonProperty("time-close") Date timeVoteClose) {

@@ -17,12 +17,18 @@ public class ChatMessage {
     private int groupId;
     private String content;
     private int userId;
+    private String username;
     private Date timeSent;
 
-    public ChatMessage(int groupId, String content, int userId, Date timeSent) {
+    public ChatMessage(int groupId,
+                       String content,
+                       int userId,
+                       String username,
+                       Date timeSent) {
         this.groupId = groupId;
         this.content = content;
         this.userId = userId;
+        this.username = username;
         this.timeSent = timeSent;
     }
 
@@ -56,6 +62,14 @@ public class ChatMessage {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Date getTimeSent() {

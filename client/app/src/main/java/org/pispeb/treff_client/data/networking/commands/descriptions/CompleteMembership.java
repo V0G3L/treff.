@@ -21,8 +21,7 @@ public class CompleteMembership {
                               @JsonProperty("id") int membershipId,
                               @JsonProperty("account-id") int accountId,
                               @JsonProperty("permissions") Object permissions){
-
-        this.type = "membership";
+        this.type = type;
         this.id = membershipId;
         this.accountId = accountId;
         this.permissions = permissions;

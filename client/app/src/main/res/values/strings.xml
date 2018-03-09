@@ -121,5 +121,7 @@
     <string name="channel_name">treff.</string>
     <string name="channel_description">Location transmitted to other users</string>
     <string name="tap_for_back">Tap to get back</string>
+    <string name="blocked">Blocked</string>
+    <string name="unblock">Unblock</string>
 
 </resources>

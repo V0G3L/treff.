@@ -11,18 +11,19 @@ public class CompleteUsergroup {
     public final String type;
     public final int id;
     public final String name;
-    public final CompleteMembership[] members;
+    // No longer memberships!
+    public final int[] members;
     public final int[] events;
     public final int[] polls;
 
+    // No longer memberships!
     public CompleteUsergroup(@JsonProperty("type") String type,
                              @JsonProperty("id") int id,
                              @JsonProperty("name") String name,
-                             @JsonProperty("members") CompleteMembership[] members,
+                             @JsonProperty("members") int[] members,
                              @JsonProperty("events") int[] events,
                              @JsonProperty("polls") int[] polls){
-
-        this.type = "usergroup";
+        this.type = type;
         this.id = id;
         this.name = name;
         this.members = members;

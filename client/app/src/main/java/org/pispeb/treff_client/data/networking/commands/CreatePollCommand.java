@@ -43,7 +43,8 @@ public class CreatePollCommand extends AbstractCommand{
                        Date timeVoteClose, String token) {
             super(CmdDesc.CREATE_POLL.toString());
             this.groupId = groupId;
-            poll = new PollCreateDescription(question, isMultiChoice, timeVoteClose);
+            poll = new PollCreateDescription("type", question, isMultiChoice,
+                    timeVoteClose);
             this.token = token;
         }
     }

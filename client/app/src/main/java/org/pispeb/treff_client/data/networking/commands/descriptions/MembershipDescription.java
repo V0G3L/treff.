@@ -17,7 +17,8 @@ public class MembershipDescription {
     public final Map<Permission, Boolean> permissionMap;
     public final int accountID;
 
-    public MembershipDescription(@JsonProperty("account-id") int accountID,
+    public MembershipDescription(@JsonProperty("type") String type,
+                                 @JsonProperty("account-id") int accountID,
                                  @JsonProperty("permissions")
                                       Map<String, Boolean> permissionStringMap)
             throws IOException {

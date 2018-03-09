@@ -11,11 +11,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class UsergroupEditDescription {
 
+    @JsonProperty("type")
+    public final String type;
+    @JsonProperty("id")
     public final int id;
+    @JsonProperty("name")
     public final String name;
 
-    public UsergroupEditDescription(@JsonProperty("id") int id,
-                                    @JsonProperty("name") String name) {
+    public UsergroupEditDescription(String type, int id, String name) {
+        this.type = type;
         this.id = id;
         this.name = name;
     }

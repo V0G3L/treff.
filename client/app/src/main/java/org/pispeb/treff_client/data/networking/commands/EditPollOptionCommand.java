@@ -48,7 +48,7 @@ public class EditPollOptionCommand extends AbstractCommand {
             super(CmdDesc.EDIT_POLLOPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
-            pollOption = new PollOptionEditDescription(latitude, longitude, timeStart, timeEnd, id);
+            pollOption = new PollOptionEditDescription("type", latitude, longitude, timeStart, timeEnd, id);
             this.token = token;
         }
     }

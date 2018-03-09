@@ -25,14 +25,15 @@ public class SendChatMessageTest extends AbstractCommandTest {
 
     private SendChatMessageCommand command;
     private Date mockTime = new Date();
-    private ChatMessage mockChatMessage = new ChatMessage(mockGroupId, mockMessage, mockId, mockTime);
+    private ChatMessage mockChatMessage = new ChatMessage(mockGroupId,
+            mockMessage, mockId, mockName, mockTime);
 
     @Before
     public void mockNewMessage() {
         try {
             PowerMockito.whenNew(Date.class).withNoArguments().thenReturn(mockTime);
             PowerMockito.whenNew(ChatMessage.class)
-                    .withArguments(mockGroupId, mockMessage, mockId, mockTime)
+                    .withArguments(mockGroupId, mockMessage, mockId, mockName, mockTime)
                     .thenReturn(mockChatMessage);
 
         } catch (Exception e) {

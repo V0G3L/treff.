@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -42,7 +44,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
 
     // Livedata objects to keep map up to date
     private MutableLiveData<Location> userLocation;
-    private LiveData<PagedList<User>> friends;
+    private LiveData<List<User>> friends;
     private LiveData<PagedList<Event>> events;
     private LiveData<List<UserGroup>> groups;
 
@@ -63,11 +65,22 @@ public class MapViewModel extends ViewModel implements LocationListener {
         this.userLocation = new MutableLiveData<>();
         this.events = eventRepository.getEvents();
         this.groups = userGroupRepository.getGroupsInList();
-        this.friends = userRepository.getFriends();
+
+        userRepository.updateSharing();
+        this.friends = userRepository.getCurrentlySharing();
 
         this.activeGroups = new HashSet<>();
 
         this.state = new SingleLiveEvent<>();
+
+
+        Timer updateTimer = new Timer();
+        updateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                userRepository.updateSharing();
+            }
+        }, 0, 5000);
     }
 
     public void onCenterClick() {
@@ -94,7 +107,7 @@ public class MapViewModel extends ViewModel implements LocationListener {
         return userLocation;
     }
 
-    public LiveData<PagedList<User>> getFriends() {
+    public LiveData<List<User>> getFriends() {
         return friends;
     }
 

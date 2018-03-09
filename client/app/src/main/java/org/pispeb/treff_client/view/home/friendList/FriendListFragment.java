@@ -88,6 +88,19 @@ public class FriendListFragment extends Fragment {
                 builder.setPositiveButton(R.string.ok, ((dialog, which) -> {
                     dialog.dismiss();
                 }));
+                builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
+                    vm.cancel(userId);
+                    dialog.dismiss();
+                }));
+                builder.show();
+                break;
+            case SHOW_BLOCKED_DIALOG:
+                builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.blocked);
+                builder.setPositiveButton(R.string.unblock, ((dialog, which) -> {
+                    vm.unblock(userId);
+                    dialog.dismiss();
+                }));
                 builder.show();
                 break;
             case SHOW_REQUESTING_DIALOG:

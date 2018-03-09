@@ -3,12 +3,15 @@ package org.pispeb.treff_client.data.networking.commands.descriptions;
 import android.location.Location;
 import android.location.LocationManager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Position {
 
     public final double latitude;
     public final double longitude;
 
-    public Position(double latitude, double longitude) {
+    public Position(@JsonProperty("latitude") double latitude,
+                    @JsonProperty("longitude") double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

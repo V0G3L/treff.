@@ -31,7 +31,7 @@ public class CompleteEvent {
                          @JsonProperty("latitude") double latitude,
                          @JsonProperty("longitude") double longitude,
                          @JsonProperty("participants") int[] participants){
-        this.type = "event";
+        this.type = type;
         this.id = id;
         this.title = title;
         this.creator = creator;

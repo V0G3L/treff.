@@ -27,6 +27,7 @@ public class RejectContactRequestCommand extends AbstractCommand{
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         userRepository.setIsFriend(output.id, false);
+        userRepository.setIsRequesting(output.id, false);
     }
 
     public static class Request extends AbstractRequest {

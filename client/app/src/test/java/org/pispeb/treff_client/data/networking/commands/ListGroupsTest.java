@@ -39,13 +39,13 @@ public class ListGroupsTest extends AbstractCommandTest {
     @Override
     public void onResponseTest() {
 
-        when(mockUserGroupRepository.getGroup(mockUsergroups[0].id))
+        when(mockUserGroupRepository.getGroupLiveData(mockUsergroups[0].id))
                 .thenReturn(new MutableLiveData<>());
-        when(mockUserGroupRepository.getGroup(mockUsergroups[1].id))
+        when(mockUserGroupRepository.getGroupLiveData(mockUsergroups[1].id))
                 .thenReturn(null);
 
         command.onResponse(new ListGroupsCommand.Response(mockUsergroups));
-        verify(mockUserGroupRepository, times(2)).getGroup(anyInt());
+        verify(mockUserGroupRepository, times(2)).getGroupLiveData(anyInt());
         verify(mockEncoder).getGroupDetails(mockUsergroups[1].id);
     }
 

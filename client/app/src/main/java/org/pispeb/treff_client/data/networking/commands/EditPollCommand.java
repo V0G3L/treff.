@@ -42,7 +42,7 @@ public class EditPollCommand extends AbstractCommand {
                        Date timeVoteClose, int id, String token) {
             super(CmdDesc.EDIT_POLL.toString());
             this.groupId = groupId;
-            poll = new PollEditDescription(question, isMultiChoice, timeVoteClose, id);
+            poll = new PollEditDescription("type", question, isMultiChoice, timeVoteClose, id);
             this.token = token;
         }
     }

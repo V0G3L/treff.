@@ -50,4 +50,6 @@
     <string name="leave_group">Gruppe verlassen</string>
     <string name="event_title">Event Titel</string>
     <string name="manage_groups">Gruppen filtern</string>
+    <string name="blocked">Blocked</string>
+    <string name="unblock">Unblock</string>
 </resources>
