@@ -60,6 +60,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private Queue<AbstractCommand> commands;
 
     private static RequestEncoder INSTANCE;
+
+    private boolean updating;
     private Timer updateTimer;
 
     public static RequestEncoder getInstance() {
@@ -81,7 +83,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         try {
             connectionHandler
                     = new ConnectionHandler(
-                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080/treff_server-0.1/ws",
+                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080" +
+                            "/treff_server-0.1/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
@@ -94,6 +97,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         bgHandler = new Handler(thread.getLooper());
 
         updateTimer = new Timer();
+        updating = false;
 
         // Handle to UIThread for displaying Toast messages
         uiHandler = new Handler(Looper.getMainLooper()) {
@@ -135,10 +139,12 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 }
             }
         }, 0, 10000);
+        updating = true;
     }
 
     public void stopRequestUpdates() {
         updateTimer.cancel();
+        updating = false;
     }
 
     /**
@@ -222,6 +228,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 AbstractResponse response = mapper.readValue(responseString,
                         c.getResponseClass());
                 c.onResponse(response);
+                if (!updating) {
+                    startRequestUpdates();
+                }
             } catch (IOException ex) {
                 // This would mean, that the internal request encoding is messed
                 // up, which would be very bad indeed!
@@ -294,7 +303,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param password .
      */
     public synchronized void register(String username, String password) {
-        executeCommand(new RegisterCommand(username, password, this));
+        executeCommand(new RegisterCommand(username, password));
     }
 
     /**
@@ -304,7 +313,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param password .
      */
     public synchronized void login(String username, String password) {
-        executeCommand(new LoginCommand(username, password, this));
+        executeCommand(new LoginCommand(username, password));
     }
 
 

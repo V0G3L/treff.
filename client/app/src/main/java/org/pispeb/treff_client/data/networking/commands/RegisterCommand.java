@@ -17,12 +17,10 @@ import org.pispeb.treff_client.view.util.TreffPunkt;
 public class RegisterCommand extends AbstractCommand{
 
     private Request output;
-    private RequestEncoder encoder;
 
-    public RegisterCommand(String user, String pass, RequestEncoder encoder) {
+    public RegisterCommand(String user, String pass) {
         super(Response.class);
         output = new Request(user, pass);
-        this.encoder = encoder;
     }
 
     @Override
@@ -40,8 +38,6 @@ public class RegisterCommand extends AbstractCommand{
                 .putString(ctx.getString(R.string.key_token), response.token)
                 .putInt(ctx.getString(R.string.key_userId), response.id)
                 .commit();
-
-        encoder.startRequestUpdates();
     }
 
     public static class Request extends AbstractRequest {

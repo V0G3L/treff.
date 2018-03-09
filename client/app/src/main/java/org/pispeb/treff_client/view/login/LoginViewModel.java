@@ -62,7 +62,6 @@ public class LoginViewModel extends ViewModel {
         prefListener = (prefs, key) -> {
             if(key.equals(ctx.getString(R.string.key_token)))
                 state.setValue(new State(ViewCall.SUCCESS, 0));
-
         };
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);
