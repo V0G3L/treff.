@@ -79,6 +79,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
+        mapper.disable(DeserializationFeature
+                .FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {
             connectionHandler
@@ -673,6 +675,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void requestUpdates() {
-        executeCommand(new RequestUpdatesCommand(getToken(), repositorySet));
+        executeCommand(new RequestUpdatesCommand(getToken(), repositorySet, mapper));
     }
 }

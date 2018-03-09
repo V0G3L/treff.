@@ -6,17 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+import org.json.JSONException;
 import org.pispeb.treff_client.data.networking.commands.updates.Update;
-import org.pispeb.treff_client.data.repositories.ChatRepository;
-import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.RepositorySet;
-import org.pispeb.treff_client.data.repositories.UserGroupRepository;
-import org.pispeb.treff_client.data.repositories.UserRepository;
 
 import java.io.IOException;
-
-import javax.json.stream.JsonParsingException;
 
 /**
  * Request an array of all updates that accumulated on the server since the
@@ -27,11 +21,13 @@ public class RequestUpdatesCommand extends AbstractCommand {
 
     private final Request output;
     private final RepositorySet repositorySet;
+    private final ObjectMapper mapper;
 
-    public RequestUpdatesCommand(String token, RepositorySet repositorySet) {
+    public RequestUpdatesCommand(String token, RepositorySet repositorySet, ObjectMapper mapper) {
         super(Response.class);
         output = new Request(token);
         this.repositorySet = repositorySet;
+        this.mapper = mapper;
     }
 
     @Override
@@ -44,19 +40,11 @@ public class RequestUpdatesCommand extends AbstractCommand {
         Response response = (Response) abstractResponse;
 
         for (String updateString : response.updates) {
-            // TODO: re-use a single mapper across entire main (non-test) code
-            // this guarantees that the correct settings are active and allows
-            // for serializer caching
-            final ObjectMapper mapper;
-            mapper = new ObjectMapper();
-            mapper.enable(DeserializationFeature
-                    .FAIL_ON_MISSING_CREATOR_PROPERTIES);
-
             // translate to Update object
             Update update;
             try {
                 update = Update.parseUpdate(updateString, mapper);
-            } catch (IOException | JsonParsingException e) {
+            } catch (IOException | JSONException e) {
                 Log.e("Updates",
                         String.format("Could not parse update:\n%s",
                                 updateString));

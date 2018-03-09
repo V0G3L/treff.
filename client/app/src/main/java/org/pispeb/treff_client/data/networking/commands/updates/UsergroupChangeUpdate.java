@@ -59,7 +59,11 @@ public class UsergroupChangeUpdate extends Update {
 
         if (kickedOut)
             repositorySet.userGroupRepository.remove(userGroupEntity);
-        else
-            repositorySet.userGroupRepository.updateGroup(userGroupEntity);
+        else {
+            if (newGroup)
+                repositorySet.userGroupRepository.addGroup(userGroupEntity);
+            else
+                repositorySet.userGroupRepository.updateGroup(userGroupEntity);
+        }
     }
 }
