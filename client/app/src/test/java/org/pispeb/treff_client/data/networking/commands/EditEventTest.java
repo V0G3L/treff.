@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class EditEventTest extends AbstractCommandTest {
 
     private EditEventCommand command;
-    private EventEditDescription mockEventEditDescription = new EventEditDescription(
+    private EventEditDescription mockEventEditDescription = new EventEditDescription("type",
             mockName, mockId, mockTimeStart, mockTimeEnd, mockPosition, mockEvetntId);
     private Event mockEvent = new Event(mockEvetntId, mockName, mockTimeStart, mockTimeEnd,
             mockPosition.getLocation(), mockId, mockGroupId);

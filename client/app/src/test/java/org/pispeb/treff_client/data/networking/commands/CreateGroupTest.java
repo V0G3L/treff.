@@ -14,7 +14,7 @@ public class CreateGroupTest extends AbstractCommandTest {
 
     private CreateGroupCommand command;
     private UsergroupCreateDescription mockUsergroupCreateDescription =
-            new UsergroupCreateDescription(mockName, mockUsers);
+            new UsergroupCreateDescription("type", mockName, mockUsers);
     private UserGroup mockUserGroup = new UserGroup(mockGroupId, mockName);
     @Override
     public void initCommand() {

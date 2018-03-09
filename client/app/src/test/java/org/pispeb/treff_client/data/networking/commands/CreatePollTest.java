@@ -13,7 +13,7 @@ public class CreatePollTest extends AbstractCommandTest {
 
     private CreatePollCommand command;
     private PollCreateDescription mockPollCreateDescription =
-            new PollCreateDescription(mockQuestion, mockMultiChoice, mockTimeEnd);
+            new PollCreateDescription("type", mockQuestion, mockMultiChoice, mockTimeEnd);
 
     @Override
     public void initCommand() {

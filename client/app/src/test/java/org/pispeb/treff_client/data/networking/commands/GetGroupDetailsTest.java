@@ -20,10 +20,10 @@ public class GetGroupDetailsTest extends AbstractCommandTest {
 
     @Mock
     private CompleteMembership mockCompleteMembership = mock(CompleteMembership.class);
-    private CompleteMembership[] mockCompleteMemberships = {mockCompleteMembership};
+    private int[] mockMembers = {mockId};
 
     private CompleteUsergroup mockCompleteUserGroup = new CompleteUsergroup
-            (null, mockGroupId, mockName, mockCompleteMemberships, mockEvents, mockPolls);
+            (null, mockGroupId, mockName, mockMembers, mockEvents, mockPolls);
 
     @Override
     public void initCommand() {

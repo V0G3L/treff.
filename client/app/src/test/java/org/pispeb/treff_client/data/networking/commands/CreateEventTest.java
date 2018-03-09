@@ -16,7 +16,9 @@ public class CreateEventTest extends AbstractCommandTest {
 
     private CreateEventCommand command;
     private EventCreateDescription mockEventCreateDescription =
-            new EventCreateDescription(mockName, mockId, mockTimeStart, mockTimeEnd, mockPosition);
+            new EventCreateDescription("event-create", mockName, mockId,
+                    mockTimeStart,
+    mockTimeEnd, mockPosition);
     private Event mockEvent = new Event(mockEvetntId, mockName, mockTimeStart, mockTimeEnd,
             mockPosition.getLocation(), mockId, mockGroupId);
 

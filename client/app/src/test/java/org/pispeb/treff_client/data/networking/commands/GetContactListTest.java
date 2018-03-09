@@ -13,7 +13,8 @@ public class GetContactListTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new GetContactListCommand(mockToken, mockUserRepository);
+        command = new GetContactListCommand(mockToken, mockUserRepository,
+                mockEncoder);
     }
 
     @Override

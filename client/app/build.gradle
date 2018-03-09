@@ -26,6 +26,10 @@ android {
         sourceCompatibility 1.8
     }
 
+    lintOptions {
+        abortOnError false
+    }
+
     testOptions {
         unitTests.returnDefaultValues = true
     }
@@ -61,7 +65,7 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
 
     implementation "javax.json:javax.json-api:1.0"
-    implementation "org.glassfish:javax.json:1.0.2"
+//    implementation "org.glassfish:javax.json:1.0.2"
 
 
     // Required -- JUnit 4 framework

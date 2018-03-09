@@ -17,7 +17,8 @@ public class GetUserIdTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new GetUserIdCommand(mockName, mockToken, mockUserRepository);
+        command = new GetUserIdCommand(mockName, mockToken,
+                mockUserRepository, mockEncoder);
     }
 
     @Override

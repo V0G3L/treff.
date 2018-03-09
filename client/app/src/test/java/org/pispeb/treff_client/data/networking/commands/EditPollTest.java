@@ -13,7 +13,7 @@ public class EditPollTest extends AbstractCommandTest {
 
     private EditPollCommand command;
     private PollEditDescription mockPollEditDescription =
-            new PollEditDescription(mockQuestion, mockMultiChoice, mockTimeEnd, mockPollId);
+            new PollEditDescription("type", mockQuestion, mockMultiChoice, mockTimeEnd, mockPollId);
 
     @Override
     public void initCommand() {

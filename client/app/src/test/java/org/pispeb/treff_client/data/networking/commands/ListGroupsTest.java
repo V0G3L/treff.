@@ -21,9 +21,9 @@ public class ListGroupsTest extends AbstractCommandTest {
 
     private ListGroupsCommand command;
     private ShallowUserGroup mockUsergroup1
-            = new ShallowUserGroup(1111,"checksum1");
+            = new ShallowUserGroup("type", 1111,"checksum1");
     private ShallowUserGroup mockUsergroup2
-            = new ShallowUserGroup(2222,"checksum2");
+            = new ShallowUserGroup("type", 2222,"checksum2");
     private ShallowUserGroup[] mockUsergroups
             = {mockUsergroup1, mockUsergroup2};
 

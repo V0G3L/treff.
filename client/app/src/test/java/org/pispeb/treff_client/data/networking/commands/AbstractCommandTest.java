@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
@@ -35,6 +36,8 @@ import static org.mockito.Mockito.when;
         PreferenceManager.class})
 
 public abstract class AbstractCommandTest {
+    @Mock
+    protected RequestEncoder mockEncoder;
     @Mock
     protected UserRepository mockUserRepository = mock(UserRepository.class);
     @Mock

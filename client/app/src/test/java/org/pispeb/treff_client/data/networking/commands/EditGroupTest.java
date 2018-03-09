@@ -14,7 +14,7 @@ public class EditGroupTest extends AbstractCommandTest {
 
     private EditGroupCommand command;
     private UsergroupEditDescription mockUsergroupEditDescription =
-            new UsergroupEditDescription(mockGroupId, mockName);
+            new UsergroupEditDescription("type", mockGroupId, mockName);
     private UserGroup mockUsergroup = new UserGroup(mockGroupId, mockName);
 
     @Override
