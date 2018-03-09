@@ -81,11 +81,15 @@ public class EventRepository {
 
     /**
      * Get a LiveData object of a single event, given
-     * @param eventID the events id
+     * @param eventId the events id
      * @return LiveData object of that event
      */
-    public LiveData<Event> getEvent(int eventId) {
-        return eventDao.getEventByID(eventId);
+    public LiveData<Event> getEventLiveData(int eventId) {
+        return eventDao.getEventByIdLiveData(eventId);
+    }
+
+    public Event getEvent(int eventId) {
+        return eventDao.getEventById(eventId);
     }
 
     /**

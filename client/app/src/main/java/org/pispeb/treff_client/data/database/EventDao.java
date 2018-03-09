@@ -25,7 +25,10 @@ public interface EventDao {
     void save(Event event);
 
     @Query("SELECT * FROM event WHERE id = :eventId")
-    LiveData<Event> getEventByID(int eventId);
+    LiveData<Event> getEventByIdLiveData(int eventId);
+
+    @Query("SELECT * FROM event WHERE id = :eventId")
+    Event getEventById(int eventId);
 
     @Query("SELECT * FROM event")
     DataSource.Factory<Integer, Event> getAllEvents();

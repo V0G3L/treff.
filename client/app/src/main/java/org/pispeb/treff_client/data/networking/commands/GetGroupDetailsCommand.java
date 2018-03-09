@@ -3,9 +3,12 @@ package org.pispeb.treff_client.data.networking.commands;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.data.entities.UserGroup;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteUsergroup;
 
 
+
+import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 /**
@@ -16,6 +19,8 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
     private Request output;
     private UserGroupRepository userGroupRepository;
+    private EventRepository eventRepository;
+    private RequestEncoder encoder;
 
     public GetGroupDetailsCommand(int id, String token,
                                   UserGroupRepository userGroupRepository) {
@@ -41,6 +46,12 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         }
         userGroupRepository.updateGroupMembers(output.id, response.usergroup
                 .members);
+
+        for (int eventId : response.usergroup.events) {
+            if (eventRepository.getEvent(eventId) == null) {
+                encoder.getEventDetails(eventId, output.id);
+            }
+        }
     }
 
     public static class Request extends AbstractRequest {
