@@ -240,6 +240,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
                     error);
             message.sendToTarget();
+        } else {
+            Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
+                    Error.INTERNAL_ERROR);
+            message.sendToTarget();
         }
 
         if (error == Error.TOKEN_INV) {
