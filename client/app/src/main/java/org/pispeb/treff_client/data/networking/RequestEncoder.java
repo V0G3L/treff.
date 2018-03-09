@@ -31,6 +31,8 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.CountDownLatch;
 
 import javax.websocket.DeploymentException;
@@ -56,7 +58,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     // Queue of commands waiting to be sent to Server
     private Queue<AbstractCommand> commands;
-    private CountDownLatch cdl;
 
     private static RequestEncoder INSTANCE;
 
@@ -84,12 +85,26 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
         }
-        HandlerThread thread = new HandlerThread("gbt",
+
+        // Background Thread to execute network interaction on
+        HandlerThread thread = new HandlerThread("bgt",
                 HandlerThread.MIN_PRIORITY);
         thread.start();
         bgHandler = new Handler(thread.getLooper());
-        cdl = new CountDownLatch(0);
 
+
+        // request Updates periodically
+        Timer updateTimer = new Timer();
+        updateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (RequestEncoder.INSTANCE.idle) {
+                    requestUpdates();
+                }
+            }
+        }, 0, 10000);
+
+        // Handle to UIThread for displaying Toast messages
         uiHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
@@ -241,7 +256,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
 
         if (error == Error.TOKEN_INV) {
+            // wipe token
             Context appctx = TreffPunkt.getAppContext();
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(appctx);
+            pref.edit().remove(appctx
+                    .getString(R.string.key_token)).commit();
+
+            // restart App
             Intent restartApp = new Intent(appctx, LoginActivity.class);
             restartApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
