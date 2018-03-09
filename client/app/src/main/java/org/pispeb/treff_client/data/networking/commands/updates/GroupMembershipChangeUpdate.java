@@ -2,21 +2,29 @@ package org.pispeb.treff_client.data.networking.commands.updates;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteMembership;
+import org.pispeb.treff_client.data.repositories.RepositorySet;
 
 import java.util.Date;
 
-public class GroupMembershipChangeUpdate extends UpdateToSerialize {
-    @JsonProperty("membership")
-    public final CompleteMembership membershipDescription;
+public class GroupMembershipChangeUpdate extends Update {
 
-    public GroupMembershipChangeUpdate(@JsonProperty("type") String type,
-                                       @JsonProperty("time-created") Date date,
+    private final CompleteMembership membershipDescription;
+
+    public GroupMembershipChangeUpdate(@JsonProperty("time-created")
+                                               Date timeCreated,
                                        @JsonProperty("creator") int creator,
-                                       @JsonProperty("membership") CompleteMembership membershipDescription) {
-        super(UpdateType.GROUP_MEMBERSHIP_CHANGE.toString(),
-                date, creator);
+                                       @JsonProperty("membership")
+                                               CompleteMembership
+                                               membershipDescription) {
+        super(timeCreated, creator);
         this.membershipDescription = membershipDescription;
 
+    }
+
+    @Override
+    public void applyUpdate(RepositorySet repositorySet) {
+        // TODO: implement permissions and permission change
     }
 }

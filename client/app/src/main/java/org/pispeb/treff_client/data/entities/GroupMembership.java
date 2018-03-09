@@ -5,7 +5,8 @@ import android.arch.persistence.room.Entity;
 import java.util.Date;
 
 /**
- * Room {@link Entity} that represents the relationship between {@link User}s and {@link UserGroup}s
+ * Room {@link Entity} that represents the relationship between {@link User}s
+ * and {@link UserGroup}s
  */
 @Entity(tableName = "groupmembership",
         primaryKeys = {"userId", "groupId"})

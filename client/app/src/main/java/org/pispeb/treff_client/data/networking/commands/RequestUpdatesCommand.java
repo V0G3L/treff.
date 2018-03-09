@@ -1,23 +1,22 @@
 package org.pispeb.treff_client.data.networking.commands;
 
+import android.util.Log;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import org.pispeb.treff_client.data.networking.commands.updates.UpdateToSerialize;
+import org.pispeb.treff_client.data.networking.commands.updates.Update;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.RepositorySet;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 
-import javax.json.JsonObject;
-import javax.json.Json;
-
 import java.io.IOException;
-import java.io.StringReader;
 
+import javax.json.stream.JsonParsingException;
 
 /**
  * Request an array of all updates that accumulated on the server since the
@@ -26,23 +25,13 @@ import java.io.StringReader;
 
 public class RequestUpdatesCommand extends AbstractCommand {
 
-    private Request output;
-    private ChatRepository chatRepository;
-    private EventRepository eventRepository;
-    private UserGroupRepository userGroupRepository;
-    private UserRepository userRepository;
+    private final Request output;
+    private final RepositorySet repositorySet;
 
-    public RequestUpdatesCommand(String token,
-                                 ChatRepository chatRepository,
-                                 EventRepository eventRepository,
-                                 UserGroupRepository userGroupRepository,
-                                 UserRepository userRepository) {
+    public RequestUpdatesCommand(String token, RepositorySet repositorySet) {
         super(Response.class);
         output = new Request(token);
-        this.chatRepository = chatRepository;
-        this.eventRepository = eventRepository;
-        this.userGroupRepository = userGroupRepository;
-        this.userRepository = userRepository;
+        this.repositorySet = repositorySet;
     }
 
     @Override
@@ -50,47 +39,40 @@ public class RequestUpdatesCommand extends AbstractCommand {
         return output;
     }
 
-
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
 
-        for(String updateString : response.updates) {
-
-            JsonObject update = Json
-                    .createReader(new StringReader(updateString))
-                    .readObject();
-
-            String updateType = update.getString("type");
-
-            Class<? extends UpdateToSerialize> updateClass
-                    = UpdateToSerialize.getUpdateByStringIdentifier(updateType);
-
-            if (updateClass == null) {
-                //TODO skip run
-            }
-
+        for (String updateString : response.updates) {
+            // TODO: re-use a single mapper across entire main (non-test) code
+            // this guarantees that the correct settings are active and allows
+            // for serializer caching
             final ObjectMapper mapper;
             mapper = new ObjectMapper();
             mapper.enable(DeserializationFeature
                     .FAIL_ON_MISSING_CREATOR_PROPERTIES);
 
-            UpdateToSerialize actualUpdate = null;
-
-
+            // translate to Update object
+            Update update;
             try {
-                actualUpdate = mapper.readValue(updateString,
-                        updateClass);
-            } catch (IOException e) {
-                //Should not happen
-                e.printStackTrace();
+                update = Update.parseUpdate(updateString, mapper);
+            } catch (IOException | JsonParsingException e) {
+                Log.e("Updates",
+                        String.format("Could not parse update:\n%s",
+                                updateString));
+                // will most likely lead to client being out-of-sync
+                // when trying to apply other updates
+                continue;
             }
+
+            update.applyUpdate(repositorySet);
         }
     }
 
     public static class Request extends AbstractRequest {
 
-        String token;
+        @JsonProperty("token")
+        public final String token;
 
         public Request(String token) {
             super(CmdDesc.REQUEST_UPDATES.toString());
@@ -100,6 +82,7 @@ public class RequestUpdatesCommand extends AbstractCommand {
 
     public static class Response extends AbstractResponse {
         public String[] updates;
+
         public Response(@JsonProperty("updates") String[] updates) {
             this.updates = updates;
         }

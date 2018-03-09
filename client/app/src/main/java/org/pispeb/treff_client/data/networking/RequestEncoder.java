@@ -20,6 +20,7 @@ import org.pispeb.treff_client.data.networking.commands.*;
 import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.RepositorySet;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.login.LoginActivity;
@@ -51,11 +52,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private Handler bgHandler;
     private Handler uiHandler;
 
-
-    private UserRepository userRepository;
-    private UserGroupRepository userGroupRepository;
-    private EventRepository eventRepository;
-    private ChatRepository chatRepository;
+    private RepositorySet repositorySet;
 
     // Queue of commands waiting to be sent to Server
     private Queue<AbstractCommand> commands;
@@ -113,15 +110,12 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     // must be called right after creating the encoder
-    public void setRepos(
-            UserRepository userRepository,
-            UserGroupRepository userGroupRepository,
-            EventRepository eventRepository,
-            ChatRepository chatRepository) {
-        this.userRepository = userRepository;
-        this.userGroupRepository = userGroupRepository;
-        this.eventRepository = eventRepository;
-        this.chatRepository = chatRepository;
+    public void setRepos(ChatRepository chatRepository,
+                         EventRepository eventRepository,
+                         UserGroupRepository userGroupRepository,
+                         UserRepository userRepository) {
+        this.repositorySet = new RepositorySet(chatRepository, eventRepository,
+                userGroupRepository, userRepository);
     }
 
     /**
@@ -350,7 +344,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void sendContactRequest(int userId) {
         executeCommand(new SendContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     /**
@@ -361,12 +355,12 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void sendContactRequest(String userName) {
         executeCommand(new GetUserIdCommand(userName, getToken(),
-                userRepository, this));
+                repositorySet.userRepository, this));
     }
 
     public synchronized void cancelContactRequest(int userId) {
         executeCommand(new CancelContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     /**
@@ -376,7 +370,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void acceptContactRequest(int userId) {
         executeCommand(new AcceptContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     /**
@@ -386,20 +380,21 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void rejectContactRequest(int userId) {
         executeCommand(new RejectContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     public synchronized void removeContact(int userId) {
         executeCommand(
-                new RemoveContactCommand(userId, getToken(), userRepository));
+                new RemoveContactCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
      * update the list of contact as well as requests
      */
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(getToken(), userRepository,
-                this));
+        executeCommand(new GetContactListCommand(getToken(),
+                repositorySet.userRepository, this));
     }
 
     /**
@@ -409,7 +404,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void blockAccount(int userId) {
         executeCommand(
-                new BlockAccountCommand(userId, getToken(), userRepository));
+                new BlockAccountCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
@@ -419,7 +415,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void unblockAccount(int userId) {
         executeCommand(
-                new UnblockAccountCommand(userId, getToken(), userRepository));
+                new UnblockAccountCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
@@ -430,7 +427,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void createGroup(String groupName, int[] memberIds) {
         executeCommand(new CreateGroupCommand(groupName, memberIds, getToken(),
-                userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     /**
@@ -440,7 +437,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void editGroup(int groupId, String groupName) {
         executeCommand(new EditGroupCommand(groupId, groupName, getToken(),
-                userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     /**
@@ -453,7 +450,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     public synchronized void addGroupMembers(int groupId, int[] newMembers) {
         executeCommand(
                 new AddGroupMembersCommand(groupId, newMembers, getToken(),
-                        userGroupRepository));
+                        repositorySet.userGroupRepository));
     }
 
     /**
@@ -465,7 +462,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     public synchronized void removeGroupMembers(int groupId, int[] members) {
         executeCommand(
                 new RemoveGroupMembersCommand(groupId, members, getToken(),
-                        userGroupRepository));
+                        repositorySet.userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
@@ -486,7 +483,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                                          Date timeEnd, Position position) {
         executeCommand(
                 new CreateEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, getToken(), eventRepository));
+                        timeEnd, position, getToken(),
+                        repositorySet.eventRepository));
     }
 
     public synchronized void editEvent(int groupId, String title, int creatorId,
@@ -496,7 +494,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
                         timeEnd, position, eventId, getToken(),
-                        eventRepository));
+                        repositorySet.eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
@@ -509,7 +507,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public synchronized void removeEvent(int groupId, int eventId) {
         executeCommand(new RemoveEventCommand(groupId, eventId, getToken(),
-                eventRepository));
+                repositorySet.eventRepository));
     }
 
     public synchronized void createPoll(int groupId, String question,
@@ -572,31 +570,32 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public synchronized void sendChatMessage(int groupId, String message) {
         executeCommand(new SendChatMessageCommand(groupId, message, getToken(),
-                chatRepository));
+                repositorySet.chatRepository));
     }
 
     /**
      * Method to get information about the users groups
      */
     public synchronized void listGroups() {
-        executeCommand(new ListGroupsCommand(getToken(), userGroupRepository,
-                this));
+        executeCommand(new ListGroupsCommand(getToken(),
+                repositorySet.userGroupRepository, this));
     }
 
 
     public synchronized void getGroupDetails(int groupId) {
         executeCommand(new GetGroupDetailsCommand(groupId, getToken(),
-                userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     public synchronized void getUserDetails(int userId) {
         executeCommand(
-                new GetUserDetailsCommand(userId, getToken(), userRepository));
+                new GetUserDetailsCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
         executeCommand(new GetEventDetailsCommand(eventId, groupId,
-                getToken(), eventRepository));
+                getToken(), repositorySet.eventRepository));
     }
 
     public synchronized void getPollDetails(int pollId, int groupId) {
@@ -631,11 +630,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void publishPosition(int groupId, Date endTime) {
         executeCommand(new PublishPositionCommand(groupId, endTime,
-                getToken(), userGroupRepository));
+                getToken(), repositorySet.userGroupRepository));
     }
 
     public synchronized void requestUpdates() {
-        executeCommand(new RequestUpdatesCommand(getToken(), chatRepository, eventRepository,
-                userGroupRepository, userRepository));
+        executeCommand(new RequestUpdatesCommand(getToken(), repositorySet));
     }
 }

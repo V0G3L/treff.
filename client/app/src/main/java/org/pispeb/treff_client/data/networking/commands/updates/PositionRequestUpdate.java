@@ -2,18 +2,25 @@ package org.pispeb.treff_client.data.networking.commands.updates;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.repositories.RepositorySet;
+
 import java.util.Date;
 
-public class PositionRequestUpdate extends UpdateToSerialize {
+public class PositionRequestUpdate extends Update {
 
-    @JsonProperty("end-time")
-    public final Date endTime;
+    private final Date endTime;
 
-    public PositionRequestUpdate(@JsonProperty("type") String type,
-                                 @JsonProperty("time-created") Date date,
+    public PositionRequestUpdate(@JsonProperty("time-created") Date timeCreated,
                                  @JsonProperty("creator") int creator,
                                  @JsonProperty("end-time") Date endTime) {
-        super(UpdateType.POSITION_REQUEST.toString(), date, creator);
+        super(timeCreated, creator);
         this.endTime = endTime;
+    }
+
+    @Override
+    public void applyUpdate(RepositorySet repositorySet) {
+        // Maybe some notification? A chat message? 2000% volume porn
+        // sounds? Device formatting?
+        throw new UnsupportedOperationException(); // TODO: implement
     }
 }

@@ -94,8 +94,9 @@ public abstract class RequestEncoderTestHelper {
         // to CH method in order to bypass multithreading)
         testEncoder = spy(new RequestEncoder());
         // set repos to handle database calls from commands
-        testEncoder.setRepos(mockUserRepository, mockUserGroupRepository,
-                mockEventRepository, mockChatRepository);
+        testEncoder.setRepos(mockChatRepository, mockEventRepository,
+                mockUserGroupRepository, mockUserRepository
+        );
 
         // skip the backgroundHandler
         doAnswer(invocation -> {

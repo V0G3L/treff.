@@ -2,17 +2,25 @@ package org.pispeb.treff_client.data.networking.commands.updates;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.repositories.RepositorySet;
+
 import java.util.Date;
 
-public class ContactRequestAnswerUpdate extends UpdateToSerialize{
-    public final Boolean answer;
+public class ContactRequestAnswerUpdate extends Update {
 
-    public ContactRequestAnswerUpdate(@JsonProperty("type") String type,
-                                      @JsonProperty("time-created") Date date,
+    private final Boolean answer;
+
+    public ContactRequestAnswerUpdate(@JsonProperty("time-created") Date timeCreated,
                                       @JsonProperty("creator") int creator,
                                       @JsonProperty("answer") Boolean answer) {
-        super(UpdateType.CONTACT_REQUEST_ANSWER.toString(),
-                date, creator);
+        super(timeCreated, creator);
         this.answer = answer;
+    }
+
+    @Override
+    public void applyUpdate(RepositorySet repositorySet) {
+        // creator == user that answered the contact request
+        repositorySet.userRepository.setIsPending(creator, false);
+        repositorySet.userRepository.setIsFriend(creator, answer);
     }
 }

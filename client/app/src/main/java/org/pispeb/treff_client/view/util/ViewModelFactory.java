@@ -74,10 +74,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
 
-        encoder.setRepos(userRepository,
-                userGroupRepository,
+        encoder.setRepos(chatRepository,
                 eventRepository,
-                chatRepository);
+                userGroupRepository,
+                userRepository
+        );
     }
 
     @NonNull
