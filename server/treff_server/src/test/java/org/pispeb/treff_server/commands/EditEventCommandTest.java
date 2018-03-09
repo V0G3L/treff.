@@ -209,9 +209,9 @@ public class EditEventCommandTest extends EventDependentTest {
 
         String eventTitle = "Spätestes Ende der Groko";
         long eventTimeStart = new GregorianCalendar(
-                1928, Calendar.NOVEMBER, 9).getTimeInMillis();
+                1988, Calendar.NOVEMBER, 9).getTimeInMillis();
         long eventTimeEnd = new GregorianCalendar(
-                1938, Calendar.NOVEMBER, 10).getTimeInMillis();
+                1998, Calendar.NOVEMBER, 10).getTimeInMillis();
         double eventLatitude = 52.520008;
         double eventLongitude = 12.404954;
 

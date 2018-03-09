@@ -83,7 +83,9 @@ public class AddPollOptionCommandTest extends PollDependentTest {
                 = new AddPollOptionCommand(accountManager, mapper);
         JsonObjectBuilder pollOption = Json.createObjectBuilder();
         double latitude = 0.0, longitude = 0.0;
-        long timeStart = 0, timeEnd = Long.MAX_VALUE;
+        long timeStart = 0;
+        long timeEnd = new GregorianCalendar(9999, Calendar.DECEMBER, 31,
+                23, 59, 59).getTimeInMillis();
         pollOption.add("type", "polloption")
                 .add("latitude", latitude)
                 .add("longitude", longitude)
@@ -102,7 +104,9 @@ public class AddPollOptionCommandTest extends PollDependentTest {
                 = new AddPollOptionCommand(accountManager, mapper);
         JsonObjectBuilder pollOption = Json.createObjectBuilder();
         double latitude = 0.0, longitude = 0.0;
-        long timeStart = 0, timeEnd = Long.MAX_VALUE;
+        long timeStart = 0;
+        long timeEnd = new GregorianCalendar(9999, Calendar.DECEMBER, 31,
+                23, 59, 59).getTimeInMillis();
         pollOption.add("type", "polloption")
                 .add("latitude", latitude)
                 .add("longitude", longitude)
@@ -161,7 +165,9 @@ public class AddPollOptionCommandTest extends PollDependentTest {
                 = new AddPollOptionCommand(accountManager, mapper);
         JsonObjectBuilder pollOption = Json.createObjectBuilder();
         double latitude = 0.0, longitude = 0.0;
-        long timeStart = 0, timeEnd = Long.MAX_VALUE;
+        long timeStart = 0;
+        long timeEnd = new GregorianCalendar(9999, Calendar.DECEMBER, 31,
+                23, 59, 59).getTimeInMillis();
         pollOption.add("type", "polloption")
                 .add("latitude", latitude)
                 .add("longitude", longitude)
