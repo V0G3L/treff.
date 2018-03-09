@@ -60,6 +60,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private Queue<AbstractCommand> commands;
 
     private static RequestEncoder INSTANCE;
+    private Timer updateTimer;
 
     public static RequestEncoder getInstance() {
         if (INSTANCE == null) {
@@ -92,17 +93,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         thread.start();
         bgHandler = new Handler(thread.getLooper());
 
-
-        // request Updates periodically
-        Timer updateTimer = new Timer();
-        updateTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (RequestEncoder.INSTANCE.idle) {
-                    requestUpdates();
-                }
-            }
-        }, 0, 10000);
+        updateTimer = new Timer();
 
         // Handle to UIThread for displaying Toast messages
         uiHandler = new Handler(Looper.getMainLooper()) {
@@ -131,6 +122,23 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                          UserRepository userRepository) {
         this.repositorySet = new RepositorySet(chatRepository, eventRepository,
                 userGroupRepository, userRepository);
+    }
+
+    public void startRequestUpdates() {
+        RequestEncoder thisEnc = this;
+        // request Updates periodically
+        updateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (thisEnc.idle) {
+                    requestUpdates();
+                }
+            }
+        }, 0, 10000);
+    }
+
+    public void stopRequestUpdates() {
+        updateTimer.cancel();
     }
 
     /**
@@ -174,7 +182,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     protected synchronized void sendToCH(String message) {
         bgHandler.post(() -> {
-
             Log.i("Encoder", "sending Message");
             Log.i("Encoder", "CH: " + connectionHandler);
             connectionHandler.sendMessage(message);
@@ -262,6 +269,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                     .getDefaultSharedPreferences(appctx);
             pref.edit().remove(appctx
                     .getString(R.string.key_token)).commit();
+            stopRequestUpdates();
 
             // restart App
             Intent restartApp = new Intent(appctx, LoginActivity.class);
@@ -286,7 +294,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param password .
      */
     public synchronized void register(String username, String password) {
-        executeCommand(new RegisterCommand(username, password));
+        executeCommand(new RegisterCommand(username, password, this));
     }
 
     /**
@@ -296,7 +304,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param password .
      */
     public synchronized void login(String username, String password) {
-        executeCommand(new LoginCommand(username, password));
+        executeCommand(new LoginCommand(username, password, this));
     }
 
 

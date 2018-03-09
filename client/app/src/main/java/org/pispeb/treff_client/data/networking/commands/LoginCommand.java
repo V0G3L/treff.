@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
 /**
@@ -16,10 +17,12 @@ import org.pispeb.treff_client.view.util.TreffPunkt;
 public class LoginCommand extends AbstractCommand{
 
     private Request output;
+    private RequestEncoder encoder;
 
-    public LoginCommand(String user, String pass) {
+    public LoginCommand(String user, String pass, RequestEncoder encoder) {
         super(Response.class);
         output = new Request(user, pass);
+        this.encoder = encoder;
     }
 
     @Override
@@ -38,6 +41,8 @@ public class LoginCommand extends AbstractCommand{
                 .putString(ctx.getString(R.string.key_token), response.token)
                 .putInt(ctx.getString(R.string.key_userId), response.id)
                 .apply();
+
+        encoder.startRequestUpdates();
     }
 
     public static class Request extends AbstractRequest {
