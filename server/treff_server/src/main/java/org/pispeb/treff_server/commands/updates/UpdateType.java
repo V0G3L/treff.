@@ -64,7 +64,7 @@ public enum UpdateType {
     /**
      * The type of updates that represent a position change
      */
-    POSITION,
+    POSITION_CHANGE,
     /**
      * The type of updates that represent an answer to a contact request
      */

@@ -116,6 +116,7 @@ Properties of type \code{date} are to be represented as Unix time%
 \footnote{\enquote{Unix time}, Wikipedia, Version 822615863,
 \url{https://en.wikipedia.org/w/index.php?title=Unix_time&oldid=822615863}},
 and encoded as \code{long}s.
+Dates after year 9999 are not supported.
 
 Properties of type \code{decimal degree} must be valid decimal degrees
 representing either latitude or longitude and are to be encoded as
@@ -320,15 +321,17 @@ All commands except for \textbf{login}, \textbf{register},
 following parameter:\\
 \apiArgument{token/String/Authentication token{,} produced by \textbf{login} or
 \textbf{register}}
-\par Transmission of an invalid token will produced the following error:\\
+\par Transmission of an invalid token will produce the following error:\\
 \apiErrorPrint{token-invalid}
 
 \apiCommand{register}
 {Registers a new user account.
 Declaring an e-mail adress is optional.
 It may be set at a later time via the \textbf{edit-email} command.}
-{user/string/Username of the account,
-pass/string/Password of the account}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {token/string/Authentication token,
 id/int/ID of account}
 {username-already-in-use}
@@ -337,8 +340,10 @@ id/int/ID of account}
 \apiCommand{login}
 {Produces an authentication token for the specified user account if the
 password is correct.}
-{user/string/Username of the account,
-pass/string/Password of the account}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+   pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {token/string/Authentication token,
 id/int/ID of account}
 {cred-wrong}
@@ -354,7 +359,8 @@ from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
 
 \apiCommand{edit-username}
 {Changes the executing user's username.}
-{user/string/New username}
+{user/string/New username.
+Same restrictions as in chapter \ref{subsec:Account-desc} apply.}
 {}
 {username-already-in-use}
 {account-change}
@@ -364,7 +370,8 @@ from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
 {email/string/New email address.
 Must be a valid email address according to
 RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.,
-pass/string/Password of the account}
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
 {cred-wrong, user-id-invalid, email-invalid}
 {}
@@ -372,8 +379,10 @@ pass/string/Password of the account}
 \apiCommand{edit-password}
 {Changes the executing user's password.
 Requires submission of the current password.}
-{pass/string/Current password,
-new-pass/string/New password}
+{ pass/string/Password of the account.
+    May not be longer than 128 unicode symbols.,
+new-pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
 {cred-wrong}
 {}
@@ -720,8 +729,8 @@ id/int/The ID of the poll}
 \apiCommand{send-chat-message}
 {Sends a chat message to a user group of which the executing user is a member.}
 {group-id/int/the ID of the user group,
-message/string/The chat message}
-% TODO: Länge beschränken (vllt. auch Gruppengröße etc)
+message/string/The chat message.
+The message may not be longer than 1024 unicode symbols.}
 {}
 {group-id-invalid}
 {chat}
@@ -943,9 +952,11 @@ the following properties:
 		}
 }
 
-\updateType{position}{
+\updateType{position-change}{
 		\apiArgument{
-            -/-/-
+            latitude/decimal degree/The latitude of the position,
+            longitude/decimal degree/The longitude of the position,
+            time-measured/date/Point in time at which the measurement was taken
 		}
 }
 

@@ -18,14 +18,13 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
 
     @Test
     public void valid() {
-        AddPollOptionCommand addPollOptionCommand
-                = new AddPollOptionCommand(accountManager, mapper);
         inputBuilder.add("group-id", groupId)
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
-        runCommand(addPollOptionCommand, inputBuilder);
+        runCommand(new RemovePollOptionCommand(accountManager, mapper),
+                inputBuilder);
 
-        for (int i = 1;i < 3;i++) {
+        for (int i = 1; i < 3; i++) {
             JsonObject update = getSingleUpdateForUser(users[i]);
             Assert.assertEquals(UpdateType.POLL_OPTION_DELETION.toString(),
                     update.getString("type"));
@@ -37,38 +36,38 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
 
     @Test
     public void invalidGroupID() {
-        AddPollOptionCommand addPollOptionCommand
-                = new AddPollOptionCommand(accountManager, mapper);
-        inputBuilder.add("group-id", groupId+42)
+        inputBuilder.add("group-id", groupId + 42)
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
-        JsonObject output = runCommand(addPollOptionCommand, inputBuilder);
+        JsonObject output = runCommand(
+                new RemovePollOptionCommand(accountManager, mapper),
+                inputBuilder);
 
         Assert.assertEquals(1201, output.getInt("error"));
     }
 
     @Test
     public void invalidPollId() {
-        AddPollOptionCommand addPollOptionCommand
-                = new AddPollOptionCommand(accountManager, mapper);
         inputBuilder.add("group-id", groupId)
-                .add("poll-id", pollID+1337)
+                .add("poll-id", pollID + 1337)
                 .add("id", pollOptionId);
-        JsonObject output = runCommand(addPollOptionCommand, inputBuilder);
+        JsonObject output = runCommand(
+                new RemovePollOptionCommand(accountManager, mapper),
+                inputBuilder);
 
         Assert.assertEquals(1203, output.getInt("error"));
     }
 
     @Test
     public void noPermission() {
-        AddPollOptionCommand addPollOptionCommand
-                = new AddPollOptionCommand(accountManager, mapper);
         JsonObjectBuilder input
-                = getCommandStubForUser("add-poll-option", users[2]);
-        inputBuilder.add("group-id", groupId)
+                = getCommandStubForUser("add-poll-option", users[2])
+                .add("group-id", groupId)
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
-        JsonObject output = runCommand(addPollOptionCommand, inputBuilder);
+        JsonObject output = runCommand(
+                new RemovePollOptionCommand(accountManager, mapper),
+                input);
 
         Assert.assertEquals(2301, output.getInt("error"));
     }

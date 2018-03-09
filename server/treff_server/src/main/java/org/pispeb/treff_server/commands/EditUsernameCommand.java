@@ -78,6 +78,11 @@ public class EditUsernameCommand extends AbstractCommand {
             super(token);
             this.username = username;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateUsername(username);
+        }
     }
 
     public static class Output extends CommandOutput {

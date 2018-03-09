@@ -266,7 +266,7 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllContacts() {
+    public Map<Integer, AccountSQL> getAllContacts() {
         // get ID list
         return database
                 // get all contact relations that this account is a part of
@@ -413,6 +413,7 @@ public class AccountSQL extends SQLObject implements Account {
         SortedSet<Usergroup> groups
                 = new TreeSet<>(this.getAllGroups().values());
 
+        // TODO: remove locking here, see method JavaDoc
         groups.forEach(g -> g.getReadWriteLock().writeLock().lock());
         try {
             groups.forEach(g -> g.removeMember(this));
@@ -420,15 +421,29 @@ public class AccountSQL extends SQLObject implements Account {
             groups.forEach(g -> g.getReadWriteLock().writeLock().unlock());
         }
 
-        // removes all contacts (will also removed them from the other sides)
-        SortedSet<Account> contacts
-                = new TreeSet<>(this.getAllContacts().values());
+        // remove all contacts (will also removed them from the other sides)
+        // remove all requests
+        Collection<AccountSQL> contacts
+                = this.getAllContacts().values();
+        Collection<AccountSQL> incomingRequests
+                = this.getAllIncomingContactRequests().values();
+        Collection<AccountSQL> outgoingRequests
+                = this.getAllOutgoingContactRequests().values();
 
-        contacts.forEach(a -> a.getReadWriteLock().writeLock().lock());
+        SortedSet<AccountSQL> accountsToLock = new TreeSet<>();
+        accountsToLock.addAll(contacts);
+        accountsToLock.addAll(incomingRequests);
+        accountsToLock.addAll(outgoingRequests);
+
+        accountsToLock.forEach(a -> a.getReadWriteLock().readLock().lock());
         try {
             contacts.forEach(this::removeContact);
+            incomingRequests.forEach(this::rejectContactRequest);
+            outgoingRequests.forEach(
+                    receiver -> receiver.rejectContactRequest(this));
         } finally {
-            contacts.forEach(a -> a.getReadWriteLock().writeLock().unlock());
+            accountsToLock.forEach(
+                    a -> a.getReadWriteLock().readLock().unlock());
         }
 
         // clears its own blocklist

@@ -58,6 +58,11 @@ public class EditGroupCommand extends GroupCommand {
             super(token, group.id, new int[0]);
             this.group = group;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateGroupName(group.name);
+        }
     }
 
     public static class Output extends CommandOutput {

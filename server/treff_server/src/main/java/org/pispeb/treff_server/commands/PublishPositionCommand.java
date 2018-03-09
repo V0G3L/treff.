@@ -62,6 +62,11 @@ public class PublishPositionCommand extends GroupCommand {
             super(token, groupId, new int[0]);
             this.timeEnd = new Date(timeEnd);
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateDate(timeEnd);
+        }
     }
 
     public static class Output extends CommandOutput {

@@ -52,13 +52,7 @@ public class CreateEventCommandTest extends EventDependentTest {
 
     @Test
     public void groupIdInvalid() {
-        CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
-
-        int invalidGroupId = 23;
-        while (invalidGroupId == groupId) {
-            invalidGroupId *= 5;
-        }
+        int invalidGroupId = groupId + 23;
 
         inputBuilder.add("group-id", invalidGroupId);
 
@@ -73,80 +67,89 @@ public class CreateEventCommandTest extends EventDependentTest {
 
         inputBuilder.add("event", eventDesc);
 
-        JsonObject output = runCommand(createEventCommand, inputBuilder);
+        JsonObject output = runCommand(
+                new CreateEventCommand(accountManager, mapper), inputBuilder);
 
-        Assert.assertEquals(1201,output.getInt("error"));
+        Assert.assertEquals(1201, output.getInt("error"));
     }
 
     @Test
     public void timeEndStartConflict() {
-        CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
+        // flip timeStart and timeEnd
+        JsonObject output = execute(ownUser, eventTitle, eventTimeEnd,
+                eventTimeStart, eventLatitude, eventLongitude);
 
-        inputBuilder.add("group-id", groupId);
-
-        JsonObject eventDesc = Json.createObjectBuilder()
-                .add("type", "event")
-                .add("title", eventTitle)
-                .add("time-start", eventTimeEnd)
-                .add("time-end", eventTimeStart)
-                .add("latitude", eventLatitude)
-                .add("longitude", eventLongitude)
-                .build();
-
-        inputBuilder.add("event", eventDesc);
-
-        JsonObject output = runCommand(createEventCommand, inputBuilder);
-
-        Assert.assertEquals(1401,output.getInt("error"));
+        Assert.assertEquals(1401, output.getInt("error"));
     }
 
     @Test
     public void timeEndInPast() {
-        CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
+        JsonObject output = execute(ownUser, eventTitle, eventTimeStart,
+                new GregorianCalendar(2007, Calendar.MARCH, 13)
+                        .getTimeInMillis(), eventLatitude, eventLongitude);
 
-        inputBuilder.add("group-id", groupId);
-
-        JsonObject eventDesc = Json.createObjectBuilder()
-                .add("type", "event")
-                .add("title", eventTitle)
-                .add("time-start", eventTimeStart)
-                .add("time-end", new GregorianCalendar(
-                        2007, Calendar.MARCH, 13).getTimeInMillis())
-                .add("latitude", eventLatitude)
-                .add("longitude", eventLongitude)
-                .build();
-
-        inputBuilder.add("event", eventDesc);
-
-        JsonObject output = runCommand(createEventCommand, inputBuilder);
-
-        Assert.assertEquals(1400,output.getInt("error"));
+        Assert.assertEquals(1400, output.getInt("error"));
     }
 
     @Test
-    public void noPermission(){
-        CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
+    public void invalidTitle() {
+        JsonObject output = execute(ownUser,
+                // more than 64 characters
+                "012345678901234567890123456789012345678901234567890123456789" +
+                        "0123456789", eventTimeStart,
+                        eventTimeEnd, eventLatitude, eventLongitude);
+        assertErrorOutput(output, 1000);
+    }
 
+    @Test
+    public void invalidTime() {
+        JsonObject output = execute(ownUser, eventTitle, eventTimeStart,
+                new GregorianCalendar(10000, Calendar.JANUARY, 1, 0, 0, 0)
+                        .getTimeInMillis(), eventLatitude, eventLongitude);
+        assertErrorOutput(output, 1000);
+    }
+
+    @Test
+    public void invalidPosition() {
+        JsonObject output = execute(ownUser, eventTitle, eventTimeStart,
+                eventTimeEnd, 50000.0, eventLongitude);
+        assertErrorOutput(output, 1000);
+
+        output = execute(ownUser, eventTitle, eventTimeStart,
+                eventTimeEnd, eventLatitude, 50000.0);
+        assertErrorOutput(output, 1000);
+    }
+
+    @Test
+    public void noPermission() {
+        JsonObject output = execute(users[2]);
+        Assert.assertEquals(2200, output.getInt("error"));
+    }
+
+    private JsonObject execute(User executingUser) {
+        return execute(executingUser, eventTitle, eventTimeStart,
+                eventTimeEnd, eventLatitude, eventLongitude);
+    }
+
+    private JsonObject execute(User executingUser, String title, long timeStart,
+                               long timeEnd, double latitude,
+                               double longitude) {
         JsonObjectBuilder input =
-                getCommandStubForUser("create-event", users[2]);
+                getCommandStubForUser("create-event", executingUser);
         input.add("group-id", groupId);
 
         JsonObject eventDesc = Json.createObjectBuilder()
                 .add("type", "event")
-                .add("title", eventTitle)
-                .add("time-start", eventTimeStart)
-                .add("time-end", eventTimeStart)
-                .add("latitude", eventLatitude)
-                .add("longitude", eventLongitude)
+                .add("title", title)
+                .add("time-start", timeStart)
+                .add("time-end", timeEnd)
+                .add("latitude", latitude)
+                .add("longitude", longitude)
                 .build();
 
         input.add("event", eventDesc);
 
-        JsonObject output = runCommand(createEventCommand, input);
-
-        Assert.assertEquals(2200,output.getInt("error"));
+        return runCommand(
+                new CreateEventCommand(accountManager, mapper), input);
     }
 }

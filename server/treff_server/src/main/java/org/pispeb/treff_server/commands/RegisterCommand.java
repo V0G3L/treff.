@@ -44,6 +44,12 @@ public class RegisterCommand extends AbstractCommand {
             this.username = username;
             this.password = password;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateUsername(username)
+                    && validatePassword(password);
+        }
     }
 
     public static class Output extends CommandOutput {

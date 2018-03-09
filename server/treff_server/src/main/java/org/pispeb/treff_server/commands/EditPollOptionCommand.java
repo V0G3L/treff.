@@ -84,6 +84,13 @@ public class EditPollOptionCommand extends PollOptionCommand {
             super(token, groupId, pollId, inputOption.id);
             this.inputOption = inputOption;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePosition(inputOption.position)
+                    && validateDate(inputOption.timeStart)
+                    && validateDate(inputOption.timeEnd);
+        }
     }
 
     public static class Output extends CommandOutput {

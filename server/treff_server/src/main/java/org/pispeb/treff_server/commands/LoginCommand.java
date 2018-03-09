@@ -47,6 +47,13 @@ public class LoginCommand extends AbstractCommand {
             this.username = username;
             this.password = password;
         }
+
+        // TODO: test syntax checks
+        @Override
+        public boolean syntaxCheck() {
+            return validateUsername(username)
+                    && validatePassword(password);
+        }
     }
 
     public static class Output extends CommandOutput {

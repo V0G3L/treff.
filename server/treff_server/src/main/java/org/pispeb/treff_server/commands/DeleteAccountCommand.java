@@ -16,10 +16,9 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
+import org.pispeb.treff_server.sql.AccountSQL;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * a command to delete an account
@@ -38,7 +37,7 @@ public class DeleteAccountCommand extends AbstractCommand {
 
         // check if account still exists
         Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
+                = getSafeForReading(input.getActingAccount());
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
@@ -46,18 +45,69 @@ public class DeleteAccountCommand extends AbstractCommand {
         if(!actingAccount.checkPassword(input.pass))
             return new ErrorOutput(ErrorCode.CREDWRONG);
 
-        // get all affected accounts
-        Set<Account> affected = new HashSet<Account>();
-        affected.addAll(actingAccount.getAllContacts().values());
-        affected.addAll(actingAccount.getAllIncomingContactRequests().values());
-        affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
+        // collect all contacts + contact request senders/receivers
+        Collection<? extends Account> contacts
+                = actingAccount.getAllContacts().values();
+        Collection<? extends Account> incomingRequests
+                = actingAccount.getAllContacts().values();
+        Collection<? extends Account> outgoingRequests
+                = actingAccount.getAllContacts().values();
+
+        // need to lock all of those accounts
+        SortedSet<Account> accountsToLock = new TreeSet<>();
+        accountsToLock.addAll(contacts);
+        accountsToLock.addAll(incomingRequests);
+        accountsToLock.addAll(outgoingRequests);
+
+        // also need to lock all groups and all group members (for updates)
+        // will first lock all groups, collect members, then unlock and acquire
+        // all locks in correct order
+        Map<Usergroup, Set<Account>> members = new HashMap<>();
         for (Usergroup g : actingAccount.getAllGroups().values()) {
+            // usergroup locking order not important since we're
+            // releasing the locks immediately
             getSafeForReading(g);
-            affected.addAll(g.getAllMembers().values());
+
+            Set<Account> curMembers = new HashSet<>(g.getAllMembers().values());
+            members.put(g, curMembers);
+            accountsToLock.addAll(curMembers);
+
+            releaseReadLock(g);
         }
-        for (Account a : affected)
-            getSafeForWriting(a);
-       UpdatesWithoutSpecialParameters update
+
+        // need to remember successfully locked accounts because we have
+        // to filter out accounts from the other sets that couldn't be locked
+        releaseReadLock(actingAccount);
+        Set<Account> successfullyLockedAccounts = new HashSet<>();
+        for (Account a : accountsToLock) {
+            if (a.getID() == actingAccount.getID()) {
+                a = getSafeForWriting(a);
+                if (a == null)
+                    return new ErrorOutput(ErrorCode.TOKENINVALID);
+            } else {
+                a = getSafeForReading(a);
+            }
+
+            if (a != null)
+                successfullyLockedAccounts.add(a);
+        }
+
+        Set<Usergroup> successfullyLockedGroups = new HashSet<>();
+        for (Usergroup group : members.keySet()) {
+            getSafeForWriting(group);
+            if (group != null)
+                successfullyLockedGroups.add(group);
+        }
+
+        // TODO: fix or remove DeleteAccount
+        // problem: unlocking actingAccount to lock group's members can result
+        // in set of groups becoming out-of-date, causing unacceptable
+        // signal loss
+        if (true)
+            throw new UnsupportedOperationException();
+
+
+        UpdatesWithoutSpecialParameters update
                = new UpdatesWithoutSpecialParameters(new Date(),
                 actingAccount.getID(), UpdateType.ACCOUNT_DELETION);
 
@@ -67,7 +117,7 @@ public class DeleteAccountCommand extends AbstractCommand {
         // create update
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    affected);
+                    accountsToLock);
         } catch (JsonProcessingException e) {
             throw new ProgrammingException(e);
         }
@@ -83,6 +133,11 @@ public class DeleteAccountCommand extends AbstractCommand {
                      @JsonProperty("token") String token) {
             super(token);
             this.pass = pass;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePassword(pass);
         }
     }
 

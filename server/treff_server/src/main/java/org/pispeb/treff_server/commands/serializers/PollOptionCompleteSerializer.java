@@ -25,9 +25,9 @@ public class PollOptionCompleteSerializer extends JsonSerializer<PollOption> {
         gen.writeNumberField("latitude", position.latitude);
         gen.writeNumberField("longitude", position.longitude);
         gen.writeNumberField("time-start",
-                pollOption.getTimeStart().toInstant().getEpochSecond());
+                pollOption.getTimeStart().getTime());
         gen.writeNumberField("time-end",
-                pollOption.getTimeEnd().toInstant().getEpochSecond());
+                pollOption.getTimeEnd().getTime());
 
         // collect voter IDs and add to properties
         gen.writeArrayFieldStart("supporters");

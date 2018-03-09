@@ -80,6 +80,13 @@ public class AddPollOptionCommand extends PollCommand {
             super(token, groupId, pollId);
             this.pollOption = pollOption;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePosition(pollOption.position)
+                    && validateDate(pollOption.timeStart)
+                    && validateDate(pollOption.timeEnd);
+        }
     }
 
     public static class Output extends CommandOutput {

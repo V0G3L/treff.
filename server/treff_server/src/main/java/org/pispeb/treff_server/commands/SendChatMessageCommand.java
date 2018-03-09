@@ -43,6 +43,12 @@ public class SendChatMessageCommand extends GroupCommand {
             super(token, groupId, new int[0]);
             this.message = message;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            // TODO: is this unicode symbols or byte length?
+            return validateChatMessage(message);
+        }
     }
 
     public static class Output extends CommandOutput {

@@ -6,7 +6,6 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
@@ -16,9 +15,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -77,8 +74,12 @@ public abstract class AbstractCommand {
         try {
             commandInput = mapper.readValue(input, expectedInput);
         } catch (IOException e) {
-            return errorToString(ErrorCode.SYNTAXINVALID, mapper);
+            return errorToString(ErrorCode.SYNTAXINVALID);
         }
+
+        // run additional syntax checks
+        if (!commandInput.syntaxCheck())
+            return errorToString(ErrorCode.SYNTAXINVALID);
 
         // for commands that require login, set account manager and check token
         if (commandInput instanceof CommandInputLoginRequired) {
@@ -87,7 +88,7 @@ public abstract class AbstractCommand {
 
             cmdInputLoginReq.setAccountManager(accountManager);
             if (cmdInputLoginReq.getActingAccount() == null) {
-                return errorToString(ErrorCode.TOKENINVALID, mapper);
+                return errorToString(ErrorCode.TOKENINVALID);
             }
         }
 
@@ -105,7 +106,7 @@ public abstract class AbstractCommand {
 
     protected abstract CommandOutput executeInternal(CommandInput commandInput) throws JsonProcessingException;
 
-    private String errorToString(ErrorCode errorCode, ObjectMapper mapper) {
+    private String errorToString(ErrorCode errorCode) {
         try {
             return mapper.writeValueAsString(new ErrorOutput(errorCode));
         } catch (JsonProcessingException e) {

@@ -30,8 +30,8 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
         String[] userNames = {
                 ownUser.username,
                 "didyoueverhear",
-                "Comet sighted",
-                "Ly'leth Lunastre"
+                "CometSighted",
+                "LylethLunastre"
         };
         String[] userPasswords = {
                 ownUser.password,

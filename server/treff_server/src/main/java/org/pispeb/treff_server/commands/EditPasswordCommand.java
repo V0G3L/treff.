@@ -54,6 +54,12 @@ public class EditPasswordCommand extends AbstractCommand {
             this.pass = pass;
             this.newPass = newPass;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePassword(pass)
+                    && validatePassword(newPass);
+        }
     }
 
     public static class Output extends CommandOutput {

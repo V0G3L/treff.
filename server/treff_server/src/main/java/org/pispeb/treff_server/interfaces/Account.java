@@ -343,9 +343,17 @@ public interface Account extends DataObject, Comparable<Account> {
      *     options</li>
      *     <li>removes this account from all groups</li>
      *     <li>removes all contacts of this account</li>
+     *     <li>cancels all contact requests made by this account</li>
+     *     <li>rejects all contact request for this account</li>
      *     <li>removes all blocks made by or against this account</li>
      *     <li>invalidates this account's login token</li>
      * </ul>
+     *
+     * Requires a {@code WriteLock} on this {@code Account},
+     * {@code WriteLock}s on all of this {@code Account}'s groups,
+     * and {@code ReadLock}s on all of this {@code Account}'s contacts and all
+     * {@code Account}s that have sent or received a still pending contact
+     * request to/from this {@code Account}.
      */
     void delete();
 

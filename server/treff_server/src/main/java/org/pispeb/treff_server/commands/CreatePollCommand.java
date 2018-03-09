@@ -56,6 +56,12 @@ public class CreatePollCommand extends GroupCommand {
             super(token, groupId);
             this.poll = poll;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePollQuestion(poll.question)
+                    && validateDate(poll.timeVoteClose);
+        }
     }
 
     public static class Output extends CommandOutput {

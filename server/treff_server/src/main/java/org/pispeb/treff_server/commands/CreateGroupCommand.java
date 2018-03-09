@@ -96,6 +96,11 @@ public class CreateGroupCommand extends AbstractCommand {
             super(token);
             this.group = group;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateGroupName(group.name);
+        }
     }
 
     public static class Output extends CommandOutput {

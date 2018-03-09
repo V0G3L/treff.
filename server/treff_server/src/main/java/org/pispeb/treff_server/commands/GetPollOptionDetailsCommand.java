@@ -7,7 +7,7 @@ import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.serializers
         .PollOptionCompleteSerializer;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Poll;
+import org.pispeb.treff_server.interfaces.PollOption;
 
 public class GetPollOptionDetailsCommand extends PollOptionCommand {
 
@@ -18,12 +18,12 @@ public class GetPollOptionDetailsCommand extends PollOptionCommand {
 
     @Override
     protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
-        return new Output(poll);
+        return new Output(pollOption);
     }
 
     public static class Input extends PollOptionInput {
 
-        public Input(@JsonProperty("id") int pollId,
+        public Input(@JsonProperty("poll-id") int pollId,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("id") int optionId,
                      @JsonProperty("token") String token) {
@@ -34,11 +34,11 @@ public class GetPollOptionDetailsCommand extends PollOptionCommand {
     public static class Output extends CommandOutput {
 
         @JsonSerialize(using = PollOptionCompleteSerializer.class)
-        @JsonProperty("poll")
-        final Poll poll;
+        @JsonProperty("poll-option")
+        final PollOption pollOption;
 
-        Output(Poll poll) {
-            this.poll = poll;
+        Output(PollOption pollOption) {
+            this.pollOption = pollOption;
         }
     }
 }

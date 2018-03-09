@@ -82,6 +82,14 @@ public class EditEventCommand extends EventCommand {
             super(token, groupId, inputEvent.id);
             this.inputEvent = inputEvent;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEventTitle(inputEvent.title)
+                    && validateDate(inputEvent.timeStart)
+                    && validateDate(inputEvent.timeEnd)
+                    && validatePosition(inputEvent.position);
+        }
     }
 
     public static class Output extends CommandOutput {

@@ -78,6 +78,14 @@ public class CreateEventCommand extends GroupCommand {
             this.groupId = groupId;
             this.event = event;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEventTitle(event.title)
+                    && validateDate(event.timeStart)
+                    && validateDate(event.timeEnd)
+                    && validatePosition(event.position);
+        }
     }
 
     public static class Output extends CommandOutput {

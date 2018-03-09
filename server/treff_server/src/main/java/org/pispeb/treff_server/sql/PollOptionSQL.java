@@ -82,7 +82,7 @@ public class PollOptionSQL extends SQLObject implements PollOption {
     @Override
     public Map<Integer, AccountSQL> getVoters() {
         return database.query(
-                "SELECT FROM %s WHERE polloptionid=?;",
+                "SELECT accountid FROM %s WHERE polloptionid=?;",
                 TableName.POLLVOTES,
                 new DataObjectMapHandler<>(AccountSQL.class, entityManager),
                 this.id);
