@@ -107,7 +107,12 @@ public class GPSProvider extends Service implements LocationListener {
         int cmd = intent.getExtras().getInt(INTENT_CMD);
         int groupId = intent.getExtras().getInt(INTENT_GRP);
         Date end = (Date) intent.getExtras().get(INTENT_TIME);
-        encoder.publishPosition(groupId, end);
+        if (end != null) {
+            encoder.publishPosition(groupId, end);
+        } else {
+            encoder.publishPosition(groupId, new Date(0));
+        }
+
         ListEntry c = new ListEntry(groupId, end);
         synchronized (queue) {
             switch (cmd) {
@@ -213,8 +218,7 @@ public class GPSProvider extends Service implements LocationListener {
 
             ListEntry listEntry = (ListEntry) o;
 
-            if (groupId != listEntry.groupId) return false;
-            return endOfTransmission.equals(listEntry.endOfTransmission);
+            return groupId == listEntry.groupId;
         }
 
         @Override

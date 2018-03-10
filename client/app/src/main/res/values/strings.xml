@@ -124,5 +124,8 @@
     <string name="blocked">Blocked</string>
     <string name="unblock">Unblock</string>
     <string name="error_internal">An internal error occured, please try again</string>
+    <string name="how_long">How long do you want to share your Location?</string>
+    <string name="share_location_for">Share Location for</string>
+    <string name="cancel_sharing">Cancel sharing your location?</string>
 
 </resources>

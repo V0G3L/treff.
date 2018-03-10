@@ -266,6 +266,7 @@ public class MapFragment extends Fragment {
         }
         ((RadiusMarkerClusterer) master.getItems().get(CONTACTS))
                 .getItems().addAll(markers);
+        map.invalidate();
     }
 
     private void updateEventLocations(List<Event> events) {
@@ -281,6 +282,7 @@ public class MapFragment extends Fragment {
         }
         ((FolderOverlay) master.getItems().get(EVENTS)).getItems().addAll
                 (markers);
+        map.invalidate();
     }
 
 

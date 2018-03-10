@@ -30,7 +30,10 @@ public class PublishPositionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userGroupRepository.setIsSharing(output.groupId, true);
+
+        // if the time End is before current time, stop sending
+        userGroupRepository.setIsSharing(output.groupId,
+                output.timeEnd.after(new Date()));
     }
 
     public static class Request extends AbstractRequest {

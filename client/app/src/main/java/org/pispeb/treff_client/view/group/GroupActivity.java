@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.TimePicker;
 
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.gps_handling.GPSProviderManager;
 import org.pispeb.treff_client.databinding.ActivityGroupBinding;
 import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
@@ -36,6 +37,7 @@ public class GroupActivity extends AppCompatActivity
 
     // id of the group
     private int groupId;
+    private UserGroup group = null;
 
     private ActivityGroupBinding binding;
     private TabLayout tabLayout;
@@ -56,6 +58,7 @@ public class GroupActivity extends AppCompatActivity
 
         vm.getGroup().observe(this, group -> {
             binding.toolbarGroup.setTitle(group.getName());
+            this.group = group;
         });
 
         viewPager = binding.groupViewpager;
@@ -91,13 +94,37 @@ public class GroupActivity extends AppCompatActivity
             return true;
         } else if (item.getItemId() == R.id.shareLocation) {
 
-            TimePickerDialog timePicker = new TimePickerDialog(
-                    this,
-                    this,
-                    0, 0,
-                    true);
-            timePicker.setTitle("How long do you want to share your Location?");
-            timePicker.show();
+            if (group != null && !group.isSharingLocation()) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.share_location);
+                builder.setNegativeButton(R.string.cancel, (dialog, which)
+                        -> dialog.dismiss());
+                builder.setPositiveButton(R.string.ok, ((dialog, which) -> {
+                    TimePickerDialog timePicker = new TimePickerDialog(
+                            this,
+                            this,
+                            0, 0,
+                            true);
+                    timePicker.setTitle(R.string.how_long);
+                    timePicker.show();
+                    dialog.dismiss();
+                }));
+                builder.show();
+            } else if (group != null && group.isSharingLocation()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.cancel_sharing);
+                builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
+                    dialog.dismiss();
+                }));
+                builder.setPositiveButton(R.string.ok, ((dialog, which) ->  {
+                    GPSProviderManager.removeRequestFromService(this,
+                            groupId);
+                    dialog.dismiss();
+                }));
+                builder.show();
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -105,8 +132,8 @@ public class GroupActivity extends AppCompatActivity
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Share Location for " + hourOfDay + "h " + minute +
-                "min");
+        builder.setTitle(getString(R.string.share_location_for) + hourOfDay +
+                "h " + minute + "min");
         builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
             dialog.dismiss();
         }));
