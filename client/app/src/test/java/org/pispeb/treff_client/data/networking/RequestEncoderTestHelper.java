@@ -107,7 +107,7 @@ public abstract class RequestEncoderTestHelper {
 
         // set mock ConnectionHandler for any actions that don't require
         // running in a background thread
-        testEncoder.setConnectionHandler(mockConnectionHandler);
+//        testEncoder.setConnectionHandler(mockConnectionHandler);
 
         // print any invocations on CH to Console
         doAnswer(invocation -> {

@@ -14,15 +14,17 @@ import static org.mockito.Mockito.*;
 public class EditEventTest extends AbstractCommandTest {
 
     private EditEventCommand command;
-    private EventEditDescription mockEventEditDescription = new EventEditDescription("type",
-            mockName, mockId, mockTimeStart, mockTimeEnd, mockPosition, mockEvetntId);
+    private EventEditDescription mockEventEditDescription = new EventEditDescription(
+            mockName, mockId, mockTimeStart, mockTimeEnd, mockLocation,
+            mockEvetntId);
     private Event mockEvent = new Event(mockEvetntId, mockName, mockTimeStart, mockTimeEnd,
             mockPosition.getLocation(), mockId, mockGroupId);
 
     @Override
     public void initCommand() {
         command = new EditEventCommand(mockGroupId, mockName, mockId, mockTimeStart,
-                mockTimeEnd, mockPosition, mockEvetntId, mockToken, mockEventRepository);
+                mockTimeEnd, mockLocation, mockEvetntId, mockToken,
+                mockEventRepository);
     }
 
     @Override

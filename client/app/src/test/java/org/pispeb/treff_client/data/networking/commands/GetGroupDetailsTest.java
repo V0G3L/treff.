@@ -27,7 +27,8 @@ public class GetGroupDetailsTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new GetGroupDetailsCommand(mockGroupId, mockToken, mockUserGroupRepository, eventRepository, encoder);
+        command = new GetGroupDetailsCommand(mockGroupId, mockToken,
+                mockUserGroupRepository, mockEventRepository, mockEncoder);
     }
 
     @Override

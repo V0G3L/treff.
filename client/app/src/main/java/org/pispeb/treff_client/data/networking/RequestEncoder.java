@@ -85,9 +85,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         try {
             connectionHandler
                     = new ConnectionHandler(
-                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080" +
+                    "ws://[2001:7c7:2056:161:fd13:d202:d508:256b]:8080" +
                             "/treff_server/ws",
-//                    "ws://localhost:8080/treff_server/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT

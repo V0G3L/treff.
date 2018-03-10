@@ -1,6 +1,7 @@
 package org.pispeb.treff_client.data.repositories;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.content.Context;
@@ -22,6 +23,7 @@ import org.pispeb.treff_client.view.util.TreffPunkt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class UserGroupRepository {
     private UserGroupDao userGroupDao;
@@ -67,6 +69,7 @@ public class UserGroupRepository {
     }
 
     public LiveData<List<User>> getGroupMembers(int groupId) {
+
         encoder.getGroupDetails(groupId);
 
         LiveData<List<GroupMembership>> groupMemberships =

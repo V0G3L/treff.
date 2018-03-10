@@ -93,6 +93,8 @@ public class TestConnectionHandler {
                         "\"members\":[4, " +
                         "5, 6],\"events\":[],\"polls\":[]}}");
             }
+        } else if (message.contains("\"cmd\":\"request-updates\"")) {
+            onMessage("{\"updates\":" + count++ + "}");
         } else {
             onMessage("{}");
         }
@@ -108,5 +110,6 @@ public class TestConnectionHandler {
 
     public interface ResponseListener {
         void onResponse(String response);
+        void onTimeout();
     }
 }

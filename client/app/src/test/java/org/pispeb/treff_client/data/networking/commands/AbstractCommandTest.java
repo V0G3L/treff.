@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.preference.PreferenceManager;
 
 import org.junit.Before;
@@ -75,6 +76,7 @@ public abstract class AbstractCommandTest {
     protected double mockla = 10.0;
     protected double mocklo = 50.0;
     protected Position mockPosition = new Position(mockla, mocklo);
+    protected Location mockLocation = new Location("mock");
     protected boolean mockMultiChoice = true;
     protected Date mockTimeStart = new Date();
     protected Date mockTimeEnd = new Date();
@@ -107,7 +109,8 @@ public abstract class AbstractCommandTest {
         when(mockEditor.putString("userName", mockName)).thenReturn(mockEditor);
         when(mockEditor.commit()).thenReturn(true);
 
-
+        mockLocation.setLatitude(mockla);
+        mockLocation.setLongitude(mocklo);
     }
 
     @Test

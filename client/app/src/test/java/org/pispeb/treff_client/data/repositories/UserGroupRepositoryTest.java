@@ -1,9 +1,12 @@
 package org.pispeb.treff_client.data.repositories;
 
+import android.arch.lifecycle.LiveData;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.pispeb.treff_client.data.entities.GroupMembership;
+import org.pispeb.treff_client.data.entities.User;
 
 import java.util.List;
 
@@ -54,7 +57,8 @@ public class UserGroupRepositoryTest extends RepositoryTest {
         testUserGroupRepository
                 .addGroupMembers(mockGroup.getGroupId(), testMemberIds);
 
-        testUserGroupRepository.getGroupMembers(mockGroup.getGroupId());
+        LiveData<List<User>> users = testUserGroupRepository.getGroupMembers(mockGroup
+                .getGroupId());
 
         verify(mockUserGroupDao, times(1))
                 .getGroupMembershipsByGroupIdLiveData(mockGroup.getGroupId());
