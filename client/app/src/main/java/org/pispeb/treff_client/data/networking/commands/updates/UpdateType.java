@@ -64,7 +64,7 @@ public enum UpdateType {
     /**
      * The type of updates that represent an answer to a contact request
      */
-    CONTACT_REQUEST_ANSWER(ContactRequestUpdate.class),
+    CONTACT_REQUEST_ANSWER(ContactRequestAnswerUpdate.class),
     /**
      * The type of updates that represent someone canceling a contact
      * request

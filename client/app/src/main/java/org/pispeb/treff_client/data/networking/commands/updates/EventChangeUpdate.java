@@ -27,12 +27,20 @@ public class EventChangeUpdate extends Update {
         Event eventEntity
                 = repositorySet.eventRepository.getEvent(this.event.id);
 
-        eventEntity.setName(event.title);
-        eventEntity.setLocation(toLocation(event.latitude, event.longitude));
-        eventEntity.setStart(event.timeStart);
-        eventEntity.setEnd(event.timeEnd);
-        // TODO: set participants
+        if (eventEntity != null) { // existing event
+            eventEntity.setName(event.title);
+            eventEntity.setLocation(
+                    toLocation(event.latitude, event.longitude));
+            eventEntity.setStart(event.timeStart);
+            eventEntity.setEnd(event.timeEnd);
+            // TODO: set participants
+            repositorySet.eventRepository.updateEvent(eventEntity);
+        } else { // new event
+            eventEntity = new Event(event.id, event.title, event.timeStart,
+                    event.timeEnd, toLocation(event.latitude, event.longitude),
+                    event.creator, groupID);
+            repositorySet.eventRepository.addEvent(eventEntity);
+        }
 
-        repositorySet.eventRepository.updateEvent(eventEntity);
     }
 }

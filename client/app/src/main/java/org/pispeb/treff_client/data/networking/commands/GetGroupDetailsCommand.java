@@ -17,14 +17,18 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class GetGroupDetailsCommand extends AbstractCommand {
 
-    private Request output;
-    private UserGroupRepository userGroupRepository;
-    private EventRepository eventRepository;
-    private RequestEncoder encoder;
+    private final Request output;
+    private final UserGroupRepository userGroupRepository;
+    private final EventRepository eventRepository;
+    private final RequestEncoder encoder;
 
     public GetGroupDetailsCommand(int id, String token,
-                                  UserGroupRepository userGroupRepository) {
+                                  UserGroupRepository userGroupRepository,
+                                  EventRepository eventRepository,
+                                  RequestEncoder encoder) {
         super(Response.class);
+        this.eventRepository = eventRepository;
+        this.encoder = encoder;
         output = new Request(id, token);
         this.userGroupRepository = userGroupRepository;
     }

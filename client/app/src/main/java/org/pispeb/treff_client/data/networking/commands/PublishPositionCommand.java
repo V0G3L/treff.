@@ -49,7 +49,6 @@ public class PublishPositionCommand extends AbstractCommand {
         }
     }
 
-
     //Server returns empty object
     public static class Response extends AbstractResponse {
         public Response() {

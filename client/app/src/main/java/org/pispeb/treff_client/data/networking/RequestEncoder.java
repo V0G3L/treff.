@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.networking.commands.*;
-import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.RepositorySet;
@@ -34,7 +33,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CountDownLatch;
 
 import javax.websocket.DeploymentException;
 
@@ -87,7 +85,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             connectionHandler
                     = new ConnectionHandler(
                     "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080" +
-                            "/treff_server-0.1/ws",
+                            "/treff_server/ws",
+//                    "ws://localhost:8080/treff_server/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
@@ -625,7 +624,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public synchronized void getGroupDetails(int groupId) {
         executeCommand(new GetGroupDetailsCommand(groupId, getToken(),
-                repositorySet.userGroupRepository));
+                repositorySet.userGroupRepository,
+                repositorySet.eventRepository, this));
     }
 
     public synchronized void getUserDetails(int userId) {

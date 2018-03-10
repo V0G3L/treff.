@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands.updates;
 
+import android.location.Location;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.data.entities.User;
@@ -25,8 +27,13 @@ public class AccountChangeUpdate extends Update {
         // assert creator == account.id
         User user = repositorySet.userRepository.getUser(account.id);
 
-        user.setUsername(account.username);
-
-        repositorySet.userRepository.updateUser(user);
+        if (user != null) {
+            user.setUsername(account.username);
+            repositorySet.userRepository.updateUser(user);
+        } else {
+            user = new User(account.id, account.username, false, false,
+                    false, false, new Location("update"));
+            repositorySet.userRepository.addUser(user);
+        }
     }
 }
