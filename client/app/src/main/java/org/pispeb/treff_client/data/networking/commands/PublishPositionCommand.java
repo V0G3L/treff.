@@ -13,7 +13,7 @@ import java.util.Date;
 public class PublishPositionCommand extends AbstractCommand {
 
     private Request output;
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
 
     public PublishPositionCommand(int groupId, Date timeEnd, String token,
                                   UserGroupRepository userGroupRepository) {

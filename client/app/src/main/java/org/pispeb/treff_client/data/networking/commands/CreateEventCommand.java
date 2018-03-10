@@ -19,7 +19,7 @@ import java.util.Date;
 
 public class CreateEventCommand extends AbstractCommand {
 
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private Request output;
 
     public CreateEventCommand(int groupId, String title, int creatorId,

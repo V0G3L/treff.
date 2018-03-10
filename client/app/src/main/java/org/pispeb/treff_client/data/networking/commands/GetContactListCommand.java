@@ -16,7 +16,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 public class GetContactListCommand extends AbstractCommand {
 
     private Request output;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private final RequestEncoder encoder;
 
     private final Location l = new Location(LocationManager.GPS_PROVIDER);

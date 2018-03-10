@@ -19,7 +19,7 @@ import java.util.Date;
 
 public class SendChatMessageCommand extends AbstractCommand {
 
-    private ChatRepository chatRepository;
+    private final ChatRepository chatRepository;
     private Request output;
 
     public SendChatMessageCommand(int groupId, String message, String token,

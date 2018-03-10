@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.repositories.EventRepository;
 
 public class RemoveEventCommand extends AbstractCommand {
 
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private Request output;
 
     public RemoveEventCommand(int groupId, int id, String token,

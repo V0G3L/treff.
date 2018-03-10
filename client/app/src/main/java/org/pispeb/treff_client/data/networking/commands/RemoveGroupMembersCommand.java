@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class RemoveGroupMembersCommand extends AbstractCommand {
 
-    UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public RemoveGroupMembersCommand(int id, int[] members, String token,

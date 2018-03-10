@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class BlockAccountCommand extends AbstractCommand {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public BlockAccountCommand(int id, String token,

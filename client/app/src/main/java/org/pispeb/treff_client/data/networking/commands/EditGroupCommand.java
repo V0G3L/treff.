@@ -12,7 +12,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class EditGroupCommand extends AbstractCommand {
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public EditGroupCommand(int groupId, String name, String token,

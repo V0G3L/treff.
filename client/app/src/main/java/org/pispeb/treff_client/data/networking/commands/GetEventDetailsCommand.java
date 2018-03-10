@@ -19,7 +19,7 @@ import org.pispeb.treff_client.data.repositories.EventRepository;
 public class GetEventDetailsCommand extends AbstractCommand {
 
     private Request output;
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     public GetEventDetailsCommand(int id, int groupId, String token,
                                   EventRepository eventRepository) {

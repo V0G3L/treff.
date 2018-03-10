@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 public class SendContactRequestCommand extends AbstractCommand{
 
     private Request output;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public SendContactRequestCommand(int id, String token, UserRepository userRepository) {
         super(Response.class);

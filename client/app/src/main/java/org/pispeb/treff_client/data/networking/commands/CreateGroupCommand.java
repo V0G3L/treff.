@@ -14,7 +14,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class CreateGroupCommand extends AbstractCommand {
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public CreateGroupCommand(String name, int[] members, String token,

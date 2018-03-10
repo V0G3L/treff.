@@ -16,7 +16,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class GetUserIdCommand extends AbstractCommand {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
     private final RequestEncoder encoder;
 

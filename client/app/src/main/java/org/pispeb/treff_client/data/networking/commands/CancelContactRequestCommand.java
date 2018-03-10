@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class CancelContactRequestCommand extends AbstractCommand{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public CancelContactRequestCommand(int id, String token,
