@@ -4,13 +4,13 @@
 \usepackage[german]{babel}
 \usepackage[useregional]{datetime2}
 \usepackage[pdfborderstyle={/S/U/W 0}]{hyperref}
+\usepackage{amsmath} % for $\text{}$
 \usepackage[nameinlink]{cleveref}
 \usepackage[section]{placeins}
 \usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=3cm]{geometry}
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{csquotes}
-\usepackage{amsmath} % for $\text{}$
 \usepackage{testbericht} % local .sty file
 \usepackage{enumitem}
 \usepackage{algorithm}
@@ -65,7 +65,49 @@
 
 %%%%%%%%%%%%%%%%%%%
 \pagebreak
-\section{Erfüllung der Kriterien}
+\section{Nicht Erfüllte Anforderungen}
+\subsection{Funktionalle Anforderungen}
+\subsubsection{Plicht}
+TODO
+\subsubsection{Kür}
+\textbf{Abstimmungen:}\\
+Nur auf Serverseite implementiert und nicht vollständig getestet.
+
+\textbf{Gruppenrollen und -rechte:}\\
+Nur auf Serverseite implementiert und getestet.
+
+\textbf{Innenraumkarten:}\\
+Wurde nicht implementiert.
+
+\textbf{Eigener server:}\\
+Die Möglichkeit, einen eigenen Server auf der definierten Schnittstelle zwischen
+Server und Klient aufbauend zu entwickeln, ist gegeben. Allerdings ist der
+Server im Klient fest verankert und man müsste sich den Klient mit minimalen
+Änderungen selbst erstellen.
+
+\textbf{Serverwechsel:}\\
+Das Wechseln des Servers innerhalb der App ist nicht möglich.
+
+\textbf{Stummschalten:}\\
+Stummschalten ist nicht implementiert.
+
+\textbf{Zeitplan für Positionsübertragung:}\\
+Das Übermittlen der Position nach einem Zeitplan ist nicht möhlich.
+
+\textbf{Passwortzurücksetzung:}\\
+Das Zurücksetzen des Passworts ist nicht möglich
+
+\textbf{Sprachen:}\\
+Die App bietet eine deutsche und eine englische Übersetzung, diese passt sich
+automatisch der Systemsprache an.
+
+\subsection{Nicht Funktionalle Anforderungen}
+\subsubsection{Plicht}
+\textbf{Einfache Bedienung:}\\
+TODO von jemand der beschreiben kann inwieweit wir Materiel Design einhalten
+
+\textbf{Nutzeraufkommen:}\\
+TODO
 
 \section{Testszenarien}
 

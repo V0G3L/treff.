@@ -18,13 +18,13 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Gradle: javax.json:javax.json-api:1.0" />
+          <element id="library" level="project" name="Gradle: org.glassfish:javax.json:1.0.2" />
           <element id="library" level="project" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" />
           <element id="library" level="project" name="Gradle: commons-dbutils:commons-dbutils:1.7" />
           <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.11" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.0" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.2/e8a419fdc37481f2b54c6b711eb36708b70a204b/javax.json-1.0.2.jar" />
         </element>
       </element>
     </root>
