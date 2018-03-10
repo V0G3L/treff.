@@ -211,6 +211,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         return pref.getInt(ctx.getString(R.string.key_userId), -1);
     }
 
+    private void nextCommand() {
+        if (!commands.isEmpty()) {
+            sendRequest(commands.peek().getRequest());
+        } else {
+            idle = true;
+        }
+    }
+
     @Override
     public void onResponse(String responseString) {
         // no commands waiting for response
@@ -241,11 +249,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             }
         }
 
-        if (!commands.isEmpty()) {
-            sendRequest(commands.peek().getRequest());
-        } else {
-            idle = true;
-        }
+        nextCommand();
+    }
+
+    @Override
+    public void onTimeout() {
+        // discard command on top of the queue and execute next one
+        commands.poll();
+        nextCommand();
     }
 
     /**

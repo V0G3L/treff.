@@ -17,7 +17,6 @@
     <string name="drawer_close">Seitliche Navigation schließen</string>
     <string name="error_errorcode_invalid">Unbekannter Fehlercode</string>
     <string name="error_username_taken">Nutzername bereits vergeben</string>
-    <string name="error_email_invalid">Keine gültige Email-Adresse</string>
     <string name="error_session">Ungültige Sitzung</string>
     <string name="username_contact">Nutzername des Kontakts</string>
     <string name="add_contact">Kontakt hinzufügen</string>
@@ -50,8 +49,7 @@
     <string name="leave_group">Gruppe verlassen</string>
     <string name="event_title">Event Titel</string>
     <string name="manage_groups">Gruppen filtern</string>
-    <string name="blocked">Blocked</string>
-    <string name="unblock">Unblock</string>
-    <string name="error_internal">An internal error occured, please try again</string>
-    <string name="how_long">How long do you want to share your Location?</string>
+    <string name="blocked">Blockiert</string>
+    <string name="unblock">Entblocken</string>
+    <string name="error_internal">Interner Fehler, bitte erneut versuchen</string>
 </resources>

@@ -21,10 +21,7 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
     }
 
     @Override
-    public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
-
-    }
+    public void onResponse(AbstractResponse abstractResponse) { }
 
     public static class Request extends AbstractRequest {
 
@@ -45,8 +42,5 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
     }
 
     //server returns empty json object
-    public static class Response extends AbstractResponse {
-        public Response() {
-        }
-    }
+    public static class Response extends AbstractResponse { }
 }
