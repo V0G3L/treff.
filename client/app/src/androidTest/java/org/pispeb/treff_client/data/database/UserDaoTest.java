@@ -1,6 +1,5 @@
 package org.pispeb.treff_client.data.database;
 
-import android.arch.lifecycle.Observer;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.pispeb.treff_client.data.entities.User;
 
 import java.util.LinkedList;
@@ -25,9 +23,6 @@ public class UserDaoTest extends DaoTest {
 
     private Location mockLocation = new Location(LocationManager.GPS_PROVIDER);
     private UserDao userDao;
-
-    @Mock
-    private Observer mockObserver;
 
     private User testUserHans = new User(1337,
             "Hans Wurst",
@@ -74,8 +69,7 @@ public class UserDaoTest extends DaoTest {
         //depends on insert
         userDao.save(testUserHans);
 
-        User daoUser = getValueFromLiveData(userDao.getUserByIdLiveData(testUserHans.getUserId()),
-                mockObserver);
+        User daoUser = getValueFromLiveData(userDao.getUserByIdLiveData(testUserHans.getUserId()));
         assertTrue(daoUser.equals(testUserHans));
     }
 
@@ -96,17 +90,17 @@ public class UserDaoTest extends DaoTest {
         //depends on insert
 
         //no friends
-        List<User> friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockObserver);
+        List<User> friendList = getValueFromLiveData(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 0);
 
         //add friend
         userDao.save(testUserHans);
-        friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockObserver);
+        friendList = getValueFromLiveData(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 1);
 
         //remove friend
         userDao.setIsFriend(testUserHans.getUserId(), false);
-        friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockObserver);
+        friendList = getValueFromLiveData(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 0);
     }
 
