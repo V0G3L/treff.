@@ -54,9 +54,9 @@ public class AddGroupViewModel extends ViewModel implements
             int[] members = new int[selectedUsers.size()];
             int cnt = 0;
             for (User u : selectedUsers) {
-                members[cnt] = u.getUserId();
+                members[cnt++] = u.getUserId();
             }
-            userGroupRepository.requestAddGroup(groupname, 0);
+            userGroupRepository.requestAddGroup(groupname, members);
             done.postValue(true);
         }
     }

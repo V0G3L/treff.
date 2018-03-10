@@ -59,4 +59,16 @@
     <string name="save">Speichern</string>
     <string name="edit_password">Passwort ändern</string>
     <string name="drawer_nav_profile">Profil</string>
+    <string name="share_location">Position teilen</string>
+    <string name="user_is_requesting">Kontaktanfrage</string>
+    <string name="request_from">Kontaktanfrage von</string>
+    <string name="request_pending">Anfrage geschickt</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="decline">Ablehnen</string>
+    <string name="name">Name</string>
+    <string name="email">Email:</string>
+    <string name="tap_for_back">Zurück zur App</string>
+    <string name="how_long">Wie lange möchtest du deine Position teilen?</string>
+    <string name="share_location_for">Teile Position für</string>
+    <string name="cancel_sharing">Positionsübertragung abbrechen</string>
 </resources>

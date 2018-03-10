@@ -131,7 +131,7 @@
     <string name="error_perm_create_poll">Missing permission to create polls in this group</string>
     <string name="error_perm_edit_poll">Missing permission to edit the poll</string>
     <string name="channel_name" translatable="false">treff.</string>
-    <string name="channel_description">Transmitting location…</string>
+    <string name="channel_description" translatable="false">Transmitting location…</string>
     <string name="tap_for_back">Tap to open treff.</string>
     <string name="blocked">Blocked</string>
     <string name="unblock">Unblock</string>
@@ -140,5 +140,6 @@
     <string name="share_location_for">Share Location for</string>
     <string name="cancel_sharing">Cancel sharing your location?</string>
     <string name="error_username_taken">Username already in use</string>
+    <string name="error_session">Invalid session</string>
 
 </resources>
