@@ -47,13 +47,11 @@ public abstract class CommandTest extends DatabaseDependentTest {
     /**
      * states if the time-created parameter od an update is in the valid range
      *
-     * @param timeCreated the value of the time-created parameter to check
-     * @return true if it's valid, false if not
+     * @param update the update which time-created shall be checked
      */
     protected void checkTimeCreated(JsonObject update) {
         Date timeCreated
                 = new Date(update.getJsonNumber("time-created").longValue());
-        //TODO tolerance
         Date currentTime = new Date();
         Assert.assertFalse(timeCreated.before(startTime)
                 || currentTime.before(timeCreated));

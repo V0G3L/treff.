@@ -199,7 +199,7 @@ public abstract class AbstractCommand {
      * 1   , if time > SysTime + tolerance;
      */
     protected static int checkTime(Date time) {
-        long tolerance = 0; //TODO need a tolerance
+        long tolerance = 60000;
         long SysTime = System.currentTimeMillis();
         Date plusTolerance = new Date(SysTime + tolerance);
         Date minusTolerance = new Date(SysTime - tolerance);
