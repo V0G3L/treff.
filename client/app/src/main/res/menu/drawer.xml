@@ -10,6 +10,10 @@
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/drawer_nav_settings"/>
         <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="@string/drawer_nav_profile"/>
+        <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_info_outline_black_24dp"
             android:title="@string/drawer_nav_about"/>

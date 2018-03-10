@@ -52,4 +52,11 @@
     <string name="blocked">Blockiert</string>
     <string name="unblock">Entblocken</string>
     <string name="error_internal">Interner Fehler, bitte erneut versuchen</string>
+    <string name="username">Nutzername:\u0020</string>
+    <string name="new_password">neues Passwort:\u0020</string>
+    <string name="old_password">altes Passwort:\u0020</string>
+    <string name="edit_data">Daten ändern</string>
+    <string name="save">Speichern</string>
+    <string name="edit_password">Passwort ändern</string>
+    <string name="drawer_nav_profile">Profil</string>
 </resources>

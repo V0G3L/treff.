@@ -60,6 +60,9 @@
             android:name=".view.about.AboutActivity"
             android:launchMode="singleTask"/>
 
+        <activity android:name=".view.profile.ProfileActivity"
+            android:launchMode="singleTask"/>
+
         <activity android:name=".view.friend.FriendActivity"/>
         <activity android:name=".view.home.friendList.AddFriendActivity"/>
         <activity

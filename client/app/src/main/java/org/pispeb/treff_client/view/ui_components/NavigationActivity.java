@@ -18,6 +18,7 @@ import org.pispeb.treff_client.databinding.ActivityNavigationBinding;
 import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.login.LoginActivity;
+import org.pispeb.treff_client.view.profile.ProfileActivity;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
 
 /**
@@ -63,6 +64,11 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         Intent settingsIntent = new Intent(thisActivity,
                                 SettingsActivity.class);
                         startActivity(settingsIntent);
+                        return true;
+                    case R.id.nav_profile:
+                        Intent profileintent = new Intent(thisActivity,
+                                ProfileActivity.class);
+                        startActivity(profileintent);
                         return true;
                     case R.id.nav_about:
                         Intent aboutIntent = new Intent(thisActivity,
