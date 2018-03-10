@@ -27,6 +27,9 @@ public class FriendViewModelTest extends ViewModelTest {
     @Test
     public void setUserIdTest() {
         vm.setUserById(420);
-        verify(mockUserRepository.getUserLiveData(420));
+        verify(mockUserRepository).getUserLiveData(420);
     }
+
+    //TODO properly mock user repo and test block/chat methods
+
 }
