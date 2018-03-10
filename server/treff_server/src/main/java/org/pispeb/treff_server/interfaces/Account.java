@@ -115,7 +115,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * not be sent.
      * Instead, both accounts will be added as contacts.
      * <p>
-     * Requires a {@code ReadLock}.
+     * Requires a {@code WriteLock}.
      *
      * @param receiver The {@code Account} which to send the contact request to
      */

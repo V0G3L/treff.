@@ -1,21 +1,17 @@
 package org.pispeb.treff_server.sql;
 
-import ch.vorburger.exec.ManagedProcessException;
-import ch.vorburger.mariadb4j.DB;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.pispeb.treff_server.ConfigKeys;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
 import org.pispeb.treff_server.Permission;
-import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.exceptions.DatabaseException;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -26,6 +22,12 @@ import static org.pispeb.treff_server.sql.SQLDatabase.TableName.*;
  * @author tim
  */
 public class SQLDatabase {
+
+    private final static int EXPECTED_VERSION_NUMBER = 1;
+
+    private final static int EMPTY_DB = 0;
+    private final static int INCOMPATIBLE_DB = 1;
+    private final static int COMPATIBLE_DB = 2;
 
     private final Properties config;
     private final QueryRunner queryRunner;
@@ -68,17 +70,50 @@ public class SQLDatabase {
         dataSource.setDatabaseName(config.getProperty(DB_DBNAME.toString()));
         this.queryRunner = new QueryRunner(dataSource);
 
-        // TODO: Check database format
-        // if db never initialized before:
-        createTables();
+        // if db never initialized before or incompatible, wipe
+        int dbCheck = checkVersion();
+        if (dbCheck == INCOMPATIBLE_DB || dbCheck == EMPTY_DB) {
+            wipeDB();
+            createTables();
+
+            queryRunner.insert(
+                    "INSERT INTO " + TREFFMETA.toString()
+                            + "(db_version) VALUES (?);",
+                    rs -> null,
+                    EXPECTED_VERSION_NUMBER);
+        }
 
         this.entityManagerSQL = new EntityManagerSQL(this, config);
     }
 
+    private int checkVersion() {
+        try {
+            // if meta table doesn't exist, assume that DB is empty
+            if (queryRunner.query("SELECT TABLE_NAME FROM " +
+                            "information_schema.tables WHERE TABLE_NAME = ?;",
+                    new ColumnListHandler<String>(),
+                    TREFFMETA.toString())
+                    .isEmpty())
+                return EMPTY_DB;
+
+            // query version number and compare to expected version number
+            int versionNumber = queryRunner.query(
+                    "SELECT db_version FROM " + TREFFMETA.toString()
+                            + " LIMIT 1;",
+                    rs -> {
+                        rs.next();
+                        return rs.getInt(1);
+                    });
+            return versionNumber == EXPECTED_VERSION_NUMBER
+                    ? COMPATIBLE_DB
+                    : INCOMPATIBLE_DB;
+        } catch (SQLException e) {
+            throw new ProgrammingException();
+        }
+    }
+
     private void createTables()
             throws NoSuchAlgorithmException, SQLException {
-
-        wipeDB();
 
         // Calculate how many bytes the specified hash algorithm will output
         final int PASSWORD_HASH_BYTES =
@@ -87,9 +122,14 @@ public class SQLDatabase {
                                 .toString()))
                         .getDigestLength();
 
-        // TODO: Unicode support for fields that might need it (NVARCHAR)
-
         String[] tableCreationStatements = {
+                // treffmeta
+                String.format("CREATE TABLE IF NOT EXISTS %s (" +
+                                "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                                "db_version INT NOT NULL" +
+                                ");",
+                        TREFFMETA.toString()),
+
                 // accounts
                 String.format("CREATE TABLE IF NOT EXISTS %s (" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
@@ -165,7 +205,7 @@ public class SQLDatabase {
                 // usergroups
                 String.format("CREATE TABLE IF NOT EXISTS %s(" +
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
-                                "name VARCHAR(%d) NOT NULL" +
+                                "name NVARCHAR(%d) NOT NULL" +
                                 ");",
                         USERGROUPS.toString(),
                         Integer.parseInt(
@@ -201,7 +241,7 @@ public class SQLDatabase {
                                 "FOREIGN KEY (usergroupid)" +
                                 "   REFERENCES usergroups(id)" +
                                 "   ON DELETE CASCADE," +
-                                "title VARCHAR(%d) NOT NULL," +
+                                "title NVARCHAR(%d) NOT NULL," +
                                 "creator INT NOT NULL," +
                                 "FOREIGN KEY (creator)" +
                                 "   REFERENCES accounts(id)," +
@@ -236,7 +276,7 @@ public class SQLDatabase {
                                 "FOREIGN KEY (usergroupid)" +
                                 "   REFERENCES usergroups(id)" +
                                 "   ON DELETE CASCADE," +
-                                "question VARCHAR(%d) NOT NULL," +
+                                "question NVARCHAR(%d) NOT NULL," +
                                 "creator INT NOT NULL," +
                                 "timevoteclose DATE NOT NULL," +
                                 "FOREIGN KEY (creator)" +
@@ -281,13 +321,7 @@ public class SQLDatabase {
                                 "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                                 "updatestring TEXT NOT NULL" +
                                 ");",
-                        UPDATES.toString(),
-                        // set max size of 'type' field to size of longest
-                        // UpdateType
-                        Arrays.stream(UpdateType.values())
-                                .map(ut -> ut.toString().length())
-                                .max(Comparator.naturalOrder())
-                                .get()),
+                        UPDATES.toString()),
 
                 // updateaffections
                 String.format("CREATE TABLE IF NOT EXISTS %s (" +
@@ -344,18 +378,20 @@ public class SQLDatabase {
      * but only supports simple queries on a single table, e.g. no
      * <code>JOIN</code> statements.
      * Will insert the specified {@link TableName} before sending.
-     * @param sqlQuery The SQL query to run.
-     *                 Must contain a single <code>%s</code>-placeholder for the
-     *                 table name.
-     *                 Must contain as many <code>?</code>-placeholders as
-     *                 {@code Object}s are specified in the
-     *                 <code>parameters</code>.
-     * @param tableName The name of the table to run the query on.
-     * @param rsHandler The {@code ResultSetHandler} to use
+     *
+     * @param sqlQuery   The SQL query to run.
+     *                   Must contain a single <code>%s</code>-placeholder
+     *                   for the
+     *                   table name.
+     *                   Must contain as many <code>?</code>-placeholders as
+     *                   {@code Object}s are specified in the
+     *                   <code>parameters</code>.
+     * @param tableName  The name of the table to run the query on.
+     * @param rsHandler  The {@code ResultSetHandler} to use
      * @param parameters The parameters to insert into the
      *                   <code>?</code>-placeholders
-     * @param <T> The type of return value returned by the
-     * {@code ResultSetHandler}
+     * @param <T>        The type of return value returned by the
+     *                   {@code ResultSetHandler}
      * @return The return value produced by the specified
      * {@code ResultSetHandler}
      * @throws DatabaseException if an {@link SQLException} occurs
@@ -377,24 +413,26 @@ public class SQLDatabase {
      * but only supports simple queries on a single table, e.g. no
      * <code>JOIN</code> statements.
      * Will insert the specified {@link TableName} before sending.
-     * @param sqlQuery The SQL query to run.
-     *                 Must contain a single <code>%s</code>-placeholder for the
-     *                 table name.
-     *                 Must contain as many <code>?</code>-placeholders as
-     *                 {@code Object}s are specified in the
-     *                 <code>parameters</code>.
-     * @param tableName The name of the table to run the query on.
-     * @param rsHandler The {@code ResultSetHandler} to use
+     *
+     * @param sqlQuery   The SQL query to run.
+     *                   Must contain a single <code>%s</code>-placeholder
+     *                   for the
+     *                   table name.
+     *                   Must contain as many <code>?</code>-placeholders as
+     *                   {@code Object}s are specified in the
+     *                   <code>parameters</code>.
+     * @param tableName  The name of the table to run the query on.
+     * @param rsHandler  The {@code ResultSetHandler} to use
      * @param parameters The parameters to insert into the
      *                   <code>?</code>-placeholders
-     * @param <T> The type of return value returned by the
-     * {@code ResultSetHandler}
+     * @param <T>        The type of return value returned by the
+     *                   {@code ResultSetHandler}
      * @return The return value produced by the specified
      * {@code ResultSetHandler}
      * @throws DatabaseException if an {@link SQLException} occurs
      */
     public <T> T insert(String sqlQuery, TableName tableName,
-                       ResultSetHandler<T> rsHandler, Object... parameters) {
+                        ResultSetHandler<T> rsHandler, Object... parameters) {
         try {
             return queryRunner.insert(
                     String.format(sqlQuery, tableName.toString()),
@@ -410,20 +448,22 @@ public class SQLDatabase {
      * but only supports simple queries on a single table, e.g. no
      * <code>JOIN</code> statements.
      * Will insert the specified {@link TableName} before sending.
-     * @param sqlQuery The SQL query to run.
-     *                 Must contain a single <code>%s</code>-placeholder for the
-     *                 table name.
-     *                 Must contain as many <code>?</code>-placeholders as
-     *                 {@code Object}s are specified in the
-     *                 <code>parameters</code>.
-     * @param tableName The name of the table to run the query on.
+     *
+     * @param sqlQuery   The SQL query to run.
+     *                   Must contain a single <code>%s</code>-placeholder
+     *                   for the
+     *                   table name.
+     *                   Must contain as many <code>?</code>-placeholders as
+     *                   {@code Object}s are specified in the
+     *                   <code>parameters</code>.
+     * @param tableName  The name of the table to run the query on.
      * @param parameters The parameters to insert into the
      *                   <code>?</code>-placeholders
      * @return The amount of rows updated.
      * @throws DatabaseException if an {@link SQLException} occurs
      */
     public int update(String sqlQuery, TableName tableName,
-                          Object... parameters) {
+                      Object... parameters) {
         try {
             return queryRunner.update(
                     String.format(sqlQuery, tableName.toString()),
@@ -445,6 +485,7 @@ public class SQLDatabase {
         POLLS("polls"),
         POLLOPTIONS("polloptions"),
         POLLVOTES("pollvotes"),
+        TREFFMETA("treffmeta"),
         UPDATES("updates"),
         UPDATEAFFECTIONS("updateaffections");
 

@@ -73,6 +73,7 @@ public class SendContactRequestCommand extends AbstractCommand {
         // send request
         actingAccount.sendContactRequest(newContact);
 
+        // TODO: send other updates on symmetric add
         // create update
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),

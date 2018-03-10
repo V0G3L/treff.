@@ -28,11 +28,6 @@ public class PublishPositionCommand extends GroupCommand {
     protected CommandOutput executeOnGroup(GroupInput groupInput) {
         Input input = (Input) groupInput;
 
-        // check time
-        if (checkTime(input.timeEnd) < 0) {
-            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
-        }
-
         // publish position
         usergroup.setLocationSharingTimeEndOfMember(
                 actingAccount, input.timeEnd);

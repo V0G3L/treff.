@@ -35,15 +35,5 @@ public abstract class PositionTest extends GroupDependentTest {
         }
     }
 
-    @Test
-    public void invalidTime() {
-        Assert.assertEquals(1400, execute(users[2], groupId,
-                new Date().getTime() - DAY).getInt("error"));
-
-        for (int index : new int[]{0, 1}) {
-            assertNoUpdatesForUser(users[index]);
-        }
-    }
-
     protected abstract JsonObject execute(User exec, int group, long time);
 }

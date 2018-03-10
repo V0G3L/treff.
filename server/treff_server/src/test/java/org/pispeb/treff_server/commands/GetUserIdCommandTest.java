@@ -27,7 +27,7 @@ public class GetUserIdCommandTest extends MultipleUsersTest {
                 users[1].id);
     }
 
-     @Test
+    @Test
     public void invalidToken() {
         GetUserIdCommand getUserIdCommand
                 = new GetUserIdCommand(accountManager, mapper);
@@ -40,6 +40,7 @@ public class GetUserIdCommandTest extends MultipleUsersTest {
         Assert.assertEquals(output.getInt("error"), 1100);
     }
 
+    @Test
     public void invalidUserId() {
         GetUserIdCommand getUserIdCommand
                 = new GetUserIdCommand(accountManager, mapper);
@@ -47,7 +48,7 @@ public class GetUserIdCommandTest extends MultipleUsersTest {
         inputBuilder.add("user","threeringsfortheelvenkings");
         JsonObject output = runCommand(getUserIdCommand, inputBuilder);
 
-        Assert.assertEquals(output.getInt("error"), 1200);
+        Assert.assertEquals(output.getInt("error"), 1302);
     }
 
 }

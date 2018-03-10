@@ -2,6 +2,7 @@ package org.pispeb.treff_server.networking;
 
 import org.pispeb.treff_server.Server;
 
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
@@ -47,4 +48,7 @@ public class WebSocketEndpoint {
             return response.responseString;
         }
     }
+
+//    @OnError
+//    public void onError() { }
 }

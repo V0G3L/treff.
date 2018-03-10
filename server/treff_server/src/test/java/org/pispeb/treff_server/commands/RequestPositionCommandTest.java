@@ -32,6 +32,16 @@ public class RequestPositionCommandTest extends PositionTest {
         }
     }
 
+    @Test
+    public void invalidTime() {
+        Assert.assertEquals(1400, execute(users[2], groupId,
+                new Date().getTime() - DAY).getInt("error"));
+
+        for (int index : new int[]{0, 1}) {
+            assertNoUpdatesForUser(users[index]);
+        }
+    }
+
     /**
      * executes the command
      *
