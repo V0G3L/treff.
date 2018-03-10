@@ -33,7 +33,7 @@
 % section numbers in margins:
 \renewcommand\sectionlinesformat[4]{%
     \ifstr{#1}{subsubsection}{%
-        \makebox[0pt][r]{#4}%
+        #4%
     }{%
         \makebox[0pt][r]{#3}#4%
     }%
@@ -70,43 +70,43 @@
 \subsubsection{Plicht}
 TODO
 \subsubsection{Kür}
-\textbf{Abstimmungen:}\\
+\paragraph{Abstimmungen:}
 Nur auf Serverseite implementiert und nicht vollständig getestet.
 
-\textbf{Gruppenrollen und -rechte:}\\
+\paragraph{Gruppenrollen und -rechte:}
 Nur auf Serverseite implementiert und getestet.
 
-\textbf{Innenraumkarten:}\\
+\paragraph{Innenraumkarten:}
 Wurde nicht implementiert.
 
-\textbf{Eigener server:}\\
+\paragraph{Eigener server:}
 Die Möglichkeit, einen eigenen Server auf der definierten Schnittstelle zwischen
 Server und Klient aufbauend zu entwickeln, ist gegeben. Allerdings ist der
 Server im Klient fest verankert und man müsste sich den Klient mit minimalen
 Änderungen selbst erstellen.
 
-\textbf{Serverwechsel:}\\
+\paragraph{Serverwechsel:}
 Das Wechseln des Servers innerhalb der App ist nicht möglich.
 
-\textbf{Stummschalten:}\\
+\paragraph{Stummschalten:}
 Stummschalten ist nicht implementiert.
 
-\textbf{Zeitplan für Positionsübertragung:}\\
+\paragraph{Zeitplan für Positionsübertragung:}
 Das Übermittlen der Position nach einem Zeitplan ist nicht möhlich.
 
-\textbf{Passwortzurücksetzung:}\\
+\paragraph{Passwortzurücksetzung:}
 Das Zurücksetzen des Passworts ist nicht möglich
 
-\textbf{Sprachen:}\\
+\paragraph{Sprachen:}
 Die App bietet eine deutsche und eine englische Übersetzung, diese passt sich
 automatisch der Systemsprache an.
 
 \subsection{Nicht Funktionalle Anforderungen}
 \subsubsection{Plicht}
-\textbf{Einfache Bedienung:}\\
+\paragraph{Einfache Bedienung:}
 TODO von jemand der beschreiben kann inwieweit wir Materiel Design einhalten
 
-\textbf{Nutzeraufkommen:}\\
+\paragraph{Nutzeraufkommen:}
 TODO
 
 \section{Testszenarien}
@@ -120,7 +120,7 @@ TODO
 		\item T60 : Übertragung der eigenen Position an die Gruppe
 	\end{itemize}
 
-	\subsubsection{problematische Testszenarien}
+	\subsubsection{Problematische Testszenarien}
 	\begin{itemize}
 		\item T80 : Kontoverwaltung
 			\begin{itemize}
@@ -133,12 +133,12 @@ TODO
 	\end{itemize}
 
 \subsection{Küranforderung}
-	\subsubsection{funktionierende Testszenarien}
+	\subsubsection{Funktionierende Testszenarien}
 	\begin{itemize}
 	\item placeholder
 	\end{itemize}
 
-	\subsubsection{ungetestete Testszenarien}
+	\subsubsection{Ungetestete Testszenarien}
 	\begin{itemize}
 		\item T100 : Abstimmung
 		\item T120 : Innenraumkarten
