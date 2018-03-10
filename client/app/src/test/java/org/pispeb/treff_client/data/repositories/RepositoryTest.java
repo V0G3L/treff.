@@ -2,7 +2,6 @@ package org.pispeb.treff_client.data.repositories;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.net.wifi.SupplicantState;
 import android.os.Handler;
 
 import org.junit.Before;
@@ -64,8 +63,9 @@ public abstract class RepositoryTest {
     public void mockBackgroundBehavior() {
         // mock background actions
         doAnswer(invocation -> {
-            System.out.println(invocation.getArgumentAt(0, Runnable.class));
-            invocation.getArgumentAt(0, Runnable.class).run();
+            //TODO fix casts
+            System.out.println((String) invocation.getArgument(0));
+            ((Runnable) invocation.getArgument(0)).run();
             return null;
         }).when(mockHandler).post(any(Runnable.class));
     }
