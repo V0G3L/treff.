@@ -63,9 +63,9 @@ public abstract class RepositoryTest {
     public void mockBackgroundBehavior() {
         // mock background actions
         doAnswer(invocation -> {
-            //TODO fix casts
-            System.out.println((String) invocation.getArgument(0));
-            ((Runnable) invocation.getArgument(0)).run();
+            Object[] args = invocation.getArguments();
+            Runnable task = (Runnable) args[0];
+            task.run();
             return null;
         }).when(mockHandler).post(any(Runnable.class));
     }

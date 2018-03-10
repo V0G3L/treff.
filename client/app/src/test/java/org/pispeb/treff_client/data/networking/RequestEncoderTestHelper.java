@@ -100,7 +100,8 @@ public abstract class RequestEncoderTestHelper {
 
         // skip the backgroundHandler
         doAnswer(invocation -> {
-            String message = invocation.getArgument(0);
+            Object[] args = invocation.getArguments();
+            String message = (String) args[0];
             mockConnectionHandler.sendMessage(message);
             return null;
         }).when(testEncoder).sendToCH(anyString());
@@ -111,7 +112,8 @@ public abstract class RequestEncoderTestHelper {
 
         // print any invocations on CH to Console
         doAnswer(invocation -> {
-            System.out.println((String) invocation.getArgument(0));
+            Object[] args = invocation.getArguments();
+            System.out.println((String) args[0]);
             return null;
         }).when(mockConnectionHandler).sendMessage(anyString());
 
