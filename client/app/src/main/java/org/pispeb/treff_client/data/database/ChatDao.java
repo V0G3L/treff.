@@ -29,4 +29,7 @@ public interface ChatDao {
 
     @Delete
     void deleteMessages(List<ChatMessage> messages);
+
+    @Query("DELETE FROM message")
+    void deleteAllMessages();
 }

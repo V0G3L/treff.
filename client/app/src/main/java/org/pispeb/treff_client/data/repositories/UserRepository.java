@@ -208,4 +208,11 @@ public class UserRepository {
     public void requestRefresh() {
         encoder.getContactList();
     }
+
+    /**
+     * Deletes every user
+     */
+    public void deleteAllUsers() {
+        userDao.deleteAllUsers();
+    }
 }

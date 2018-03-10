@@ -85,4 +85,7 @@ public interface UserDao {
     @Query("UPDATE user SET username = :name WHERE userId = :userId")
     void setUserName(int userId, String name);
 
+    @Query("DELETE FROM user")
+    void deleteAllUsers();
+
 }

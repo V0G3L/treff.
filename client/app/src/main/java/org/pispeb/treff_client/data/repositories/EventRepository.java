@@ -142,6 +142,13 @@ public class EventRepository {
     }
 
     /**
+     * Deletes every event
+     */
+    public void deleteAllEvents() {
+        eventDao.getAllEvents();
+    }
+
+    /**
      * sync with server
      * TODO
      */

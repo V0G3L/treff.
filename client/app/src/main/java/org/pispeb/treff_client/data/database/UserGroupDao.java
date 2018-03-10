@@ -66,4 +66,10 @@ public interface UserGroupDao {
 
     @Update
     void update(UserGroup userGroup);
+
+    @Query("DELETE FROM usergroup")
+    void deleteAllGroups();
+
+    @Query("DELETE FROM groupmembership")
+    void deleteAllMemberships();
 }

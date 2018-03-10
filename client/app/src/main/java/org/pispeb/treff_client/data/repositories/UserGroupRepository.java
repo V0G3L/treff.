@@ -233,4 +233,18 @@ public class UserGroupRepository {
     public void requestRefresh() {
         encoder.listGroups();
     }
+
+    /**
+     * Deletes every userGroup
+     */
+    public void deleteAllGroups() {
+        userGroupDao.deleteAllGroups();
+    }
+
+    /**
+     * Deletes every userGroupMembership
+     */
+    public void deleteAllMemberships() {
+        userGroupDao.deleteAllMemberships();
+    }
 }

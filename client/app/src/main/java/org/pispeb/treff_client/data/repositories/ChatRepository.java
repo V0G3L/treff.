@@ -65,4 +65,11 @@ public class ChatRepository {
     public void requestSendMessage(int groupId, String message) {
         encoder.sendChatMessage(groupId, message);
     }
+
+    /**
+     * Deletes every chat message
+     */
+    public void deleteAllMessages() {
+        chatDao.deleteAllMessages();
+    }
 }
