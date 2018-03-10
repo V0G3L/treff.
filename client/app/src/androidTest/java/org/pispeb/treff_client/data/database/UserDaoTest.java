@@ -1,6 +1,5 @@
 package org.pispeb.treff_client.data.database;
 
-import android.arch.lifecycle.Observer;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.pispeb.treff_client.data.entities.User;
 
 import java.util.LinkedList;
@@ -23,8 +21,6 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class UserDaoTest extends DaoTest {
 
-    @Mock
-    private Observer<List<User>> mockUserListObserver;
     private Location mockLocation = new Location(LocationManager.GPS_PROVIDER);
     private UserDao userDao;
 
@@ -69,12 +65,11 @@ public class UserDaoTest extends DaoTest {
     }
 
     @Test
-    public void getUserByIdTest() {
+    public void getUserByIdTest() throws InterruptedException {
         //depends on insert
         userDao.save(testUserHans);
 
-        User daoUser = getValueFromLiveData(
-                userDao.getUserByIdLiveData(testUserHans.getUserId()), mockUserListObserver);
+        User daoUser = getValue(userDao.getUserByIdLiveData(testUserHans.getUserId()));
         assertTrue(daoUser.equals(testUserHans));
     }
 
@@ -91,21 +86,21 @@ public class UserDaoTest extends DaoTest {
     }
 
     @Test
-    public void friendTest() {
+    public void friendTest() throws InterruptedException {
         //depends on insert
 
         //no friends
-        List<User> friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockUserListObserver);
+        List<User> friendList = getValue(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 0);
 
         //add friend
         userDao.save(testUserHans);
-        friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockUserListObserver);
+        friendList = getValue(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 1);
 
         //remove friend
         userDao.setIsFriend(testUserHans.getUserId(), false);
-        friendList = getValueFromLiveData(userDao.getFriendsAsList(), mockUserListObserver);
+        friendList = getValue(userDao.getFriendsAsList());
         assertEquals(friendList.size(), 0);
     }
 
