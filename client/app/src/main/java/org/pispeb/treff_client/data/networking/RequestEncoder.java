@@ -42,7 +42,8 @@ import javax.websocket.DeploymentException;
 
 public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
-    private final int DISPLAY_ERROR_TOAST = 1;
+    private static final int DISPLAY_ERROR_TOAST = 1;
+    private static final int UPDATE_INTERVAL_MS = 10000;
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
@@ -140,7 +141,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                     requestUpdates();
                 }
             }
-        }, 0, 10000);
+        }, 0, UPDATE_INTERVAL_MS);
         updating = true;
     }
 
@@ -295,7 +296,11 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public void closeConnection() {
         // TODO check for Service still running
-        connectionHandler.disconnect();
+        // stop update timer
+        bgHandler.post(() -> {
+            stopRequestUpdates();
+            connectionHandler.disconnect();
+        });
     }
 
     /**

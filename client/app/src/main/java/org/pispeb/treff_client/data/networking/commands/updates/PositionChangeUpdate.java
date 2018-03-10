@@ -1,11 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands.updates;
 
-import android.location.Location;
-import android.location.LocationManager;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import org.osmdroid.util.LocationUtils;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.RepositorySet;
 

@@ -3,9 +3,9 @@ package org.pispeb.treff_client.view.group;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,29 +47,24 @@ public class GroupSettingsActivity extends AppCompatActivity {
             .get(GroupViewModel.class);
 
 
-        vm.getState().observe(this, state -> callback(state));
+        vm.getState().observe(this, this::callback);
 
         binding.setVm(vm);
 
         vm.setGroupById(groupId);
 
         MemberListAdapter adapter = new MemberListAdapter(vm);
-        vm.getMembers().observe(this, members -> {
-            adapter.setList(members);
-        });
+        vm.getMembers().observe(this, adapter::setList);
 
-        vm.getFriends().observe(this, friends -> {
-            this.friends = friends;
-        });
+        vm.getFriends().observe(this, friends -> this.friends = friends);
 
         binding.memberList.setAdapter(adapter);
         binding.memberList.setLayoutManager(new LinearLayoutManager(this));
         binding.memberList.setHasFixedSize(true);
 
 
-        vm.getGroup().observe(this, group -> {
-            binding.toolbarGroupSettings.setTitle(group.getName());
-        });
+        vm.getGroup().observe(this, group
+                -> binding.toolbarGroupSettings.setTitle(group.getName()));
 
         //toolbar
         Toolbar toolbar = binding.toolbarGroupSettings;

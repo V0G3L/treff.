@@ -56,6 +56,7 @@ public class ConnectionHandler {
                     messageIsOut = true;
                 } else {
                     Log.i("CH", "socket disconnected, will reconnect");
+                    session = connect(uri);
                 }
             }
         });

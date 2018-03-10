@@ -1,7 +1,6 @@
 package org.pispeb.treff_client.data.repositories;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Transformations;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 import android.content.Context;
@@ -15,6 +14,7 @@ import org.pispeb.treff_client.data.database.EventDao;
 import org.pispeb.treff_client.data.database.UserDao;
 import org.pispeb.treff_client.data.database.UserGroupDao;
 import org.pispeb.treff_client.data.entities.GroupMembership;
+import org.pispeb.treff_client.data.entities.TransformedLiveData;
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.entities.UserGroup;
 import org.pispeb.treff_client.data.networking.RequestEncoder;
@@ -72,20 +72,36 @@ public class UserGroupRepository {
         LiveData<List<GroupMembership>> groupMemberships =
                 userGroupDao.getGroupMembershipsByGroupIdLiveData(groupId);
 
-        //convert LiveData list of group memberships to LiveData list of users
-        LiveData<List<User>> users = Transformations.map(groupMemberships, gmList -> {
-            List<User> userList = new ArrayList<>();
-            for (int i = 0; i < gmList.size(); i++) {
-                int userId = gmList.get(i).getUserId();
-                userList.add(userDao.getUserById(userId));
-            }
-            return userList;
-        });
+        // convert LiveData list of group memberships to LiveData list of users
+        LiveData<List<User>> users = new
+                TransformedLiveData<List<GroupMembership>, List<User>>(
+                        groupMemberships) {
+
+                    @Override
+                    protected List<User> transform(
+                            List<GroupMembership> gmList) {
+                        List<User> users = new ArrayList<>(gmList.size());
+
+                        for (GroupMembership gm : gmList) {
+                            int userID = gm.getUserId();
+                            User user = userDao.getUserById(userID);
+
+                            // if user unknown, insert placeholder user and
+                            // schedule detail query
+                            if (user == null) {
+                                user = User.getPlaceholderAndScheduleQuery
+                                        (userID, userDao);
+                            }
+                            users.add(user);
+                        }
+                        return users;
+                    }
+                };
 
         return users;
     }
 
-    public void setIsSharing (int groupId, boolean isSharing) {
+    public void setIsSharing(int groupId, boolean isSharing) {
         backgroundHandler.post(() -> {
             userGroupDao.setIsSharing(groupId, isSharing);
         });
@@ -93,6 +109,7 @@ public class UserGroupRepository {
 
     /**
      * add a group to the local database
+     *
      * @param group group to be added
      */
     public void addGroup(UserGroup group) {
@@ -105,6 +122,7 @@ public class UserGroupRepository {
     /**
      * Leave a group, delete it locally and propagate through all its events
      * and Members
+     *
      * @param group group which the user left
      */
     public void remove(UserGroup group) {
@@ -136,11 +154,12 @@ public class UserGroupRepository {
 
     /**
      * Add new Members to a group
+     *
      * @param groupId ids of members to add
      * @param members id of group to add members to
      */
     public void addGroupMembers(int groupId, int[] members) {
-        for (int i = 0; i < members.length; i++ ) {
+        for (int i = 0; i < members.length; i++) {
             GroupMembership gms = new GroupMembership(members[i], groupId);
             userGroupDao.save(gms);
         }
@@ -148,17 +167,19 @@ public class UserGroupRepository {
 
     /**
      * remove members from a group
+     *
      * @param groupId given group
      * @param members array of users to remove
      */
     public void removeGroupMembers(int groupId, int[] members) {
-        for (int i = 0; i < members.length; i++ ) {
+        for (int i = 0; i < members.length; i++) {
             userGroupDao.delete(new GroupMembership(members[i], groupId));
         }
     }
 
     /**
      * Remove all members from group and replace with new ones
+     *
      * @param groupId
      * @param newMembers
      */
@@ -169,6 +190,7 @@ public class UserGroupRepository {
 
     /**
      * replace group in local database with updated one
+     *
      * @param userGroup
      */
     public void updateGroup(UserGroup userGroup) {
@@ -177,6 +199,7 @@ public class UserGroupRepository {
 
     /**
      * update a location or whether or not the user is sharing location
+     *
      * @param membership new membership
      */
     public void updateMembership(GroupMembership membership) {
@@ -186,8 +209,9 @@ public class UserGroupRepository {
 
     /**
      * request an id from the server to adda newly created group
+     *
      * @param groupName name of the group
-     * @param members list of initial members (at least one)
+     * @param members   list of initial members (at least one)
      */
     public void requestAddGroup(String groupName, int... members) {
         encoder.createGroup(groupName, members);
@@ -195,6 +219,7 @@ public class UserGroupRepository {
 
     /**
      * request the server to remove members from group
+     *
      * @param groupId effected group
      * @param members effected members
      */

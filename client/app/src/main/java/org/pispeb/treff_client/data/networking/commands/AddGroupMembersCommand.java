@@ -33,9 +33,11 @@ public class AddGroupMembersCommand extends AbstractCommand {
 
     public static class Request extends AbstractRequest {
 
-        @JsonProperty("group-id")
+        @JsonProperty("id")
         public final int groupId;
+        @JsonProperty("members")
         public final int[] members;
+        @JsonProperty("token")
         public final String token;
 
         public Request(int groupId, int[] members, String token) {

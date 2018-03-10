@@ -3,6 +3,11 @@ package org.pispeb.treff_client.data.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.location.Location;
+import android.support.annotation.Nullable;
+
+import org.pispeb.treff_client.data.database.UserDao;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
+import org.pispeb.treff_client.data.repositories.UserRepository;
 
 /**
  * Room {@link Entity} that represents a user, contains only as much information as the client needs
@@ -118,5 +123,89 @@ public class User {
         result = 31 * result + (requestPending ? 1 : 0);
         result = 31 * result + (location != null ? location.hashCode() : 0);
         return result;
+    }
+
+    /**
+     * Like {@link #getPlaceholderAndScheduleQuery(int, UserRepository,
+     * UserManipulationFunction)} but
+     * operates on a {@code UserDao} instead and performs no additional
+     * manipulation.
+     *
+     * @param userID  The ID of the user
+     * @param userDao The {@code UserDao} in which to store the
+     *                placeholder
+     * @return The placeholder value that has been stored in the
+     * {@code UserRepository}.
+     * @see #getPlaceholderAndScheduleQuery(int, UserRepository,
+     * UserManipulationFunction)
+     */
+    public static User getPlaceholderAndScheduleQuery(int userID,
+                                                      UserDao userDao) {
+        return getPlaceHolderAndScheduleQuery(userID, userDao::save, null);
+    }
+
+    /**
+     * Like {@link #getPlaceholderAndScheduleQuery(int, UserRepository,
+     * UserManipulationFunction)} but without additional manipulation.
+     *
+     * @param userID         The ID of the user
+     * @param userRepository The user repository in which to store the
+     *                       placeholder
+     * @return The placeholder value that has been stored in the
+     * {@code UserRepository}.
+     * @see #getPlaceholderAndScheduleQuery(int, UserRepository,
+     * UserManipulationFunction)
+     */
+    public static User getPlaceholderAndScheduleQuery(int userID,
+                                                      UserRepository
+                                                              userRepository) {
+        return getPlaceHolderAndScheduleQuery(userID,
+                userRepository::addUser, null);
+    }
+
+    /**
+     * Creates a placeholder {@code User} for temporary display and schedules
+     * the retrieval of that user's actual details.
+     *
+     * @param userID                 The ID of the user
+     * @param userRepository         The user repository in which to store the
+     *                               placeholder
+     * @param additionalManipulation Optional additional manipulation to
+     *                               apply to the placeholder before storing
+     *                               it in the {@code UserRepository}.
+     *                               May be null.
+     * @return The placeholder value that has been stored in the
+     * {@code UserRepository}.
+     */
+    public static User getPlaceholderAndScheduleQuery(
+            int userID, UserRepository userRepository,
+            @Nullable UserManipulationFunction additionalManipulation) {
+
+        return getPlaceHolderAndScheduleQuery(userID,
+                userRepository::addUser, additionalManipulation);
+    }
+
+    private interface UserStoreFunction {
+        void store(User user);
+    }
+
+    public interface UserManipulationFunction {
+        void manipulate(User user);
+    }
+
+    private static User getPlaceHolderAndScheduleQuery(
+            int userID, UserStoreFunction storeFunction,
+            UserManipulationFunction userManipulationFunction) {
+
+        User placeholder = new User(userID, "unknown user",
+                false, false, false, false,
+                new Location("placeholder"));
+
+        if (userManipulationFunction != null)
+            userManipulationFunction.manipulate(placeholder);
+        storeFunction.store(placeholder);
+        RequestEncoder.getInstance()
+                .getUserDetails(userID);
+        return placeholder;
     }
 }

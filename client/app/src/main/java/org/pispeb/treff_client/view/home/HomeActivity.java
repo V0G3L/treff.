@@ -61,9 +61,7 @@ public class HomeActivity extends NavigationActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("Home", "STOP!");
         if (isFinishing()) {
-            Log.i("Home", "CLOSING!");
             ViewModelFactory.closeConnection();
         }
     }
