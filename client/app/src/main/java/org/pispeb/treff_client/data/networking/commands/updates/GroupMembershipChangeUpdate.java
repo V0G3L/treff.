@@ -29,9 +29,8 @@ public class GroupMembershipChangeUpdate extends Update {
         GroupMembership membership = new GroupMembership
                 (membershipDescription.accountID, membershipDescription
                         .groupID);
-        //TODO
-//        membership.getSharingUntil()
-//        membership.setSharing(membershipDescription.isSharing);
+        membership.setSharingUntil(membershipDescription.sharingUntil);
+        // TODO: permissions
         repositorySet.userGroupRepository.updateMembership(membership);
     }
 }
