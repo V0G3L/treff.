@@ -27,6 +27,7 @@ public class BlockAccountCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         userRepository.setIsBlocked(output.id, true);
+        userRepository.setIsFriend(output.id, false);
     }
 
     public static class Request extends AbstractRequest {
