@@ -44,15 +44,11 @@ public interface UserGroupDao {
     @Delete
     void delete(GroupMembership groupMembership);
 
+    @Update
+    void update(GroupMembership groupMembership);
+
     @Query("DELETE FROM groupmembership WHERE groupId = :groupId")
     void deleteMembershipsOfGroup(int groupId);
-
-    /* TODO remove
-    @Query("SELECT * FROM user INNER JOIN groupmembership " +
-            "ON groupmembership.userId = user.userId " +
-            "WHERE groupmembership.groupId = :groupId")
-    DataSource.Factory<Integer, User> getUsersByGroup(int groupId);
-    */
 
     @Query("SELECT * FROM groupmembership WHERE groupId = :groupId")
     List<GroupMembership> getGroupMembershipsByGroupId(int groupId);

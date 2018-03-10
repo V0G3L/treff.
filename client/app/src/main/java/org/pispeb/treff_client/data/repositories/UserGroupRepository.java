@@ -176,6 +176,15 @@ public class UserGroupRepository {
     }
 
     /**
+     * update a location or whether or not the user is sharing location
+     * @param membership new membership
+     */
+    public void updateMembership(GroupMembership membership) {
+        userGroupDao.update(membership);
+    }
+
+
+    /**
      * request an id from the server to adda newly created group
      * @param groupName name of the group
      * @param members list of initial members (at least one)
