@@ -1,10 +1,13 @@
 package org.pispeb.treff_client.view.ui_components;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +22,9 @@ import org.pispeb.treff_client.view.about.AboutActivity;
 import org.pispeb.treff_client.view.home.HomeActivity;
 import org.pispeb.treff_client.view.login.LoginActivity;
 import org.pispeb.treff_client.view.profile.ProfileActivity;
+import org.pispeb.treff_client.view.profile.ProfileViewModel;
 import org.pispeb.treff_client.view.settings.SettingsActivity;
+import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
  * Abstract Activity providing top level navigation through a navigation drawer
@@ -30,6 +35,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
     private ActionBarDrawerToggle drawerToggle;
     protected DrawerLayout drawer;
     protected ActivityNavigationBinding frameBinding;
+    private NavigationViewModel vm;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +44,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
                 (this, R.layout.activity_navigation);
 
         drawer = frameBinding.drawerLayout;
+
+        vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(this))
+                .get(NavigationViewModel.class);
 
         Activity thisActivity = this;
 
@@ -76,7 +86,20 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         startActivity(aboutIntent);
                         return true;
                     case R.id.nav_logout:
-                        // TODO delete db, tokens etc
+
+                        //deletes everything saved by the database
+                        vm.wipeAllRepos();
+
+                        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+                        //deletes everything saved by shared preferences
+                        pref.edit().putString(this.getString(R.string.key_email), "")
+                                .putString(this.getString(R.string.key_userName), "")
+                                .putString(this.getString(R.string.key_userId), "")
+                                .putString(this.getString(R.string.key_token), "")
+                                .putString(this.getString(R.string.key_password), "").apply();
+
+
                         Intent logoutIntent = new Intent(thisActivity,
                                 LoginActivity.class);
                         startActivity(logoutIntent);

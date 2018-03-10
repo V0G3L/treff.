@@ -238,13 +238,17 @@ public class UserGroupRepository {
      * Deletes every userGroup
      */
     public void deleteAllGroups() {
-        userGroupDao.deleteAllGroups();
+        backgroundHandler.post(() -> {
+            userGroupDao.deleteAllGroups();
+        });
     }
 
     /**
      * Deletes every userGroupMembership
      */
     public void deleteAllMemberships() {
-        userGroupDao.deleteAllMemberships();
+        backgroundHandler.post(() -> {
+            userGroupDao.deleteAllMemberships();
+        });
     }
 }

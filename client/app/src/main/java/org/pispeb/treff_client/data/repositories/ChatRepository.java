@@ -70,6 +70,8 @@ public class ChatRepository {
      * Deletes every chat message
      */
     public void deleteAllMessages() {
-        chatDao.deleteAllMessages();
+        backgroundHandler.post(() -> {
+            chatDao.deleteAllMessages();
+        });
     }
 }

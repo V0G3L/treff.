@@ -25,6 +25,7 @@ import org.pispeb.treff_client.view.home.map.MapViewModel;
 import org.pispeb.treff_client.view.login.LoginViewModel;
 import org.pispeb.treff_client.view.login.RegisterViewModel;
 import org.pispeb.treff_client.view.profile.ProfileViewModel;
+import org.pispeb.treff_client.view.ui_components.NavigationViewModel;
 
 /**
  * Factory to pass Daos to Repositories
@@ -117,6 +118,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new RegisterViewModel(encoder);
         } else if (ProfileViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new ProfileViewModel(encoder);
+        } else if (NavigationViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new NavigationViewModel(
+                    chatRepository,
+                    eventRepository,
+                    userGroupRepository,
+                    userRepository);
         }
 
         throw new IllegalArgumentException(

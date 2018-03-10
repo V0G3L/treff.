@@ -213,6 +213,8 @@ public class UserRepository {
      * Deletes every user
      */
     public void deleteAllUsers() {
-        userDao.deleteAllUsers();
+        backgroundHandler.post(() -> {
+            userDao.deleteAllUsers();
+        });
     }
 }

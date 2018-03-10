@@ -145,7 +145,9 @@ public class EventRepository {
      * Deletes every event
      */
     public void deleteAllEvents() {
-        eventDao.getAllEvents();
+        backgroundHandler.post(() -> {
+            eventDao.deleteAllEvents();
+        });
     }
 
     /**
