@@ -3,6 +3,7 @@ package org.pispeb.treff_client.data.networking;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -517,24 +518,23 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param title     The name of the event
      * @param timeStart The starting time of the event (unix time)
      * @param timeEnd   The finishing time of the event (unix time
-     * @param position  The position of the event
+     * @param location  The location of the event
      */
     public synchronized void createEvent(int groupId, String title,
                                          int creatorId, Date timeStart,
-                                         Date timeEnd, Position position) {
+                                         Date timeEnd, Location location) {
         executeCommand(
                 new CreateEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, getToken(),
+                        timeEnd, location, getToken(),
                         repositorySet.eventRepository));
     }
 
     public synchronized void editEvent(int groupId, String title, int creatorId,
-                                       Date timeStart,
-                                       Date timeEnd, Position position,
-                                       int eventId) {
+                                       Date timeStart, Date timeEnd,
+                                       Location location, int eventId) {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, eventId, getToken(),
+                        timeEnd, location, eventId, getToken(),
                         repositorySet.eventRepository));
     }
 

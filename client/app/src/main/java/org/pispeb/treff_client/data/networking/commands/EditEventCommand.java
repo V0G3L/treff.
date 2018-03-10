@@ -23,12 +23,12 @@ public class EditEventCommand extends AbstractCommand {
     private Request output;
 
     public EditEventCommand(int groupId, String title, int creatorId,
-                            Date timeStart, Date timeEnd, Position position,
+                            Date timeStart, Date timeEnd, Location location,
                             int eventId, String token,
                             EventRepository eventRepository) {
         super(Response.class);
         output = new Request(groupId, title, creatorId, timeStart,
-                timeEnd, position, eventId, token);
+                timeEnd, location, eventId, token);
         this.eventRepository = eventRepository;
     }
 
@@ -41,8 +41,8 @@ public class EditEventCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse; //empty
         Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLongitude(output.event.position.longitude);
-        l.setLatitude(output.event.position.latitude);
+        l.setLatitude(output.event.latitude);
+        l.setLongitude(output.event.longitude);
         eventRepository.updateEvent(new Event(
                 output.event.id,
                 output.event.title,
@@ -62,13 +62,12 @@ public class EditEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String title, int creatorId, Date timeStart,
-                       Date timeEnd, Position position, int eventId,
+                       Date timeEnd, Location location, int eventId,
                        String token) {
             super(CmdDesc.EDIT_EVENT.toString());
             this.groupId = groupId;
-            event = new EventEditDescription("type", title, creatorId,
-                    timeStart,
-                    timeEnd, position, eventId);
+            event = new EventEditDescription(title, creatorId, timeStart,
+                    timeEnd, location, eventId);
             this.token = token;
         }
     }

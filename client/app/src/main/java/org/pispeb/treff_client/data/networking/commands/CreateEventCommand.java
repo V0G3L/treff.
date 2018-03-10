@@ -23,12 +23,11 @@ public class CreateEventCommand extends AbstractCommand {
     private Request output;
 
     public CreateEventCommand(int groupId, String title, int creatorId,
-                              Date timeStart,
-                              Date timeEnd, Position position, String token,
-                              EventRepository eventRepository) {
+                              Date timeStart, Date timeEnd, Location location,
+                              String token, EventRepository eventRepository) {
         super(Response.class);
         output = new Request(groupId, title, creatorId, timeStart, timeEnd,
-                position, token);
+                location, token);
         this.eventRepository = eventRepository;
     }
 
@@ -41,8 +40,8 @@ public class CreateEventCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLongitude(output.event.position.longitude);
-        l.setLatitude(output.event.position.latitude);
+        l.setLatitude(output.event.latitude);
+        l.setLongitude(output.event.longitude);
         eventRepository.addEvent(new Event(
                 response.id,
                 output.event.title,
@@ -61,11 +60,11 @@ public class CreateEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String title, int creatorId, Date timeStart,
-                       Date timeEnd, Position position, String token) {
+                       Date timeEnd, Location location, String token) {
             super(CmdDesc.CREATE_EVENT.toString());
             this.groupId = groupId;
-            event = new EventCreateDescription("type", title, creatorId,
-                    timeStart, timeEnd, position);
+            event = new EventCreateDescription(title, creatorId, timeStart,
+                    timeEnd, location);
             this.token = token;
         }
     }

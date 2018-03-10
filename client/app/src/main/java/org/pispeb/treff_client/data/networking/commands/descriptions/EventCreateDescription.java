@@ -14,6 +14,8 @@ import java.util.Date;
  */
 public class EventCreateDescription {
 
+    @JsonProperty("type")
+    public final String type = "event";
     @JsonProperty("title")
     public final String title;
     @JsonProperty("creator")
@@ -37,8 +39,8 @@ public class EventCreateDescription {
      * @param timeEnd   The date and time at which the event ends
      * @param location  The location at which the event takes place
      */
-    public EventCreateDescription(String title, int creatorID, Date timeStart, Date timeEnd,
-                                  Location location) {
+    public EventCreateDescription(String title, int creatorID, Date timeStart,
+                                  Date timeEnd, Location location) {
         this.title = title;
         this.creatorID = creatorID;
         this.timeStart = timeStart;
