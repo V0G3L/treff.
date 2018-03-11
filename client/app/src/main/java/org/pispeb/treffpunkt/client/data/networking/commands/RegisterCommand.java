@@ -20,7 +20,6 @@ public class RegisterCommand extends AbstractCommand{
     private String email;
     private String pass;
     private Request output;
-    private Context ctx;
 
     public RegisterCommand(String user, String pass, String email) {
         super(Response.class);

@@ -13,7 +13,7 @@ public class RegisterTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new RegisterCommand(mockName, mockPassword);
+        command = new RegisterCommand(mockName, mockPassword, "");
     }
 
     @Override
