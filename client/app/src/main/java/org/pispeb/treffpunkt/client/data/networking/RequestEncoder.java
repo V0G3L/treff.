@@ -241,6 +241,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
      */
     private void nextCommand() {
         if (!commands.isEmpty()) {
+            idle = false;
             sendRequest(commands.peek().command.getRequest(),
                     commands.peek().abortOnCantConnect);
         } else {
