@@ -31,17 +31,25 @@ public class RemoveContactCommand extends AbstractCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        // check if account still exists
-        Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+        Account account, actingAccount;
 
-        // get account
-        Account account = getSafeForWriting(
-                accountManager.getAccount(input.id));
+        // get accounts in the right locking order
+        if (input.getActingAccount().getID() < input.id) {
+            actingAccount
+                    = getSafeForWriting(input.getActingAccount());
+            account = getSafeForWriting(
+                    accountManager.getAccount(input.id));
+        } else {
+            account = getSafeForWriting(
+                    accountManager.getAccount(input.id));
+            actingAccount
+                    = getSafeForWriting(input.getActingAccount());
+        }
+
+        if (actingAccount == null)
+                return new ErrorOutput(ErrorCode.TOKENINVALID);
         if (account == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+                return new ErrorOutput(ErrorCode.USERIDINVALID);
 
         // check if the accounts are contacts
         if (!actingAccount.getAllContacts().containsKey(input.id))

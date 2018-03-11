@@ -17,6 +17,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * a command to edit the username of an account
@@ -46,17 +47,26 @@ public class EditUsernameCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.USERNAMEALREADYINUSE);
         }
 
+        // TODO Incoming blocks
         // create the update
-        Set<Account> affected = new HashSet<Account>();
+        Set<Account> affected = new TreeSet<Account>();
         affected.addAll(actingAccount.getAllContacts().values());
         affected.addAll(actingAccount.getAllIncomingContactRequests().values());
         affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
         for (Usergroup g : actingAccount.getAllGroups().values()) {
             getSafeForReading(g);
             affected.addAll(g.getAllMembers().values());
+            releaseReadLock(g);
         }
-        for (Account a : affected)
-            getSafeForWriting(a);
+        releaseWriteLock(actingAccount);
+
+        HashSet<Account> sucessfullyLocked = new HashSet<Account>();
+        for (Account a : affected){
+            a = getSafeForReading(a);
+            if (a != null) {
+                sucessfullyLocked.add(a);
+            }
+        }
         AccountChangeUpdate update = new AccountChangeUpdate(new Date(),
                 actingAccount.getID(), actingAccount);
         try {
