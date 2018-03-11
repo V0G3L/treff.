@@ -58,8 +58,6 @@ public class AuthFragment extends Fragment {
                 .putString(getString(R.string.key_server_address),
                         serverAddress)
                 .apply();
-        if(!defaultAddress) {
-            RequestEncoder.getInstance().closeConnection();
-        }
+        RequestEncoder.getInstance().closeConnection();
     }
 }

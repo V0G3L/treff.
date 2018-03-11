@@ -349,9 +349,11 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
         // TODO check for Service still running
         // stop update timer
         bgHandler.post(() -> {
-            stopRequestUpdates();
-            connectionHandler.disconnect();
-            connectionHandler = null;
+            if (connectionHandler != null) {
+                stopRequestUpdates();
+                connectionHandler.disconnect();
+                connectionHandler = null;
+            }
         });
     }
 
