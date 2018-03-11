@@ -39,6 +39,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/username"
             app:layout_constraintBottom_toBottomOf="@id/username"
+            android:focusable="false"
+            android:clickable="false"
             app:layout_constraintEnd_toEndOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,8 @@ public class GroupChatFragment extends Fragment {
 
 
         binding.list.setAdapter(adapter);
-        binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.list.setLayoutManager(new LinearLayoutManager(getContext(),
+                LinearLayoutManager.VERTICAL, true));
         binding.list.setHasFixedSize(true);
 
         return binding.getRoot();
