@@ -110,14 +110,14 @@
 		\subsubsection{Plicht}
 			\begin{itemize}
                 \item \textbf{Einfache Bedienung:}\\
-							%TODO von jemand der beschreiben kann inwieweit wir
-							%Material Design einhalten
-                \item \textbf{Mobile Nutzung:}\\
-							%TODO tut das?
+											Die Material Design Richtlinien wurden größtenteils
+											beachtet. Jedoch enstanden kleine Abweichungen
+											durch z.B. persönliche Präferenzen bei der Verwendung
+											der Farben des KIT-Logos
                 \item \textbf{Nutzeraufkommen:}\\
-							%TODO tut das?
-                \item \textbf{Datenschutz:}\\
-				  		%TODO tut das?
+											Aus zeitlichen Gründen konnte das Verhalten und die
+											Leistung bei hohem Nutzeraufkommen noch nicht getestet
+											und daher nicht garantiert werden.
 			\end{itemize}
 
 \section{Testszenarien}
@@ -165,14 +165,11 @@
 	\subsection{Küranforderung}
 		\subsubsection{Funktionierende Testszenarien}
 			\begin{itemize}
+				\item \textbf{T110 : Chat} %TODO Benachrichtigung
 				\item \textbf{T150 : Sprache}
 				\item \textbf{T160 : Eigene Server}
 				\item \textbf{T170 : Serverwechsel}
-                \item placeholder
-        	%TODO:
-        	% Sollten gehen:
-        	% - T110 (Chat)
-	        \end{itemize}
+	    \end{itemize}
 
 	\subsubsection{Ungetestete Testszenarien}
 		\begin{itemize}
@@ -208,21 +205,32 @@
 \section{Art der Tests}
 	\subsection{Server}
 		\begin{itemize}
-			\item Überwiegend Junit %TODO Coverage
-			\item Zusätzlich Anwendungsfälle
+			\item Durch Unit Tests sind 82\% der Zeilen abgedeckt.
+						Jedoch ist ein großer Teil der ungetestet Zeilen Klassen
+						diverse Küranforderung zuzuordnen, die nur serverseitig
+						implementiert worden und daher aktuell keine Verwendung in
+						der App finden.
+			\item Zusätzlich wurden die Anwendungsfälle, die im Pflichtenheft
+						definiert wurden, durchgespielt und somit die Nebenläufigkeit
+						bei einer kleinen Anzahl von Nutzern getestet
 		\end{itemize}
 
 	\subsection{Klient}
 		\begin{itemize}
 			\item Wenig Junit %TODO Coverage
-			\item Überwiegend Anwendungsfälle
+			\item Da der Klient nur unzureichend durch Unit Tests abgedeckt ist,
+						wurde dieser überwiegend durch das Durchspielen der
+						Anwendungsfälle getestet
 		\end{itemize}
 
 \section{Probleme beim Testen}
 	\begin{itemize}
-		\item Concurrency der commands schwer zu testen
-		\item Client schwer mit Junit zu testen
-		\item Client benötigt funktionierenden Server um getestet zu werden
-		\item Unterschiedliche Androidversionen verhalten unterschiedlich
+		\item Die Nebenläufigkeit der Befehle ist schwer zu testen
+		\item Der Klient ist schwer Über Unit Tests zu testen
+		\item Der Klient benötigt einen funktionierenden Server
+					um getestet zu werden
+		\item Teilweise zeigt der Klient anderes Verhalten bei Verwendung einer
+					anderen Androidversion
+		\item Der zur Verfügung gestellte Server konnte nicht verwendet werden
 	\end{itemize}
 \end{document}
