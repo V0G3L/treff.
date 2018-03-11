@@ -104,7 +104,7 @@ public class LoginFragment extends AuthFragment {
                 this.startActivity(intent);
                 break;
             case SHOW_SERVER_ADDRESS_DIALOG:
-                showServerAddressDialog();
+                showServerAddressDialog(binding.contentFrame);
                 break;
             case CONNECT_FAILED:
                 resetToIdleState();

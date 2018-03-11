@@ -16,6 +16,7 @@
         android:background="@color/colorPrimary">
 
         <LinearLayout
+            android:id="@+id/content_frame"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

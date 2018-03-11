@@ -41,12 +41,10 @@ public class GroupEventListFragment extends Fragment {
 
         vm.setGroup(groupId);
 
-        vm.getState().observe(this, state -> callback(state));
+        vm.getState().observe(this, this::callback);
 
-        // merge event and poll list when either of them changes
-        vm.getEvents().observe(this, events -> {
-            adapter.setList(events);
-        });
+        // update event list
+        vm.getEvents().observe(this, events -> adapter.setList(events));
 
 
         binding.list.setAdapter(adapter);

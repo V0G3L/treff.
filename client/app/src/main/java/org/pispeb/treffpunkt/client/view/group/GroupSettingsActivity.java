@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.client.view.group;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
@@ -12,13 +13,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.data.entities.User;
 import org.pispeb.treffpunkt.client.databinding.ActivityGroupSettingsBinding;
+import org.pispeb.treffpunkt.client.databinding.DialogTextinputBinding;
 import org.pispeb.treffpunkt.client.view.home.HomeActivity;
 import org.pispeb.treffpunkt.client.view.util.State;
 import org.pispeb.treffpunkt.client.view.util.ViewModelFactory;
@@ -117,10 +122,17 @@ public class GroupSettingsActivity extends AppCompatActivity {
 
     private void showEditDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        EditText input = new EditText(this);
+
+        DialogTextinputBinding dialogBinding =
+                DataBindingUtil.inflate(getLayoutInflater(), R.layout
+                        .dialog_textinput, binding.contentFrame, false);
+
+        dialogBinding.title.setText(R.string.groupname);
+        EditText input = dialogBinding.input;
         input.setText(vm.getGroup().getValue().getName());
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+
+        builder.setView(dialogBinding.getRoot());
 
         builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
             dialog.dismiss();

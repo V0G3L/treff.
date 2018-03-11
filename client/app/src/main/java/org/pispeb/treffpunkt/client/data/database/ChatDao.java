@@ -19,11 +19,11 @@ public interface ChatDao {
     @Insert
     void save(ChatMessage message);
 
-    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY messageId" +
+    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY timeSent" +
             " DESC")
     DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
 
-    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY messageId" +
+    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY timeSent" +
             " DESC")
     List<ChatMessage> getMessageListByGroupId(int groupId);
 

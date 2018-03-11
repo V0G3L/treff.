@@ -102,7 +102,7 @@ public class RegisterFragment extends AuthFragment {
                 binding.inputRegEmail.setErrorEnabled(true);
                 break;
             case SHOW_SERVER_ADDRESS_DIALOG:
-                showServerAddressDialog();
+                showServerAddressDialog(binding.parent);
                 break;
             case CONNECT_FAILED:
                 resetToIdleState();
