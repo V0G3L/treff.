@@ -84,7 +84,7 @@
                 \item \textbf{Verwaltung von Kontodaten:}\\
                       \label{deleteaccount}Das Löschen von Accounts wurde
                       implementiert, aber während der Qualitätssicherung
-                      ist aufgefallen das grobe Fehler gemacht wurden.
+                      ist aufgefallen, dass grobe Fehler gemacht wurden.
                       Da sich das Beheben dieser Fehler als sehr komplex
                       herausgestellt hat, wurde aus Zeitgründen darauf
                       verzichtet.
@@ -137,6 +137,8 @@
 				\item \textbf{T20 : Kontakt hinzufügen}
 					\begin{itemize}
 						\item Angepasste Reaktion zur Entwurfsänderung "Kontaktanfragen"
+						\item Eine gegenseitige Kontaktanfrage zweier Nutzer führt
+									vorübergehend zu einem Anzeigefehler im Klienten
 					\end{itemize}
 				\item \textbf{T50 : Verabredung erstellen}
 					\begin{itemize}
@@ -161,7 +163,10 @@
 	\subsection{Küranforderung}
 		\subsubsection{Funktionierende Testszenarien}
 			\begin{itemize}
-				\item \textbf{T110 : Chat} %TODO Benachrichtigung
+				\item \textbf{T110 : Chat}\\
+				 			Jedoch wird der Nutzer nicht über neue Nachrichten benachrichtigt.
+							Dies ist auf die fehlenden Push-Benachrichtigungen zurückzuführen.
+							(vgl. \ref{notification})
 				\item \textbf{T150 : Sprache}
 				\item \textbf{T160 : Eigene Server}
 				\item \textbf{T170 : Serverwechsel}
@@ -204,7 +209,7 @@
 			\item Durch Unit Tests sind 82\% der Zeilen abgedeckt.
 						Jedoch ist ein großer Teil der ungetestet Zeilen Klassen
 						diverse Küranforderung zuzuordnen, die nur serverseitig
-						implementiert worden und daher aktuell keine Verwendung in
+						implementiert wurden und daher aktuell keine Verwendung in
 						der App finden.
 			\item Zusätzlich wurden die Anwendungsfälle, die im Pflichtenheft
 						definiert wurden, durchgespielt und somit die Nebenläufigkeit
@@ -213,8 +218,8 @@
 
 	\subsection{Klient}
 		\begin{itemize}
-			\item Wenig Junit %TODO Coverage
-			\item Da der Klient nur unzureichend durch Unit Tests abgedeckt ist,
+			\item Durch Unit Tests sind ??\% der Zeilen abgedeckt. %TODO
+			\item Da nicht alles sinnvoll durch Unit Tests getestet werden konnte,
 						wurde dieser überwiegend durch das Durchspielen der
 						Anwendungsfälle getestet
 		\end{itemize}
@@ -222,8 +227,8 @@
 \section{Probleme beim Testen}
 	\begin{itemize}
 		\item Die Nebenläufigkeit der Befehle ist schwer zu testen
-		\item Der Klient ist schwer Über Unit Tests zu testen
-		\item Der Klient benötigt einen funktionierenden Server
+		\item Der Klient ist schwer über Unit Tests zu testen
+		\item Der Klient benötigt einen funktionierenden Server,
 					um getestet zu werden
 		\item Teilweise zeigt der Klient anderes Verhalten bei Verwendung einer
 					anderen Androidversion
