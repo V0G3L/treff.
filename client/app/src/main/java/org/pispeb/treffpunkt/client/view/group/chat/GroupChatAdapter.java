@@ -76,9 +76,11 @@ class GroupChatViewHolder extends RecyclerView.ViewHolder {
                 .getDefaultSharedPreferences(appctx);
         int id = pref.getInt(appctx.getString(R.string.key_userId), -1);
         if (message.getUserId() == id) {
-            binding.text.getBackground().setTint(appctx.getColor(R.color.colorAccent));
-        } else {
+            //own
             binding.text.getBackground().setTint(appctx.getColor(R.color.colorPrimary));
+        } else {
+            //others
+            binding.text.getBackground().setTint(appctx.getColor(R.color.lightGrey));
         }
     }
 }
