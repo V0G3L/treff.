@@ -3,61 +3,47 @@ package org.pispeb.treff_server.commands;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treff_server.commands.descriptions.MembershipDescription;
-import org.pispeb.treff_server.commands.io.CommandInput;
-import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
+
+import java.util.Date;
 
 /**
  * a command to get the group membership of an account to a specific user group
  */
-public class GetMembershipDetailsCommand extends AbstractCommand {
+public class GetMembershipDetailsCommand extends GroupCommand {
 
 
     public GetMembershipDetailsCommand(AccountManager accountManager,
                                        ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.READ_LOCK,
+                null,null);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-
+    protected CommandOutput executeOnGroup(GroupInput commandInput) {
         Input input = (Input) commandInput;
 
-        // check if account still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-
-        // get account to check
-        Account account =
-                getSafeForReading(accountManager.getAccount(input.id));
-        if (account == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
-
-        // get group
-        Usergroup group
-                = getSafeForReading(actingAccount.getAllGroups()
-                .get(input.groupId));
-        if (group == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        if (null == account.getAllGroups().get(input.groupId))
+        Account account = accountManager.getAccount(input.id);
+        if (null == account
+                .getAllGroups().get(input.groupId))
             return new ErrorOutput(ErrorCode.USERNOTINGROUP);
 
+        Date d = usergroup.getLocationSharingTimeEndOfMember(account);
+        long locationSharingTime = (d == null)?0:d.getTime();
         MembershipDescription mB =
-                new MembershipDescription(actingAccount.getID(),
-                        group.getPermissionsOfMember(actingAccount),
-                        group.getLocationSharingTimeEndOfMember(actingAccount)
-                                .getTime());
+                new MembershipDescription(usergroup.getID(), account.getID(),
+                        locationSharingTime,
+                        usergroup.getPermissionsOfMember(account)
+                );
         return new Output(mB);
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends GroupInput {
 
         final int id;
         final int groupId;
@@ -65,7 +51,7 @@ public class GetMembershipDetailsCommand extends AbstractCommand {
         public Input(@JsonProperty("id") int id,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token);
+            super(token, groupId, new int[]{id});
             this.id = id;
             this.groupId = groupId;
         }

@@ -14,6 +14,11 @@ public enum ErrorCode {
     UNKNOWN_COMMAND(1001),
 
     /**
+     * error: internal server error
+     */
+    INTERNAL_SERVER_ERROR(1002),
+
+    /**
      * error: authentication token invalid
      */
     TOKENINVALID(1100),

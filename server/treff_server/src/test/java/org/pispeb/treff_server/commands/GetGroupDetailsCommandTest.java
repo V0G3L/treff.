@@ -2,11 +2,12 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests.GroupDependentTest;
+import org.pispeb.treff_server.abstracttests.GroupDependentTest;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 public class GetGroupDetailsCommandTest extends GroupDependentTest {
 
@@ -15,7 +16,7 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
     }
 
     @Test
-    public void execute() {
+    public void valid() {
         GetGroupDetailsCommand getGroupDetailsCommand
                 = new GetGroupDetailsCommand(accountManager, mapper);
         inputBuilder.add("id", groupId);
@@ -36,5 +37,33 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
                         .add(users[1].id)
                         .add(users[2].id)
                         .build());
+    }
+
+    @Test
+    public void invalidToken() {
+        GetGroupDetailsCommand getGroupDetailsCommand
+                = new GetGroupDetailsCommand(accountManager, mapper);
+        JsonObjectBuilder inputBuilder = Json.createObjectBuilder()
+                .add("cmd","get-group-details")
+                .add("token","0")
+                .add("id", groupId);
+
+        JsonObject output = runCommand(getGroupDetailsCommand, inputBuilder);
+        Assert.assertEquals(output.getInt("error"), 1100);
+    }
+
+    @Test
+    public void invalidGroupId() {
+        GetGroupDetailsCommand getGroupDetailsCommand
+                = new GetGroupDetailsCommand(accountManager, mapper);
+        int invalidGroupId = 1337;
+        while (invalidGroupId == groupId) {
+            invalidGroupId += 23;
+        }
+
+        inputBuilder.add("id", invalidGroupId);
+
+        JsonObject output = runCommand(getGroupDetailsCommand, inputBuilder);
+        Assert.assertEquals(output.getInt("error"), 1201);
     }
 }

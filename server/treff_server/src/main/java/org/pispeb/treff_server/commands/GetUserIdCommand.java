@@ -35,7 +35,7 @@ public class GetUserIdCommand extends AbstractCommand {
         Account account = getSafeForReading(
                 accountManager.getAccountByUsername(input.username));
         if (account == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERNAMEINVALID);
 
         return new Output(account.getID());
     }

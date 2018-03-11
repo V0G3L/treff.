@@ -1,7 +1,6 @@
 package org.pispeb.treff_server.sql;
 
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.PasswordHash;
 import org.pispeb.treff_server.exceptions.DatabaseException;
@@ -9,18 +8,14 @@ import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
-import org.pispeb.treff_server.interfaces.Update;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
 import org.pispeb.treff_server.sql.resultsethandler.ContainsCheckHandler;
 import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
 import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 import org.pispeb.treff_server.interfaces.DataObject;
 
-import javax.json.JsonObject;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -87,7 +82,7 @@ public class EntityManagerSQL implements AccountManager {
     boolean usernameAvailable(String username) {
         synchronized (usernameLock) {
             return !database.query(
-                    "SELECT FROM %s WHERE username=?;",
+                    "SELECT id FROM %s WHERE username=?;",
                     TableName.ACCOUNTS,
                     new ContainsCheckHandler(),
                     username);
@@ -97,7 +92,7 @@ public class EntityManagerSQL implements AccountManager {
     boolean emailAvailable(String email) {
         synchronized (emailLock) {
             return !database.query(
-                    "SELECT FROM %s WHERE username=?;",
+                    "SELECT id FROM %s WHERE username=?;",
                     TableName.ACCOUNTS,
                     new ContainsCheckHandler(),
                     email);
@@ -147,15 +142,14 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public void createUpdate(String updateContent, Date time,
+    public void createUpdate(String updateContent,
                              Set<? extends Account> affectedAccounts) {
         // create update itself
         UpdateSQL update = database.insert(
-                "INSERT INTO %s(updatestring,time) VALUES (?,?);",
+                "INSERT INTO %s(updatestring) VALUES (?);",
                 TableName.UPDATES,
                 new DataObjectHandler<>(UpdateSQL.class, this),
-                updateContent,
-                time);
+                updateContent);
 
         update.getReadWriteLock().writeLock().lock();
         try {
@@ -168,11 +162,11 @@ public class EntityManagerSQL implements AccountManager {
     }
 
     @Override
-    public void createUpdate(String updateContent, Date time,
+    public void createUpdate(String updateContent,
                              Account affectedAccount) {
         Set<Account> affected = new HashSet<>();
         affected.add(affectedAccount);
-        createUpdate(updateContent, time, affected);
+        createUpdate(updateContent, affected);
     }
 
 

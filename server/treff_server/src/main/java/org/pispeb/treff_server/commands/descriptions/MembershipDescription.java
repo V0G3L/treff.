@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treff_server.Permission;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -19,45 +18,17 @@ public class MembershipDescription {
     public final Map<Permission, Boolean> permissionMap;
     @JsonProperty("type")
     public final String type = "membership";
+    @JsonProperty("group-id")
+    public final int groupID;
     @JsonProperty("account-id")
     public final int accountID;
     @JsonProperty("sharing-until")
-    public final Date sharingUntil;
+    public Date sharingUntil;
 
-    public MembershipDescription(@JsonProperty("account-id") int accountID,
-                                 @JsonProperty("sharing-until")
-                                         long sharingUntil,
-                                 @JsonProperty("permissions")
-                                         Map<String, Boolean>
-                                         permissionStringMap)
-            throws IOException {
-
-        this.accountID = accountID;
-        this.sharingUntil = new Date(sharingUntil);
-
-        // translate String->Boolean map to Permission->Boolean map
-        // throw IOException if permission unknown. JsonDeserializer will
-        // forward it and prompt AbstractClass to respond with a syntax error
-        // message
-        try {
-            // translate to mutable map, then only save an immutable view of it
-            Map<Permission, Boolean> mutablePermissionMap
-                    = permissionStringMap.entrySet()
-                    .stream()
-                    .collect(Collectors
-                            .toMap(es -> Permission.valueOf(es.getKey()),
-                                    Map.Entry::getValue));
-            this.permissionMap
-                    = Collections.unmodifiableMap(mutablePermissionMap);
-        } catch (IllegalArgumentException e) {
-            throw new IOException();
-        }
-    }
-
-    public MembershipDescription(int accountID,
-                                 Map<Permission, Boolean> permissionMap,
-                                 long sharingUntil) {
-
+    public MembershipDescription(int groupID, int accountID,
+                                 long sharingUntil,
+                                 Map<Permission, Boolean> permissionMap) {
+        this.groupID = groupID;
         this.accountID = accountID;
         this.sharingUntil = new Date(sharingUntil);
         this.permissionMap = permissionMap;

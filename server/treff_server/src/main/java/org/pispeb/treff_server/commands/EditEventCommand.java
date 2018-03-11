@@ -10,6 +10,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.EventChangeUpdate;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Event;
@@ -22,17 +23,25 @@ import java.util.HashSet;
 /**
  * a command to edit an event of a user group
  */
-public class EditEventCommand extends AbstractCommand {
+public class EditEventCommand extends EventCommand {
 
 
     public EditEventCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                EventLockType.WRITE_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected CommandOutput executeOnEvent(EventInput commandInput) {
         Input input = (Input) commandInput;
+
+        // check whether actingAccount is event creator or has edit permission
+        if (!(event.getCreator().getID() == actingAccount.getID())
+                && !usergroup.checkPermissionOfMember(
+                        actingAccount, Permission.EDIT_ANY_EVENT)) {
+            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
+        }
 
         // check times
         if (input.inputEvent.timeEnd.before(input.inputEvent
@@ -40,73 +49,46 @@ public class EditEventCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
         }
 
+        // TODO: rename checkTime, there are two checks to be made for time
         if (checkTime(input.inputEvent.timeEnd) < 0) {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input
-                        .groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission
-                .EDIT_ANY_EVENT)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
-        }
-
-        // get event
-        Event currentEvent = getSafeForWriting(group.getAllEvents()
-                .get(input.inputEvent.id));
-        if (currentEvent == null) {
-            return new ErrorOutput(ErrorCode.EVENTIDINVALID);
-        }
-
         //edit event
-        currentEvent.setTitle(input.inputEvent.title);
-        currentEvent.setTimeStart(input.inputEvent.timeStart);
-        currentEvent.setTimeEnd(input.inputEvent.timeEnd);
-        currentEvent.setPosition(input.inputEvent.position);
+        event.setTitle(input.inputEvent.title);
+        event.setTimeStart(input.inputEvent.timeStart);
+        event.setTimeEnd(input.inputEvent.timeEnd);
+        event.setPosition(input.inputEvent.position);
 
         // create update
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
-                        currentEvent);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+                        usergroup.getID(),
+                        event);
+        addUpdateToAllOtherMembers(update);
 
         // respond
         return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends EventInput {
 
-        final int groupId;
         final EventEditDescription inputEvent;
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("event") EventEditDescription inputEvent,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
+            super(token, groupId, inputEvent.id);
             this.inputEvent = inputEvent;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEventTitle(inputEvent.title)
+                    && validateDate(inputEvent.timeStart)
+                    && validateDate(inputEvent.timeEnd)
+                    && validatePosition(inputEvent.position);
         }
     }
 

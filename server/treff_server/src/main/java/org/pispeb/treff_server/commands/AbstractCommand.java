@@ -6,7 +6,7 @@ import org.pispeb.treff_server.commands.io.CommandInput;
 import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
-import org.pispeb.treff_server.exceptions.DuplicateCommandIdentifier;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.DataObject;
@@ -15,9 +15,7 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import javax.json.JsonObject;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.function.Function;
@@ -27,9 +25,6 @@ import java.util.function.Function;
  * The command is received by a server and is executing it if possible.
  */
 public abstract class AbstractCommand {
-
-    private static Map<String, Class<? extends AbstractCommand>>
-            availableCommands = new HashMap<>();
 
     protected AccountManager accountManager;
     private final Class<? extends CommandInput> expectedInput;
@@ -79,8 +74,12 @@ public abstract class AbstractCommand {
         try {
             commandInput = mapper.readValue(input, expectedInput);
         } catch (IOException e) {
-            return errorToString(ErrorCode.SYNTAXINVALID, mapper);
+            return errorToString(ErrorCode.SYNTAXINVALID);
         }
+
+        // run additional syntax checks
+        if (!commandInput.syntaxCheck())
+            return errorToString(ErrorCode.SYNTAXINVALID);
 
         // for commands that require login, set account manager and check token
         if (commandInput instanceof CommandInputLoginRequired) {
@@ -89,7 +88,7 @@ public abstract class AbstractCommand {
 
             cmdInputLoginReq.setAccountManager(accountManager);
             if (cmdInputLoginReq.getActingAccount() == null) {
-                return errorToString(ErrorCode.TOKENINVALID, mapper);
+                return errorToString(ErrorCode.TOKENINVALID);
             }
         }
 
@@ -99,8 +98,7 @@ public abstract class AbstractCommand {
             CommandOutput output = executeInternal(commandInput);
             return mapper.writeValueAsString(output);
         } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         } finally {
             releaseAllLocks();
         }
@@ -108,23 +106,36 @@ public abstract class AbstractCommand {
 
     protected abstract CommandOutput executeInternal(CommandInput commandInput) throws JsonProcessingException;
 
-    private String errorToString(ErrorCode errorCode, ObjectMapper mapper) {
+    private String errorToString(ErrorCode errorCode) {
         try {
             return mapper.writeValueAsString(new ErrorOutput(errorCode));
         } catch (JsonProcessingException e) {
-            // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         }
     }
 
-    protected void acquireLock(Lock lock) {
-        if (!acquiredLocks.contains(lock)) {
-            acquiredLocks.add(lock);
-            lock.lock();
-        }
+    private void acquireLock(Lock lock) {
+        acquiredLocks.add(lock);
+        lock.lock();
     }
 
-    protected void releaseAllLocks() {
+    private void releaseLock(Lock lock) {
+        if (!acquiredLocks.contains(lock))
+            throw new IllegalArgumentException(
+                    "A lock was to be released that was not acquired before.");
+        acquiredLocks.remove(lock);
+        lock.unlock();
+    }
+
+    protected void releaseReadLock(DataObject obj) {
+        releaseLock(obj.getReadWriteLock().readLock());
+    }
+
+    protected void releaseWriteLock(DataObject obj) {
+        releaseLock(obj.getReadWriteLock().writeLock());
+    }
+
+    private void releaseAllLocks() {
         acquiredLocks.forEach(Lock::unlock);
         acquiredLocks.clear();
     }
@@ -188,7 +199,7 @@ public abstract class AbstractCommand {
      * 1   , if time > SysTime + tolerance;
      */
     protected static int checkTime(Date time) {
-        long tolerance = 0; //TODO need a tolerance
+        long tolerance = 60000;
         long SysTime = System.currentTimeMillis();
         Date plusTolerance = new Date(SysTime + tolerance);
         Date minusTolerance = new Date(SysTime - tolerance);
@@ -197,18 +208,5 @@ public abstract class AbstractCommand {
         return 0;
     }
 
-    public static void registerCommand(String stringIdentifier,
-                                       Class<? extends AbstractCommand>
-                                               command) {
-        if (availableCommands.containsKey(stringIdentifier))
-            throw new DuplicateCommandIdentifier(stringIdentifier);
-        else
-            availableCommands.put(stringIdentifier, command);
-    }
-
-    public static Class<? extends AbstractCommand> getCommandByStringIdentifier(
-            String stringIdentifier) {
-        return availableCommands.get(stringIdentifier);
-    }
 }
 

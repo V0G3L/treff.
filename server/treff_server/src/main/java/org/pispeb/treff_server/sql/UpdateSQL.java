@@ -51,7 +51,7 @@ public class UpdateSQL extends SQLObject implements Update {
 
     @Override
     public int compareTo(Update o) {
-        return this.getTime().compareTo(o.getTime());
+        return this.id - o.getID();
     }
 
     /**

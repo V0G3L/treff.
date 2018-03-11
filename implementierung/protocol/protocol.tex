@@ -116,6 +116,7 @@ Properties of type \code{date} are to be represented as Unix time%
 \footnote{\enquote{Unix time}, Wikipedia, Version 822615863,
 \url{https://en.wikipedia.org/w/index.php?title=Unix_time&oldid=822615863}},
 and encoded as \code{long}s.
+Dates after year 9999 are not supported.
 
 Properties of type \code{decimal degree} must be valid decimal degrees
 representing either latitude or longitude and are to be encoded as
@@ -149,8 +150,7 @@ For the sake of consistency, they are listed here anyways.
 
 \apiDesc{Usergroup}{
     name/string/Name of the group,
-    members/membership array/Complete descriptions of all memberships that are
-    part of this group,
+    members/int array/IDs of all members that are part of this group,
     events/int array/IDs of all events that are part of this group,
     polls/int array/IDs of all polls that are part of this group
 }{
@@ -206,20 +206,57 @@ For the sake of consistency, they are listed here anyways.
 }{}{}
 
 % TODO: remove ID (defined in .sty)
-\apiDesc{Membership}{
-    account-id/int/ID of the account that this membership belongs to,
-    sharing-until/date/Point in time until which location sharing is active.
-    If this value is in the past then other members of the group will not be
-    notified of position updates unless they are also in another group in which
-    location sharing is active,
-    permissions/object/Object holding a \code{permission-name -> boolean} pair
-    for each permission defined in chapter \ref{sec:permissions}.
-}{}{}
+%\apiDesc{Membership}{
+%    account-id/int/ID of the account that this membership belongs to,
+%    sharing-until/date/Point in time until which location sharing is active.
+%    If this value is in the past then other members of the group will not be
+%    notified of position updates unless they are also in another group in which
+%    location sharing is active,
+%    permissions/object/Object holding a \code{permission-name -> boolean} pair
+%    for each permission defined in chapter \ref{sec:permissions}.
+%}{}{}
+
+\vbox{
+    \subsection{Membership}\label{subsec:membership-desc}
+        \apiDescSection{Shallow\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            checksum/string/Checksum of the recursively complete description of
+            this object (see chapter \ref{sec:checksum}).}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{
+        \apiDescSection{Complete\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            sharing-until/date/Point in time until which location sharing is active.
+            If this value is in the past then other members of the group will not be
+            notified of position updates unless they are also in another group in which
+            location sharing is active,
+            permissions/object/Object holding a \code{permission-name -> boolean} pair
+            for each permission defined in chapter \ref{sec:permissions}.
+}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{%
+        \apiDescSection{Recursively\\complete\\Description}%
+        All properties not listed here are the same as in the complete description
+    }
+
 
 \section{Commands}\label{sec:commands}
 
 \apiErrorNew{syntax}{1000}{parameter wasn't given or has a wrong format}
 \apiErrorNew{unkown-command}{1001}{unknown command}
+\apiErrorNew{internal-server-error}{1002}{internal server error}
 \apiErrorNew{token-invalid}{1100}{authentication token invalid}
 \apiErrorNew{cred-wrong}{1101}{username/password combination invalid}
 \apiErrorNew{reset-code-invalid}{1102}{password reset code invalid}
@@ -284,15 +321,17 @@ All commands except for \textbf{login}, \textbf{register},
 following parameter:\\
 \apiArgument{token/String/Authentication token{,} produced by \textbf{login} or
 \textbf{register}}
-\par Transmission of an invalid token will produced the following error:\\
+\par Transmission of an invalid token will produce the following error:\\
 \apiErrorPrint{token-invalid}
 
 \apiCommand{register}
 {Registers a new user account.
 Declaring an e-mail adress is optional.
 It may be set at a later time via the \textbf{edit-email} command.}
-{user/string/Username of the account,
-pass/string/Password of the account}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {token/string/Authentication token,
 id/int/ID of account}
 {username-already-in-use}
@@ -301,8 +340,10 @@ id/int/ID of account}
 \apiCommand{login}
 {Produces an authentication token for the specified user account if the
 password is correct.}
-{user/string/Username of the account,
-pass/string/Password of the account}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+   pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {token/string/Authentication token,
 id/int/ID of account}
 {cred-wrong}
@@ -313,12 +354,15 @@ id/int/ID of account}
 {}
 {updates/object array/All undelivered updates for the calling account{,} sorted
 from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
-{user-id-invalid}
+{}
 {}
 
 \apiCommand{edit-username}
 {Changes the executing user's username.}
-{user/string/New username}
+{user/string/New username.
+Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
 {username-already-in-use}
 {account-change}
@@ -327,7 +371,9 @@ from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
 {Changes the executing user's email address.}
 {email/string/New email address.
 Must be a valid email address according to
-RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.}
+RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
 {cred-wrong, user-id-invalid, email-invalid}
 {}
@@ -335,10 +381,12 @@ RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.}
 \apiCommand{edit-password}
 {Changes the executing user's password.
 Requires submission of the current password.}
-{pass/string/Current password,
-new-pass/string/New password}
+{ pass/string/Password of the account.
+    May not be longer than 128 unicode symbols.,
+new-pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
-{cred-wrong, user-id-invalid}
+{cred-wrong}
 {}
 
 \apiCommand{reset-password}
@@ -392,10 +440,15 @@ any further commands that require authentication.}
 \apiCommand{send-contact-request}
 {Sends a contact request to the specified user.
 This will fail if either the specified user is already part of the executing
-user's contact list or one of the users is blocking the other.}
+user's contact list or one of the users is blocking the other.
+\\If the specified user has previously sent a contact request to the executing
+user and that contact request is still pending{,} this command will not send a
+contact request.
+Instead{,} both users will be added as contacts.}
 {id/int/ID of the account}
 {}
-{user-id-invalid,being-blocked,blocking-already,contact-request-pending}
+{user-id-invalid,already-in-contacts,contact-request-pending,being-blocked,
+blocking-already}
 {contact-request}
 
 \apiCommand{cancel-contact-request}
@@ -430,15 +483,17 @@ Will also remove the executing user from the specified user's contact list.}
 {remove-contact}
 
 \apiCommand{get-contact-list}
-{Lists all contacts and all incoming and outgoing contact requests of the
-executing user.}
+{Lists all contacts, all incoming and outgoing contact requests, and all blocks
+of the executing user.}
 {}
 {contacts/int array/IDs of all accounts in contact list,
-incoming-requests/int array/IDs all accounts that have sent a still pending
+incoming-requests/int array/IDs of all accounts that have sent a still pending
 contact request to the executing user,
-outgoing-requests/int array/IDs all accounts to which the executing user has
-sent a still pending contact request}
-{user-id-invalid}
+outgoing-requests/int array/IDs of all accounts to which the executing user has
+sent a still pending contact request,
+blocks/int array/IDs of all accounts that the executing user is currently
+blocking}
+{}
 {}
 
 \apiCommand{block-account}
@@ -488,7 +543,7 @@ is to be edited.}
 \apiCommand{add-group-members}
 {Adds one or more members to a user group of which the executing user is a
 member.}
-{group-id/int/ID of the user group,
+{id/int/ID of the user group,
 members/int array/ID of all user accounts that are to be added to the user
 group.
 No account may be specified that is already a member of the group.
@@ -520,8 +575,8 @@ user-not-in-group}
 {Gets the membership details of an account in a user group of which the
 executing user is a member.
 This command can be used to query a group member's permissions.}
-{id/int/The ID of the user group,
-user-id/int/The ID of the account}
+{group-id/int/The ID of the user group,
+id/int/The ID of the account}
 {membership/object/The complete description of the membership belonging to
 the specified user in the specified group (\ref{sec:Membership-desc})}
 {group-id-invalid, user-not-in-group, user-id-invalid}
@@ -533,20 +588,20 @@ executing user is a member.
 This command can be used to edit a group member's permissions.
 To revoke a membership, i.e. remove a user from a group, use the
 \textbf{remove-group-members} command.}
-{id/int/The ID of the user group,
-membership/object/The complete description of the new membership that is to
-replace the current one (see \ref{sec:Membership-desc}).
-The ID specified in the description must match the ID of the account whose
-membership is to be edited.}
+{membership/object/The complete description of the new membership that is to
+replace the current one (see \ref{sec:Membership-desc}) ommiting the
+sharing-until property.
+The account and group IDs specified in the description must match the ID of
+the group{/}account whose membership is to be edited.}
 {}
-{group-id-invalid, user-id-invalid, no-permission-edit-permissions}
+{group-id-invalid, user-id-invalid,user-not-in-group, no-permission-edit-permissions}
 {group-membership-change}
 
 \apiCommand{create-event}
 {Creates an event in a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
 event/object/A new complete description of the event
-without the ID and the participants array}
+without the ID{,} creator ID{,} and participants array}
 {id/int/The ID of the event}
 {group-id-invalid,time-end-in-past,time-end-start-conflict,
 no-permission-create-event}
@@ -555,8 +610,8 @@ no-permission-create-event}
 \apiCommand{edit-event}
 {Edits an event of a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
-event/object/New complete description of the event without the participants
-array.
+event/object/New complete description of the event without the creator ID and
+the participants array.
 The ID specified in the description must match the ID of the event that
 is to be edited.}
 {}
@@ -586,16 +641,15 @@ id/int/The ID of the event}
 id/int/The ID of the event}
 {}
 {group-id-invalid,event-id-invalid,no-permission-edit-any-event}
-{event-change}
+{event-deletion}
 
 \apiCommand{create-poll}
 {Creates a new poll in a user group of which the executing user is a member.}
 {group-id/int/The ID of the user group,
-poll/object/A new complete description of the poll without the ID, the
-creator ID, and the options array}
+    poll/object/A new complete description of the poll without the ID{,} the
+creator ID{,} and the options array}
 {id/int/The ID of the poll}
-{group-id-invalid,time-end-in-past,time-end-start-conflict,
-no-permission-create-poll}
+{group-id-invalid,no-permission-create-poll}
 {poll-change}
 
 \apiCommand{edit-poll}
@@ -663,9 +717,8 @@ is a member.}
 poll-id/int/The ID of the poll,
 id/int/The ID of the poll option}
 {}
-{group-id-invalid,poll-id-invalid,group-id-invalid,poll-id-invalid,
-poll-option-id-invalid,no-permission-edit-any-poll}
-{poll-option-change}
+{group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
+{poll-option-deletion}
 
 \apiCommand{remove-poll}
 {Removes a poll from a user group of which the executing user is a member.}
@@ -673,13 +726,13 @@ poll-option-id-invalid,no-permission-edit-any-poll}
 id/int/The ID of the poll}
 {}
 {group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
-{poll-change}
+{poll-deletion}
 
 \apiCommand{send-chat-message}
 {Sends a chat message to a user group of which the executing user is a member.}
 {group-id/int/the ID of the user group,
-message/string/The chat message}
-% TODO: Länge beschränken (vllt. auch Gruppengröße etc)
+message/string/The chat message.
+The message may not be longer than 1024 unicode symbols.}
 {}
 {group-id-invalid}
 {chat}
@@ -714,7 +767,8 @@ message/string/The chat message}
 a member.}
 {id/int/The ID of the event,
 group-id/int/The ID of the group}
-{event/object/The complete description of the event (see \ref{subsec:Event-desc})}
+{event/object/The complete description of the event (see
+\ref{subsec:Event-desc})}
 {group-id-invalid,event-id-invalid}
 {}
 
@@ -727,6 +781,17 @@ group-id/int/The ID of the group}
 {group-id-invalid,poll-id-invalid}
 {}
 
+\apiCommand{get-poll-option-details}
+{Gets the details of a poll option in a user group of which the executing user
+is a member.}
+{id/int/The ID of the poll option,
+poll-id/int/The ID of the poll,
+group-id/int/The ID of the group}
+{poll-option/object/The complete description of the poll option
+(see \ref{subsec:Poll option-desc})}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid}
+{}
+
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
 \apiCommand{request-position}
 {Sends a position request to all members of a user group of which the executing
@@ -734,7 +799,7 @@ user is a member.}
 {id/int/The ID of the group,
 time/date/Point in time until which a location transmission is requested}
 {}
-{group-id-invalid}
+{group-id-invalid, time-end-in-past}
 {position-request}
 
 % TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
@@ -803,6 +868,12 @@ the following properties:
     }
 }
 
+\updateType{account-deletion}{
+    \apiArgument{
+        -/-/-
+    }
+}
+
 \updateType{user-group-change}{
 		\apiArgument{
 				usergroup/object/Complete description of the user group that changed{,}
@@ -812,29 +883,55 @@ the following properties:
 
 \updateType{event-change}{
 		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
 				event/object/Complete description of the event that changed{,}
 				omitting all properties that didn't change.
 		}
 }
 
+\updateType{event-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
+                id/int/ID of the event that was deleted.
+		}
+}
+
 \updateType{poll-change}{
 		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
 				poll/object/Complete description of the poll that changed{,}
 				omitting all properties that didn't change.
 		}
 }
 
+\updateType{poll-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                id/int/ID of the poll that was deleted.
+		}
+}
+
 \updateType{poll-option-change}{
 		\apiArgument{
-				pollOption/object/Complete description of the poll option
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
+				poll-option/object/Complete description of the poll option
 				that changed{,} omitting all properties that didn't change.
+		}
+}
+
+\updateType{poll-option-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
+                id/int/ID of the poll option that was deleted.
 		}
 }
 
 \updateType{group-membership-change}{
 		\apiArgument{
-				membership/object/Complete description of the membership that changed{,}
-				omitting all properties that didn't change.
+                membership/object/Complete description of the membership that
+                changed{,} omitting all properties that didn't change.
 		}
 }
 
@@ -857,9 +954,11 @@ the following properties:
 		}
 }
 
-\updateType{position}{
+\updateType{position-change}{
 		\apiArgument{
-            -/-/-
+            latitude/decimal degree/The latitude of the position,
+            longitude/decimal degree/The longitude of the position,
+            time-measured/date/Point in time at which the measurement was taken
 		}
 }
 
@@ -886,6 +985,28 @@ the following properties:
             -/-/-
 		}
 }
+
+\section{Permissions}
+List of the permissions a user can have within an usergroup:
+
+\begin{tabular}{l|l}
+    \hline
+    \textbf{Name} & \textbf{Description} \\
+    \hline
+        edit\_any\_event & Allows the user to edit events created by other
+        users. \\
+        create\_poll & Allows the user to create polls. \\
+        change\_permissions & Allows the user to change permissions. \\
+        manage\_members & Allows the user to manage the members of the
+        usergroup. \\
+        create\_event & Allows the user to create events. \\
+        edit\_group & Allows the user to edit the group. \\
+        edit\_any\_poll & Allows the user to edit polls created by other
+        users. \\
+\end{tabular}\\
+
+
+
 
 \section{Checksums for recursively complete descriptions}\label{sec:checksum}
 \newcommand{\hashAlg}{MD5}

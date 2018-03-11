@@ -19,7 +19,6 @@ public class EditPasswordCommand extends AbstractCommand {
     public EditPasswordCommand(AccountManager accountManager,
                                ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -33,10 +32,12 @@ public class EditPasswordCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // check if password is correct
-        actingAccount.checkPassword(input.pass);
+        if (!actingAccount.checkPassword(input.pass)) {
+            return new ErrorOutput(ErrorCode.CREDWRONG);
+        }
 
         // edit password
-        actingAccount.setPassword(input.newpass);
+        actingAccount.setPassword(input.newPass);
 
         return new Output();
     }
@@ -44,14 +45,20 @@ public class EditPasswordCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final String pass;
-        final String newpass;
+        final String newPass;
 
         public Input(@JsonProperty("pass") String pass,
-                     @JsonProperty("newpass") String newpass,
+                     @JsonProperty("new-pass") String newPass,
                      @JsonProperty("token") String token) {
             super(token);
             this.pass = pass;
-            this.newpass = newpass;
+            this.newPass = newPass;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePassword(pass)
+                    && validatePassword(newPass);
         }
     }
 

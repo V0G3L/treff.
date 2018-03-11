@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
 import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
-import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,7 +49,7 @@ public class PollOptionCompleteSerializerTest {
 
         // mock voters
         Map<Integer, Account> voters = new HashMap<>();
-        when(pollOption.getVoters()).thenReturn(voters);
+        doReturn(voters).when(pollOption).getVoters();
 
         Account voter = mock(Account.class);
         when(voter.getID()).thenReturn(42);

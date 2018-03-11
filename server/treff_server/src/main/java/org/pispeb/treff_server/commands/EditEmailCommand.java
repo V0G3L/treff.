@@ -59,6 +59,12 @@ public class EditEmailCommand extends AbstractCommand {
             this.pass = pass;
             this.email = email;
         }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEmail(email)
+                    && validatePassword(pass);
+        }
     }
 
     public static class Output extends CommandOutput {

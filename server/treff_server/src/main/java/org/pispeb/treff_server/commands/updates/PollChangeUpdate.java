@@ -8,12 +8,16 @@ import org.pispeb.treff_server.interfaces.Poll;
 import java.util.Date;
 
 public class PollChangeUpdate extends UpdateToSerialize {
+
+    @JsonProperty("group-id")
+    public final int groupID;
     @JsonProperty("poll")
     @JsonSerialize(using = PollCompleteSerializer.class)
     public final Poll poll;
 
-    public PollChangeUpdate(Date date, int creator, Poll poll) {
+    public PollChangeUpdate(Date date, int creator, int groupID, Poll poll) {
         super(UpdateType.POLL_CHANGE.toString(), date, creator);
+        this.groupID = groupID;
         this.poll = poll;
     }
 }

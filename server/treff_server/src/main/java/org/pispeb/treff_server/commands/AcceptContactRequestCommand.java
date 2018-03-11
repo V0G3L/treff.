@@ -8,6 +8,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.ContactRequestAnswerUpdate;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -64,10 +65,9 @@ public class AcceptContactRequestCommand extends AbstractCommand {
                         true);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(), newContact);
+                    newContact);
         } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+            throw new ProgrammingException(e);
         }
 
         return new Output();

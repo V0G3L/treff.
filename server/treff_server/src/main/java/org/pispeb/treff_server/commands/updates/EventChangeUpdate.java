@@ -9,12 +9,15 @@ import java.util.Date;
 
 public class EventChangeUpdate extends UpdateToSerialize {
 
+    @JsonProperty("group-id")
+    public final int groupID;
     @JsonProperty("event")
     @JsonSerialize(using = EventCompleteSerializer.class)
     public final Event event;
 
-    public EventChangeUpdate(Date date, int creator, Event event) {
+    public EventChangeUpdate(Date date, int creator, int groupID, Event event) {
         super(UpdateType.EVENT_CHANGE.toString(), date, creator);
+        this.groupID = groupID;
         this.event = event;
     }
 }

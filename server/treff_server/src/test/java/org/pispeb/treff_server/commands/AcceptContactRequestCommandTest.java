@@ -2,17 +2,13 @@ package org.pispeb.treff_server.commands;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.pispeb.treff_server.commands.abstracttests
-        .ContactRequestDependentTest;
+import org.pispeb.treff_server.abstracttests.ContactList;
+import org.pispeb.treff_server.abstracttests.ContactRequestDependentTest;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 
 import javax.json.JsonObject;
-import java.util.Date;
+import javax.json.JsonObjectBuilder;
 
-/**
- * @author jens
- * asserts the functionalty of SendContactRequestCommand
- */
 public class AcceptContactRequestCommandTest
         extends ContactRequestDependentTest {
 
@@ -22,79 +18,71 @@ public class AcceptContactRequestCommandTest
 
     @Test
     public void validContactRequest() {
-        JsonObject output = execute(users[1].id);
+        // Note that receiver is the one executing the
+        // accept-contact-request command
+        User sender = users[1];
+        User receiver = users[0];
+
+        JsonObject output = execute(receiver, sender);
         Assert.assertTrue(output.isEmpty());
 
-        Assert.assertTrue(myContacts.getJsonArray("incoming-requests")
-                .isEmpty());
-        Assert.assertTrue(contactsOf1.getJsonArray("outgoing-requests")
-                .isEmpty());
+        ContactList receiverContacts = getContactsOfUser(receiver);
+        ContactList senderContacts = getContactsOfUser(sender);
 
-        Assert.assertTrue(myContacts.getJsonArray("contacts")
-                .contains(users[1].id));
-        Assert.assertTrue(contactsOf1.getJsonArray("contacts")
-                .contains(ownID));
+        // Check that the request is no longer there
+        Assert.assertFalse(
+                receiverContacts.incomingRequests.contains(sender.id));
+        Assert.assertFalse(
+                senderContacts.outgoingRequests.contains(receiver.id));
 
-        JsonObject update = getSingleUpdateForUser(1);
-        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER,
+        // Check that both users are now contacts
+        Assert.assertTrue(receiverContacts.contacts.contains(sender.id));
+        Assert.assertTrue(senderContacts.contacts.contains(receiver.id));
+
+        // Check update
+        JsonObject update = getSingleUpdateForUser(sender);
+        Assert.assertEquals(UpdateType.CONTACT_REQUEST_ANSWER.toString(),
                 update.getString("type"));
-        Assert.assertEquals(users[1].id, update.getInt("creator"));
-        Assert.assertTrue(checkTimeCreated(new Date(update
-                .getJsonNumber("time-created").longValue())));
+        Assert.assertEquals(receiver.id, update.getInt("creator"));
+        checkTimeCreated(update);
         Assert.assertTrue(update.getBoolean("answer"));
     }
 
     @Test
     public void noContactRequest() {
-        commandFailed(execute(users[2].id), 1504);
-        Assert.assertTrue(contactsOf2.getJsonArray("contacts")
-                .isEmpty());
-        Assert.assertEquals(0, getUpdatesForUser(users[2].id).length);
+        // try accepting from user 2
+        assertErrorOutput(execute(users[3], users[2]), 1504);
+        assertNoContactChange();
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
     public void invalidId() {
-        int invalidID = 666;
-        while (invalidID == users[0].id || invalidID == users[1].id
-                || invalidID == users[2].id || invalidID == users[3].id) {
-            invalidID++;
-        }
-        commandFailed(execute(invalidID), 1200);
-    }
-
-    @Test
-    public void invalidSyntax() {
-        AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
-
-        inputBuilder.add("shit", "someShit");
-        JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
-
-        Assert.assertEquals(1000, output.getInt("error"));
+        assertErrorOutput(execute(users[0],
+                new User("Hail", "Satan", 666, "Lucifer our lord")),
+                1200);
     }
 
     /**
      * executes the command
-     * updates the contact lists of the accounts
      * asserts that nothing occurred what never should due to this command
      *
-     * @param id the id of the account whose contact request shall be accepted
+     * @param receiver the user who received a request and shall accept it
+     * @param sender the user whose contact request shall be accepted
      * @return the output of the command
      */
-    protected JsonObject execute(int id) {
+    private JsonObject execute(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
                 = new AcceptContactRequestCommand(accountManager, mapper);
 
-        inputBuilder.add("id", id);
+        JsonObjectBuilder input
+                = getCommandStubForUser(this.cmd, receiver);
+        input.add("id", sender.id);
         JsonObject output
-                = runCommand(acceptContactRequestCommand, inputBuilder);
+                = runCommand(acceptContactRequestCommand, input);
 
-        myContacts = getContactsOfUser(0);
-        contactsOf1 = getContactsOfUser(1);
-        contactsOf2 = getContactsOfUser(2);
-
-        Assert.assertEquals(0, getUpdatesForUser(users[0].id).length);
+        // Assert that sender didn't get an update
+        assertNoUpdatesForUser(users[0]);
 
         return output;
     }

@@ -54,6 +54,6 @@ public interface Update extends Comparable<Update>, DataObject {
      * @return Map of {@code Accounts} that this {@code Update} affects.
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, Account> getAffectedAccounts();
+    Map<Integer, ? extends Account> getAffectedAccounts();
 
 }

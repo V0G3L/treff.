@@ -3,6 +3,7 @@ package org.pispeb.treff_server.interfaces;
 import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 import org.pispeb.treff_server.Position;
+import org.pispeb.treff_server.sql.AccountSQL;
 
 import java.util.Date;
 import java.util.Map;
@@ -109,8 +110,12 @@ public interface Account extends DataObject, Comparable<Account> {
 
     /**
      * Sends a contact request to the specified {@code Account}.
+     * If the specified account has previously sent this {@code Account} a
+     * contact request which is still pending, the contact request will
+     * not be sent.
+     * Instead, both accounts will be added as contacts.
      * <p>
-     * Requires a {@code ReadLock}.
+     * Requires a {@code WriteLock}.
      *
      * @param receiver The {@code Account} which to send the contact request to
      */
@@ -218,7 +223,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, Account> getAllBlocks();
+    Map<Integer, ? extends Account> getAllBlocks();
 
     /**
      * Returns the last position stored for this {@code Account}.
@@ -294,7 +299,7 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The set of undelivered {@code Update}s, sorted in ascending
      * order of their creation time.
      */
-    SortedSet<Update> getUndeliveredUpdates();
+    SortedSet<? extends Update> getUndeliveredUpdates();
 
     /**
      * Marks an {@code Update} that affects this {@code Account} as
@@ -338,9 +343,17 @@ public interface Account extends DataObject, Comparable<Account> {
      *     options</li>
      *     <li>removes this account from all groups</li>
      *     <li>removes all contacts of this account</li>
+     *     <li>cancels all contact requests made by this account</li>
+     *     <li>rejects all contact request for this account</li>
      *     <li>removes all blocks made by or against this account</li>
      *     <li>invalidates this account's login token</li>
      * </ul>
+     *
+     * Requires a {@code WriteLock} on this {@code Account},
+     * {@code WriteLock}s on all of this {@code Account}'s groups,
+     * and {@code ReadLock}s on all of this {@code Account}'s contacts and all
+     * {@code Account}s that have sent or received a still pending contact
+     * request to/from this {@code Account}.
      */
     void delete();
 
