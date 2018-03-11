@@ -88,6 +88,8 @@
     <string name="save">Save</string>
     <string name="edit_data">Edit data</string>
     <string name="edit_password">Edit password</string>
+    <string name="settings_no_email">No email specified</string>
+
 
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>

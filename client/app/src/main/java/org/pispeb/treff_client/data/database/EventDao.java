@@ -10,7 +10,6 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.entities.UserGroup;
 
 import java.util.List;
 import java.util.Set;
@@ -39,8 +38,8 @@ public interface EventDao {
     @Delete
     void deleteEvents(List<Event> events);
 
-    @Query("SELECT * FROM event WHERE groupId = :g")
-    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<Integer> g);
+    @Query("SELECT * FROM event WHERE groupId IN(:groupIds)")
+    DataSource.Factory<Integer, Event> getEventsFromGroups(Set<Integer> groupIds);
 
     @Query("SELECT * FROM event WHERE groupId = :groupId")
     DataSource.Factory<Integer, Event> getEventsFromGroup(int groupId);

@@ -3,19 +3,13 @@ package org.pispeb.treff_client.view.profile;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.databinding.ActivityLoginBinding;
 import org.pispeb.treff_client.databinding.ActivityProfileBinding;
 import org.pispeb.treff_client.view.ui_components.NavigationActivity;
 import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
-
-/**
- * Created by matth on 09.03.2018.
- */
 
 public class ProfileActivity extends NavigationActivity {
 
