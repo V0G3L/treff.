@@ -142,8 +142,6 @@ public class LoginViewModel extends ViewModel {
 
     private void listenForSuccessfulLogin() {
 
-        Log.i("Login", "listen");
-
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref
                 = PreferenceManager.getDefaultSharedPreferences(ctx);
@@ -151,9 +149,7 @@ public class LoginViewModel extends ViewModel {
         pref.edit().putString(ctx.getString(R.string.key_token), "").apply();
 
         prefListener = (prefs, key) -> {
-            Log.i("Login", "pref change");
             if(key.equals(ctx.getString(R.string.key_token))) {
-                Log.i("Login", "token change");
                 state.setValue(new State(ViewCall.SUCCESS, 0));
             }
         };
@@ -163,19 +159,19 @@ public class LoginViewModel extends ViewModel {
 
     private boolean validateInput() {
         boolean validUsername;
-        boolean alidPassword;
+        boolean validPassword;
 
         state.setValue(new State(ViewCall.IDLE, 0));
 
         validUsername = !username.equals("");
-        alidPassword = !password.equals("");
-        if (!alidPassword) {
+        validPassword = !password.equals("");
+        if (!validPassword) {
             state.setValue(new State(ViewCall.EMPTY_PASSWORD, 0));
         }
         if (!validUsername) {
             state.setValue(new State(ViewCall.EMPTY_USERNAME, 0));
         }
-        return (alidPassword && validUsername);
+        return (validPassword && validUsername);
     }
 
     public void showServerAddressDialog() {

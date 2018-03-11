@@ -140,6 +140,10 @@ public class EventRepository {
         encoder.createEvent(groupId, name, creator, start, end, l);
     }
 
+    public void requestDeleteEvent(int groupId, int eventId) {
+        encoder.removeEvent(groupId, eventId);
+    }
+
     /**
      * Deletes every event
      */

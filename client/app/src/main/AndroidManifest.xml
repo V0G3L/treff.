@@ -50,6 +50,9 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
+            android:name="org.pispeb.treffpunkt.client.view.event.EventActivity"/>
+
+        <activity
             android:name="org.pispeb.treffpunkt.client.view.group.GroupSettingsActivity"/>
 
         <activity

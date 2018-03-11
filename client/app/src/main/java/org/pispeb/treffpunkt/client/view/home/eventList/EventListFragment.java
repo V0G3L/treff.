@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.client.view.home.eventList;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
 
 import org.osmdroid.config.Configuration;
 import org.pispeb.treffpunkt.client.databinding.FragmentEventListBinding;
+import org.pispeb.treffpunkt.client.view.event.EventActivity;
+import org.pispeb.treffpunkt.client.view.util.State;
 import org.pispeb.treffpunkt.client.view.util.ViewModelFactory;
 
 /**
@@ -44,11 +47,22 @@ public class EventListFragment extends Fragment {
         Configuration.getInstance().load(getContext(),
                 PreferenceManager.getDefaultSharedPreferences(getContext()));
 
-        vm.getEvents().observe(this, events -> {
-            adapter.setList(events);
-        });
+        vm.getEvents().observe(this, adapter::setList);
+
+        vm.getState().observe(this, this::callback);
 
 
         return binding.getRoot();
+    }
+
+    private void callback(State state) {
+        switch (state.call) {
+            case DISPLAY_EVENT_DETAILS:
+                Intent eventIntent = new Intent(getContext(), EventActivity
+                        .class);
+                eventIntent.putExtra(EventActivity.EVENT_INTENT, state.value);
+                startActivity(eventIntent);
+                break;
+        }
     }
 }

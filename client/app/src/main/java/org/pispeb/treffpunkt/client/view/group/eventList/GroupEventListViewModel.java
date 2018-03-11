@@ -3,6 +3,8 @@ package org.pispeb.treffpunkt.client.view.group.eventList;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
+import android.content.Intent;
+import android.util.Log;
 
 import org.pispeb.treffpunkt.client.data.entities.Event;
 import org.pispeb.treffpunkt.client.data.repositories.EventRepository;
@@ -40,7 +42,7 @@ public class GroupEventListViewModel extends ViewModel implements
 
     @Override
     public void onItemClicked(int position, Event event) {
-
+        state.setValue(new State(ViewCall.DISPLAY_EVENT_DETAILS, event.getId()));
     }
 
     public LiveData<PagedList<Event>> getEvents() {

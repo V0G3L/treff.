@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.client.view.group.eventList;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.pispeb.treffpunkt.client.databinding.FragmentGroupEventsBinding;
+import org.pispeb.treffpunkt.client.view.event.EventActivity;
 import org.pispeb.treffpunkt.client.view.group.GroupActivity;
 import org.pispeb.treffpunkt.client.view.home.eventList.EventListAdapter;
 import org.pispeb.treffpunkt.client.view.util.State;
@@ -60,6 +62,12 @@ public class GroupEventListFragment extends Fragment {
             case ADD_EVENT:
                 //TODO make pretty
                 ((GroupActivity)getActivity()).onEventClick();
+                break;
+            case DISPLAY_EVENT_DETAILS:
+                Intent eventIntent = new Intent(getContext(), EventActivity
+                        .class);
+                eventIntent.putExtra(EventActivity.EVENT_INTENT, state.value);
+                startActivity(eventIntent);
                 break;
             default:
                 throw new IllegalArgumentException("Illegal VM state");

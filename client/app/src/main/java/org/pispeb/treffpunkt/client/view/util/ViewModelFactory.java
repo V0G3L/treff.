@@ -11,6 +11,7 @@ import android.util.Log;
 import org.pispeb.treffpunkt.client.data.database.*;
 import org.pispeb.treffpunkt.client.data.networking.RequestEncoder;
 import org.pispeb.treffpunkt.client.data.repositories.*;
+import org.pispeb.treffpunkt.client.view.event.EventViewModel;
 import org.pispeb.treffpunkt.client.view.friend.FriendViewModel;
 import org.pispeb.treffpunkt.client.view.group.GroupViewModel;
 import org.pispeb.treffpunkt.client.view.group.chat.GroupChatViewModel;
@@ -113,6 +114,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddEventViewModel(eventRepository,
                     userGroupRepository);
+        } else if (EventViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new EventViewModel(eventRepository);
         } else if (ProfileViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new ProfileViewModel(encoder);
         } else if (NavigationViewModel.class.isAssignableFrom(modelClass)) {

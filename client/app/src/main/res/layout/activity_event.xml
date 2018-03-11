@@ -2,13 +2,6 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-        <variable
-            name="vm"
-            type="org.pispeb.treffpunkt.client.view.group.eventList.AddEventViewModel" />
-    </data>
-
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,8 +13,7 @@
             android:background="@color/colorPrimary"
             android:fitsSystemWindows="true"
             android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="@string/group_toolbar_add_event" />
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
         <android.support.constraint.Guideline
             android:id="@+id/vertGuide"
@@ -30,20 +22,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="75dp" />
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_standard"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/event_title"
-                android:text="@={vm.name}" />
-
-        </android.support.design.widget.TextInputLayout>
 
         <ImageView
             android:layout_width="0dp"
@@ -59,19 +37,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:onClick="@{() -> vm.onStartDateClick()}"
             android:padding="@dimen/padding_standard"
             android:text="1.1.2000"
             app:layout_constraintEnd_toStartOf="@id/startTime"
             app:layout_constraintStart_toEndOf="@id/vertGuide"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <TextView
             android:id="@+id/startTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:onClick="@{() -> vm.onStartTimeClick()}"
             android:padding="@dimen/padding_standard"
             android:paddingEnd="@dimen/activity_vertical_margin"
             android:text="12:00"
@@ -92,7 +68,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:onClick="@{() -> vm.onEndDateClick()}"
             android:padding="@dimen/padding_standard"
             android:text="1.1.2000"
             app:layout_constraintEnd_toStartOf="@id/endTime"
@@ -104,7 +79,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:onClick="@{() -> vm.onEndTimeClick()}"
             android:padding="@dimen/padding_standard"
             android:paddingEnd="@dimen/activity_vertical_margin"
             android:text="13:00"
@@ -112,20 +86,6 @@
             app:layout_constraintStart_toEndOf="@id/endDate"
             app:layout_constraintTop_toTopOf="@id/endDate" />
 
-
-
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_marker_event"
-            android:elevation="@dimen/padding_standard"
-            android:paddingBottom="24dp"
-            app:layout_constraintBottom_toBottomOf="@id/map"
-            app:layout_constraintEnd_toEndOf="@id/map"
-            app:layout_constraintStart_toStartOf="@id/map"
-            app:layout_constraintTop_toTopOf="@id/map"/>
 
         <org.osmdroid.views.MapView
             android:id="@+id/map"
