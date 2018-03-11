@@ -3,7 +3,6 @@ package org.pispeb.treff_server.commands.serializers;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
-import org.pispeb.treff_server.Position;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
@@ -11,13 +10,13 @@ import org.pispeb.treff_server.interfaces.PollOption;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author tim
@@ -50,7 +49,7 @@ public class PollCompleteSerializerTest {
         pollOptions.put(0, null);
         pollOptions.put(1, null);
         pollOptions.put(2, null);
-        when(poll.getPollOptions()).thenReturn(pollOptions);
+        doReturn(pollOptions).when(poll).getPollOptions();
 
         PollCompleteSerializer pollCompleteSerializer
                 = new PollCompleteSerializer();

@@ -1,9 +1,7 @@
 package org.pispeb.treff_server.interfaces;
 
-import org.pispeb.treff_server.exceptions.DuplicateEmailException;
 import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,28 +83,31 @@ public interface AccountManager {
      * <p>
      * Note that it is assumed the the supplied creation time is also encoded
      * into the update content.
-     *
-     * @param updateContent The content of the {@code Update} in the format
+     * <p>
+     * Requires the {@code ReadLock} of all affected {@link Account}s to be
+     * held.
+     *  @param updateContent The content of the {@code Update} in the format
      *                      specified in the treffpunkt protocol document
-     * @param time The time at which the {@code Update} was created
      * @param affectedAccounts The set of {@code Account} that are affected by
      *                         this {@code Update}
      */
-    void createUpdate(String updateContent, Date time,
+    void createUpdate(String updateContent,
                       Set<? extends Account> affectedAccounts);
 
     /**
      * Convenience method for creating an {@code Update} that affects only a
      * single {@code Account}.
+     * <p>
+     * Requires the {@code ReadLock} of the affected {@link Account} to be
+     * held.
      *
      * @param updateContent The content of the {@code Update} in the format
      *                      specified in the treffpunkt protocol document
-     * @param time The time at which the {@code Update} was created
      * @param affectedAccount The {@code Account} that is affected by this
      *                        {@code Update}
-     * @see #createUpdate(String, Date, Set)
+     * @see #createUpdate(String, Set)
      */
-    void createUpdate(String updateContent, Date time,
+    void createUpdate(String updateContent,
                       Account affectedAccount);
 
 }

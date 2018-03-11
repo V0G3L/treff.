@@ -8,15 +8,11 @@ import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 
 /**
- * a command to unblock an Account for another Account, that was previously
- * blocked
+ * a command to remove an account from the block list of the executing account,
+ * if that account was previously blocked
  */
 public class UnblockAccountCommand extends ManageBlockCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "unblock-account",
-                UnblockAccountCommand.class);
-    }
+
 
     public UnblockAccountCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {

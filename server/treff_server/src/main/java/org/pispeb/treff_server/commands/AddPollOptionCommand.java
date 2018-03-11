@@ -11,6 +11,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.networking.ErrorCode;
 
@@ -18,22 +19,19 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to add an PollOption to a Poll
+ * a command to add an poll option to a poll
  */
-public class AddPollOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "add-poll-option",
-                AddPollOptionCommand.class);
-    }
+public class AddPollOptionCommand extends PollCommand {
+
 
     public AddPollOptionCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                PollLockType.WRITE_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected CommandOutput executeOnPoll(PollInput commandInput) {
         Input input = (Input) commandInput;
 
         // check times
@@ -46,29 +44,9 @@ public class AddPollOptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
-        // get account and check if it still exist
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group = getSafeForReading(actingAccount
-                .getAllGroups().get(input.groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // get poll
-        Poll poll = getSafeForWriting(group.getAllPolls().get(input.pollId));
-        if (poll == null) {
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-        }
-
         // check permission
         if (poll.getCreator().getID() != actingAccount.getID() &&
-                !group.checkPermissionOfMember(actingAccount,
+                !usergroup.checkPermissionOfMember(actingAccount,
                         Permission.EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
@@ -81,26 +59,17 @@ public class AddPollOptionCommand extends AbstractCommand {
         PollOptionChangeUpdate update =
                 new PollOptionChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
+                        poll.getID(),
                         pO);
-        for (Account a: group.getAllMembers().values())
-            getSafeForWriting(a);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+        addUpdateToAllOtherMembers(update);
 
         // respond
-        return new Output();
+        return new Output(pO.getID());
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends PollInput {
 
-        final int groupId;
-        final int pollId;
         final PollOptionCreateDescription pollOption;
 
         public Input(@JsonProperty("group-id") int groupId,
@@ -108,14 +77,25 @@ public class AddPollOptionCommand extends AbstractCommand {
                      @JsonProperty("poll-option")
                              PollOptionCreateDescription pollOption,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.pollId = pollId;
+            super(token, groupId, pollId);
             this.pollOption = pollOption;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePosition(pollOption.position)
+                    && validateDate(pollOption.timeStart)
+                    && validateDate(pollOption.timeEnd);
         }
     }
 
     public static class Output extends CommandOutput {
+        @JsonProperty("id")
+        final int pollId;
+
+        Output(int pollId) {
+            this.pollId = pollId;
+        }
     }
 
 }

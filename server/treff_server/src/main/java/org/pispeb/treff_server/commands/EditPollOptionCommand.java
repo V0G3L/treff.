@@ -10,6 +10,7 @@ import org.pispeb.treff_server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Poll;
@@ -20,25 +21,20 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
 
-//TODO needs to be tested
-
 /**
- * a command to edit an option of a Poll
+ * a command to edit an option of a poll
  */
-public class EditPollOptionCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-poll-option",
-                EditPollOptionCommand.class);
-    }
+public class EditPollOptionCommand extends PollOptionCommand {
+
 
     public EditPollOptionCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                PollOptionLockType.WRITE_LOCK);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
         Input input = (Input) commandInput;
 
         // check times
@@ -51,69 +47,33 @@ public class EditPollOptionCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
-        // get account and check if it still exist
-        Account account =
-                getSafeForReading(input.getActingAccount());
-        if (account == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(account.getAllGroups().get(input.groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // get poll
-        Poll poll = getSafeForWriting(group.getAllPolls().get(input.pollId));
-        if (poll == null) {
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-        }
-
         // check permission
-        if (poll.getCreator().getID() != account.getID() &&
-                !group.checkPermissionOfMember(account,
+        if (poll.getCreator().getID() != actingAccount.getID() &&
+                !usergroup.checkPermissionOfMember(actingAccount,
                         Permission.EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
 
-        // get poll option
-        PollOption currentOption = getSafeForWriting(poll.getPollOptions()
-                .get(input.inputOption.id));
-        if (currentOption == null) {
-            return new ErrorOutput(ErrorCode.POLLOPTIONIDINVALID);
-        }
-
         // edit poll option
-        currentOption.setPosition(input.inputOption.position);
-        currentOption.setTimeStart(input.inputOption.timeStart);
-        currentOption.setTimeEnd(input.inputOption.timeEnd);
+        pollOption.setPosition(input.inputOption.position);
+        pollOption.setTimeStart(input.inputOption.timeStart);
+        pollOption.setTimeEnd(input.inputOption.timeEnd);
 
          // create update
         PollOptionChangeUpdate update =
                 new PollOptionChangeUpdate(new Date(),
-                        account.getID(),
-                        currentOption);
-        for (Account a: group.getAllMembers().values())
-            getSafeForWriting(a);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+                        actingAccount.getID(),
+                        usergroup.getID(),
+                        poll.getID(),
+                        pollOption);
+        addUpdateToAllOtherMembers(update);
 
         // respond
-        return new AddPollOptionCommand.Output();
+        return new Output();
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends PollOptionInput {
 
-        final int groupId;
-        final int pollId;
         final PollOptionEditDescription inputOption;
 
         public Input(@JsonProperty("group-id") int groupId,
@@ -121,10 +81,15 @@ public class EditPollOptionCommand extends AbstractCommand {
                      @JsonProperty("poll-option")
                              PollOptionEditDescription inputOption,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
-            this.pollId = pollId;
+            super(token, groupId, pollId, inputOption.id);
             this.inputOption = inputOption;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validatePosition(inputOption.position)
+                    && validateDate(inputOption.timeStart)
+                    && validateDate(inputOption.timeEnd);
         }
     }
 

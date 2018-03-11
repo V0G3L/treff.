@@ -9,6 +9,7 @@ import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -19,11 +20,7 @@ import java.util.Date;
  * a command to send a contact request to another user/account
  */
 public class SendContactRequestCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "send-contact-request",
-                SendContactRequestCommand.class);
-    }
+
 
     public SendContactRequestCommand(AccountManager accountManager,
                                      ObjectMapper mapper) {
@@ -53,6 +50,10 @@ public class SendContactRequestCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
+        // check that both accounts are not currently contacts
+        if (actingAccount.getAllContacts().containsKey(input.id))
+            return new ErrorOutput(ErrorCode.ALREADYINCONTACT);
+
         // check blocks
         if (actingAccount.getAllBlocks().containsKey(input.id)) {
             return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
@@ -72,6 +73,7 @@ public class SendContactRequestCommand extends AbstractCommand {
         // send request
         actingAccount.sendContactRequest(newContact);
 
+        // TODO: send other updates on symmetric add
         // create update
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
@@ -79,10 +81,9 @@ public class SendContactRequestCommand extends AbstractCommand {
                         UpdateType.CONTACT_REQUEST);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(), newContact);
+                    newContact);
         } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+             throw new ProgrammingException(e);
         }
 
         return new Output();

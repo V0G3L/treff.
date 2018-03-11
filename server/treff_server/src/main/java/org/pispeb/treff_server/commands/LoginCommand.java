@@ -10,14 +10,10 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to login an Account
+ * a command to login
  */
 public class LoginCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "login",
-                LoginCommand.class);
-    }
+
 
     public LoginCommand(AccountManager accountManager, ObjectMapper mapper) {
         super(accountManager, Input.class, mapper);
@@ -32,7 +28,7 @@ public class LoginCommand extends AbstractCommand {
                 = getSafeForReading(
                         accountManager.getAccountByUsername(input.username));
         if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.USERNAMEINVALID);
+            return new ErrorOutput(ErrorCode.CREDWRONG);
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.password))
@@ -51,11 +47,17 @@ public class LoginCommand extends AbstractCommand {
             this.username = username;
             this.password = password;
         }
+
+        // TODO: test syntax checks
+        @Override
+        public boolean syntaxCheck() {
+            return validateUsername(username)
+                    && validatePassword(password);
+        }
     }
 
     public static class Output extends CommandOutput {
 
-        // TODO: make all fields to be serialized public or annotate
         public final String token;
         public final int id;
 

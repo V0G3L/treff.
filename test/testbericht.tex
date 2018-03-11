@@ -1,0 +1,153 @@
+\documentclass[parskip=full,11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[german]{babel}
+\usepackage[useregional]{datetime2}
+\usepackage[pdfborderstyle={/S/U/W 0}]{hyperref}
+\usepackage{amsmath} % for $\text{}$
+\usepackage[nameinlink]{cleveref}
+\usepackage[section]{placeins}
+\usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=3cm]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{testbericht} % local .sty file
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\setlist{nosep}
+
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
+\raggedbottom
+\crefname{figure}{Abb}{Abb}
+
+\newcommand\producttitle{treff.}
+\newcommand\protocolversion{0.3}
+\hypersetup{
+	pdftitle={\producttitle~- Testbericht},
+	bookmarks=true,
+}
+
+% section numbers in margins:
+\renewcommand\sectionlinesformat[4]{%
+    \ifstr{#1}{subsubsection}{%
+        #4%
+    }{%
+        \makebox[0pt][r]{#3}#4%
+    }%
+}%
+
+% header & footer
+\usepackage{scrlayer-scrpage}
+%\lofoot{\today}
+%\refoot{\today}
+\pagestyle{scrheadings}
+%\let\raggedsection\centering
+
+\title{\includegraphics[width = 80mm]{images/logo_crop.png}}
+\subtitle{\huge Testbericht}
+\author{Lukas Dippon
+        \and Jens Kienle
+        \and Matthias Noll
+        \and Fabian Röpke
+        \and Tim Schmidt
+        \and Simon Vögele}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty} % removed page number from title
+
+\pagebreak
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Nicht Erfüllte Anforderungen}
+\subsection{Funktionalle Anforderungen}
+\subsubsection{Plicht}
+TODO
+\subsubsection{Kür}
+\paragraph{Abstimmungen:}
+Nur auf Serverseite implementiert und nicht vollständig getestet.
+
+\paragraph{Gruppenrollen und -rechte:}
+Nur auf Serverseite implementiert und getestet.
+
+\paragraph{Innenraumkarten:}
+Wurde nicht implementiert.
+
+\paragraph{Eigener server:}
+Die Möglichkeit, einen eigenen Server auf der definierten Schnittstelle zwischen
+Server und Klient aufbauend zu entwickeln, ist gegeben. Allerdings ist der
+Server im Klient fest verankert und man müsste sich den Klient mit minimalen
+Änderungen selbst erstellen.
+
+\paragraph{Serverwechsel:}
+Das Wechseln des Servers innerhalb der App ist nicht möglich.
+
+\paragraph{Stummschalten:}
+Stummschalten ist nicht implementiert.
+
+\paragraph{Zeitplan für Positionsübertragung:}
+Das Übermittlen der Position nach einem Zeitplan ist nicht möhlich.
+
+\paragraph{Passwortzurücksetzung:}
+Das Zurücksetzen des Passworts ist nicht möglich
+
+\paragraph{Sprachen:}
+Die App bietet eine deutsche und eine englische Übersetzung, diese passt sich
+automatisch der Systemsprache an.
+
+\subsection{Nicht Funktionalle Anforderungen}
+\subsubsection{Plicht}
+\paragraph{Einfache Bedienung:}
+TODO von jemand der beschreiben kann inwieweit wir Materiel Design einhalten
+
+\paragraph{Nutzeraufkommen:}
+TODO
+
+\section{Testszenarien}
+
+\subsection{Pflichtanforderungen}
+	\subsubsection{funktionierende Testszenarien}
+	\begin{itemize}
+		\item T10 : Account erstellen
+		\item T20 : Kontakt hinzufügen
+		\item T40 : Karte anzeigen
+		\item T60 : Übertragung der eigenen Position an die Gruppe
+	\end{itemize}
+
+	\subsubsection{Problematische Testszenarien}
+	\begin{itemize}
+		\item T80 : Kontoverwaltung
+			\begin{itemize}
+			\item Beim Löschen eines Accounts werden nicht die nötigen Updates
+			produziert, um diesen aus all seinen Gruppen, Verabredungen, Abstimmungen
+			etc zu entfernen
+			\item Beim Ändern des Passworts wird keine Bestätigungsmail versand, da
+			dies keinen Mehrwert mit sich bringen würde
+			\end{itemize}
+	\end{itemize}
+
+\subsection{Küranforderung}
+	\subsubsection{Funktionierende Testszenarien}
+	\begin{itemize}
+	\item placeholder
+	\end{itemize}
+
+	\subsubsection{Ungetestete Testszenarien}
+	\begin{itemize}
+		\item T100 : Abstimmung
+		\item T120 : Innenraumkarten
+		\item T130 : Stummschalten
+		\item T140 : Gruppenrollen und -rechte
+		\item T160 : Eigene Server
+		\item T170 : Serverwechsel
+		\item T180 : Passwort zurücksetzen
+		\item T190 : Zeitplan für Positionsübertragung
+	\end{itemize}
+
+\end{document}

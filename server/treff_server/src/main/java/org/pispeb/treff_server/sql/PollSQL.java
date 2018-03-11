@@ -8,6 +8,8 @@ import org.pispeb.treff_server.interfaces.Poll;
 import org.pispeb.treff_server.interfaces.PollOption;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
 import java.util.Comparator;
@@ -40,31 +42,27 @@ public class PollSQL extends SQLObject implements Poll {
     }
 
     @Override
-    public Map<Integer, PollOption> getPollOptions() {
+    public Map<Integer, PollOptionSQL> getPollOptions() {
         return database.query(
                 "SELECT id FROM %s WHERE pollid=?;",
                 TableName.POLLOPTIONS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getPollOption));
+                new DataObjectMapHandler<>(PollOptionSQL.class, entityManager),
+                this.id);
     }
 
     @Override
     public PollOption addPollOption(Position position, Date timeStart, Date
             timeEnd) {
-        int id = database.insert(
+        return database.insert(
                 "INSERT INTO %s(latitude,longitude,timestart,timeend," +
                         "pollid) VALUES (?,?,?,?,?);",
                 TableName.POLLOPTIONS,
-                new IDHandler(),
+                new DataObjectHandler<>(PollOptionSQL.class, entityManager),
                 position.latitude,
                 position.longitude,
                 timeStart,
                 timeEnd,
                 this.id);
-        return entityManager.getPollOption(id);
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.pispeb.treff_server.commands.io.CommandOutput;
 import org.pispeb.treff_server.commands.io.ErrorOutput;
 import org.pispeb.treff_server.commands.updates.UpdateType;
 import org.pispeb.treff_server.commands.updates.UpdatesWithoutSpecialParameters;
+import org.pispeb.treff_server.exceptions.ProgrammingException;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
@@ -16,14 +17,10 @@ import org.pispeb.treff_server.networking.ErrorCode;
 import java.util.Date;
 
 /**
- * a command to remove an Account from the contact-list of another Account
+ * a command to remove an account from the contact-list of another account
  */
 public class RemoveContactCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "remove-contact",
-                RemoveContactCommand.class);
-    }
+
 
     public RemoveContactCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {
@@ -56,13 +53,12 @@ public class RemoveContactCommand extends AbstractCommand {
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
-                        UpdateType.CANCEL_CONTACT_REQUEST);
+                        UpdateType.REMOVE_CONTACT);
         try {
             accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(), account);
+                    account);
         } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
+             throw new ProgrammingException(e);
         }
 
         return new Output();

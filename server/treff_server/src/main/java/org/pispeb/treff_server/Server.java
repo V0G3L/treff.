@@ -52,16 +52,13 @@ public class Server {
             }
         }
 
-        SQLDatabase sqlDatabase = null;
         try {
-            sqlDatabase = new SQLDatabase(config);
+            accountManager = new SQLDatabase(config).getEntityManagerSQL();
+            requestHandler = new RequestHandler(accountManager);
         } catch (SQLException | NoSuchAlgorithmException e) {
             // TODO: error message and exit
             e.printStackTrace();
         }
-
-        accountManager = sqlDatabase.getEntityManagerSQL();
-        requestHandler = new RequestHandler(accountManager);
     }
 
     public AccountManager getAccountManager() {
@@ -71,5 +68,6 @@ public class Server {
     public RequestHandler getRequestHandler() {
         return requestHandler;
     }
+
 
 }

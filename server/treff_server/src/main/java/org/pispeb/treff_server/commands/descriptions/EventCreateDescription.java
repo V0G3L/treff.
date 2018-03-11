@@ -8,14 +8,14 @@ import java.util.Date;
 
 /**
  * Immutable complete description of an event as specified in the
- * treffpunkt protocol document, lacking the ID property and participants array.
+ * treffpunkt protocol document, lacking the ID and creator ID properties and
+ * the participants array.
  * <p>
  * Event creation commands should require an instance of this class as input.
  */
 public class EventCreateDescription {
 
     public final String title;
-    public final int creatorID;
     public final Date timeStart;
     public final Date timeEnd;
     public final Position position;
@@ -23,21 +23,20 @@ public class EventCreateDescription {
     /** Creates a new object representing a complete description of an
      * {@link Event} <b>NOT</b> containing an ID.
      * @param title The title of the event
-     * @param creatorID The ID of the event creator
      * @param timeStart The date and time at which the event starts
      * @param timeEnd The date and time at which the event ends
-     * @param position The position at which the event takes place
+     * @param latitude The latitude at which the event takes place
+     * @param longitude The longitude at which the event takes place
      */
     public EventCreateDescription(@JsonProperty("title") String title,
-                                  @JsonProperty("creator") int creatorID,
                                   @JsonProperty("time-start") Date timeStart,
                                   @JsonProperty("time-end") Date timeEnd,
-                                  @JsonProperty("position") Position position) {
+                                  @JsonProperty("latitude") double latitude,
+                                  @JsonProperty("longitude") double longitude) {
         this.title = title;
-        this.creatorID = creatorID;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-        this.position = position;
+        this.position = new Position(latitude, longitude);
     }
 
 }

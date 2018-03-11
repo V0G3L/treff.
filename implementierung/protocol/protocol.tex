@@ -1,0 +1,1095 @@
+\documentclass[parskip=full,11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage[useregional]{datetime2}
+\usepackage[pdfborderstyle={/S/U/W 0}]{hyperref}
+\usepackage[nameinlink]{cleveref}
+\usepackage[section]{placeins}
+\usepackage[top=2.5cm, bottom=2.5cm, left=4cm, right=3cm]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{csquotes}
+\usepackage{amsmath} % for $\text{}$
+\usepackage{protocol} % local .sty file
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+\setlist{nosep}
+
+\newcommand\urlpart[2]{$\underbrace{\text{\texttt{#1}}}{\text{#2}}$}
+\raggedbottom
+\crefname{figure}{Abb}{Abb}
+
+\newcommand\producttitle{treff.}
+\newcommand\protocolversion{0.3}
+\hypersetup{
+	pdftitle={\producttitle~- Protocol Specification v\protocolversion},
+	bookmarks=true,
+}
+
+% section numbers in margins:
+\renewcommand\sectionlinesformat[4]{%
+    \ifstr{#1}{subsubsection}{%
+        \makebox[0pt][r]{#4}%
+    }{%
+        \makebox[0pt][r]{#3}#4%
+    }%
+}%
+
+% header & footer
+\usepackage{scrlayer-scrpage}
+%\lofoot{\today}
+%\refoot{\today}
+\pagestyle{scrheadings}
+%\let\raggedsection\centering
+
+\title{\includegraphics[width = 80mm]{images/logo_crop.png}}
+\subtitle{\huge Protocol Specification\\
+          v\protocolversion}
+\author{Lukas Dippon
+        \and Jens Kienle
+        \and Matthias Noll
+        \and Fabian Röpke
+        \and Tim Schmidt
+        \and Simon Vögele}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty} % removed page number from title
+
+\pagebreak
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%
+\pagebreak
+\section{Network protocol and command format}
+% Zusammenspiel von Klient und Server
+% (Fließtext und Sequenzdiagram, ggf UML-Klassendiagram)
+% TODO: JSON verlinken / footnote
+% TODO: Alphabet und Escapes genau festlegen
+Client and server communicate via a TLS-encrypted WebSocket connection.
+This implies that the server must possess a valid certificate.
+
+Requests including one of the commands specified below are encoded as a single
+JSON object each and are sent from client to server.
+If not specified otherwise, each request produces a single response from the
+server, also encoded as a JSON object.
+A request or response must always be sent as a single WebSocket message.
+
+The \textbf{cmd} property of the top-level JSON object of a request defines
+which command the client is trying to execute.
+As such, the \textbf{cmd} property must always be included in a request.
+Parameters, return values and error codes are also encoded as properties of
+the top-level JSON object of a request or response.
+
+The names of the commands specified below are to be used as the value of the
+\textbf{cmd} property.
+These are to be encoded as strings.
+
+If an error occurs during command execution, possibly caused by invalid
+parameters, the response JSON object consists of only the single integer
+property \textbf{error}.
+The meaning of these error codes is specified in chapter \ref{sec:errorcodes}.
+
+\section{Data types and restrictions}\label{sec:datatypes}
+While JSON itself defines several data types, the property
+definitions in the following chapters use the conventional, more restrictive
+variants as used, for example, in the Java programming language.
+As such, mentions of \code{int} and \code{long} refer to the signed variants
+within the upper and lower bounds defined in the Java programming language.
+
+Strings may contain any Unicode symbol as long as it is properly escaped to
+match the restrictions set by JSON specifications.
+
+The string properties defined in chapter \ref{sec:descriptions} might impose
+additional restrictions, such as maximum amount of characters, i.e. Unicode
+symbols, or a reduced set of symbols, e.g. only alphanumeric characters.
+In this document, the set of alphanumeric characters is defined to consist
+of arabic numbers and lower-case and upper-case letters of the ISO basic Latin
+alphabet (a-z, A-Z, 0-9).
+
+Properties of type \code{date} are to be represented as Unix time%
+\footnote{\enquote{Unix time}, Wikipedia, Version 822615863,
+\url{https://en.wikipedia.org/w/index.php?title=Unix_time&oldid=822615863}},
+and encoded as \code{long}s.
+Dates after year 9999 are not supported.
+
+Properties of type \code{decimal degree} must be valid decimal degrees
+representing either latitude or longitude and are to be encoded as
+\code{double}s.
+
+While JSON supports arrays of different data types, this protocol does not.
+All arrays defined here consist of elements of the same type.
+
+\section{Object descriptions}\label{sec:descriptions}
+In order to transmit information about domain model objects via JSON encoded
+requests and reponses, the encoding of the objects into \enquote{descriptions}
+is specified below.
+
+Each object can be encoded as a shallow, complete, or recursively
+complete description.
+While complete descriptions contain all properties of the object itself and
+may be requested from the server via the respective \textbf{get-*-details}
+commands, recursively complete descriptions contain the complete descriptions
+of certain types of referenced objects, e.g. a recursively complete description
+of a usergroup contains recursively complete descriptions of all events and
+polls.
+
+Recursively complete descriptions are not transferred in any of the
+commands specified in chapter \ref{sec:commands}.
+Instead, they are used to generate the checksums contained in shallow
+descriptions (see chapter \ref{sec:checksum}).
+
+The commands defined in chapter \ref{sec:commands} might not use all of the
+descriptions specified below.
+For the sake of consistency, they are listed here anyways.
+
+\apiDesc{Usergroup}{
+    name/string/Name of the group,
+    members/int array/IDs of all members that are part of this group,
+    events/int array/IDs of all events that are part of this group,
+    polls/int array/IDs of all polls that are part of this group
+}{
+    events/object array/Complete descriptions of all events,
+    polls/object array/Complete descriptions of all polls
+}{
+    name/Up to 64 characters
+}
+
+\apiDesc{Account}{
+    user/string/Username of the account
+}{}{
+    user/Alphanumeric{,} up to 32 characters
+}
+
+\apiDesc{Event}{
+    title/string/Title of the event,
+    creator/int/ID of the account that created this event.
+    If the creator account was deleted{,} -1 is returned.,
+    time-start/date/Point in time at which the event starts,
+    time-end/date/Point in time at which the event ends,
+    latitude/decimal degree/Latitude of the position that the event is centered
+    on,
+    longitude/decimal degree/Longitude of the position that the event is
+    centered on,
+    participants/int array/IDs of all group members that are currently
+    participating or are planning to participate in the event
+}{}{
+    title/Up to 64 characters
+}
+
+\apiDesc{Poll}{
+    question/string/Question for which answered are supplied as poll options,
+    creator/int/ID of the account that created this poll.
+    If the creator account was deleted{,} -1 is returned.,
+    time-close/date/Point in time at which voting closes,
+    multi-choice/boolean/True iff an account can vote for multiple poll options
+    simultaneously,
+    options/int array/IDs of all poll options that are part of this poll
+}{}{
+    question/Up to 64 characters
+}
+
+\apiDesc{Poll option}{
+    latitude/decimal degree/Latitude of the suggested position,
+    longitude/decimal degree/Longitude of the suggested position,
+    time-start/date/Suggested point in time at which the resulting event should
+    start,
+    time-end/date/Suggested point in time at which the resulting event should
+    end,
+    supporters/int array/IDs of all account that are currently voting for this
+    poll option
+}{}{}
+
+% TODO: remove ID (defined in .sty)
+%\apiDesc{Membership}{
+%    account-id/int/ID of the account that this membership belongs to,
+%    sharing-until/date/Point in time until which location sharing is active.
+%    If this value is in the past then other members of the group will not be
+%    notified of position updates unless they are also in another group in which
+%    location sharing is active,
+%    permissions/object/Object holding a \code{permission-name -> boolean} pair
+%    for each permission defined in chapter \ref{sec:permissions}.
+%}{}{}
+
+\vbox{
+    \subsection{Membership}\label{subsec:membership-desc}
+        \apiDescSection{Shallow\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            checksum/string/Checksum of the recursively complete description of
+            this object (see chapter \ref{sec:checksum}).}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{
+        \apiDescSection{Complete\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{Membership}}},
+            group-id/int/Unique identifier of the usergroup,
+            account-id/int/Unique idetifier of the account,
+            sharing-until/date/Point in time until which location sharing is active.
+            If this value is in the past then other members of the group will not be
+            notified of position updates unless they are also in another group in which
+            location sharing is active,
+            permissions/object/Object holding a \code{permission-name -> boolean} pair
+            for each permission defined in chapter \ref{sec:permissions}.
+}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{%
+        \apiDescSection{Recursively\\complete\\Description}%
+        All properties not listed here are the same as in the complete description
+    }
+
+
+\section{Commands}\label{sec:commands}
+
+\apiErrorNew{syntax}{1000}{parameter wasn't given or has a wrong format}
+\apiErrorNew{unkown-command}{1001}{unknown command}
+\apiErrorNew{internal-server-error}{1002}{internal server error}
+\apiErrorNew{token-invalid}{1100}{authentication token invalid}
+\apiErrorNew{cred-wrong}{1101}{username/password combination invalid}
+\apiErrorNew{reset-code-invalid}{1102}{password reset code invalid}
+\apiErrorNew{user-id-invalid}{1200}
+{at least one account identification number is invalid}
+\apiErrorNew{group-id-invalid}{1201}
+{group identification number is invalid or account not part of the group}
+\apiErrorNew{event-id-invalid}{1202}{event identification number invalid}
+\apiErrorNew{poll-id-invalid}{1203}{poll identification number invalid}
+\apiErrorNew{poll-option-id-invalid}{1204}
+{poll option identification number invalid}
+\apiErrorNew{username-already-in-use}{1300}{username already in use}
+\apiErrorNew{email-invalid}{1301}{email is invalid}
+\apiErrorNew{username-invalid}{1302}{username is invalid}
+\apiErrorNew{time-end-in-past}{1400}{at least one end time is in the past}
+\apiErrorNew{time-end-start-conflict}{1401}
+{at least one end time is not after the corresponding start time}
+\apiErrorNew{time-measured-future}{1402}
+{the time of measurement is too far in the future}
+\apiErrorNew{already-in-contacts}{1500}{account already in contact list}
+\apiErrorNew{not-in-contacts}{1501}{account isn't part of the own contact list}
+\apiErrorNew{reflexive-contact}{1502}{account can't be a contact of itself}
+\apiErrorNew{contact-request-pending}{1503}{contact request already sent and
+still pending}
+\apiErrorNew{no-contact-request}{1504}{no contact request from specified user}
+\apiErrorNew{being-blocked}{1505}{this account was blocked by the given account}
+\apiErrorNew{blocking-already}{1506}
+{the given account was blocked by this account}
+\apiErrorNew{not-blocking}{1507}
+{the given account wasn't blocked by this account}
+\apiErrorNew{reflexive-block}{1508}{account can't block itself}
+\apiErrorNew{no-user-invited}{1509}{no account invited except the own account}
+\apiErrorNew{user-already-in-group}{1510}
+{at least one account is already part of the group}
+\apiErrorNew{user-not-in-group}{1511}
+{at least one account is not part of the group}
+\apiErrorNew{already-participating-event}{1512}
+{account already part of this event}
+\apiErrorNew{not-participating-event}{1513}{account no part of this event}
+\apiErrorNew{already-voting-for-option}{1514}
+{account already voted for this option}
+\apiErrorNew{poll-not-multichoice}{1515}
+{multi-choice is not available for this poll}
+\apiErrorNew{not-voting-for-option}{1516}{account didn't vote for this option}
+\apiErrorNew{no-permission-edit-permissions}{2000}
+{account doesn't possess the permission to edit permissions}
+\apiErrorNew{no-permission-edit-group}{2100}
+{account doesn't possess the permission to edit the group}
+\apiErrorNew{no-permission-manage-members}{2101}
+{account doesn't possess the permission to edit the list of group members}
+\apiErrorNew{no-permission-create-event}{2200}
+{account doesn't possess the permission to create events in this group}
+\apiErrorNew{no-permission-edit-any-event}{2201}
+{account doesn't possess the permission to edit the event}
+\apiErrorNew{no-permission-create-poll}{2300}
+{account doesn't possess the permission to create polls in this group}
+\apiErrorNew{no-permission-edit-any-poll}{2301}
+{account doesn't possess the permission to edit the poll}
+
+All commands except for \textbf{login}, \textbf{register},
+\textbf{reset-password}, and \textbf{reset-password-confirm} require the
+following parameter:\\
+\apiArgument{token/String/Authentication token{,} produced by \textbf{login} or
+\textbf{register}}
+\par Transmission of an invalid token will produce the following error:\\
+\apiErrorPrint{token-invalid}
+
+\apiCommand{register}
+{Registers a new user account.
+Declaring an e-mail adress is optional.
+It may be set at a later time via the \textbf{edit-email} command.}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
+{token/string/Authentication token,
+id/int/ID of account}
+{username-already-in-use}
+{}
+
+\apiCommand{login}
+{Produces an authentication token for the specified user account if the
+password is correct.}
+{user/string/Username of the account.
+   Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+   pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
+{token/string/Authentication token,
+id/int/ID of account}
+{cred-wrong}
+{}
+
+\apiCommand{request-updates}
+{Requests the list of undelivered updates from the server.}
+{}
+{updates/object array/All undelivered updates for the calling account{,} sorted
+from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
+{}
+{}
+
+\apiCommand{edit-username}
+{Changes the executing user's username.}
+{user/string/New username.
+Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
+{}
+{username-already-in-use}
+{account-change}
+
+\apiCommand{edit-email}
+{Changes the executing user's email address.}
+{email/string/New email address.
+Must be a valid email address according to
+RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
+{}
+{cred-wrong, user-id-invalid, email-invalid}
+{}
+
+\apiCommand{edit-password}
+{Changes the executing user's password.
+Requires submission of the current password.}
+{ pass/string/Password of the account.
+    May not be longer than 128 unicode symbols.,
+new-pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
+{}
+{cred-wrong}
+{}
+
+\apiCommand{reset-password}
+{Requests a password reset code.
+If the supplied email address is associated with a user account, then a
+randomly generated sequence of 64 alphanumerical symbols, the password reset
+code, is emailed to that address.
+This sequence can be used as a paremeter in the \textbf{reset-password-confirm}
+command to overwrite the current password.
+The password reset code must be unique among all user accounts and should not
+be reused.
+If the supplied email address is not associated with any account, \textbf{no}
+error is returned.
+This prevents leaking information about users' email addresses.}
+{email/string/The email address associated with the user account for which the
+password reset request is to be made.
+Must be a valid email address according to
+RFC 822\footnote{See \url{https://tools.ietf.org/html/rfc822}}.}
+{}
+{}
+{}
+
+\apiCommand{reset-password-confirm}
+{Resets the password of the account associated with the supplied passwort reset
+code.
+After invocation of this command, the password reset code is invalidated and
+should be discarded.}
+{code/string/Password reset code{,} as received via email after invocation of
+    the \textbf{reset-password} command,
+new-pass/string/New password}
+{}
+{reset-code-invalid}
+{}
+
+\apiCommand{delete-account}
+{Deletes the executing user's account.
+This will also invalidate a user's login token, hence preventing execution of
+any further commands that require authentication.}
+{pass/String/Passwort des eigenen Kontos}
+{}
+{cred-wrong}
+{account-change}
+
+\apiCommand{get-user-id}
+{Queries the the user account ID associated with the supplied username.}
+{user/string/Username of the account}
+{id/int/ID of the account associated with the supplied username}
+{username-invalid}
+{}
+
+\apiCommand{send-contact-request}
+{Sends a contact request to the specified user.
+This will fail if either the specified user is already part of the executing
+user's contact list or one of the users is blocking the other.
+\\If the specified user has previously sent a contact request to the executing
+user and that contact request is still pending{,} this command will not send a
+contact request.
+Instead{,} both users will be added as contacts.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,already-in-contacts,contact-request-pending,being-blocked,
+blocking-already}
+{contact-request}
+
+\apiCommand{cancel-contact-request}
+{Cancels a previously sent and still pending contact request that was issued
+by the executing user.}
+{id/int/ID of the account to which the request was sent}
+{}
+{user-id-invalid,no-contact-request}
+{cancel-contact-request}
+
+\apiCommand{accept-contact-request}
+{Accepts the contact request of the specified user.
+This adds the users to the contact list of each other.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,no-contact-request}
+{contact-request-answer}
+
+\apiCommand{reject-contact-request}
+{Rejects the contact request of the specified user.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,no-contact-request}
+{contact-request-answer}
+
+\apiCommand{remove-contact}
+{Removes a user from the executing user's contact list.
+Will also remove the executing user from the specified user's contact list.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,not-in-contacts}
+{remove-contact}
+
+\apiCommand{get-contact-list}
+{Lists all contacts, all incoming and outgoing contact requests, and all blocks
+of the executing user.}
+{}
+{contacts/int array/IDs of all accounts in contact list,
+incoming-requests/int array/IDs of all accounts that have sent a still pending
+contact request to the executing user,
+outgoing-requests/int array/IDs of all accounts to which the executing user has
+sent a still pending contact request,
+blocks/int array/IDs of all accounts that the executing user is currently
+blocking}
+{}
+{}
+
+\apiCommand{block-account}
+{Blocks a user.
+Until the block is lifted, neither the executing user nor the blocked user can
+send contact request to the other party.
+If the users are in each other's contact list, they are removed from the
+contact lists, just as if one of them had executed the \textbf{remove-contact}
+command, before the block is applied.
+Any pending contact requests are automatically rejected.}
+{id/int/ID of the account}
+{}
+{user-id-invalid,blocking-already}
+{remove-contact}
+
+\apiCommand{unblock-account}
+{Lifts the block of the specified user that was previously issued by the
+executing user.
+This does not lift any block that was issued against the executing user.}
+{id/int/ID of the blocked user's account}
+{}
+{user-id-invalid,not-blocking}
+{}
+
+\apiCommand{create-group}
+{Creates a new user group.}
+{group/object/Complete description of the new user group{,} omitting the ID{,}
+the events array{,} and the polls array.
+The members array \textit{may} contain the executing user's account ID and
+\textit{must} contain at least one other account ID.
+The executing user is invited to the group regardless of whether his account
+ID is contained in the members array.}
+{id/int/ID of the newly created user group}
+{user-id-invalid,no-user-invited}
+{group-change}
+
+\apiCommand{edit-group}
+{Edits a user group of which the executing user is a member.}
+{group/object/New complete description of the group{,} omitting the members
+array{,} the events array{,} and the polls array.
+The ID specified in the description must match the ID of the group that
+is to be edited.}
+{}
+{group-id-invalid,no-permission-edit-group}
+{group-change}
+
+\apiCommand{add-group-members}
+{Adds one or more members to a user group of which the executing user is a
+member.}
+{id/int/ID of the user group,
+members/int array/ID of all user accounts that are to be added to the user
+group.
+No account may be specified that is already a member of the group.
+In particular{,} the executing user's account ID may not be specified.}
+{}
+{group-id-invalid,user-id-invalid,no-permission-manage-members,%
+user-already-in-group}
+{group-change}
+
+\apiCommand{remove-group-members}
+{Removes one or more accounts from a user group of which the executing user is
+a member.}
+{id/int/The ID of the group,
+members/account array/Array of IDs of all members to remove from the user
+group.
+No account may be specified that is not a member of the group.
+The executing user's account may be specified as well.
+This will remove the executing user's account and therefore prevent any further
+interaction of the executing user with the group unless a remaining member adds
+him to the group again.
+If all remaining members of the user group are removed by this command then the
+user group will be deleted.}
+{}
+{group-id-invalid,user-id-invalid,no-permission-manage-members,
+user-not-in-group}
+{group-change}
+
+\apiCommand{get-membership-details}
+{Gets the membership details of an account in a user group of which the
+executing user is a member.
+This command can be used to query a group member's permissions.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the account}
+{membership/object/The complete description of the membership belonging to
+the specified user in the specified group (\ref{sec:Membership-desc})}
+{group-id-invalid, user-not-in-group, user-id-invalid}
+{}
+
+\apiCommand{edit-membership}
+{Edits the membership details of an account in a user group of which the
+executing user is a member.
+This command can be used to edit a group member's permissions.
+To revoke a membership, i.e. remove a user from a group, use the
+\textbf{remove-group-members} command.}
+{membership/object/The complete description of the new membership that is to
+replace the current one (see \ref{sec:Membership-desc}) ommiting the
+sharing-until property.
+The account and group IDs specified in the description must match the ID of
+the group{/}account whose membership is to be edited.}
+{}
+{group-id-invalid, user-id-invalid,user-not-in-group, no-permission-edit-permissions}
+{group-membership-change}
+
+\apiCommand{create-event}
+{Creates an event in a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+event/object/A new complete description of the event
+without the ID{,} creator ID{,} and participants array}
+{id/int/The ID of the event}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,
+no-permission-create-event}
+{event-change}
+
+\apiCommand{edit-event}
+{Edits an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+event/object/New complete description of the event without the creator ID and
+the participants array.
+The ID specified in the description must match the ID of the event that
+is to be edited.}
+{}
+{group-id-invalid,time-end-in-past,time-end-start-conflict,event-id-invalid,
+no-permission-edit-any-event}
+{event-change}
+
+\apiCommand{join-event}
+{Joins an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
+{}
+{group-id-invalid,event-id-invalid,already-participating-event}
+{event-change}
+
+\apiCommand{leave-event}
+{Leaves an event of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
+{}
+{group-id-invalid,event-id-invalid,not-participating-event}
+{event-change}
+
+\apiCommand{remove-event}
+{Removes an event from a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+id/int/The ID of the event}
+{}
+{group-id-invalid,event-id-invalid,no-permission-edit-any-event}
+{event-deletion}
+
+\apiCommand{create-poll}
+{Creates a new poll in a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+    poll/object/A new complete description of the poll without the ID{,} the
+creator ID{,} and the options array}
+{id/int/The ID of the poll}
+{group-id-invalid,no-permission-create-poll}
+{poll-change}
+
+\apiCommand{edit-poll}
+{Edits a poll of a user group of which the executing user is a member.}
+{group-id/int/The ID of the user group,
+poll/object/A new complete description of the poll option without
+the options array and the creator ID.
+The ID specified in the description must match the ID of the poll that
+is to be edited.}
+{}
+{group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
+{poll-change}
+
+\apiCommand{add-poll-option}
+{Adds a poll option to a poll of a user group of which the executing user is a
+member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+poll-option/object/Complete description of the new poll option without the ID and the
+supporters array.}
+{id/int/The ID of the new poll option}
+{group-id-invalid,poll-id-invalid,time-end-in-past,time-end-start-conflict,
+no-permission-edit-any-poll}
+{poll-option-change}
+
+% TODO: „Wählerarray“ besser formulieren
+\apiCommand{edit-poll-option}
+{Edits a poll option of a poll of a user group of which the executing user is
+a member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+poll-option/object/A new complete description of the poll option without the
+supporters array.
+The ID specified in the description must match the ID of the poll option that
+is to be edited.}
+{}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,%
+no-permission-edit-any-poll}
+{poll-change}
+
+\apiCommand{vote-for-option}
+{Votes for a poll option of a poll of a user group of which the executing user
+is a member.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
+{}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,poll-not-multichoice,
+already-voting-for-option}
+{poll-option-change}
+
+\apiCommand{withdraw-vote-for-option}
+{Withdraws the vote of the executing user from a poll option.}
+{group-id/int/The ID of the user group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
+{}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid,not-voting-for-option}
+{poll-option-change}
+
+\apiCommand{remove-poll-option}
+{Removes a poll option from a poll of a user group of which the executing user
+is a member.}
+{group-id/int/The ID of the group,
+poll-id/int/The ID of the poll,
+id/int/The ID of the poll option}
+{}
+{group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
+{poll-option-deletion}
+
+\apiCommand{remove-poll}
+{Removes a poll from a user group of which the executing user is a member.}
+{group-id/int/The ID of the group,
+id/int/The ID of the poll}
+{}
+{group-id-invalid,poll-id-invalid,no-permission-edit-any-poll}
+{poll-deletion}
+
+\apiCommand{send-chat-message}
+{Sends a chat message to a user group of which the executing user is a member.}
+{group-id/int/the ID of the user group,
+message/string/The chat message.
+The message may not be longer than 1024 unicode symbols.}
+{}
+{group-id-invalid}
+{chat}
+
+\apiCommand{list-groups}
+{Lists all groups of which the executing user is a member.}
+{}
+{groups/user group array/An array of shallow descriptions of every user group
+(see \ref{subsec:Usergroup-desc})}
+{}
+{}
+
+\apiCommand{get-group-details}
+{Gets the details of a user group of which the executing user is a member.}
+{id/int/The ID of the user group}
+{group/object/The complete description of the user group
+(\ref{subsec:Usergroup-desc})}
+{group-id-invalid}
+{}
+
+\apiCommand{get-user-details}
+{Gets the details of an account.}
+{id/int/the ID of the account}
+{account/object/The complete description of the account
+(\ref{subsec:Account-desc})}
+{user-id-invalid}
+{}
+
+% TODO: Definiere „aktive Verabredung“
+\apiCommand{get-event-details}
+{Gets the details of an event in a user group of which the executing user is
+a member.}
+{id/int/The ID of the event,
+group-id/int/The ID of the group}
+{event/object/The complete description of the event (see
+\ref{subsec:Event-desc})}
+{group-id-invalid,event-id-invalid}
+{}
+
+\apiCommand{get-poll-details}
+{Gets the details of a poll in a user group of which the executing user is
+a member.}
+{id/int/The ID of the poll,
+group-id/int/The ID of the group}
+{poll/object/The complete description of the poll (see \ref{subsec:Poll-desc})}
+{group-id-invalid,poll-id-invalid}
+{}
+
+\apiCommand{get-poll-option-details}
+{Gets the details of a poll option in a user group of which the executing user
+is a member.}
+{id/int/The ID of the poll option,
+poll-id/int/The ID of the poll,
+group-id/int/The ID of the group}
+{poll-option/object/The complete description of the poll option
+(see \ref{subsec:Poll option-desc})}
+{group-id-invalid,poll-id-invalid,poll-option-id-invalid}
+{}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{request-position}
+{Sends a position request to all members of a user group of which the executing
+user is a member.}
+{id/int/The ID of the group,
+time/date/Point in time until which a location transmission is requested}
+{}
+{group-id-invalid, time-end-in-past}
+{position-request}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{update-position}
+{Updates the position of the executing user.
+This will notify all members of all user groups for which the executing user
+has enabled location sharing.
+Executing this command while the executing user has not enabled location
+sharing with any groups has no effect.}
+{latitude/decimal degree/The latitude of the position,
+longitude/decimal degree/The longitude of the position,
+time-measured/date/Point in time at which the measurement was taken}
+{}
+{time-measured-future}
+{position}
+
+% TODO: Zeit-Toleranz / Annahmen über Synchronität weiter oben spezifizieren
+\apiCommand{publish-position}
+{Enables sharing of the executing user's position with a user group that he is
+a member of.
+All members of the specified group will gain access to the executing user's
+location while sharing is active.
+Location sharing will be active until the specified point in time.
+Specifying a point in time that lies in the past will immediately stop location
+sharing with the specified group.
+Note that \textbf{update-position} should be called immediately after this
+command returns, as group member do not have access to locations updated before
+sharing was active.
+}
+{group-id/int/ID of the user group with which to share the location,
+time-end/date/Point in time at which the location sharing ends.
+May lie in the past.}
+{}
+{group-id-invalid}
+{group-membership-change}
+
+\apiCommand{request-persistent-connection}
+{Request a persistent connection from the server. This persistent connection
+informs the client about updates it has for the logged in user.}
+{}
+{}
+{}
+{}
+
+
+\section{Error codes}\label{sec:errorcodes}
+\apiErrorTable
+
+\section{Updates}
+To inform users of changes that affect them, update objects are created with
+each successfully executed command that makes changes to domain model objects.
+
+These update objects are divided into several types. All of them hold at least
+the following properties:
+
+\apiArgument{
+    type/string/Type of the update object{,} see list below,
+    time-created/date/Point in time at which this update was created,
+    creator/int/ID of the account that caused the creation of this update
+}
+
+\updateType{account-change}{
+    \apiArgument{
+        account/object/Complete description of the account that changed{,}
+        omitting all properties that didn't change.
+    }
+}
+
+\updateType{account-deletion}{
+    \apiArgument{
+        -/-/-
+    }
+}
+
+\updateType{user-group-change}{
+		\apiArgument{
+				usergroup/object/Complete description of the user group that changed{,}
+				omitting all properties that didn't change.
+		}
+}
+
+\updateType{event-change}{
+		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
+				event/object/Complete description of the event that changed{,}
+				omitting all properties that didn't change.
+		}
+}
+
+\updateType{event-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the event belongs to,
+                id/int/ID of the event that was deleted.
+		}
+}
+
+\updateType{poll-change}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+				poll/object/Complete description of the poll that changed{,}
+				omitting all properties that didn't change.
+		}
+}
+
+\updateType{poll-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                id/int/ID of the poll that was deleted.
+		}
+}
+
+\updateType{poll-option-change}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
+				poll-option/object/Complete description of the poll option
+				that changed{,} omitting all properties that didn't change.
+		}
+}
+
+\updateType{poll-option-deletion}{
+		\apiArgument{
+                group-id/int/ID of the group the poll belongs to,
+                poll-id/int/ID of the poll the option belongs to,
+                id/int/ID of the poll option that was deleted.
+		}
+}
+
+\updateType{group-membership-change}{
+		\apiArgument{
+                membership/object/Complete description of the membership that
+                changed{,} omitting all properties that didn't change.
+		}
+}
+
+\updateType{chat}{
+    \apiArgument{
+        group-id/int/ID of the group to which the chat message was sent,
+        message/string/Content of the message
+    }
+}
+
+\updateType{position-request}{
+		\apiArgument{
+				end-time/date/Point in time until which position sharing is requested
+		}
+}
+
+\updateType{contact-request}{
+		\apiArgument{
+            -/-/-
+		}
+}
+
+\updateType{position-change}{
+		\apiArgument{
+            latitude/decimal degree/The latitude of the position,
+            longitude/decimal degree/The longitude of the position,
+            time-measured/date/Point in time at which the measurement was taken
+		}
+}
+
+\updateType{contact-request-answer}{
+		\apiArgument{
+				answer/boolean/states if the request was accepted or rejected
+		}
+}
+
+\updateType{cancel-contact-request}{
+		\apiArgument{
+            -/-/-
+		}
+}
+
+\updateType{remove-contact}{
+		\apiArgument{
+            -/-/-
+		}
+}
+
+\updateType{}{
+		\apiArgument{
+            -/-/-
+		}
+}
+
+\section{Permissions}
+List of the permissions a user can have within an usergroup:
+
+\begin{tabular}{l|l}
+    \hline
+    \textbf{Name} & \textbf{Description} \\
+    \hline
+        edit\_any\_event & Allows the user to edit events created by other
+        users. \\
+        create\_poll & Allows the user to create polls. \\
+        change\_permissions & Allows the user to change permissions. \\
+        manage\_members & Allows the user to manage the members of the
+        usergroup. \\
+        create\_event & Allows the user to create events. \\
+        edit\_group & Allows the user to edit the group. \\
+        edit\_any\_poll & Allows the user to edit polls created by other
+        users. \\
+\end{tabular}\\
+
+
+
+
+\section{Checksums for recursively complete descriptions}\label{sec:checksum}
+\newcommand{\hashAlg}{MD5}
+In order to avoid unnecessary transmissions of complete descriptions, each
+object can also be shallowly described.
+These shallow descriptions contain checksums of the recursively complete
+descriptions of the same object, making it possible to detect whether entire
+parts of the access hierarchy are in sync and do not need to be queried again.
+
+\par The \hashAlg~algorithm will be used to calculate the checksums.
+
+\par The following paragraphs specify how to serialize a recursively complete
+description into a unambiguous form that can then be used as the input for the
+checksum algorithm.
+
+\par \textit{Note: In this paragraph, the digits 0 through 9 do not describe
+the ASCII literals \enquote{0} through \enquote{9} with ASCII values 48 through
+57 but instead describe the non-printable control characters with values 0
+through 9.}\\
+Descriptions themselves are treated as objects.
+Objects are serialized by adding a 1 to the input, then serializing all
+properties and finally adding a 3 to the input.
+Object properties are serialized by first sorting them in alphabetical order of
+their keys and then serializing their values, adding a 2 as seperator between
+each two values.
+Arrays are serialized by adding a 4 to the input, then serialiazing all values
+in ascending order, seperated by a 5 each, and finally adding a 6 to the input.
+In this protocol, arrays can only contain object descriptions or integers.
+The ascending order of integers is based on their signed value.
+The ascending order of descriptions matches the ascending order of their
+included IDs.
+
+Strings are serialized with the same escape sequences as used in
+JSON\footnote{Vgl. \enquote{RFC 7159}, Chapter 7 \enquote{Strings},
+\url{https://tools.ietf.org/html/rfc7159}}.
+No quotation marks are added arounds strings.
+Integers are serialized in decimal form.
+Decimal degrees, the only floating-point numbers in this protocol, are
+serialized in decimal form, with the same precision as defined in chapter
+\ref{sec:datatypes}.
+Booleans are serialized as either \enquote{true} or \enquote{false}, in
+lowercase and without quotation marks.
+
+% TODO: Update example
+\par Example: Checksum generation for an Event with the following details:
+\begin{lstlisting}[language=json,firstnumber=1]
+{   "type" : "event",
+    "id": 2,
+    "title": "200k+ DPS or kick",
+    "creator": 200,
+    "time-start": 1514761200000,
+    "time-end": 1515000600000,
+    "latitude": 49.011978,
+    "longitude": 8.416377,
+    "participants": [ 3, 200, 43378 ]
+}
+\end{lstlisting}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
+
+This event is serialized into the following sequence.
+Control characters are represented as \circled{1}, \circled{2}, \circled{3}
+etc.\\
+\textit{Note: The line-breaks are solely added for better readability and are
+not part of the actual sequence.}
+
+\begin{lstlisting}[language=norm,firstnumber=1]
+(*\circled{1}*)200(*\circled{2}*)2(*\circled{2}*)49.011978(*\circled{2}%
+*)8.416377(*\circled{2}*)(*\circled{4}*)3(*\circled{5}*)200(*\circled{5}%
+*)43378(*\circled{6}*)(*\circled{2}*)1515000600000(*\circled{2}*)
+1514761200000(*\circled{2}*)200k+ DPS or kick(*\circled{2}*)event(*%
+\circled{3}*)
+\end{lstlisting}
+
+This sequence has the hex-encoded \hashAlg~checksum\
+\
+\code{5770ff0d6314b111f3006e9a4d6e4884}
+
+\par The following Python script serves as an example implementation of this
+algorithm:
+
+\pythonexternal{scripts/normalize.py}
+
+
+\end{document}

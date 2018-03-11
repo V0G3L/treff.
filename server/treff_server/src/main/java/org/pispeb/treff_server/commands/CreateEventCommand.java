@@ -20,22 +20,21 @@ import java.util.Date;
 import java.util.HashSet;
 
 /**
- * a command to create an Event
+ * a command to create an event
  */
-public class CreateEventCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "create-event",
-                CreateEventCommand.class);
-    }
+public class CreateEventCommand extends GroupCommand {
+
 
     public CreateEventCommand(AccountManager accountManager,
                               ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(accountManager, Input.class, mapper,
+                GroupLockType.WRITE_LOCK,
+                Permission.CREATE_EVENT,
+                ErrorCode.NOPERMISSIONCREATEEVENT);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected CommandOutput executeOnGroup(GroupInput commandInput) {
         Input input = (Input) commandInput;
 
         // check times
@@ -47,29 +46,8 @@ public class CreateEventCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.TIMEENDINPAST);
         }
 
-        // get account and check if it still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-
-        // get group
-        Usergroup group =
-                getSafeForReading(actingAccount.getAllGroups().get(input
-                        .groupId));
-        if (group == null) {
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
-        }
-
-        // check permission
-        if (!group.checkPermissionOfMember(actingAccount, Permission
-                .CREATE_EVENT)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONCREATEEVENT);
-        }
-
         // create event
-        Event event = group.createEvent(input.event.title,
+        Event event = usergroup.createEvent(input.event.title,
                 input.event.position,
                 input.event.timeStart,
                 input.event.timeEnd,
@@ -79,21 +57,16 @@ public class CreateEventCommand extends AbstractCommand {
         EventChangeUpdate update =
                 new EventChangeUpdate(new Date(),
                         actingAccount.getID(),
+                        usergroup.getID(),
                         event);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    new Date(),
-                    new HashSet<>(group.getAllMembers().values()));
-        } catch (JsonProcessingException e) {
-             // TODO: really?
-            throw new AssertionError("This shouldn't happen.");
-        }
+
+        addUpdateToAllOtherMembers(update);
 
         // respond
         return new Output(event.getID());
     }
 
-    public static class Input extends CommandInputLoginRequired {
+    public static class Input extends GroupInput {
 
         final int groupId;
         final EventCreateDescription event;
@@ -101,9 +74,17 @@ public class CreateEventCommand extends AbstractCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("event") EventCreateDescription event,
                      @JsonProperty("token") String token) {
-            super(token);
+            super(token, groupId, new int[0]);
             this.groupId = groupId;
             this.event = event;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEventTitle(event.title)
+                    && validateDate(event.timeStart)
+                    && validateDate(event.timeEnd)
+                    && validatePosition(event.position);
         }
     }
 

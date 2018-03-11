@@ -7,11 +7,7 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.pispeb.treff_server.ConfigKeys;
 import org.pispeb.treff_server.PasswordHash;
 import org.pispeb.treff_server.Position;
-import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
-import org.pispeb.treff_server.exceptions.ContactRequestNonexistantException;
-import org.pispeb.treff_server.exceptions.DatabaseException;
-import org.pispeb.treff_server.exceptions.DuplicateEmailException;
-import org.pispeb.treff_server.exceptions.DuplicateUsernameException;
+import org.pispeb.treff_server.exceptions.*;
 import org.pispeb.treff_server.interfaces.Account;
 import org.pispeb.treff_server.interfaces.AccountUpdateListener;
 import org.pispeb.treff_server.interfaces.Usergroup;
@@ -24,15 +20,8 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.sql.ResultSet;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
@@ -53,8 +42,7 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public String getUsername() {
-        return (String) getProperties("username")
-                .get("username");
+        return (String) getProperties("username").get("username");
     }
 
     @Override
@@ -64,10 +52,10 @@ public class AccountSQL extends SQLObject implements Account {
         synchronized (entityManager.usernameLock) {
             // check for duplicates
             if (entityManager.usernameAvailable(username)) {
-                throw new DuplicateUsernameException();
-            } else {
                 setProperties(new AssignmentList()
                         .put("username", username));
+            } else {
+                throw new DuplicateUsernameException();
             }
         }
     }
@@ -140,8 +128,7 @@ public class AccountSQL extends SQLObject implements Account {
 
     @Override
     public String getEmail() {
-        return (String) getProperties("email")
-                .get("email");
+        return (String) getProperties("email").get("email");
     }
 
     @Override
@@ -150,10 +137,10 @@ public class AccountSQL extends SQLObject implements Account {
         synchronized (entityManager.emailLock) {
             // check for duplicates
             if (entityManager.emailAvailable(email)) {
-                throw new DuplicateUsernameException();
-            } else {
                 setProperties(new AssignmentList()
                         .put("email", email));
+            } else {
+                throw new DuplicateEmailException();
             }
         }
     }
@@ -163,8 +150,7 @@ public class AccountSQL extends SQLObject implements Account {
         return Collections.unmodifiableMap(database.query(
                 "SELECT usergroupid FROM %s WHERE accountid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new DataObjectMapHandler<UsergroupSQL>(UsergroupSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(UsergroupSQL.class, entityManager),
                 id));
     }
 
@@ -192,10 +178,10 @@ public class AccountSQL extends SQLObject implements Account {
     @Override
     public void sendContactRequest(Account receiver) {
         // if existing sent contact request is still pending,
-        // don't do anything
+        // throw exception
         if (this.getAllOutgoingContactRequests()
                 .containsKey(receiver.getID()))
-            return;
+            throw new ContactRequestAlreadySentException();
         // if this received a contact request from receiver, accept that
         // one instead and return
         if (this.getAllIncomingContactRequests()
@@ -238,27 +224,21 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllIncomingContactRequests() {
+    public Map<Integer, AccountSQL> getAllIncomingContactRequests() {
         return database.query(
                 "SELECT sender FROM %s WHERE receiver=?;",
                 TableName.CONTACTREQUESTS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     @Override
-    public Map<Integer, Account> getAllOutgoingContactRequests() {
+    public Map<Integer, AccountSQL> getAllOutgoingContactRequests() {
         return database.query(
                 "SELECT receiver FROM %s WHERE sender=?;",
                 TableName.CONTACTREQUESTS,
-                new ColumnListHandler<Integer>(),
-                this.id)
-                .stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                this.id);
     }
 
     private void addContact(Account account) {
@@ -286,15 +266,16 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllContacts() {
+    public Map<Integer, AccountSQL> getAllContacts() {
         // get ID list
         return database
                 // get all contact relations that this account is a part of
                 .query(
-                        "SELECT (lowid,highid) FROM %s WHERE lowid=? " +
-                                "OR highid=?;;",
+                        "SELECT lowid,highid FROM %s WHERE lowid=? " +
+                                "OR highid=?;",
                         TableName.CONTACTS,
                         new MapListHandler(),
+                        id,
                         id)
                 .stream()
                 // map to id of other account
@@ -326,17 +307,13 @@ public class AccountSQL extends SQLObject implements Account {
     }
 
     @Override
-    public Map<Integer, Account> getAllBlocks() {
+    public Map<Integer, AccountSQL> getAllBlocks() {
         // get ID list
         return database.query(
                 "SELECT blocked FROM %s WHERE blocker=?;",
                 TableName.BLOCKS,
-                new ColumnListHandler<Integer>(),
-                id)
-                .stream()
-                // create ID -> AccountSQL map
-                .collect(Collectors.toMap(Function.identity(),
-                        entityManager::getAccount));
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
+                id);
     }
 
     @Override
@@ -394,28 +371,19 @@ public class AccountSQL extends SQLObject implements Account {
                 (rs -> null),
                 update.getID(),
                 this.id);
-        // inform updatelisteners asynchronously
-        listeners.forEach(
-                l -> new Thread(() -> l.onUpdateAdded(update)).start());
+
+        // inform listeners
+        listeners.forEach(l -> l.onUpdateAdded(update));
     }
 
     @Override
-    public SortedSet<Update> getUndeliveredUpdates() {
-        Set<Integer> updateIDs;
-        updateIDs = database.query(
+    public SortedSet<UpdateSQL> getUndeliveredUpdates() {
+        // Retrieve updates via MapHandler and put the value set into a TreeSet
+        return new TreeSet<>(database.query(
                 "SELECT updateid FROM %s WHERE accountid=?;",
                 TableName.UPDATEAFFECTIONS,
-                rs -> {
-                    Set<Integer> ids = new HashSet<>();
-                    while (rs.next())
-                        ids.add(rs.getInt(1));
-                    return ids;
-                },
-                this.id
-        );
-        return updateIDs.stream()
-                .map(entityManager::getUpdate)
-                .collect(Collectors.toCollection(TreeSet::new));
+                new DataObjectMapHandler<>(UpdateSQL.class, entityManager),
+                this.id).values());
     }
 
     @Override
@@ -445,6 +413,7 @@ public class AccountSQL extends SQLObject implements Account {
         SortedSet<Usergroup> groups
                 = new TreeSet<>(this.getAllGroups().values());
 
+        // TODO: remove locking here, see method JavaDoc
         groups.forEach(g -> g.getReadWriteLock().writeLock().lock());
         try {
             groups.forEach(g -> g.removeMember(this));
@@ -452,15 +421,29 @@ public class AccountSQL extends SQLObject implements Account {
             groups.forEach(g -> g.getReadWriteLock().writeLock().unlock());
         }
 
-        // removes all contacts (will also removed them from the other sides)
-        SortedSet<Account> contacts
-                = new TreeSet<>(this.getAllContacts().values());
+        // remove all contacts (will also removed them from the other sides)
+        // remove all requests
+        Collection<AccountSQL> contacts
+                = this.getAllContacts().values();
+        Collection<AccountSQL> incomingRequests
+                = this.getAllIncomingContactRequests().values();
+        Collection<AccountSQL> outgoingRequests
+                = this.getAllOutgoingContactRequests().values();
 
-        contacts.forEach(a -> a.getReadWriteLock().writeLock().lock());
+        SortedSet<AccountSQL> accountsToLock = new TreeSet<>();
+        accountsToLock.addAll(contacts);
+        accountsToLock.addAll(incomingRequests);
+        accountsToLock.addAll(outgoingRequests);
+
+        accountsToLock.forEach(a -> a.getReadWriteLock().readLock().lock());
         try {
             contacts.forEach(this::removeContact);
+            incomingRequests.forEach(this::rejectContactRequest);
+            outgoingRequests.forEach(
+                    receiver -> receiver.rejectContactRequest(this));
         } finally {
-            contacts.forEach(a -> a.getReadWriteLock().writeLock().unlock());
+            accountsToLock.forEach(
+                    a -> a.getReadWriteLock().readLock().unlock());
         }
 
         // clears its own blocklist
@@ -477,10 +460,6 @@ public class AccountSQL extends SQLObject implements Account {
         deleted = true;
 
         // events and polls have to be able to handle non-existent creators
-    }
-
-    public Lock getRequestLock() {
-        return requestLock;
     }
 
     @Override

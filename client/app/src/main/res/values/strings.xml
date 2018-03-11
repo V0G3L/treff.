@@ -143,5 +143,4 @@
     <string name="cancel_sharing">Cancel sharing your location?</string>
     <string name="error_username_taken">Username already in use</string>
     <string name="error_session">Invalid session</string>
-
 </resources>

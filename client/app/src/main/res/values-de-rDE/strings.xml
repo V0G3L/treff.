@@ -8,7 +8,7 @@
     <string name="error_invalid_password">Passwort zu kurz</string>
     <string name="error_incorrect_password">Passwort nicht korrekt</string>
     <string name="error_field_required">Dies ist ein Pflichtfeld</string>
-    <string name="tabtext_events">Verabredungen</string>
+    <string name="tabtext_events">Events</string>
     <string name="tabtext_map">Karte</string>
     <string name="tabtext_contacts">Kontakte</string>
     <string name="tabtext_groups">Gruppen</string>

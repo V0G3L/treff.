@@ -11,14 +11,10 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get the ID of an Account by its name
+ * a command to get the ID of an account by its name
  */
 public class GetUserIdCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-user-id",
-                GetUserIdCommand.class);
-    }
+
 
     public GetUserIdCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
@@ -39,7 +35,7 @@ public class GetUserIdCommand extends AbstractCommand {
         Account account = getSafeForReading(
                 accountManager.getAccountByUsername(input.username));
         if (account == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            return new ErrorOutput(ErrorCode.USERNAMEINVALID);
 
         return new Output(account.getID());
     }

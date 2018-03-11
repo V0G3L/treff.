@@ -11,11 +11,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
  * TODO
  */
 public class ResetPasswordCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "reset-password",
-                RegisterCommand.class);
-    }
+
 
     public ResetPasswordCommand(AccountManager accountManager,
                                 ObjectMapper mapper) {

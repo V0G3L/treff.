@@ -13,14 +13,10 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to edit the email of an Account
+ * a command to edit the email of the executing account
  */
 public class EditEmailCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "edit-email",
-                EditEmailCommand.class);
-    }
+
 
     public EditEmailCommand(AccountManager accountManager,
                             ObjectMapper mapper) {
@@ -62,6 +58,12 @@ public class EditEmailCommand extends AbstractCommand {
             super(token);
             this.pass = pass;
             this.email = email;
+        }
+
+        @Override
+        public boolean syntaxCheck() {
+            return validateEmail(email)
+                    && validatePassword(pass);
         }
     }
 

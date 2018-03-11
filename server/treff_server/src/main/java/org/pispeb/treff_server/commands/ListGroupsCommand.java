@@ -18,14 +18,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * a command to get all Usergroups of an Account
+ * a command to get all user groups of an account
  */
 public class ListGroupsCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "list-groups",
-                ListGroupsCommand.class);
-    }
+
 
     public ListGroupsCommand(AccountManager accountManager,
                              ObjectMapper mapper) {

@@ -11,14 +11,10 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.networking.ErrorCode;
 
 /**
- * a command to get a list of all contacts of an Account
+ * a command to get a list of all contacts of the executing account
  */
 public class GetContactListCommand extends AbstractCommand {
-    static {
-        AbstractCommand.registerCommand(
-                "get-contact-list",
-                GetContactListCommand.class);
-    }
+
 
     public GetContactListCommand(AccountManager accountManager,
                                  ObjectMapper mapper) {
@@ -46,6 +42,10 @@ public class GetContactListCommand extends AbstractCommand {
                 actingAccount.getAllOutgoingContactRequests().keySet()
                         .stream()
                         .mapToInt(Integer::intValue)
+                        .toArray(),
+                actingAccount.getAllBlocks().keySet()
+                        .stream()
+                        .mapToInt(Integer::intValue)
                         .toArray());
     }
 
@@ -60,15 +60,18 @@ public class GetContactListCommand extends AbstractCommand {
 
         @JsonProperty("contacts")
         final int[] contacts;
-        @JsonProperty("incoming-request")
+        @JsonProperty("incoming-requests")
         final int[] incoming;
-        @JsonProperty("outgoing-request")
+        @JsonProperty("outgoing-requests")
         final int[] outgoing;
+        @JsonProperty("blocks")
+        final int[] blocks;
 
-        Output(int[] contacts, int[] incoming, int[] outgoing) {
+        Output(int[] contacts, int[] incoming, int[] outgoing, int[] blocks) {
             this.contacts = contacts;
             this.incoming = incoming;
             this.outgoing = outgoing;
+            this.blocks = blocks;
         }
     }
 

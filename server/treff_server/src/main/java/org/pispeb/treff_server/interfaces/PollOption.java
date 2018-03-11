@@ -96,6 +96,6 @@ public interface PollOption extends DataObject, Comparable<PollOption> {
      * {@code PollOption}.
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, Account> getVoters();
+    Map<Integer, ? extends Account> getVoters();
 
 }

@@ -8,20 +8,11 @@ import org.pispeb.treff_server.exceptions.AccountNotInGroupException;
 import org.pispeb.treff_server.exceptions.DatabaseException;
 import org.pispeb.treff_server.interfaces.*;
 import org.pispeb.treff_server.sql.SQLDatabase.TableName;
+import org.pispeb.treff_server.sql.resultsethandler.DataObjectHandler;
 import org.pispeb.treff_server.sql.resultsethandler.DataObjectMapHandler;
 import org.pispeb.treff_server.sql.resultsethandler.IDHandler;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class UsergroupSQL extends SQLObject implements Usergroup {
@@ -86,8 +77,8 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
 
     @Override
     public void removeMember(Account member) {
-        // clean up events, remove participation
-        // then, clean up polloptions, remove votes
+        // clean up events: remove participation
+        // then, clean up polloptions: remove votes
         SortedSet<Event> events = new TreeSet<>(getAllEvents().values());
         SortedSet<Poll> polls = new TreeSet<>(getAllPolls().values());
         events.forEach(e -> e.getReadWriteLock().writeLock().lock());
@@ -126,29 +117,26 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         return Collections.unmodifiableMap(database.query(
                 "SELECT accountid FROM %s WHERE usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new DataObjectMapHandler<AccountSQL>(AccountSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(AccountSQL.class, entityManager),
                 id));
     }
 
     @Override
     public Event createEvent(String title, Position position, Date timeStart,
                              Date timeEnd, Account creator) {
-        int id;
-        id = database.insert(
+        return database.insert(
                 "INSERT INTO %s(title,latitude,longitude,timestart," +
                         "timeend,creator,usergroupid) VALUES " +
                         "(?,?,?,?,?,?,?);",
                 TableName.EVENTS,
-                new ScalarHandler<Integer>(),
+                new DataObjectHandler<>(EventSQL.class, entityManager),
                 title,
                 position.latitude,
                 position.longitude,
                 timeStart,
                 timeEnd,
-                creator,
+                creator.getID(),
                 this.id);
-        return entityManager.getEvent(id);
     }
 
     @Override
@@ -156,25 +144,23 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
         return Collections.unmodifiableMap(database.query(
                 "SELECT id FROM %s WHERE usergroupid=?;",
                 TableName.EVENTS,
-                new DataObjectMapHandler<EventSQL>(EventSQL.class,
-                        entityManager),
+                new DataObjectMapHandler<>(EventSQL.class, entityManager),
                 id));
     }
 
     @Override
-    public Poll createPoll(String question, Account creator,
+    public Poll createPoll(String question, Account creator, Date timeVoteClose,
                            boolean multichoice) {
-        int id;
-        id = database.insert(
-                "INSERT INTO %s(question,creator,multichoice," +
-                        "usergroupid) VALUES (?,?,?,?);",
+        return database.insert(
+                "INSERT INTO %s(question,creator,timevoteclose,multichoice," +
+                        "usergroupid) VALUES (?,?,?,?,?);",
                 TableName.POLLS,
-                new IDHandler(),
+                new DataObjectHandler<>(PollSQL.class, entityManager),
                 question,
-                creator,
+                creator.getID(),
+                timeVoteClose,
                 multichoice,
                 this.id);
-        return entityManager.getPoll(id);
     }
 
     @Override
@@ -190,10 +176,10 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     public boolean checkPermissionOfMember(Account member, Permission
             permission) throws AccountNotInGroupException {
         return database.query(
-                "SELECT ? FROM %s WHERE accountid=? AND usergroupid=?;",
+                "SELECT permission_" + permission.toString()
+                        + " FROM %s WHERE accountid=? AND usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
                 new ScalarHandler<Boolean>(),
-                "permission_" + permission.toString(),
                 member.getID(),
                 this.id);
     }
@@ -207,10 +193,16 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
                 .collect(Collectors.joining(","));
 
         List<Boolean> values = database.query(
-                "SELECT (" + placeholders + "FROM %s " +
+                "SELECT " + placeholders + " FROM %s " +
                         "WHERE usergroupid=? and accountid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                new ColumnListHandler<>(),
+                rs -> {
+                    List<Boolean> ret = new ArrayList<>();
+                    rs.next();
+                    for (int i = 1; i <= permissions.size(); i++)
+                        ret.add(rs.getBoolean(i));
+                    return ret;
+                },
                 id,
                 member.getID());
 
@@ -224,11 +216,11 @@ public class UsergroupSQL extends SQLObject implements Usergroup {
     @Override
     public void setPermissionOfMember(Account member, Permission permission,
                                       boolean value)
-            throws AccountNotInGroupException, DatabaseException {
+            throws AccountNotInGroupException {
         database.update(
-                "UPDATE %s SET ?=? WHERE accountid=? AND usergroupid=?;",
+                "UPDATE %s SET permission_" + permission.toString()
+                        + "=? WHERE accountid=? AND usergroupid=?;",
                 TableName.GROUPMEMBERSHIPS,
-                "permission_" + permission.toString(),
                 value,
                 member.getID(),
                 this.id);

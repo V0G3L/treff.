@@ -1,0 +1,16 @@
+@startuml
+
+skinparam defaultFontSize 20
+skinparam defaultFontName Helvetica
+
+(*) -->[Klient schickt Anfrage] "WebSocketEndPoint" as ws
+ws -->[Anfrage-String weitergeben] "Server" as srv
+srv -->[Anfrage-String + AccountManager\nweitergeben] "RequestHandler" as rh
+rh --> if "Eingabe grob prüfen,\nBefehlsname extrahieren" then
+-->[Ggf. Fehlermeldung] (*)
+else
+-->[Anfrage-String + AccountManager\nweitergeben] "Passende Command-Klasse" as cmd
+
+cmd-->[Syntaxfehler-Meldung\noder spez. Fehlermeldung\noder Ausgabe-String] (*)
+
+@enduml
