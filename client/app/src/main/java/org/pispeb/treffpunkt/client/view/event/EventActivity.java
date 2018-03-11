@@ -58,6 +58,9 @@ public class EventActivity extends AppCompatActivity {
 
         vm.getEvent().observe(this, event -> {
             this.event = event;
+            if (event == null) {
+                return;
+            }
             binding.toolbar.setTitle(event.getName());
             binding.startDate.setText(date(event.getStart().toString()));
             binding.startTime.setText(time(event.getStart().toString()));
@@ -94,13 +97,32 @@ public class EventActivity extends AppCompatActivity {
 
             Intent eventEditIntent = new Intent(this,
                     AddEventActivity.class);
-            // TODO!
-            eventEditIntent.putExtra(GroupActivity.GRP_INTENT, eventId);
+
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_ID, event.getId());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_GROUPID, event.getGroupId());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_NAME, event.getName());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_LAT, event.getLocation()
+                            .getLatitude());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_LON, event.getLocation()
+                            .getLongitude());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_START, event.getStart()
+                            .getTime());
+            eventEditIntent
+                    .putExtra(AddEventActivity.EVENT_END, event.getEnd().getTime());
+
             startActivity(eventEditIntent);
 
             return true;
-        } else if (item.getItemId() == R.id.edit_event) {
+        } else if (item.getItemId() == R.id.delete) {
             vm.deleteEvent(event);
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

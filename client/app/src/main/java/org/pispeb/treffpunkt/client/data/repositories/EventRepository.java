@@ -144,6 +144,15 @@ public class EventRepository {
         encoder.removeEvent(groupId, eventId);
     }
 
+    public void requestEditEvent(int eventId, int groupId, String title, Date
+                                 start, Date end, Location l) {
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        int userId = pref.getInt(ctx.getString(R.string.key_userId), -1);
+        encoder.editEvent(groupId, title, userId, start, end, l, eventId);
+    }
+
     /**
      * Deletes every event
      */

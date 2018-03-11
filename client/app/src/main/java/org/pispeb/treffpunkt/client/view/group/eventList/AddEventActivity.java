@@ -26,12 +26,21 @@ import org.pispeb.treffpunkt.client.view.home.map.MapFragment;
 import org.pispeb.treffpunkt.client.view.util.State;
 import org.pispeb.treffpunkt.client.view.util.ViewModelFactory;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Lets the user create a new event inside a group
  */
 
 public class AddEventActivity extends AppCompatActivity {
+
+    public static final String EVENT_ID = "id";
+    public static final String EVENT_GROUPID = "groupid";
+    public static final String EVENT_NAME = "name";
+    public static final String EVENT_LAT = "lat";
+    public static final String EVENT_LON = "lon";
+    public static final String EVENT_START = "start";
+    public static final String EVENT_END = "end";
 
     private AddEventViewModel vm;
     private ActivityAddEventBinding binding;
@@ -47,9 +56,28 @@ public class AddEventActivity extends AppCompatActivity {
         vm = ViewModelProviders.of(this,
                 ViewModelFactory.getInstance(this))
                 .get(AddEventViewModel.class);
-        int groupId = getIntent().getIntExtra(INTENT_GRP, -1);
 
-        vm.setGroup(groupId);
+        if (getIntent().getIntExtra(EVENT_ID, -1) != -1) {
+            Log.i("Add Event", "Change Event");
+            int id = getIntent().getIntExtra(EVENT_ID, -1);
+            int groupId = getIntent().getIntExtra(EVENT_GROUPID, -1);
+            String name = getIntent().getStringExtra(EVENT_NAME);
+            double lat = getIntent().getDoubleExtra(EVENT_LAT, -1);
+            double lon = getIntent().getDoubleExtra(EVENT_LON, -1);
+            long start = getIntent().getLongExtra(EVENT_START, -1);
+            long end = getIntent().getLongExtra(EVENT_END, -1);
+
+            Location l = new Location("gps");
+            l.setLatitude(lat);
+            l.setLongitude(lon);
+            vm.setupForEdit(id, groupId, name, l, new Date(start), new Date
+                    (end));
+        } else {
+            int groupId = getIntent().getIntExtra(INTENT_GRP, -1);
+            vm.setupForCreate(groupId);
+        }
+
+        binding.notifyChange();
 
         vm.getState().observe(this, state -> callback(state));
 

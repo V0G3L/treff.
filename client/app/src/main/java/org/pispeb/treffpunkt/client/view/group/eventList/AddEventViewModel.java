@@ -16,6 +16,7 @@ import org.pispeb.treffpunkt.client.view.util.State;
 import org.pispeb.treffpunkt.client.view.util.ViewCall;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * ViewModel for creating a new event
@@ -25,14 +26,17 @@ public class AddEventViewModel extends ViewModel
         implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
 
+    // not to be modified
+    private int id;
+
     private EventRepository eventRepository;
     private UserGroupRepository userGroupRepository;
 
-    String name;
-    Location location;
+    private String name;
+    private Location location;
 
-    MutableLiveData<Calendar> start;
-    MutableLiveData<Calendar> end;
+    private MutableLiveData<Calendar> start;
+    private MutableLiveData<Calendar> end;
 
     int groupId;
 
@@ -43,6 +47,10 @@ public class AddEventViewModel extends ViewModel
     private final static int NO_DIALOG = 0;
     private final static int START_DIALOG = 1;
     private final static int END_DIALOG = 2;
+
+    private int mode = CREATE;
+    private final static int CREATE = 0;
+    private final static int EDIT = 1;
 
 
     public AddEventViewModel(EventRepository eventRepository,
@@ -62,7 +70,23 @@ public class AddEventViewModel extends ViewModel
         state = new SingleLiveEvent<>();
     }
 
-    public void setGroup(int groupId) {
+    public void setupForEdit(int id, int groupId, String name, Location l,
+                             Date start, Date end) {
+        mode = EDIT;
+        this.id = id;
+        this.groupId = groupId;
+        this.name = name;
+        this.location = l;
+        Calendar c = Calendar.getInstance();
+        c.setTime(start);
+        this.start.postValue(c);
+        Calendar e = Calendar.getInstance();
+        e.setTime(end);
+        this.end.postValue(e);
+    }
+
+    public void setupForCreate(int groupId) {
+        mode = CREATE;
         this.groupId = groupId;
     }
 
@@ -101,14 +125,24 @@ public class AddEventViewModel extends ViewModel
     public void onSaveClick(Location location) {
         if (name.equals("")) return;
 
-        // Add Event to Database
-        eventRepository.requestAddEvent(
-                groupId,
-                name,
-                start.getValue().getTime(),
-                end.getValue().getTime(),
-                location);
-
+        if (mode == CREATE) {
+            // Add Event to Database
+            eventRepository.requestAddEvent(
+                    groupId,
+                    name,
+                    start.getValue().getTime(),
+                    end.getValue().getTime(),
+                    location);
+        } else {
+            eventRepository.requestEditEvent(
+                    id,
+                    groupId,
+                    name,
+                    start.getValue().getTime(),
+                    end.getValue().getTime(),
+                    location
+            );
+        }
         state.setValue(new State(ViewCall.SUCCESS, 0));
     }
 
