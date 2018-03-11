@@ -50,7 +50,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
         GetUserDetailsCommand getUserDetailsCommand
                 = new GetUserDetailsCommand(accountManager, mapper);
         int invalidUserId = 23;
-        while (invalidUserId == ownID || invalidUserId == users[1].id
+        while (invalidUserId == ownUser.id || invalidUserId == users[1].id
                 || invalidUserId == users[2].id || invalidUserId == users[3].id)
             invalidUserId += 5;
 

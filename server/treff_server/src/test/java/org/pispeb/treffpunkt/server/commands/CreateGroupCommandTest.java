@@ -53,8 +53,8 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
         JsonArray membersDesc = groupDesc.getJsonArray("members");
         Assert.assertTrue(membersDesc.getInt(0) == users[1].id
         || membersDesc.getInt(1) == users[1].id);
-        Assert.assertTrue(membersDesc.getInt(0) == ownID
-        || membersDesc.getInt(1) == ownID);
+        Assert.assertTrue(membersDesc.getInt(0) == ownUser.id
+        || membersDesc.getInt(1) == ownUser.id);
 
         assertNoUpdatesForUser(ownUser);
 
@@ -63,14 +63,14 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 UpdateType.USERGROUP_CHANGE.toString());
 
         // TODO check time-created
-        Assert.assertEquals(update.getInt("creator"),ownID);
+        Assert.assertEquals(update.getInt("creator"),ownUser.id);
         JsonObject updateGroupDesc = update.getJsonObject("usergroup");
         Assert.assertEquals(updateGroupDesc.getString("name"),
                 "groupname");
         JsonArray updateMembers = updateGroupDesc.getJsonArray("members");
-        Assert.assertTrue(updateMembers.getInt(0) == ownID
+        Assert.assertTrue(updateMembers.getInt(0) == ownUser.id
                 || updateMembers.getInt(0) == users[1].id);
-        Assert.assertTrue(updateMembers.getInt(1) == ownID
+        Assert.assertTrue(updateMembers.getInt(1) == ownUser.id
                 || updateMembers.getInt(1) == users[1].id);
     }
 

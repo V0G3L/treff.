@@ -87,6 +87,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
 
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
         input.add("user", newUsername);
+        input.add("pass", exec.password);
         JsonObject output = runCommand(editUsernameCommand, input);
 
         // Assert that the executing user didn't get any updates
