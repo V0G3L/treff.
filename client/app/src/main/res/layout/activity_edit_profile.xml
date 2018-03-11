@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 android:inputType="textPersonName"
-                android:text="@={vm.username}"/>
+                android:text="@={vm.newUsername}"/>
 
             <EditText
                 android:id="@+id/emailinput"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                android:text="@={vm.email}"/>
+                android:text="@={vm.newEmail}"/>
 
             <EditText
                 android:id="@+id/passwordinput"

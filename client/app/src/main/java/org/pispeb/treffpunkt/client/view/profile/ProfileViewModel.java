@@ -36,10 +36,11 @@ public class ProfileViewModel extends ViewModel {
         username.setValue(pref.getString(ctx.getString(R.string.key_userName), ""));
         email = new MutableLiveData<>();
         email.setValue(pref.getString(ctx.getString(R.string.key_email), ""));
+        password = "";
+        confirmPassword = "";
 
         newUsername = username.getValue();
         newEmail = email.getValue();
-        password = "";
         newPassword = password;
 
         state = new SingleLiveEvent<>();
@@ -59,10 +60,12 @@ public class ProfileViewModel extends ViewModel {
         boolean change = false;
         if(!newUsername.equals("") && !newUsername.equals(username.getValue())) {
             encoder.editUsername(newUsername, confirmPassword);
+            username.setValue(newUsername);
             change = true;
         }
         if (!newEmail.equals("") && !newEmail.equals(email.getValue())) {
             encoder.editEmail(newEmail, confirmPassword);
+            email.setValue(newEmail);
             change = true;
         }
         if (change) {
