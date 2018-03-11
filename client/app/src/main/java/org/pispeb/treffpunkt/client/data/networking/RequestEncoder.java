@@ -40,7 +40,8 @@ import javax.websocket.DeploymentException;
  * This class provides methods to perform the known server requests.
  */
 
-public class RequestEncoder implements ConnectionHandler.ResponseListener {
+public class RequestEncoder implements ConnectionHandler.ResponseListener,
+        CommandFailHandler {
 
     private static final int DISPLAY_ERROR_TOAST = 1;
     private static final int UPDATE_INTERVAL_MS = 10000;
@@ -57,7 +58,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private RepositorySet repositorySet;
 
     // Queue of commands waiting to be sent to Server
-    private Queue<AbstractCommand> commands;
+    private Queue<CommandJob> commands;
 
     private static RequestEncoder INSTANCE;
 
@@ -84,9 +85,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
         try {
             connectionHandler
-                    = new ConnectionHandler(
-                    TreffPunkt.STANDARD_URL,
-                    this);
+                    = new ConnectionHandler(getServerAddress(), this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
         }
@@ -111,13 +110,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             }
         };
 
-        if (idle && !commands.isEmpty()) {
-            sendRequest(commands.peek().getRequest());
-        }
-    }
-
-    public void setConnectionHandler(ConnectionHandler connectionHandler) {
-        this.connectionHandler = connectionHandler;
+        nextCommand();
     }
 
     // must be called right after creating the encoder
@@ -158,24 +151,31 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      *                receive a response
      */
     private synchronized void executeCommand(AbstractCommand command) {
-        commands.add(command);
+        commands.add(new CommandJob(command, this, false));
         Log.i("Encoder", "Command queue size: " + commands.size());
-        if (idle) {
-            sendRequest(commands.peek().getRequest());
-            idle = false;
-        }
+        nextCommand();
+    }
+
+    private synchronized void executeCommand(AbstractCommand command,
+                                             CommandFailHandler failHandler,
+                                             boolean abortOnCantConnect) {
+        commands.add(new CommandJob(command, failHandler, abortOnCantConnect));
+        Log.i("Encoder", "Command queue size: " + commands.size());
+        nextCommand();
     }
 
     /**
      * Convert a Request into a String using the json mapper
+     * and asynchronously passes it to the {@link ConnectionHandler}.
      *
      * @param request Json-object of the next command's request
      */
-    private synchronized void sendRequest(AbstractRequest request) {
+    private synchronized void sendRequest(AbstractRequest request,
+                                          boolean abortOnCantConnect) {
         String message;
         try {
             message = mapper.writeValueAsString(request);
-            sendToCH(message);
+            sendToCH(message, abortOnCantConnect);
         } catch (JsonProcessingException e) {
             // This would mean, that the internal request encoding is messed
             // up, which would be very bad indeed!
@@ -184,12 +184,25 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * pass a message to the connectionHandler in order to be sent to the server
+     * Asynchronously pass a message to the {@link ConnectionHandler} to send
+     * it to the server
      *
      * @param message content of that message (in correct command format)
      */
-    protected synchronized void sendToCH(String message) {
-        bgHandler.post(() -> connectionHandler.sendMessage(message));
+    protected synchronized void sendToCH(String message,
+                                         boolean abortOnCantConnect) {
+        bgHandler.post(() -> {
+            // if disconnected before, reconnect
+            if (connectionHandler == null)
+                try {
+                    connectionHandler
+                            = new ConnectionHandler(getServerAddress(), this);
+                } catch (URISyntaxException | IOException
+                        | DeploymentException e) {
+                    e.printStackTrace();
+                }
+            connectionHandler.sendMessage(message, abortOnCantConnect);
+        });
     }
 
     private String getToken() {
@@ -206,9 +219,28 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         return pref.getInt(ctx.getString(R.string.key_userId), -1);
     }
 
+    private String getServerAddress() {
+        Context ctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(ctx);
+        boolean defaultAddress
+                = pref.getBoolean(
+                ctx.getString(R.string.key_using_default_server), true);
+
+        if (defaultAddress)
+            return TreffPunkt.STANDARD_URL;
+        else
+            return pref.getString(ctx.getString(R.string.key_server_address),
+                    "");
+    }
+
+    /**
+     * Asynchronously executes the next command
+     */
     private void nextCommand() {
         if (!commands.isEmpty()) {
-            sendRequest(commands.peek().getRequest());
+            sendRequest(commands.peek().command.getRequest(),
+                    commands.peek().abortOnCantConnect);
         } else {
             idle = true;
         }
@@ -221,12 +253,15 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             //should never happen as long as server is working correctly
             return;
         }
-        AbstractCommand c = commands.poll();
+        CommandJob job = commands.poll();
+        AbstractCommand c = job.command;
+        CommandFailHandler failHandler = job.failHandler;
         try {
-            ErrorResponse error = mapper
+            ErrorResponse errorResponse = mapper
                     .readValue(responseString, ErrorResponse.class);
             Log.i("RequestEncoder", "Error");
-            handleError(error);
+            Error error = Error.getValue(errorResponse.error);
+            failHandler.onFail(error);
         } catch (IOException e) {
             // it is no Error
             try {
@@ -253,6 +288,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         nextCommand();
     }
 
+    @Override
+    public void onCantConnect() {
+        // discard current command and display error message
+        CommandFailHandler failHandler = commands.poll().failHandler;
+        nextCommand();
+        failHandler.onFail(Error.CANT_CONNECT);
+    }
+
     /**
      * Json-description of an error response as the server returns it in case
      * of Syntax, Database or any other error in the given command
@@ -265,8 +308,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
-    private void handleError(ErrorResponse response) {
-        Error error = Error.getValue(response.error);
+    @Override
+    public void onFail(Error error) {
         Log.e("RequestEncoder", error.getCode() +
                 ": " + error.getMessage());
         if (error.isUserRelevant()) {
@@ -285,7 +328,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             SharedPreferences pref = PreferenceManager
                     .getDefaultSharedPreferences(appctx);
             pref.edit().remove(appctx
-                    .getString(R.string.key_token)).commit();
+                    .getString(R.string.key_token)).apply();
             stopRequestUpdates();
 
             // restart App
@@ -305,20 +348,23 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         bgHandler.post(() -> {
             stopRequestUpdates();
             connectionHandler.disconnect();
+            connectionHandler = null;
         });
     }
 
     /**
      * Method to perform a register request
-     *  @param username .
+     *
+     * @param username .
      * @param password .
      * @param email
      */
-    public synchronized void register(String username, String password, String email) {
-        executeCommand(new RegisterCommand(username, password, email));
+    public synchronized void register(String username, String password,
+                                      String email,
+                                      CommandFailHandler failHandler) {
+        executeCommand(new RegisterCommand(username, password, email),
+                failHandler, true);
     }
-
-
 
     /**
      * Method to perform a login request
@@ -326,8 +372,10 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param username .
      * @param password .
      */
-    public synchronized void login(String username, String password) {
-        executeCommand(new LoginCommand(username, password));
+    public synchronized void login(String username, String password,
+                                   CommandFailHandler failHandler) {
+        executeCommand(new LoginCommand(username, password),
+                failHandler, true);
     }
 
 
@@ -525,7 +573,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void leaveGroup(int groupId) {
         executeCommand(new LeaveGroupCommand(groupId, getToken(),
-                        repositorySet.userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
@@ -699,4 +747,5 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     public synchronized void requestUpdates() {
         executeCommand(new RequestUpdatesCommand(getToken(), repositorySet, mapper));
     }
+
 }

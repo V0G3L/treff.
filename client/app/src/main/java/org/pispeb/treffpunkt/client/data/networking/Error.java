@@ -10,6 +10,8 @@ import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 public enum Error {
     //TODO add translations
 
+    CANT_CONNECT
+            (-3, getString(R.string.error_cant_connect), true),
     INTERNAL_ERROR
             (-2, getString(R.string.error_internal), true),
     ERRORCODE_INVALID

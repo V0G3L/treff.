@@ -8,6 +8,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -24,6 +25,7 @@ import javax.websocket.Session;
 public class ConnectionHandler {
 
     private final static int TIMEOUT_MS = 15000;
+    private final static int WAIT_ON_CANT_CONNECT_MS = 5000;
 
     private final Handler handler;
     private final URI uri;
@@ -31,7 +33,7 @@ public class ConnectionHandler {
     private Session session;
 
     private final Handler timeoutHandler = new Handler();
-    private final Lock timeoutLock= new ReentrantLock();
+    private final Lock timeoutLock = new ReentrantLock();
     private Thread timeoutThread;
     private Object timeoutThreadToken = new Object();
     private boolean hitTimeout;
@@ -52,15 +54,43 @@ public class ConnectionHandler {
      *
      * @param message text entered by client
      */
-    public void sendMessage(String message) {
+    public void sendMessage(String message, boolean abortOnCantConnect) {
         handler.post(() -> {
+            // if not connected, connect
             if (session == null)
                 session = connect(uri);
+
+            // if connecting failed, i.e. connect returned null,
+            // abort
+            if ((session == null) && abortOnCantConnect) {
+                Log.i("CH", "can't connect, aborting send");
+                responseListener.onCantConnect();
+                return;
+            }
 
             Log.i("CH", "Sending message " + message);
             boolean messageIsOut = false;
             while (!messageIsOut) {
-                if (session.isOpen()) {
+                // if connection couldn't be established in the first place
+                // wait a few seconds, then try to connect again
+                if (session == null) {
+                    Log.i("CH", "can't connect to socket, will retry in 5 " +
+                            "seconds");
+                    try {
+                        Thread.sleep(WAIT_ON_CANT_CONNECT_MS);
+                    } catch (InterruptedException ignored) {
+                    }
+                    session = connect(uri);
+                }
+                // if connection was established before but just lost,
+                // try again immediately
+                else if (!session.isOpen()) {
+                    session = connect(uri);
+                    Log.i("CH", "socket disconnected, will try reconnecting " +
+                            "immediately");
+                }
+                // if connection was established and is still open, send message
+                else {
                     Log.i("CH", "socket is still open");
                     session.getAsyncRemote().sendText(message);
                     Log.i("CH", "message sent");
@@ -68,9 +98,6 @@ public class ConnectionHandler {
                     startTimeoutTimer();
                     Log.i("CH", String.format("timeout scheduled in %s " +
                             "seconds, leaving sendMessage", TIMEOUT_MS / 1000));
-                } else {
-                    Log.i("CH", "socket disconnected, will reconnect");
-                    session = connect(uri);
                 }
             }
         });
@@ -104,67 +131,77 @@ public class ConnectionHandler {
                 SystemClock.uptimeMillis() + TIMEOUT_MS);
     }
 
-    @OnMessage
-    public void onMessage(String message) {
-        Log.i("CH", "onMessage started");
+    private boolean cancelTimeoutTimer() {
         try {
             timeoutLock.lock();
             // if the message arrived too late and the timeout routine has
-            // already run, discard message
+            // already run, signal that cancelling was unsuccessful
             if (hitTimeout)
-                return;
+                return false;
 
-            Log.i("CH", "onMessage came through");
+            Log.i("CH", "stop timeout came through");
 
             // de-schedule timeout job
             timeoutHandler.removeCallbacksAndMessages(timeoutThreadToken);
-            Log.i("CH", "onMessage de-scheduled timeout thread");
+            Log.i("CH", "de-scheduled timeout thread");
 
             // if timeout job was already started, signal it to abort
             if (timeoutThread.isAlive()) {
                 Log.i("CH", "interrupting timeout job");
                 timeoutThread.interrupt();
             }
-
-            Log.i("CH", "Message received: " + message);
-            responseListener.onResponse(message);
         } finally {
             timeoutLock.unlock();
+        }
+        return true;
+    }
+
+    @OnMessage
+    public void onMessage(String message) {
+        Log.i("CH", "onMessage started");
+        if (cancelTimeoutTimer()) {
+            Log.i("CH", "Message received: " + message);
+            responseListener.onResponse(message);
         }
     }
 
     public void disconnect() {
         if (session != null && session.isOpen())
             try {
+                cancelTimeoutTimer();
                 session.close();
-            } catch (IOException e) {
-            } // TODO: TODONT
+            } catch (IOException ignored) { } // TODO: TODONT
     }
 
+    /**
+     * Tries to connect to the specified URI.
+     *
+     * @param uri The URI to connect to.
+     * @return The newly opened {@code Session} if connecting was successful or
+     * {@code null} if the connection couldn't be established.
+     */
     private Session connect(URI uri) {
-        Session session = null;
-        // try connecting until it works
-        while (session == null) {
-            try {
-                session = ContainerProvider.getWebSocketContainer()
-                        .connectToServer(this, uri);
-                Log.i("CH", "connected to socket");
-            } catch (DeploymentException | IOException e) {
-                Log.i("CH", "can't connect to socket, " +
-                        "will retry in 5 seconds");
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e1) {
-                } // TODO: TODONT
-            }
-
+        Log.i("CH", String.format("Connecting to %s", uri));
+        try {
+            Session session = ContainerProvider.getWebSocketContainer()
+                    .connectToServer(this, uri);
+            Log.i("CH", "Connected to socket");
+            return session;
+        } catch (DeploymentException | IOException e) {
+            // if connecting fails, return null
+            return null;
         }
-        return session;
     }
 
-    public interface ResponseListener {
+    interface ResponseListener {
         void onResponse(String response);
 
         void onTimeout();
+
+        /**
+         * Called when the {@code ConnectionHandler} can't connect to the
+         * server and aborts message sending.
+         */
+        void onCantConnect();
     }
 }

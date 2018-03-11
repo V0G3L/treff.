@@ -66,7 +66,7 @@
 %%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Nicht Erfüllte Anforderungen}
-\subsection{Funktionalle Anforderungen}
+\subsection{Funktionale Anforderungen}
 \subsubsection{Plicht}
 TODO
 \subsubsection{Kür}
@@ -77,37 +77,39 @@ Nur auf Serverseite implementiert und nicht vollständig getestet.
 Nur auf Serverseite implementiert und getestet.
 
 \paragraph{\small Innenraumkarten:} \hspace{0pt} \\
-Wurde nicht implementiert.
+Detaillierte Innenraumkarten wurden nicht implementiert.
 
 \paragraph{\small Eigener server:} \hspace{0pt} \\
-Die Möglichkeit, einen eigenen Server auf der definierten Schnittstelle zwischen
-Server und Klient aufbauend zu entwickeln, ist gegeben. Allerdings ist der
-Server im Klient fest verankert und man müsste sich den Klient mit minimalen
-Änderungen selbst erstellen.
+Die Möglichkeit, einen eigenen Server auf der zwischen Server und Klient
+definierten Schnittstelle aufbauend zu entwickeln, ist gegeben.
+Allerdings ist die Adresse des Servers im Klient fest verankert und ein
+Server-Wechsel erfordert minimale Änderungen am Quellcode.
 
 \paragraph{\small Serverwechsel:} \hspace{0pt} \\
-Das Wechseln des Servers innerhalb der App ist nicht möglich.
+Das Wechseln des Servers innerhalb der App ist nicht ohne Quellcode-Änderungen
+möglich.
 
 \paragraph{\small Stummschalten:} \hspace{0pt} \\
 Stummschalten ist nicht implementiert.
 
 \paragraph{\small Zeitplan für Positionsübertragung:} \hspace{0pt} \\
-Das Übermittlen der Position nach einem Zeitplan ist nicht möhlich.
+Das Übermitteln der Position nach einem Zeitplan ist nicht möglich.
 
 \paragraph{\small Passwortzurücksetzung:} \hspace{0pt} \\
-Das Zurücksetzen des Passworts ist nicht möglich
+Das Zurücksetzen des Passworts ist nicht möglich.
 
 \paragraph{\small Sprachen:} \hspace{0pt} \\
-Die App bietet eine deutsche und eine englische Übersetzung, diese passt sich
-automatisch der Systemsprache an.
+Die App bietet eine deutsche und eine englische Übersetzung.
+Diese passt sich automatisch der Systemsprache an.
 
-\subsection{Nicht Funktionalle Anforderungen}
+\subsection{Nicht-Funktionale Anforderungen}
 \subsubsection{Plicht}
 \paragraph{\small Einfache Bedienung:} \hspace{0pt} \\
-TODO von jemand der beschreiben kann inwieweit wir Materiel Design einhalten
+%TODO
+TODO von jemand der beschreiben kann inwieweit wir Material Design einhalten
 
 \paragraph{\small Nutzeraufkommen:} \hspace{0pt} \\
-TODO
+TODO %TODO
 
 \section{Testszenarien}
 
@@ -124,11 +126,10 @@ TODO
 	\begin{itemize}
 		\item T80 : Kontoverwaltung
 			\begin{itemize}
-			\item Beim Löschen eines Accounts werden nicht die nötigen Updates
-			produziert, um diesen aus all seinen Gruppen, Verabredungen, Abstimmungen
-			etc zu entfernen
-			\item Beim Ändern des Passworts wird keine Bestätigungsmail versand, da
-			dies keinen Mehrwert mit sich bringen würde
+            \item Beim Löschen eines Accounts werden nicht die nötigen Updates
+                produziert, um diesen aus all seinen Gruppen, Verabredungen,
+                Abstimmungen etc zu entfernen
+            \item Beim Ändern des Passworts wird keine Bestätigungsmail versand
 			\end{itemize}
 	\end{itemize}
 
@@ -136,18 +137,22 @@ TODO
 	\subsubsection{Funktionierende Testszenarien}
 	\begin{itemize}
 	\item placeholder
+        %TODO:
+        % Sollten gehen:
+        % - T110 (Chat)
+        % - T150 (Wechsel Deutsch -> Englisch)
 	\end{itemize}
 
 	\subsubsection{Ungetestete Testszenarien}
 	\begin{itemize}
-		\item T100 : Abstimmung
-		\item T120 : Innenraumkarten
-		\item T130 : Stummschalten
-		\item T140 : Gruppenrollen und -rechte
-		\item T160 : Eigene Server
-		\item T170 : Serverwechsel
-		\item T180 : Passwort zurücksetzen
-		\item T190 : Zeitplan für Positionsübertragung
+        \item T100: Abstimmungen klientseitig nicht implementiert
+		\item T120: Innenraumkarten nicht implementiert
+		\item T130: Stummschalten nicht implementiert
+		\item T140: Gruppenrollen und -rechte klientseitig nicht implementiert
+		\item T160: Eigene Server %TODO
+		\item T170: Serverwechsel %TODO
+		\item T180: Passwort zurücksetzen nicht implementiert
+		\item T190: Zeitplan für Positionsübertragung nicht implementiert
 	\end{itemize}
 
 \end{document}

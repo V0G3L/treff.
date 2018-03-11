@@ -188,15 +188,13 @@ public abstract class AbstractCommand {
         return getSafe(obj, t -> t.getReadWriteLock().writeLock());
     }
 
-    // TODO is this even working?
-
     /**
      * compares a given time to the system time with a tolerance
      *
      * @param time the time to compare with the system time
-     * @return -1   , if time < SysTime - tolerance;
-     * 0   , if SysTime - tolerance <= time <= SysTime + tolerance;
-     * 1   , if time > SysTime + tolerance;
+     * @return -1, if time < SysTime - tolerance;<br />
+     * 0, if SysTime - tolerance <= time <= SysTime + tolerance;<br />
+     * 1, if time > SysTime + tolerance;
      */
     protected static int checkTime(Date time) {
         long tolerance = 60000;

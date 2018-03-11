@@ -148,4 +148,13 @@
     <string name="missing_password">Please enter a password</string>
     <string name="missing_username">Please enter an username</string>
     <string name="invalid_email">Invalid email</string>
+    <string name="login_server_address">Server address (empty for
+        default)</string>
+    <string name="key_server_address" translatable="false">server_address</string>
+    <string name="key_using_default_server" translatable="false">
+        using_default_server</string>
+    <string name="error_cant_connect">Can\'t connect to server</string>
+    <string name="username_already_in_use">Username already in use</string>
+    <string name="email_already_in_use">Email address already in use</string>
+    <string name="button_change_server">Change Server</string>
 </resources>

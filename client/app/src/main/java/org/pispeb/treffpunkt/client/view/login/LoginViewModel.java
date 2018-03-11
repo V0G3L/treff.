@@ -3,25 +3,30 @@ package org.pispeb.treffpunkt.client.view.login;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.data.networking.RequestEncoder;
-import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 import org.pispeb.treffpunkt.client.view.util.SingleLiveEvent;
 import org.pispeb.treffpunkt.client.view.util.State;
+import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 import org.pispeb.treffpunkt.client.view.util.ViewCall;
+
 
 /**
  * {@link ViewModel} providing the {@link LoginFragment}'s data
  */
 public class LoginViewModel extends ViewModel {
 
-    private SingleLiveEvent<State> state;
-
     private String username;
     private String password;
     private String email;
+    private SingleLiveEvent<State> state;
+
+    private Handler uiHandler = new Handler(Looper.getMainLooper());
 
     private final RequestEncoder encoder;
 
@@ -32,10 +37,6 @@ public class LoginViewModel extends ViewModel {
         username = "";
         password = "";
         email = "";
-    }
-
-    public SingleLiveEvent<State> getState() {
-        return state;
     }
 
     public String getUsername() {
@@ -62,6 +63,9 @@ public class LoginViewModel extends ViewModel {
         this.email = email;
     }
 
+    public SingleLiveEvent<State> getState() {
+        return state;
+    }
 
     public void onLogin() {
 
@@ -71,9 +75,26 @@ public class LoginViewModel extends ViewModel {
 
         state.setValue(new State(ViewCall.LOGIN, 0));
 
-        listenForFeedback();
+        listenForSuccessfulLogin();
 
-        encoder.login(username, password);
+        // send encoder response back to UI thread
+        encoder.login(username, password,
+                error -> uiHandler.post(() -> {
+            encoder.closeConnection();
+            ViewCall call;
+            switch (error) {
+                case CANT_CONNECT:
+                    call = ViewCall.CONNECT_FAILED;
+                    break;
+                case LOGIN_INV:
+                    call = ViewCall.LOGIN_FAILED;
+                    break;
+                default:
+                    // shouldn't happen
+                    call = ViewCall.IDLE;
+            }
+            state.setValue(new State(call, 0));
+        }));
     }
 
     public void onRegister() {
@@ -83,9 +104,30 @@ public class LoginViewModel extends ViewModel {
         }
         state.setValue(new State(ViewCall.REGISTER, 0));
 
-        listenForFeedback();
+        listenForSuccessfulLogin();
 
-        encoder.register(username, password, email);
+        // send encoder response back to UI thread
+        encoder.register(username, password, email,
+                error -> uiHandler.post(() -> {
+            encoder.closeConnection();
+            ViewCall call;
+            switch (error) {
+                case CANT_CONNECT:
+                    call = ViewCall.CONNECT_FAILED;
+                    break;
+                case USERNAME_USED:
+                    call = ViewCall.REGISTER_FAILED_USERNAME_IN_USE;
+                    break;
+                case EMAIL_INV:
+                    call = ViewCall.REGISTER_FAILED_EMAIL_IN_USE;
+                    break;
+                default:
+                    // shouldn't happen
+                    call = ViewCall.IDLE;
+                    break;
+            }
+            state.setValue(new State(call, 0));
+        }));
     }
 
     public void onGoToRegister() {
@@ -96,11 +138,12 @@ public class LoginViewModel extends ViewModel {
         state.setValue(new State(ViewCall.GO_TO_LOGIN, 0));
     }
 
-    private void listenForFeedback() {
+    private void listenForSuccessfulLogin() {
         SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
         Context ctx = TreffPunkt.getAppContext();
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+        SharedPreferences pref
+                = PreferenceManager.getDefaultSharedPreferences(ctx);
 
         pref.edit().putString(ctx.getString(R.string.key_token), "").apply();
 
@@ -127,6 +170,10 @@ public class LoginViewModel extends ViewModel {
             state.setValue(new State(ViewCall.EMPTY_USERNAME, 0));
         }
         return (alidPassword && validUsername);
+    }
+
+    public void showServerAddressDialog() {
+        state.setValue(new State(ViewCall.SHOW_SERVER_ADDRESS_DIALOG, 0));
     }
 
 }

@@ -133,7 +133,8 @@ public class RequestHandler {
         registerCommand("create-event", CreateEventCommand.class);
         registerCommand("create-group", CreateGroupCommand.class);
         registerCommand("create-poll", CreatePollCommand.class);
-        registerCommand("delete-account", DeleteAccountCommand.class);
+        // not implemented
+//        registerCommand("delete-account", DeleteAccountCommand.class);
         registerCommand("edit-email", EditEmailCommand.class);
         registerCommand("edit-event", EditEventCommand.class);
         registerCommand("edit-group", EditGroupCommand.class);
@@ -168,9 +169,10 @@ public class RequestHandler {
         registerCommand("remove-poll-option", RemovePollOptionCommand.class);
         registerCommand("request-position", RequestPositionCommand.class);
         registerCommand("request-updates", RequestUpdatesCommand.class);
-        registerCommand("reset-password", RegisterCommand.class);
-        registerCommand("reset-password-confirm",
-                ResetPasswordConfirmCommand.class);
+        // not implemented
+//        registerCommand("reset-password", RegisterCommand.class);
+//        registerCommand("reset-password-confirm",
+//                ResetPasswordConfirmCommand.class);
         registerCommand("send-chat-message", SendChatMessageCommand.class);
         registerCommand("send-contact-request",
                 SendContactRequestCommand.class);

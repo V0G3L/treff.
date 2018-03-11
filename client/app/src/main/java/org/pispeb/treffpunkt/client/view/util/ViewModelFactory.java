@@ -23,7 +23,6 @@ import org.pispeb.treffpunkt.client.view.home.groupList.AddGroupViewModel;
 import org.pispeb.treffpunkt.client.view.home.groupList.GroupListViewModel;
 import org.pispeb.treffpunkt.client.view.home.map.MapViewModel;
 import org.pispeb.treffpunkt.client.view.login.LoginViewModel;
-import org.pispeb.treffpunkt.client.view.login.RegisterViewModel;
 import org.pispeb.treffpunkt.client.view.profile.ProfileViewModel;
 import org.pispeb.treffpunkt.client.view.ui_components.NavigationViewModel;
 
