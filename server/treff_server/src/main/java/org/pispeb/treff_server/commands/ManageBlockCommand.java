@@ -34,13 +34,13 @@ public abstract class ManageBlockCommand extends AbstractCommand {
 
         // get accounts
         if (input.getActingAccount().getID() < input.accountId) {
-            blockingAccount = getSafeForWriting(input.getActingAccount());
-            blockedAccount = getSafeForWriting(
+            blockingAccount = getSafeForReading(input.getActingAccount());
+            blockedAccount = getSafeForReading(
                     accountManager.getAccount(input.accountId));
         } else {
-            blockedAccount = getSafeForWriting(
+            blockedAccount = getSafeForReading(
                     accountManager.getAccount(input.accountId));
-            blockingAccount = getSafeForWriting(input.getActingAccount());
+            blockingAccount = getSafeForReading(input.getActingAccount());
         }
         if (blockingAccount == null) {
             return new ErrorOutput(ErrorCode.TOKENINVALID);

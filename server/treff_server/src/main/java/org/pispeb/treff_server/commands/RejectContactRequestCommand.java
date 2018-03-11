@@ -34,13 +34,13 @@ public class RejectContactRequestCommand extends AbstractCommand {
 
         // get accounts
         if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForWriting(input.getActingAccount());
-            newContact = getSafeForWriting(
+            actingAccount = getSafeForReading(input.getActingAccount());
+            newContact = getSafeForReading(
                     accountManager.getAccount(input.id));
         } else {
-            newContact = getSafeForWriting(
+            newContact = getSafeForReading(
                     accountManager.getAccount(input.id));
-            actingAccount = getSafeForWriting(input.getActingAccount());
+            actingAccount = getSafeForReading(input.getActingAccount());
         }
         if (actingAccount == null) {
             return new ErrorOutput(ErrorCode.TOKENINVALID);

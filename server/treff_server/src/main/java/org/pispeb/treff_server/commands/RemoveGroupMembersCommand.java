@@ -28,6 +28,7 @@ public class RemoveGroupMembersCommand extends GroupCommand {
                 GroupLockType.WRITE_LOCK,
                 Permission.MANAGE_MEMBERS,
                 ErrorCode.NOPERMISSIONMANAGEMEMBERS);
+        // TODO: allow self-removal
     }
 
     @Override

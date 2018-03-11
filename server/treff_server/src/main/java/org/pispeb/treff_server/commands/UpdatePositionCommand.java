@@ -16,9 +16,7 @@ import org.pispeb.treff_server.interfaces.AccountManager;
 import org.pispeb.treff_server.interfaces.Usergroup;
 import org.pispeb.treff_server.networking.ErrorCode;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * a command to update the position of the executing account in the database
@@ -50,7 +48,7 @@ public class UpdatePositionCommand extends AbstractCommand {
         // members of groups the actingAccount is a member of and is sharing
         // its position with)
         // have to re-check existence after lock (re-)acquisition
-        Set<Account> accountsToLock = new HashSet<>();
+        SortedSet<Account> accountsToLock = new TreeSet<>();
         for (Usergroup g : actingAccount.getAllGroups().values()) {
             getSafeForReading(g);
             Date sharingUntil

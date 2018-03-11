@@ -33,6 +33,12 @@ public class DeleteAccountCommand extends AbstractCommand {
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
+        // TODO: fix or remove DeleteAccount
+        // problem: unlocking actingAccount to lock group's members can result
+        // in set of groups becoming out-of-date, causing unacceptable
+        // signal loss
+        if (true)
+            throw new UnsupportedOperationException();
         Input input = (Input) commandInput;
 
         // check if account still exists
@@ -99,12 +105,6 @@ public class DeleteAccountCommand extends AbstractCommand {
                 successfullyLockedGroups.add(group);
         }
 
-        // TODO: fix or remove DeleteAccount
-        // problem: unlocking actingAccount to lock group's members can result
-        // in set of groups becoming out-of-date, causing unacceptable
-        // signal loss
-        if (true)
-            throw new UnsupportedOperationException();
 
 
         UpdatesWithoutSpecialParameters update

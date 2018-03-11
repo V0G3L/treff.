@@ -34,7 +34,8 @@ public class WebSocketEndpoint {
 
     @OnMessage
     public String onMessage(String message, Session session) {
-        logger.info(String.format("RECEIVED %s", message));
+        logger.info(String.format("RECEIVED on %s: %s", session.getId(),
+                message));
         // Clients shouldn't to send messages on persistent Connections
         // so they don't get any answer
         if (persistentConnections.contains(session))
@@ -50,7 +51,8 @@ public class WebSocketEndpoint {
                     server.getAccountManager(), response.accountID);
             return "{}";
         } else {
-            logger.info(String.format("SENDING %s", response.responseString));
+            logger.info(String.format("SENDING on %s: %s", session.getId(),
+                    response.responseString));
             return response.responseString;
         }
     }
