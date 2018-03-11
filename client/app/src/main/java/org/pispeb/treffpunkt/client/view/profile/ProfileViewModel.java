@@ -1,5 +1,6 @@
 package org.pispeb.treffpunkt.client.view.profile;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,12 +16,12 @@ import org.pispeb.treffpunkt.client.view.util.ViewCall;
 public class ProfileViewModel extends ViewModel {
 
     private RequestEncoder encoder;
-    private String oldUsername;
-    private String username;
-    private String oldEmail;
-    private String email;
-    private String oldPassword;
+    private MutableLiveData<String> username;
+    private String newUsername;
+    private MutableLiveData<String> email;
+    private String newEmail;
     private String password;
+    private String newPassword;
     private String confirmPassword;
 
     private SingleLiveEvent<State> state;
@@ -31,92 +32,19 @@ public class ProfileViewModel extends ViewModel {
         this.encoder = encoder;
         ctx = TreffPunkt.getAppContext();
         pref = PreferenceManager.getDefaultSharedPreferences(ctx);
-        username = pref.getString(ctx.getString(R.string.key_userName), "");
-        oldUsername = username;
-        email = pref.getString(ctx.getString(R.string.key_email), "");
-        oldEmail = email;
-        oldPassword = "";
+        username = new MutableLiveData<>();
+        username.setValue(pref.getString(ctx.getString(R.string.key_userName), ""));
+        email = new MutableLiveData<>();
+        email.setValue(pref.getString(ctx.getString(R.string.key_email), ""));
+
+        newUsername = username.getValue();
+        newEmail = email.getValue();
+        password = "";
+        newPassword = password;
 
         state = new SingleLiveEvent<>();
         state.setValue(new State(ViewCall.IDLE, 0));
 
-    }
-
-    public String getOldUsername() {
-        return oldUsername;
-    }
-
-    public void setOldUsername(String oldUsername) {
-        this.oldUsername = oldUsername;
-    }
-
-    public String getOldEmail() {
-        if (oldEmail.equals("")) {
-            return ctx.getString(R.string.settings_no_email);
-        }
-        else {
-            return oldEmail;
-        }
-    }
-
-    public void setOldEmail(String oldEmail) {
-        this.oldEmail = oldEmail;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public SingleLiveEvent<State> getState() {
-        return state;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
-
-    public String getOldPassword() {
-        return oldPassword;
-    }
-
-    public String getConfirmPassword() {
-        return confirmPassword;
-    }
-
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public void onSaveDataClick() {
-        if(!username.equals("") && !username.equals(oldUsername)) {
-            encoder.editUsername(username, confirmPassword);
-            oldUsername = username;
-        }
-        if (!email.equals("") && !email.equals(oldEmail)) {
-            encoder.editEmail(email, confirmPassword);
-            oldEmail = email;
-        }
-        state.setValue(new State(ViewCall.PROFILE, 0));
     }
 
     public void onEditDataClick() {
@@ -127,17 +55,97 @@ public class ProfileViewModel extends ViewModel {
         state.setValue(new State(ViewCall.EDIT_PASSWORD, 0));
     }
 
-    public void onSavePasswordClick() {
-        if (!oldPassword.equals("") && !password.equals("")) {
-            encoder.editPassword(oldPassword, password);
+    public void onSaveDataClick() {
+        boolean change = false;
+        if(!newUsername.equals("") && !newUsername.equals(username.getValue())) {
+            encoder.editUsername(newUsername, confirmPassword);
+            change = true;
         }
-        state.setValue(new State(ViewCall.PROFILE, 0));
+        if (!newEmail.equals("") && !newEmail.equals(email.getValue())) {
+            encoder.editEmail(newEmail, confirmPassword);
+            change = true;
+        }
+        if (change) {
+            state.setValue(new State(ViewCall.PROFILE, 0));
+        }
     }
 
-    public void onCancelClick() {
-        state.setValue(new State(ViewCall.IDLE, 0));
+    public void onSavePasswordClick() {
+        if (!newPassword.equals("")) {
+            encoder.editPassword(newPassword, password);
+            state.setValue(new State(ViewCall.PROFILE, 0));
+        }
     }
 
+    public MutableLiveData<String> getUsernameLiveData() {
+        return username;
+    }
 
+    public String getUsername() {
+        return username.getValue();
+    }
 
+    public void setUsername(String username) {
+        this.username.setValue(username);
+    }
+
+    public MutableLiveData<String> getEmailLiveData() {
+        return email;
+    }
+
+    public String getEmail() {
+        return email.getValue();
+    }
+
+    public void setEmail(String email) {
+        this.email.setValue(email);
+    }
+
+    public SingleLiveEvent<State> getState() {
+        return state;
+    }
+
+    public void setState(SingleLiveEvent<State> state) {
+        this.state = state;
+    }
+
+    public String getNewUsername() {
+        return newUsername;
+    }
+
+    public void setNewUsername(String newUsername) {
+        this.newUsername = newUsername;
+    }
+
+    public String getNewEmail() {
+        return newEmail;
+    }
+
+    public void setNewEmail(String newEmail) {
+        this.newEmail = newEmail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 }

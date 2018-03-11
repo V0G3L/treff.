@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treffpunkt.client.data.networking.commands.descriptions.CompletePoll;
 
-/**
- * Created by matth on 17.02.2018.
- */
-
 public class GetPollDetailsCommand extends AbstractCommand {
 
     private Request output;

@@ -31,6 +31,13 @@ public class ProfileActivity extends NavigationActivity {
 
         vm.getState().observe(this, state -> callback(state));
 
+        vm.getEmailLiveData().observe(this, email -> {
+            binding.email.setText(email);
+        });
+        vm.getUsernameLiveData().observe(this, username -> {
+            binding.username.setText(username);
+        });
+
         setupToolbar(binding.toolbarNavigation, R.string.profile_title);
     }
 

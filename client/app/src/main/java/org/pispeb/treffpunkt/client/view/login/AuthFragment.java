@@ -12,10 +12,6 @@ import android.widget.EditText;
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.databinding.DialogTextinputBinding;
 
-/**
- * Created by tim on 11/03/18.
- */
-
 public class AuthFragment extends Fragment {
 
     protected void showServerAddressDialog(ViewGroup parent) {

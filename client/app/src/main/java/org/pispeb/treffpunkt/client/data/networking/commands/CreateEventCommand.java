@@ -12,10 +12,6 @@ import org.pispeb.treffpunkt.client.data.repositories.EventRepository;
 
 import java.util.Date;
 
-/**
- * Created by matth on 16.02.2018.
- */
-
 public class CreateEventCommand extends AbstractCommand {
 
     private final EventRepository eventRepository;

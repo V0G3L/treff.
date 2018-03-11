@@ -84,8 +84,10 @@ public class RegisterFragment extends AuthFragment {
             case SUCCESS:
                 SharedPreferences preferences = PreferenceManager
                         .getDefaultSharedPreferences(getContext());
-                preferences.edit().putString(getString(R.string.key_userName),
-                        vm.getUsername()).apply();
+                preferences.edit()
+                        .putString(getString(R.string.key_userName), vm.getUsername())
+                        .putString(getString(R.string.key_email), vm.getEmail())
+                        .apply();
                 Intent intent = new Intent(getContext(), HomeActivity.class);
                 this.startActivity(intent);
                 break;

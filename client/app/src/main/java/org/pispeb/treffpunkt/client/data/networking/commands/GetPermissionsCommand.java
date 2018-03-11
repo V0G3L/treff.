@@ -2,10 +2,6 @@ package org.pispeb.treffpunkt.client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by matth on 16.02.2018.
- */
-
 public class GetPermissionsCommand extends AbstractCommand {
 
     private Request output;

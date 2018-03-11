@@ -34,7 +34,6 @@ public class EditEventCommand extends AbstractCommand {
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse; //empty
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLatitude(output.event.latitude);
         l.setLongitude(output.event.longitude);

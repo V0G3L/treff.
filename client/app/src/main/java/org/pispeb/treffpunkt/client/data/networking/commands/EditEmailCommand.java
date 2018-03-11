@@ -29,7 +29,6 @@ public class EditEmailCommand extends AbstractCommand{
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);

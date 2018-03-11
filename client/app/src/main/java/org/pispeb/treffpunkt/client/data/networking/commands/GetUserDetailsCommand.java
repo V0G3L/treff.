@@ -7,10 +7,6 @@ import org.pispeb.treffpunkt.client.data.networking.commands.descriptions.Comple
 
 import org.pispeb.treffpunkt.client.data.repositories.UserRepository;
 
-/**
- * Created by matth on 17.02.2018.
- */
-
 public class GetUserDetailsCommand extends AbstractCommand {
 
     private Request output;

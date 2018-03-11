@@ -50,8 +50,7 @@
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@={vm.oldUsername}"/>
+                    android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/emailtext"
@@ -62,8 +61,7 @@
                 <TextView
                     android:id="@+id/email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@={vm.oldEmail}"/>
+                    android:layout_height="wrap_content"/>
 
                 <Button
                     android:id="@+id/editdatabutton"

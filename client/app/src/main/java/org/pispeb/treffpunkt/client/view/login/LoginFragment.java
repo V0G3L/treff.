@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +25,6 @@ public class LoginFragment extends AuthFragment {
     private FragmentLoginBinding binding;
     private LoginViewModel vm;
 
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +36,8 @@ public class LoginFragment extends AuthFragment {
 
         vm.setUsername(PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString(getString(R.string.key_userName), ""));
+        vm.setEmail(PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString(getString(R.string.key_email), ""));
     }
 
     @Override
@@ -97,8 +94,8 @@ public class LoginFragment extends AuthFragment {
                 break;
             case SUCCESS:
                 preferences.edit()
-                        .putString(getString(R.string.key_userName),
-                                vm.getUsername())
+                        .putString(getString(R.string.key_userName), vm.getUsername())
+                        .putString(getString(R.string.key_email), vm.getEmail())
                         .apply();
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 this.startActivity(intent);

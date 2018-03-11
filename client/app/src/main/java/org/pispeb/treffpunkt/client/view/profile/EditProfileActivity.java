@@ -30,22 +30,17 @@ public class EditProfileActivity extends AppCompatActivity  {
 
         vm.getState().observe(this, state -> callback(state));
 
-        //TODO string resource
-        binding.toolbar.setTitle("Edit Profile");
+        binding.toolbar.setTitle(getString(R.string.edit_data));
         setSupportActionBar(binding.toolbar);
     }
 
-
-    //TODO
     private void callback(State state) {
         switch (state.call) {
-
             case PROFILE:
                 finish();
                 break;
             default:
                 break;
-
         }
     }
 

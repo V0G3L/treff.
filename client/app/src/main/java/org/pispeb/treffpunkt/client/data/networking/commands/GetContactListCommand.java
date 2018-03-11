@@ -9,10 +9,6 @@ import org.pispeb.treffpunkt.client.data.entities.User;
 import org.pispeb.treffpunkt.client.data.networking.RequestEncoder;
 import org.pispeb.treffpunkt.client.data.repositories.UserRepository;
 
-/**
- * Created by matth on 16.02.2018.
- */
-
 public class GetContactListCommand extends AbstractCommand {
 
     private Request output;

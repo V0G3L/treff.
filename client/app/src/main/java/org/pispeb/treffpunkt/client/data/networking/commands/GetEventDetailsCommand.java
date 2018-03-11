@@ -12,10 +12,6 @@ import org.pispeb.treffpunkt.client.data.networking.commands.descriptions
 
 import org.pispeb.treffpunkt.client.data.repositories.EventRepository;
 
-/**
- * Created by matth on 17.02.2018.
- */
-
 public class GetEventDetailsCommand extends AbstractCommand {
 
     private Request output;

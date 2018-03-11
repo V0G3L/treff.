@@ -30,21 +30,17 @@ public class EditPasswordActivity extends AppCompatActivity  {
 
         vm.getState().observe(this, state -> callback(state));
 
-        //TODO string resource
-        binding.toolbar.setTitle("Edit Password");
+        binding.toolbar.setTitle(getString(R.string.edit_password));
         setSupportActionBar(binding.toolbar);
     }
 
-    //TODO
     private void callback(State state) {
         switch (state.call) {
-
             case PROFILE:
                 finish();
                 break;
             default:
                 break;
-
         }
     }
 

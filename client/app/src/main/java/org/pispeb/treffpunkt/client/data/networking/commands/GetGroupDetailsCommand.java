@@ -11,10 +11,6 @@ import org.pispeb.treffpunkt.client.data.networking.commands.descriptions.Comple
 import org.pispeb.treffpunkt.client.data.repositories.EventRepository;
 import org.pispeb.treffpunkt.client.data.repositories.UserGroupRepository;
 
-/**
- * Created by matth on 17.02.2018.
- */
-
 public class GetGroupDetailsCommand extends AbstractCommand {
 
     private final Request output;
