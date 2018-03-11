@@ -6,7 +6,8 @@ import android.location.LocationManager;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.data.entities.Event;
-import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteEvent;
+import org.pispeb.treff_client.data.networking.commands.descriptions
+        .CompleteEvent;
 
 
 import org.pispeb.treff_client.data.repositories.EventRepository;
@@ -18,7 +19,7 @@ import org.pispeb.treff_client.data.repositories.EventRepository;
 public class GetEventDetailsCommand extends AbstractCommand {
 
     private Request output;
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
 
     public GetEventDetailsCommand(int id, int groupId, String token,
                                   EventRepository eventRepository) {
@@ -38,14 +39,19 @@ public class GetEventDetailsCommand extends AbstractCommand {
         Location l = new Location(LocationManager.GPS_PROVIDER);
         l.setLatitude(response.event.latitude);
         l.setLongitude(response.event.longitude);
-        eventRepository.update(new Event(
+        Event event = new Event(
                 output.id,
                 response.event.title,
                 response.event.timeStart,
                 response.event.timeEnd,
                 l,
                 response.event.creator,
-                output.groupId));
+                output.groupId);
+        if (eventRepository.getEvent(output.id) == null) {
+            eventRepository.addEvent(event);
+        } else {
+            eventRepository.updateEvent(event);
+        }
     }
 
     public static class Request extends AbstractRequest {
@@ -56,7 +62,7 @@ public class GetEventDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, int groupId, String token) {
-            super("get-event-details");
+            super(CmdDesc.GET_EVENT_DETAILS.toString());
             this.id = id;
             this.groupId = groupId;
             this.token = token;

@@ -27,6 +27,9 @@ public class GroupListViewModel extends ViewModel
         this.groups = userGroupRepository.getGroups();
         this.state = new SingleLiveEvent<>();
         this.state.setValue(new State(ViewCall.IDLE, -1));
+
+        // sync groups with server
+        this.userGroupRepository.requestRefresh();
     }
 
     public LiveData<PagedList<UserGroup>> getGroups() {

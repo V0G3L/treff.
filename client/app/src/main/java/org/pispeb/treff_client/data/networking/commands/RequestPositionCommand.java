@@ -23,8 +23,6 @@ public class RequestPositionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO Handle response
-        // Do nothing
     }
 
     public static class Request extends AbstractRequest {
@@ -34,7 +32,7 @@ public class RequestPositionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, Date time, String token) {
-            super("request-position");
+            super(CmdDesc.REQUEST_POSITION.toString());
             this.id = id;
             this.time = time;
             this.token = token;

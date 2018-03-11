@@ -1,34 +1,25 @@
 package org.pispeb.treff_client.data.entities;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
-import android.arch.persistence.room.Index;
-import android.arch.persistence.room.PrimaryKey;
+
+import java.util.Date;
 
 /**
- * Room {@link Entity} that represents the relationship between {@link User}s and {@link UserGroup}s
+ * Room {@link Entity} that represents the relationship between {@link User}s
+ * and {@link UserGroup}s
  */
 @Entity(tableName = "groupmembership",
-        primaryKeys = {"userId", "groupId"},
-        foreignKeys = {
-            @ForeignKey(entity = User.class,
-                        parentColumns = "userId",
-                        childColumns = "userId"),
-            @ForeignKey(entity = UserGroup.class,
-                        parentColumns = "groupId",
-                        childColumns = "groupId")
-        },
-        indices={
-            @Index(value="groupId"),
-            @Index(value="userId")
-        })
+        primaryKeys = {"userId", "groupId"})
 public class GroupMembership {
     private int userId;
     private int groupId;
+    private Date sharingUntil;
+    private boolean sharing;
 
     public GroupMembership(int userId, int groupId) {
         this.userId = userId;
         this.groupId = groupId;
+        this.sharingUntil = new Date(0L);
     }
 
     public int getUserId() {
@@ -45,5 +36,39 @@ public class GroupMembership {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    public Date getSharingUntil() {
+        return sharingUntil;
+    }
+
+    public void setSharingUntil(Date sharingUntil) {
+        this.sharingUntil = sharingUntil;
+    }
+
+    public boolean isSharing() {
+        return sharing;
+    }
+
+    public void setSharing(boolean sharing) {
+        this.sharing = sharing;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GroupMembership that = (GroupMembership) o;
+
+        if (userId != that.userId) return false;
+        return groupId == that.groupId;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userId;
+        result = 31 * result + groupId;
+        return result;
     }
 }

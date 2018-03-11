@@ -13,7 +13,7 @@ import java.util.Date;
 public class PublishPositionCommand extends AbstractCommand {
 
     private Request output;
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
 
     public PublishPositionCommand(int groupId, Date timeEnd, String token,
                                   UserGroupRepository userGroupRepository) {
@@ -30,7 +30,10 @@ public class PublishPositionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userGroupRepository.setIsSharing(output.groupId, true);
+
+        // if the time End is before current time, stop sending
+        userGroupRepository.setIsSharing(output.groupId,
+                output.timeEnd.after(new Date()));
     }
 
     public static class Request extends AbstractRequest {
@@ -42,13 +45,12 @@ public class PublishPositionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, Date timeEnd, String token) {
-            super("publish-position");
+            super(CmdDesc.PUBLISH_POSITION.toString());
             this.groupId = groupId;
             this.timeEnd = timeEnd;
             this.token = token;
         }
     }
-
 
     //Server returns empty object
     public static class Response extends AbstractResponse {

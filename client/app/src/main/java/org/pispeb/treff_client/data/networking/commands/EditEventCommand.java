@@ -19,16 +19,16 @@ import java.util.Date;
 
 public class EditEventCommand extends AbstractCommand {
 
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private Request output;
 
     public EditEventCommand(int groupId, String title, int creatorId,
-                            Date timeStart, Date timeEnd, Position position,
+                            Date timeStart, Date timeEnd, Location location,
                             int eventId, String token,
                             EventRepository eventRepository) {
         super(Response.class);
         output = new Request(groupId, title, creatorId, timeStart,
-                timeEnd, position, eventId, token);
+                timeEnd, location, eventId, token);
         this.eventRepository = eventRepository;
     }
 
@@ -41,16 +41,17 @@ public class EditEventCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse; //empty
         Location l = new Location(LocationManager.GPS_PROVIDER);
-        l.setLongitude(output.event.position.longitude);
-        l.setLatitude(output.event.position.latitude);
-        eventRepository.update(new Event(
+        l.setLatitude(output.event.latitude);
+        l.setLongitude(output.event.longitude);
+        eventRepository.updateEvent(new Event(
                 output.event.id,
                 output.event.title,
                 output.event.timeStart,
                 output.event.timeEnd,
                 l,
-                output.groupId,
-                output.event.creatorID));
+                output.event.creatorID,
+                output.groupId
+                ));
     }
 
     public static class Request extends AbstractRequest {
@@ -61,12 +62,12 @@ public class EditEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String title, int creatorId, Date timeStart,
-                       Date timeEnd, Position position, int eventId,
+                       Date timeEnd, Location location, int eventId,
                        String token) {
-            super("edit-event");
+            super(CmdDesc.EDIT_EVENT.toString());
             this.groupId = groupId;
             event = new EventEditDescription(title, creatorId, timeStart,
-                    timeEnd, position, eventId);
+                    timeEnd, location, eventId);
             this.token = token;
         }
     }

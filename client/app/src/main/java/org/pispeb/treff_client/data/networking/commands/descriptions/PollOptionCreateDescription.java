@@ -19,7 +19,8 @@ public class PollOptionCreateDescription {
     public final Date timeStart;
     public final Date timeEnd;
 
-    public PollOptionCreateDescription(@JsonProperty("latitude")
+    public PollOptionCreateDescription(@JsonProperty("type") String type,
+                                       @JsonProperty("latitude")
                                                long latitude,
                                        @JsonProperty("longitude")
                                                long longitude,

@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class UnblockAccountCommand extends AbstractCommand {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public UnblockAccountCommand(int id, String token,
@@ -35,7 +35,7 @@ public class UnblockAccountCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("unblock-account");
+            super(CmdDesc.UNBLOCK_ACCOUNT.toString());
             this.id = id;
             this.token = token;
         }

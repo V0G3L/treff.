@@ -24,6 +24,8 @@ import org.pispeb.treff_client.view.home.groupList.GroupListViewModel;
 import org.pispeb.treff_client.view.home.map.MapViewModel;
 import org.pispeb.treff_client.view.login.LoginViewModel;
 import org.pispeb.treff_client.view.login.RegisterViewModel;
+import org.pispeb.treff_client.view.profile.ProfileViewModel;
+import org.pispeb.treff_client.view.ui_components.NavigationViewModel;
 
 /**
  * Factory to pass Daos to Repositories
@@ -70,14 +72,15 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         Handler handler = new Handler(thread.getLooper());
 
         userRepository = new UserRepository(userDao, encoder, handler);
-        userGroupRepository = new UserGroupRepository(userGroupDao, eventDao, chatDao, encoder, handler);
+        userGroupRepository = new UserGroupRepository(userGroupDao, userDao, eventDao, chatDao, encoder, handler);
         eventRepository = new EventRepository(eventDao, encoder, handler);
         chatRepository = new ChatRepository(chatDao, encoder, handler);
 
-        encoder.setRepos(userRepository,
-                userGroupRepository,
+        encoder.setRepos(chatRepository,
                 eventRepository,
-                chatRepository);
+                userGroupRepository,
+                userRepository
+        );
     }
 
     @NonNull
@@ -113,6 +116,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     userGroupRepository);
         } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new RegisterViewModel(encoder);
+        } else if (ProfileViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new ProfileViewModel(encoder);
+        } else if (NavigationViewModel.class.isAssignableFrom(modelClass)) {
+            return (T) new NavigationViewModel(
+                    chatRepository,
+                    eventRepository,
+                    userGroupRepository,
+                    userRepository);
         }
 
         throw new IllegalArgumentException(

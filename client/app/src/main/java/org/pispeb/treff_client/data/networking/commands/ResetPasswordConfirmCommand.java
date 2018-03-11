@@ -23,7 +23,7 @@ public class ResetPasswordConfirmCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO handle response
+        // TODO handle response e.g. starting login screen
     }
 
     public static class Request extends AbstractRequest {
@@ -35,7 +35,7 @@ public class ResetPasswordConfirmCommand extends AbstractCommand{
 
 
         public Request(String code, String newPass) {
-            super("reset-password-confirm");
+            super(CmdDesc.RESET_PASSWORD_CONFIRM.toString());
             this.code = code;
             this.newPass = newPass;
         }

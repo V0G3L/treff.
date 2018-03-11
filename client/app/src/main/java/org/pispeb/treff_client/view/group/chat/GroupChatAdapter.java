@@ -1,14 +1,19 @@
 package org.pispeb.treff_client.view.group.chat;
 
 import android.arch.paging.PagedListAdapter;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.recyclerview.extensions.DiffCallback;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.ChatMessage;
 import org.pispeb.treff_client.databinding.ChatItemBinding;
+import org.pispeb.treff_client.view.util.TreffPunkt;
 
 /**
  * Adapter to hold {@link GroupChatViewHolder]}s and display them in a list,
@@ -66,6 +71,15 @@ class GroupChatViewHolder extends RecyclerView.ViewHolder {
 
     public void bindTo(ChatMessage message) {
         binding.setMessage(message);
+        Context appctx = TreffPunkt.getAppContext();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(appctx);
+        int id = pref.getInt(appctx.getString(R.string.key_userId), -1);
+        if (message.getUserId() == id) {
+            binding.text.getBackground().setTint(appctx.getColor(R.color.colorAccent));
+        } else {
+            binding.text.getBackground().setTint(appctx.getColor(R.color.colorPrimary));
+        }
     }
 }
 

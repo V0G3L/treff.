@@ -2,19 +2,26 @@ package org.pispeb.treff_client.data.networking.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.networking.commands.descriptions.ShallowUserGroup;
 
-/**
- * Created by matth on 17.02.2018.
- */
 
-public class ListGroupsCommad extends AbstractCommand {
+import org.pispeb.treff_client.data.repositories.UserGroupRepository;
+
+
+public class ListGroupsCommand extends AbstractCommand {
 
     private Request output;
+    private final UserGroupRepository userGroupRepository;
+    private final RequestEncoder encoder;
 
-    public ListGroupsCommad(String token) {
+    public ListGroupsCommand(String token,
+                            UserGroupRepository userGroupRepository,
+                            RequestEncoder encoder) {
         super(Response.class);
         output = new Request(token);
+        this.userGroupRepository = userGroupRepository;
+        this.encoder = encoder;
     }
 
     @Override
@@ -25,7 +32,12 @@ public class ListGroupsCommad extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        // TODO Handle response
+        // update groups that are not yet in the local database
+        for (ShallowUserGroup g : response.groups) {
+            if (userGroupRepository.getGroupLiveData(g.id) == null) {
+                encoder.getGroupDetails(g.id);
+            }
+        }
     }
 
     public static class Request extends AbstractRequest {
@@ -33,7 +45,7 @@ public class ListGroupsCommad extends AbstractCommand {
         public final String token;
 
         public Request(String token) {
-            super("list-groups");
+            super(CmdDesc.LIST_GROUPS.toString());
             this.token = token;
         }
     }

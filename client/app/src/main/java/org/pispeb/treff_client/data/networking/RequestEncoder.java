@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -18,11 +17,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pispeb.treff_client.R;
-import org.pispeb.treff_client.data.database.TreffDatabase;
 import org.pispeb.treff_client.data.networking.commands.*;
-import org.pispeb.treff_client.data.networking.commands.descriptions.Position;
 import org.pispeb.treff_client.data.repositories.ChatRepository;
 import org.pispeb.treff_client.data.repositories.EventRepository;
+import org.pispeb.treff_client.data.repositories.RepositorySet;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 import org.pispeb.treff_client.data.repositories.UserRepository;
 import org.pispeb.treff_client.view.login.LoginActivity;
@@ -33,7 +31,8 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.CountDownLatch;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.websocket.DeploymentException;
 
@@ -43,7 +42,8 @@ import javax.websocket.DeploymentException;
 
 public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
-    private final int DISPLAY_ERROR_TOAST = 1;
+    private static final int DISPLAY_ERROR_TOAST = 1;
+    private static final int UPDATE_INTERVAL_MS = 10000;
 
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
@@ -54,17 +54,15 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     private Handler bgHandler;
     private Handler uiHandler;
 
-
-    private UserRepository userRepository;
-    private UserGroupRepository userGroupRepository;
-    private EventRepository eventRepository;
-    private ChatRepository chatRepository;
+    private RepositorySet repositorySet;
 
     // Queue of commands waiting to be sent to Server
-    Queue<AbstractCommand> commands;
-    private CountDownLatch cdl;
+    private Queue<AbstractCommand> commands;
 
     private static RequestEncoder INSTANCE;
+
+    private boolean updating;
+    private Timer updateTimer;
 
     public static RequestEncoder getInstance() {
         if (INSTANCE == null) {
@@ -74,28 +72,36 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         return INSTANCE;
     }
 
-    private RequestEncoder() {
+    protected RequestEncoder() {
         commands = new LinkedList<>();
         idle = true;
 
         mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
+        mapper.disable(DeserializationFeature
+                .FAIL_ON_UNKNOWN_PROPERTIES);
 
         try {
             connectionHandler
                     = new ConnectionHandler(
-                            "ws://192.168.0.136:8080/treff_server/ws",
+                    "ws://[2a02:8071:21a1:5500:5d2e:7ae5:d772:9cd0]:8080" +
+                            "/treff_server-0.1/ws",
                     this);
         } catch (URISyntaxException | IOException | DeploymentException e) {
             e.printStackTrace(); // TODO: TODONT
         }
-        HandlerThread thread = new HandlerThread("gbt",
+
+        // Background Thread to execute network interaction on
+        HandlerThread thread = new HandlerThread("bgt",
                 HandlerThread.MIN_PRIORITY);
         thread.start();
         bgHandler = new Handler(thread.getLooper());
-        cdl = new CountDownLatch(0);
 
+        updateTimer = new Timer();
+        updating = false;
+
+        // Handle to UIThread for displaying Toast messages
         uiHandler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message message) {
@@ -111,16 +117,37 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         }
     }
 
+    public void setConnectionHandler(ConnectionHandler connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
+
     // must be called right after creating the encoder
-    public void setRepos(
-            UserRepository userRepository,
-            UserGroupRepository userGroupRepository,
-            EventRepository eventRepository,
-            ChatRepository chatRepository) {
-        this.userRepository = userRepository;
-        this.userGroupRepository = userGroupRepository;
-        this.eventRepository = eventRepository;
-        this.chatRepository = chatRepository;
+    public void setRepos(ChatRepository chatRepository,
+                         EventRepository eventRepository,
+                         UserGroupRepository userGroupRepository,
+                         UserRepository userRepository) {
+        this.repositorySet = new RepositorySet(chatRepository, eventRepository,
+                userGroupRepository, userRepository);
+    }
+
+    public void startRequestUpdates() {
+        RequestEncoder thisEnc = this;
+        this.updateTimer = new Timer();
+        // request Updates periodically
+        updateTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (thisEnc.idle) {
+                    requestUpdates();
+                }
+            }
+        }, 0, UPDATE_INTERVAL_MS);
+        updating = true;
+    }
+
+    public void stopRequestUpdates() {
+        updateTimer.cancel();
+        updating = false;
     }
 
     /**
@@ -136,28 +163,37 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         commands.add(command);
         if (idle) {
             sendRequest(commands.peek().getRequest());
+            idle = false;
         }
     }
 
     /**
-     * Pass a request to ConnectionHandler in order to be sent to the Server.
-     * Executed when the command before has received a response
+     * Convert a Request into a String using the json mapper
      *
      * @param request Json-object of the next command's request
      */
     private synchronized void sendRequest(AbstractRequest request) {
+        String message;
+        try {
+            message = mapper.writeValueAsString(request);
+            sendToCH(message);
+        } catch (JsonProcessingException e) {
+            // This would mean, that the internal request encoding is messed
+            // up, which would be very bad indeed!
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * pass a message to the connectionHandler in order to be sent to the server
+     *
+     * @param message content of that message (in correct command format)
+     */
+    protected synchronized void sendToCH(String message) {
         bgHandler.post(() -> {
-            try {
-                Log.i("Encoder", "sending Message");
-                Log.i("Encoder", "CH: " + connectionHandler);
-                connectionHandler.sendMessage(
-                        mapper.writeValueAsString(request));
-                idle = false;
-            } catch (JsonProcessingException e) {
-                // This would mean, that the internal request encoding is messed
-                // up, which would be very bad indeed!
-                e.printStackTrace();
-            }
+            Log.i("Encoder", "sending Message");
+            Log.i("Encoder", "CH: " + connectionHandler);
+            connectionHandler.sendMessage(message);
         });
     }
 
@@ -173,6 +209,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
         return pref.getInt(ctx.getString(R.string.key_userId), -1);
+    }
+
+    private void nextCommand() {
+        if (!commands.isEmpty()) {
+            sendRequest(commands.peek().getRequest());
+        } else {
+            idle = true;
+        }
     }
 
     @Override
@@ -195,6 +239,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
                 AbstractResponse response = mapper.readValue(responseString,
                         c.getResponseClass());
                 c.onResponse(response);
+                if (!updating) {
+                    startRequestUpdates();
+                }
             } catch (IOException ex) {
                 // This would mean, that the internal request encoding is messed
                 // up, which would be very bad indeed!
@@ -202,11 +249,14 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             }
         }
 
-        if (!commands.isEmpty()) {
-            sendRequest(commands.peek().getRequest());
-        } else {
-            idle = true;
-        }
+        nextCommand();
+    }
+
+    @Override
+    public void onTimeout() {
+        // discard command on top of the queue and execute next one
+        commands.poll();
+        nextCommand();
     }
 
     /**
@@ -229,10 +279,22 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
             Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
                     error);
             message.sendToTarget();
+        } else {
+            Message message = uiHandler.obtainMessage(DISPLAY_ERROR_TOAST,
+                    Error.INTERNAL_ERROR);
+            message.sendToTarget();
         }
 
         if (error == Error.TOKEN_INV) {
+            // wipe token
             Context appctx = TreffPunkt.getAppContext();
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(appctx);
+            pref.edit().remove(appctx
+                    .getString(R.string.key_token)).commit();
+            stopRequestUpdates();
+
+            // restart App
             Intent restartApp = new Intent(appctx, LoginActivity.class);
             restartApp.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                     Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -245,7 +307,11 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public void closeConnection() {
         // TODO check for Service still running
-        connectionHandler.disconnect();
+        // stop update timer
+        bgHandler.post(() -> {
+            stopRequestUpdates();
+            connectionHandler.disconnect();
+        });
     }
 
     /**
@@ -294,7 +360,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param newPassword the new password
      */
     public synchronized void editPassword(String password, String newPassword) {
-        executeCommand(new EditPasswordCommand(password, newPassword, getToken()));
+        executeCommand(
+                new EditPasswordCommand(password, newPassword, getToken()));
     }
 
     /**
@@ -328,22 +395,13 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     /**
-     * Method to get the ID belonging to a username
-     *
-     * @param username .
-     * @return The user id of the user
-     */
-    public synchronized void getUserId(String username) {
-        executeCommand(new GetUserIdCommand(username, getToken(), userRepository));
-    }
-
-    /**
      * Method to perform an send-contact-request request
      *
      * @param userId Contact to be added to the friend list
      */
     public synchronized void sendContactRequest(int userId) {
-        executeCommand(new SendContactRequestCommand(userId, getToken()));
+        executeCommand(new SendContactRequestCommand(userId, getToken(),
+                repositorySet.userRepository));
     }
 
     /**
@@ -353,51 +411,58 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param userName Name of the user to be added to the friend list
      */
     public synchronized void sendContactRequest(String userName) {
-        executeCommand(new GetUserIdCommand(userName, getToken(), userRepository));
-        executeCommand(new SendContactRequestCommand(userName, getToken(),
-                userRepository));
+        executeCommand(new GetUserIdCommand(userName, getToken(),
+                repositorySet.userRepository, this));
     }
 
     public synchronized void cancelContactRequest(int userId) {
         executeCommand(new CancelContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     /**
      * Accept a contact request from a given user
+     *
      * @param userId user from which the request originated
      */
     public synchronized void acceptContactRequest(int userId) {
         executeCommand(new AcceptContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     /**
      * Reject a contact request
+     *
      * @param userId user from which the request originated
      */
     public synchronized void rejectContactRequest(int userId) {
         executeCommand(new RejectContactRequestCommand(userId, getToken(),
-                userRepository));
+                repositorySet.userRepository));
     }
 
     public synchronized void removeContact(int userId) {
-        executeCommand(new RemoveContactCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new RemoveContactCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
      * update the list of contact as well as requests
      */
     public synchronized void getContactList() {
-        executeCommand(new GetContactListCommand(getToken(), userRepository));
+        executeCommand(new GetContactListCommand(getToken(),
+                repositorySet.userRepository, this));
     }
 
     /**
      * block an account
+     *
      * @param userId
      */
     public synchronized void blockAccount(int userId) {
-        executeCommand(new BlockAccountCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new BlockAccountCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
@@ -407,7 +472,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void unblockAccount(int userId) {
         executeCommand(
-                new UnblockAccountCommand(userId, getToken(), userRepository));
+                new UnblockAccountCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     /**
@@ -418,7 +484,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void createGroup(String groupName, int[] memberIds) {
         executeCommand(new CreateGroupCommand(groupName, memberIds, getToken(),
-                userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     /**
@@ -428,7 +494,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      */
     public synchronized void editGroup(int groupId, String groupName) {
         executeCommand(new EditGroupCommand(groupId, groupName, getToken(),
-                userGroupRepository));
+                repositorySet.userGroupRepository));
     }
 
     /**
@@ -439,8 +505,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @return true if the request was successful, false if not
      */
     public synchronized void addGroupMembers(int groupId, int[] newMembers) {
-        executeCommand(new AddGroupMembersCommand(groupId, newMembers, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new AddGroupMembersCommand(groupId, newMembers, getToken(),
+                        repositorySet.userGroupRepository));
     }
 
     /**
@@ -450,8 +517,9 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param members The ID of the member to be removed
      */
     public synchronized void removeGroupMembers(int groupId, int[] members) {
-        executeCommand(new RemoveGroupMembersCommand(groupId, members, getToken(),
-                userGroupRepository));
+        executeCommand(
+                new RemoveGroupMembersCommand(groupId, members, getToken(),
+                        repositorySet.userGroupRepository));
     }
 
     public synchronized void getPermissions(int groupId, int userId) {
@@ -465,23 +533,24 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
      * @param title     The name of the event
      * @param timeStart The starting time of the event (unix time)
      * @param timeEnd   The finishing time of the event (unix time
-     * @param position  The position of the event
+     * @param location  The location of the event
      */
     public synchronized void createEvent(int groupId, String title,
                                          int creatorId, Date timeStart,
-                                         Date timeEnd, Position position) {
+                                         Date timeEnd, Location location) {
         executeCommand(
                 new CreateEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, getToken(), eventRepository));
+                        timeEnd, location, getToken(),
+                        repositorySet.eventRepository));
     }
 
     public synchronized void editEvent(int groupId, String title, int creatorId,
-                                       Date timeStart,
-                                       Date timeEnd, Position position,
-                                       int eventId) {
+                                       Date timeStart, Date timeEnd,
+                                       Location location, int eventId) {
         executeCommand(
                 new EditEventCommand(groupId, title, creatorId, timeStart,
-                        timeEnd, position, eventId, getToken(), eventRepository));
+                        timeEnd, location, eventId, getToken(),
+                        repositorySet.eventRepository));
     }
 
     public synchronized void joinEvent(int groupId, int eventId) {
@@ -494,7 +563,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public synchronized void removeEvent(int groupId, int eventId) {
         executeCommand(new RemoveEventCommand(groupId, eventId, getToken(),
-                eventRepository));
+                repositorySet.eventRepository));
     }
 
     public synchronized void createPoll(int groupId, String question,
@@ -528,17 +597,20 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void voteForOption(int groupId, int pollId, int id) {
-        executeCommand(new VoteForOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new VoteForOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void withdrawVoteForOption(int groupId, int pollId,
                                                    int id) {
         executeCommand(
-                new WithdrawVoteForOptionCommand(groupId, pollId, id, getToken()));
+                new WithdrawVoteForOptionCommand(groupId, pollId, id,
+                        getToken()));
     }
 
     public synchronized void removePollOption(int groupId, int pollId, int id) {
-        executeCommand(new RemovePollOptionCommand(groupId, pollId, id, getToken()));
+        executeCommand(
+                new RemovePollOptionCommand(groupId, pollId, id, getToken()));
     }
 
     public synchronized void removePoll(int groupId, int pollId) {
@@ -554,28 +626,33 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public synchronized void sendChatMessage(int groupId, String message) {
         executeCommand(new SendChatMessageCommand(groupId, message, getToken(),
-                chatRepository));
+                repositorySet.chatRepository));
     }
 
     /**
      * Method to get information about the users groups
      */
     public synchronized void listGroups() {
-        executeCommand(new ListGroupsCommad(getToken()));
+        executeCommand(new ListGroupsCommand(getToken(),
+                repositorySet.userGroupRepository, this));
     }
 
 
     public synchronized void getGroupDetails(int groupId) {
-        executeCommand(new GetGroupDetailsCommand(groupId, getToken(), userGroupRepository));
+        executeCommand(new GetGroupDetailsCommand(groupId, getToken(),
+                repositorySet.userGroupRepository,
+                repositorySet.eventRepository, this));
     }
 
     public synchronized void getUserDetails(int userId) {
-        executeCommand(new GetUserDetailsCommand(userId, getToken(), userRepository));
+        executeCommand(
+                new GetUserDetailsCommand(userId, getToken(),
+                        repositorySet.userRepository));
     }
 
     public synchronized void getEventDetails(int eventId, int groupId) {
         executeCommand(new GetEventDetailsCommand(eventId, groupId,
-                getToken(), eventRepository));
+                getToken(), repositorySet.eventRepository));
     }
 
     public synchronized void getPollDetails(int pollId, int groupId) {
@@ -583,29 +660,37 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
     }
 
     public synchronized void requestPosition(int groupId, Date endTime) {
-        executeCommand(new RequestPositionCommand(groupId, endTime, getToken()));
+        executeCommand(
+                new RequestPositionCommand(groupId, endTime, getToken()));
     }
 
     /**
      * send the most recent location to the server
-     * @param latitude latitude
+     *
+     * @param latitude  latitude
      * @param longitude and longitude of the users position
-     * @param time time the position was measured at
+     * @param time      time the position was measured at
      */
     public synchronized void updatePosition(double latitude, double longitude,
                                             Date time) {
         executeCommand(
-                new UpdatePositionCommand(latitude, longitude, time, getToken()));
+                new UpdatePositionCommand(latitude, longitude, time,
+                        getToken()));
     }
 
     /**
      * start a transmission of the users location to the group lasting until
      * the time given
+     *
      * @param groupId grop with which the user shares his location
      * @param endTime time at which the transmission is supposed to end
      */
     public synchronized void publishPosition(int groupId, Date endTime) {
         executeCommand(new PublishPositionCommand(groupId, endTime,
-                getToken(), userGroupRepository));
+                getToken(), repositorySet.userGroupRepository));
+    }
+
+    public synchronized void requestUpdates() {
+        executeCommand(new RequestUpdatesCommand(getToken(), repositorySet, mapper));
     }
 }

@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class CancelContactRequestCommand extends AbstractCommand{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public CancelContactRequestCommand(int id, String token,
@@ -26,7 +26,7 @@ public class CancelContactRequestCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userRepository.setIsRequesting(output.id, false);
+        userRepository.setIsPending(output.id, false);
         userRepository.setIsFriend(output.id, false);
     }
 
@@ -36,7 +36,7 @@ public class CancelContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("cancel-contact-request");
+            super(CmdDesc.CANCEL_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

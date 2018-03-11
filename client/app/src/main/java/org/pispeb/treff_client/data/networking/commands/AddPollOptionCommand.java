@@ -28,6 +28,7 @@ public class AddPollOptionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+        //TODO handle response
 
     }
 
@@ -43,10 +44,11 @@ public class AddPollOptionCommand extends AbstractCommand {
 
         public Request(int groupId, int pollId, long latitude, long longitude,
                        Date timeStart, Date timeEnd, String token) {
-            super("add-poll-option");
+            super(CmdDesc.ADD_POLL_OPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
-            pollOption = new PollOptionCreateDescription(latitude, longitude, timeStart, timeEnd);
+            pollOption = new PollOptionCreateDescription("type", latitude,
+                    longitude, timeStart, timeEnd);
             this.token = token;
         }
     }

@@ -21,10 +21,7 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
     }
 
     @Override
-    public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
-
-    }
+    public void onResponse(AbstractResponse abstractResponse) { }
 
     public static class Request extends AbstractRequest {
 
@@ -36,7 +33,7 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int pollId, int id, String token) {
-            super("withdraw-vote-for-option");
+            super(CmdDesc.WITHDRAW_VOTE_FOR_OPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
             this.id = id;
@@ -45,8 +42,5 @@ public class WithdrawVoteForOptionCommand extends AbstractCommand {
     }
 
     //server returns empty json object
-    public static class Response extends AbstractResponse {
-        public Response() {
-        }
-    }
+    public static class Response extends AbstractResponse { }
 }

@@ -3,9 +3,12 @@ package org.pispeb.treff_client.data.networking.commands;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.data.entities.UserGroup;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.data.networking.commands.descriptions.CompleteUsergroup;
 
 
+
+import org.pispeb.treff_client.data.repositories.EventRepository;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 /**
@@ -14,12 +17,18 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class GetGroupDetailsCommand extends AbstractCommand {
 
-    private Request output;
-    private UserGroupRepository userGroupRepository;
+    private final Request output;
+    private final UserGroupRepository userGroupRepository;
+    private final EventRepository eventRepository;
+    private final RequestEncoder encoder;
 
     public GetGroupDetailsCommand(int id, String token,
-                                  UserGroupRepository userGroupRepository) {
+                                  UserGroupRepository userGroupRepository,
+                                  EventRepository eventRepository,
+                                  RequestEncoder encoder) {
         super(Response.class);
+        this.eventRepository = eventRepository;
+        this.encoder = encoder;
         output = new Request(id, token);
         this.userGroupRepository = userGroupRepository;
     }
@@ -32,8 +41,21 @@ public class GetGroupDetailsCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userGroupRepository.updateGroup(
-                new UserGroup(output.id, response.usergroup.name));
+        UserGroup newGroup = new UserGroup(output.id, response.usergroup.name);
+        if (userGroupRepository.getGroup(output.id) == null) {
+            userGroupRepository.addGroup(newGroup);
+        } else {
+            userGroupRepository.updateGroup(
+                    new UserGroup(output.id, response.usergroup.name));
+        }
+        userGroupRepository.updateGroupMembers(output.id, response.usergroup
+                .members);
+
+        for (int eventId : response.usergroup.events) {
+            if (eventRepository.getEvent(eventId) == null) {
+                encoder.getEventDetails(eventId, output.id);
+            }
+        }
     }
 
     public static class Request extends AbstractRequest {
@@ -42,7 +64,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("get-group-details");
+            super(CmdDesc.GET_GROUP_DETAILS.toString());
             this.id = id;
             this.token = token;
         }
@@ -53,7 +75,7 @@ public class GetGroupDetailsCommand extends AbstractCommand {
 
         public final CompleteUsergroup usergroup;
 
-        public Response(@JsonProperty("user-group")
+        public Response(@JsonProperty("group")
                         CompleteUsergroup usergroup) {
             this.usergroup = usergroup;
         }

@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class RemoveContactCommand extends AbstractCommand {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public RemoveContactCommand(int id, String token,
@@ -35,7 +35,7 @@ public class RemoveContactCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("remove-contact");
+            super(CmdDesc.REMOVE_CONTACT.toString());
             this.id = id;
             this.token = token;
         }

@@ -13,7 +13,17 @@ public class ConnectionHandlerTest {
         final String[] parentReponse = {null};
         String uri = "ws://192.168.0.136:8080/adasdasd/ws";
         ConnectionHandler ch = new ConnectionHandler(uri,
-                response -> parentReponse[0] = response);
+                new ConnectionHandler.ResponseListener() {
+                    @Override
+                    public void onResponse(String response) {
+                        parentReponse[0] = response;
+                    }
+
+                    @Override
+                    public void onTimeout() {
+
+                    }
+                });
 
         ch.sendMessage("BLABLAFUCKOFF");
         while (parentReponse[0] == null) { }

@@ -36,7 +36,7 @@ public class GetPollDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, int groupId, String token) {
-            super("get-poll-details");
+            super(CmdDesc.GET_POLL_DETAILS.toString());
             this.id = id;
             this.groupId = groupId;
             this.token = token;

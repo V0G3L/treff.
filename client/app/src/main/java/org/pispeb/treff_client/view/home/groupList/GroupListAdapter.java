@@ -86,6 +86,11 @@ class GroupListViewHolder extends RecyclerView.ViewHolder
 
     public void bindTo(UserGroup group) {
         binding.setGroup(group);
+        if (group.isSharingLocation()) {
+            binding.sharing.setVisibility(View.VISIBLE);
+        } else {
+            binding.sharing.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class EditGroupCommand extends AbstractCommand {
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public EditGroupCommand(int groupId, String name, String token,
@@ -42,8 +42,8 @@ public class EditGroupCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String name, String token) {
-            super("edit-group");
-            group = new UsergroupEditDescription(groupId, name);
+            super(CmdDesc.EDIT_GROUP.toString());
+            group = new UsergroupEditDescription("type", groupId, name);
             this.token = token;
         }
     }

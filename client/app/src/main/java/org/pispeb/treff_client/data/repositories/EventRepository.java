@@ -58,7 +58,7 @@ public class EventRepository {
      * {@link org.pispeb.treff_client.data.entities.UserGroup}s
      *
      * @param idSet{@link Set} of ids of
-     *          {@link org.pispeb.treff_client.data.entities.UserGroup}s
+     *                    {@link org.pispeb.treff_client.data.entities.UserGroup}s
      * @return {@link PagedList} of {@link Event}s
      */
     public LiveData<PagedList<Event>> getEventsFromGroups(Set<Integer> idSet) {
@@ -70,7 +70,7 @@ public class EventRepository {
      * Returns a {@link PagedList} of {@link Event}s of a
      * {@link org.pispeb.treff_client.data.entities.UserGroup}
      *
-     * @param g id of {@link org.pispeb.treff_client.data.entities.UserGroup}
+     * @param groupId id of {@link org.pispeb.treff_client.data.entities.UserGroup}
      * @return {@link PagedList} of {@link Event}s
      */
     public LiveData<PagedList<Event>> getEventsFromGroup(int groupId) {
@@ -81,11 +81,16 @@ public class EventRepository {
 
     /**
      * Get a LiveData object of a single event, given
-     * @param eventID the events id
+     *
+     * @param eventId the events id
      * @return LiveData object of that event
      */
-    public LiveData<Event> getEvent(int eventID) {
-        return eventDao.getEventByID(eventID);
+    public LiveData<Event> getEventLiveData(int eventId) {
+        return eventDao.getEventByIdLiveData(eventId);
+    }
+
+    public Event getEvent(int eventId) {
+        return eventDao.getEventById(eventId);
     }
 
     /**
@@ -101,27 +106,30 @@ public class EventRepository {
 
     /**
      * update an existing event with new information
+     *
      * @param newEvent event to replace the old version of itself with
      */
-    public void update(Event newEvent) {
+    public void updateEvent(Event newEvent) {
         eventDao.update(newEvent);
     }
 
     /**
      * delete an event from the local Database
+     *
      * @param eventId id of the event to be deleted
      */
-    public void delete(int eventId) {
+    public void deleteEvent(int eventId) {
         eventDao.delete(new Event(eventId, null, null, null, null, 0, 0));
     }
 
     /**
      * request an id from server for a newly created event
+     *
      * @param groupId group to which the event is added
-     * @param name name of the event
-     * @param start time at which the event starts
-     * @param end time at which the event ends
-     * @param l Location of the event
+     * @param name    name of the event
+     * @param start   time at which the event starts
+     * @param end     time at which the event ends
+     * @param l       Location of the event
      */
     public void requestAddEvent(int groupId, String name, Date start,
                                 Date end, Location l) {
@@ -130,7 +138,23 @@ public class EventRepository {
                 .getDefaultSharedPreferences(ctx);
         int creator = pref.getInt(ctx.getString(R.string.key_userId), -1);
 
-        Position p = new Position(l.getLatitude(), l.getLongitude());
-        encoder.createEvent(groupId, name, creator, start, end, p);
+        encoder.createEvent(groupId, name, creator, start, end, l);
+    }
+
+    /**
+     * Deletes every event
+     */
+    public void deleteAllEvents() {
+        backgroundHandler.post(() -> {
+            eventDao.deleteAllEvents();
+        });
+    }
+
+    /**
+     * sync with server
+     * TODO
+     */
+    public void requestRefresh() {
+        // update events
     }
 }

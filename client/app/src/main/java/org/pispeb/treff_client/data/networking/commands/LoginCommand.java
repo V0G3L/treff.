@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.pispeb.treff_client.R;
+import org.pispeb.treff_client.data.networking.RequestEncoder;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
 /**
@@ -46,7 +47,7 @@ public class LoginCommand extends AbstractCommand{
         public final String pass;
 
         public Request(String user, String pass) {
-            super("login");
+            super(CmdDesc.LOGIN.toString());
             this.user = user;
             this.pass = pass;
         }

@@ -29,7 +29,27 @@ public class FriendListFragment extends Fragment {
     private FragmentFriendListBinding binding;
     private FriendListViewModel vm;
     private FriendListAdapter adapter;
-    private FloatingActionButton fab;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ViewModel which also serves as onClickListener for adapter
+        vm = ViewModelProviders
+                .of(this, ViewModelFactory.getInstance(getContext()))
+                .get(FriendListViewModel.class);
+
+        // adapter to display items
+        adapter = new FriendListAdapter(vm);
+
+        // update adapter when needed
+        vm.getFriends().observe(this, friends -> {
+            adapter.setList(friends);
+        });
+
+        // react to vm callbacks
+        vm.getState().observe(this, state -> callback(state));
+    }
 
     @Nullable
     @Override
@@ -37,22 +57,13 @@ public class FriendListFragment extends Fragment {
         // frameBinding to layout
         binding = FragmentFriendListBinding
                 .inflate(inflater, container, false);
-        // ViewModel which also serves as onClickListener for adapter
-        vm = ViewModelProviders
-                .of(this, ViewModelFactory.getInstance(getContext()))
-                .get(FriendListViewModel.class);
+
         binding.setVm(vm);
-        // adapter to display items
-        adapter = new FriendListAdapter(vm);
+
+        //configure adapter
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.list.setHasFixedSize(true);
-
-        vm.getFriends().observe(this, friends -> {
-            adapter.setList(friends);
-        });
-
-        vm.getState().observe(this, state -> callback(state));
 
         return binding.getRoot();
     }
@@ -75,6 +86,19 @@ public class FriendListFragment extends Fragment {
                 builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.request_pending);
                 builder.setPositiveButton(R.string.ok, ((dialog, which) -> {
+                    dialog.dismiss();
+                }));
+                builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
+                    vm.cancel(userId);
+                    dialog.dismiss();
+                }));
+                builder.show();
+                break;
+            case SHOW_BLOCKED_DIALOG:
+                builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(R.string.blocked);
+                builder.setPositiveButton(R.string.unblock, ((dialog, which) -> {
+                    vm.unblock(userId);
                     dialog.dismiss();
                 }));
                 builder.show();

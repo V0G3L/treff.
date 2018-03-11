@@ -38,15 +38,11 @@ public class GPSProviderManager {
      * @param context Context from which the intent was sent
      * @param groupId Id of the group that the user no longer wants to share
      *                his/her position with
-     * @param endOfTransmission time until which the transmission was meant to
-     *                          last
      */
-    public static void removeRequestFromService(Context context, int groupId,
-                                           Date endOfTransmission) {
+    public static void removeRequestFromService(Context context, int groupId) {
         Intent intent = new Intent(context, GPSProvider.class);
         intent.putExtra(GPSProvider.INTENT_CMD, GPSProvider.CMD_REMOVE);
         intent.putExtra(GPSProvider.INTENT_GRP, groupId);
-        intent.putExtra(GPSProvider.INTENT_TIME, endOfTransmission);
 
         startService(context, intent);
     }

@@ -15,7 +15,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 public class GetUserDetailsCommand extends AbstractCommand {
 
     private Request output;
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public GetUserDetailsCommand(int id, String token,
                                  UserRepository userRepository) {
@@ -41,7 +41,7 @@ public class GetUserDetailsCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("get-user-details");
+            super(CmdDesc.GET_USER_DETAILS.toString());
             this.id = id;
             this.token = token;
         }

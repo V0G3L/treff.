@@ -106,7 +106,7 @@ public class AddEventViewModel extends ViewModel
                 groupId,
                 name,
                 start.getValue().getTime(),
-                start.getValue().getTime(),
+                end.getValue().getTime(),
                 location);
 
         state.setValue(new State(ViewCall.SUCCESS, 0));

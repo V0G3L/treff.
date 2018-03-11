@@ -21,12 +21,17 @@ public interface ChatDao {
     @Insert
     void save(ChatMessage message);
 
-    @Query("SELECT * FROM message WHERE groupID = :groupId")
+    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY messageId" +
+            " DESC")
     DataSource.Factory<Integer, ChatMessage> getMessagesByGroupId(int groupId);
 
-    @Query("SELECT * FROM message WHERE groupID = :groupId")
+    @Query("SELECT * FROM message WHERE groupID = :groupId ORDER BY messageId" +
+            " DESC")
     List<ChatMessage> getMessageListByGroupId(int groupId);
 
     @Delete
     void deleteMessages(List<ChatMessage> messages);
+
+    @Query("DELETE FROM message")
+    void deleteAllMessages();
 }

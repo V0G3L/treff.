@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class AddGroupMembersCommand extends AbstractCommand {
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public AddGroupMembersCommand(int groupId, int[] members, String token,
@@ -33,13 +33,15 @@ public class AddGroupMembersCommand extends AbstractCommand {
 
     public static class Request extends AbstractRequest {
 
-        @JsonProperty("group-id")
+        @JsonProperty("id")
         public final int groupId;
+        @JsonProperty("members")
         public final int[] members;
+        @JsonProperty("token")
         public final String token;
 
         public Request(int groupId, int[] members, String token) {
-            super("add-group-members");
+            super(CmdDesc.ADD_GROUP_MEMBERS.toString());
             this.groupId = groupId;
             this.members = members;
             this.token = token;

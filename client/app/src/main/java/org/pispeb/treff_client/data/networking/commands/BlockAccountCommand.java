@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class BlockAccountCommand extends AbstractCommand {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public BlockAccountCommand(int id, String token,
@@ -27,6 +27,7 @@ public class BlockAccountCommand extends AbstractCommand {
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         userRepository.setIsBlocked(output.id, true);
+        userRepository.setIsFriend(output.id, false);
     }
 
     public static class Request extends AbstractRequest {
@@ -35,7 +36,7 @@ public class BlockAccountCommand extends AbstractCommand {
         public final String token;
 
         public Request(int id, String token) {
-            super("block-account");
+            super(CmdDesc.BLOCK_ACCOUNT.toString());
             this.id = id;
             this.token = token;
         }

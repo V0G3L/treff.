@@ -17,12 +17,18 @@ public class ChatMessage {
     private int groupId;
     private String content;
     private int userId;
+    private String username;
     private Date timeSent;
 
-    public ChatMessage(int groupId, String content, int userId, Date timeSent) {
+    public ChatMessage(int groupId,
+                       String content,
+                       int userId,
+                       String username,
+                       Date timeSent) {
         this.groupId = groupId;
         this.content = content;
         this.userId = userId;
+        this.username = username;
         this.timeSent = timeSent;
     }
 
@@ -58,12 +64,30 @@ public class ChatMessage {
         this.userId = userId;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Date getTimeSent() {
         return timeSent;
     }
 
     public void setTimeSent(Date timeSent) {
         this.timeSent = timeSent;
+    }
+
+    public boolean equalContent(ChatMessage o) {
+        if (groupId != o.groupId) return false;
+        if (userId != o.userId) return false;
+        if (content != null ? !content.equals(o.content) : o.content != null) {
+            return false;
+        }
+        return timeSent != null ? timeSent.equals(o.timeSent) : o.timeSent ==
+                null;
     }
 
     @Override
@@ -76,8 +100,12 @@ public class ChatMessage {
         if (messageId != that.messageId) return false;
         if (groupId != that.groupId) return false;
         if (userId != that.userId) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        return timeSent != null ? timeSent.equals(that.timeSent) : that.timeSent == null;
+        if (content != null ? !content
+                .equals(that.content) : that.content != null) {
+            return false;
+        }
+        return timeSent != null ? timeSent
+                .equals(that.timeSent) : that.timeSent == null;
     }
 
     @Override

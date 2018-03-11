@@ -1,5 +1,7 @@
 package org.pispeb.treff_client.data.networking.commands.descriptions;
 
+import android.location.Location;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
@@ -12,30 +14,53 @@ import java.util.Date;
  */
 public class EventCreateDescription {
 
+    @JsonProperty("type")
+    public final String type = "event";
+    @JsonProperty("title")
     public final String title;
+    @JsonProperty("creator")
     public final int creatorID;
+    @JsonProperty("time-start")
     public final Date timeStart;
+    @JsonProperty("time-end")
     public final Date timeEnd;
-    public final Position position;
+    @JsonProperty("latitude")
+    public final double latitude;
+    @JsonProperty("longitude")
+    public final double longitude;
 
-    /** Creates a new object representing a complete description of an
+    /**
+     * Creates a new object representing a complete description of an
      * Event <b>NOT</b> containing an ID.
-     * @param title The title of the event
+     *
+     * @param title     The title of the event
      * @param creatorID The ID of the event creator
      * @param timeStart The date and time at which the event starts
-     * @param timeEnd The date and time at which the event ends
-     * @param position The position at which the event takes place
+     * @param timeEnd   The date and time at which the event ends
+     * @param location  The location at which the event takes place
      */
-    public EventCreateDescription(@JsonProperty("title") String title,
-                                  @JsonProperty("creator") int creatorID,
-                                  @JsonProperty("time-start") Date timeStart,
-                                  @JsonProperty("time-end") Date timeEnd,
-                                  @JsonProperty("position") Position position) {
+    public EventCreateDescription(String title, int creatorID, Date timeStart,
+                                  Date timeEnd, Location location) {
         this.title = title;
         this.creatorID = creatorID;
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
-        this.position = position;
+        this.latitude = location.getLatitude();
+        this.longitude = location.getLongitude();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EventCreateDescription))
+            return false;
+
+        EventCreateDescription event = (EventCreateDescription) obj;
+        return (this.title.equals(event.title)
+                && this.creatorID == event.creatorID
+                && this.timeStart == event.timeStart
+                && this.timeEnd == event.timeEnd
+                && this.latitude == event.latitude
+                && this.longitude == event.longitude);
     }
 
 }

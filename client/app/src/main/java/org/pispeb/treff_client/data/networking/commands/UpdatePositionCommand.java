@@ -11,7 +11,8 @@ import java.util.Date;
 public class UpdatePositionCommand extends AbstractCommand {
     private Request output;
 
-    public UpdatePositionCommand(double latitude, double longitude, Date time, String token) {
+    public UpdatePositionCommand(double latitude, double longitude, Date time,
+                                 String token) {
         super(Response.class);
         output = new Request(latitude, longitude, time, token);
     }
@@ -35,8 +36,9 @@ public class UpdatePositionCommand extends AbstractCommand {
         public final Date timeMeasured;
         public final String token;
 
-        public Request(double latitude, double longitude, Date timeMeasured, String token) {
-            super("update-position");
+        public Request(double latitude, double longitude, Date timeMeasured,
+                       String token) {
+            super(CmdDesc.UPDATE_POSITION.toString());
             this.latitude = latitude;
             this.longitude = longitude;
             this.timeMeasured = timeMeasured;

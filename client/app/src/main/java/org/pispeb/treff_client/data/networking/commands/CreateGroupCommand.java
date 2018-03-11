@@ -14,7 +14,7 @@ import org.pispeb.treff_client.data.repositories.UserGroupRepository;
 
 public class CreateGroupCommand extends AbstractCommand {
 
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
     private Request output;
 
     public CreateGroupCommand(String name, int[] members, String token,
@@ -32,7 +32,7 @@ public class CreateGroupCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userGroupRepository.add(new UserGroup(response.id, output.group.name));
+        userGroupRepository.addGroup(new UserGroup(response.id, output.group.name));
         userGroupRepository.addGroupMembers(response.id, output.group.memberIDs);
     }
 
@@ -42,8 +42,8 @@ public class CreateGroupCommand extends AbstractCommand {
         public final String token;
 
         public Request(String name, int[] members, String token) {
-            super("create-group");
-            group = new UsergroupCreateDescription(name, members);
+            super(CmdDesc.CREATE_GROUP.toString());
+            group = new UsergroupCreateDescription("type", name, members);
             this.token = token;
         }
     }

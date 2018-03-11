@@ -28,6 +28,7 @@ public class CreatePollCommand extends AbstractCommand{
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+        //TODO handle response
 
     }
 
@@ -40,9 +41,10 @@ public class CreatePollCommand extends AbstractCommand{
 
         public Request(int groupId, String question, boolean isMultiChoice,
                        Date timeVoteClose, String token) {
-            super("create-poll");
+            super(CmdDesc.CREATE_POLL.toString());
             this.groupId = groupId;
-            poll = new PollCreateDescription(question, isMultiChoice, timeVoteClose);
+            poll = new PollCreateDescription("type", question, isMultiChoice,
+                    timeVoteClose);
             this.token = token;
         }
     }

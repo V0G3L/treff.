@@ -10,29 +10,16 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 public class SendContactRequestCommand extends AbstractCommand{
 
     private Request output;
-    private UserRepository userRepository;
-    private String username;
-    private String token;
+    private final UserRepository userRepository;
 
-    public SendContactRequestCommand(int id, String token) {
-        super(Response.class);
-        output = new Request(id, token);
-    }
-
-    public SendContactRequestCommand(String username, String token,
-                                     UserRepository userRepository) {
+    public SendContactRequestCommand(int id, String token, UserRepository userRepository) {
         super(Response.class);
         this.userRepository = userRepository;
-        this.username = username;
-        this.token = token;
+        output = new Request(id, token);
     }
 
     @Override
     public Request getRequest() {
-        if (output == null) {
-            User user = userRepository.getUser(username);
-            output =  new Request(user.getUserId(), token);
-        }
         return output;
     }
 
@@ -48,7 +35,7 @@ public class SendContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("send-contact-request");
+            super(CmdDesc.SEND_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

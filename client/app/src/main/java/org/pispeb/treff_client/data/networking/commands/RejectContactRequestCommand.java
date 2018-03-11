@@ -8,7 +8,7 @@ import org.pispeb.treff_client.data.repositories.UserRepository;
 
 public class RejectContactRequestCommand extends AbstractCommand{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private Request output;
 
     public RejectContactRequestCommand(int id, String token,
@@ -27,6 +27,7 @@ public class RejectContactRequestCommand extends AbstractCommand{
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
         userRepository.setIsFriend(output.id, false);
+        userRepository.setIsRequesting(output.id, false);
     }
 
     public static class Request extends AbstractRequest {
@@ -35,7 +36,7 @@ public class RejectContactRequestCommand extends AbstractCommand{
         public final String token;
 
         public Request(int id, String token) {
-            super("reject-contact-request");
+            super(CmdDesc.REJECT_CONTACT_REQUEST.toString());
             this.id = id;
             this.token = token;
         }

@@ -10,6 +10,7 @@ import java.util.Date;
 
 public class CompletePoll {
 
+    public final String type;
     public final int id;
     public final String question;
     public final int creator;
@@ -19,8 +20,15 @@ public class CompletePoll {
     public final boolean multiChoice;
     public final Object[] options;
 
-    public CompletePoll(int id, String question, int creator, Date timeClose,
-                        boolean multiChoice, Object[] options) {
+    public CompletePoll(@JsonProperty("poll") String type,
+                        @JsonProperty("id") int id,
+                        @JsonProperty("question") String question,
+                        @JsonProperty("creator") int creator,
+                        @JsonProperty("time-close") Date timeClose,
+                        @JsonProperty("multi-choice") boolean multiChoice,
+                        @JsonProperty("options") Object[] options) {
+
+        this.type = "poll";
         this.id = id;
         this.question = question;
         this.creator = creator;

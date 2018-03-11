@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.arch.paging.PagedList;
+import android.util.Log;
 
 import org.pispeb.treff_client.data.entities.User;
 import org.pispeb.treff_client.data.repositories.UserGroupRepository;
@@ -54,9 +55,9 @@ public class AddGroupViewModel extends ViewModel implements
             int[] members = new int[selectedUsers.size()];
             int cnt = 0;
             for (User u : selectedUsers) {
-                members[cnt] = u.getUserId();
+                members[cnt++] = u.getUserId();
             }
-            userGroupRepository.requestAddGroup(groupname, 0);
+            userGroupRepository.requestAddGroup(groupname, members);
             done.postValue(true);
         }
     }

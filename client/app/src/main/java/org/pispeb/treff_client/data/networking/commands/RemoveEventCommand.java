@@ -10,7 +10,7 @@ import org.pispeb.treff_client.data.repositories.EventRepository;
 
 public class RemoveEventCommand extends AbstractCommand {
 
-    private EventRepository eventRepository;
+    private final EventRepository eventRepository;
     private Request output;
 
     public RemoveEventCommand(int groupId, int id, String token,
@@ -28,7 +28,7 @@ public class RemoveEventCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        eventRepository.delete(output.id);
+        eventRepository.deleteEvent(output.id);
     }
 
     public static class Request extends AbstractRequest {
@@ -39,7 +39,7 @@ public class RemoveEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int id, String token) {
-            super("remove-event");
+            super(CmdDesc.REMOVE_EVENT.toString());
             this.groupId = groupId;
             this.id = id;
             this.token = token;

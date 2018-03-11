@@ -23,6 +23,7 @@ public class RemovePollOptionCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
+        //TODO handle response
 
     }
 
@@ -36,7 +37,7 @@ public class RemovePollOptionCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int pollId, int id, String token) {
-            super("remove-poll-option");
+            super(CmdDesc.REMOVE_POLL_OPTION.toString());
             this.groupId = groupId;
             this.pollId = pollId;
             this.id = id;

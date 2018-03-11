@@ -19,7 +19,7 @@ import java.util.Date;
 
 public class SendChatMessageCommand extends AbstractCommand {
 
-    private ChatRepository chatRepository;
+    private final ChatRepository chatRepository;
     private Request output;
 
     public SendChatMessageCommand(int groupId, String message, String token,
@@ -43,10 +43,12 @@ public class SendChatMessageCommand extends AbstractCommand {
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(ctx);
         int creator = pref.getInt(ctx.getString(R.string.key_userId), -1);
+        String username = pref.getString(ctx.getString(R.string.key_userName)
+                , "");
 
         chatRepository.addMessage(
                 new ChatMessage(output.groupId, output.message,
-                        creator, new Date()));
+                        creator, username, new Date()));
     }
 
     public static class Request extends AbstractRequest {
@@ -57,7 +59,7 @@ public class SendChatMessageCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, String message, String token) {
-            super("send-chat-message");
+            super(CmdDesc.SEND_CHAT_MESSAGE.toString());
             this.groupId = groupId;
             this.message = message;
             this.token = token;

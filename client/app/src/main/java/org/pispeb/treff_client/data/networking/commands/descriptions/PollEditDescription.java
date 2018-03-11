@@ -15,12 +15,17 @@ public class PollEditDescription extends PollCreateDescription {
 
     public final int id;
 
-    public PollEditDescription(@JsonProperty("question") String question,
+    public PollEditDescription(@JsonProperty("type") String type,
+                               @JsonProperty("question") String question,
                                @JsonProperty("multi-choice")
                                          boolean isMultiChoice,
                                @JsonProperty("time-close") Date timeVoteClose,
                                @JsonProperty("id") int id) {
-        super(question, isMultiChoice, timeVoteClose);
+        super(type, question, isMultiChoice, timeVoteClose);
         this.id = id;
+    }
+
+    public boolean equals(PollEditDescription pollEditDescription) {
+        return (super.equals(pollEditDescription) && this.id == pollEditDescription.id);
     }
 }

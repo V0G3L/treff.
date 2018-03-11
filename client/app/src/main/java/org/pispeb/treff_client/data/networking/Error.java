@@ -12,6 +12,8 @@ import org.pispeb.treff_client.view.util.TreffPunkt;
 public enum Error {
     //TODO add translations
 
+    INTERNAL_ERROR
+            (-2, getString(R.string.error_internal), true),
     ERRORCODE_INVALID
             (-1, getString(R.string.error_errorcode_invalid), false),
     WRONG_PARAMETERS
@@ -25,7 +27,7 @@ public enum Error {
     PW_RESET_INV
             (1102, getString(R.string.error_pw_reset_inv), false),
     USER_ID_INV
-            (1200, getString(R.string.error_user_id_inv), false),
+            (1200, getString(R.string.error_user_id_inv), true),
     GROUP_ID_INV
             (1201, getString(R.string.error_group_id_inv), false),
     EVENT_ID_INV
@@ -69,13 +71,13 @@ public enum Error {
     USER_NOT_IN_GROUP
             (1511, getString(R.string.error_user_not_in_group), false),
     ALREADY_IN_EVENT
-            (1512, getString(R.string.error_already_in_event), false),
+            (1512, getString(R.string.error_already_in_event), true),
     NOT_IN_EVENT
-            (1513, getString(R.string.error_not_in_event), false),
+            (1513, getString(R.string.error_not_in_event), true),
     ALREADY_VOTED
             (1514, getString(R.string.error_already_voted), true),
     NO_MULTI_CHOICE
-            (1515, getString(R.string.error_no_multi_choice), false),
+            (1515, getString(R.string.error_no_multi_choice), true),
     NOT_VOTED_FOR
             (1516, getString(R.string.error_not_voted_for), false),
     PERM_EDIT_PERM

@@ -30,26 +30,44 @@ public interface UserDao {
     void reset(int userId);
 
     @Query("SELECT * FROM user WHERE userID = :userID")
+    User getUserById(int userID);
+
+    @Query("SELECT * FROM user WHERE userID = :userID")
     LiveData<User> getUserByIdLiveData(int userID);
 
     @Query("SELECT * FROM user WHERE username = :username")
     User getUserByName(String username);
 
+    @Query("SELECT * FROM user WHERE userID IN(:userIds)")
+    DataSource.Factory<Integer, User> getUsersByIdArray(int[] userIds);
+
     @Update
     void update(User user);
 
-    @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE isFriend & NOT isBlocked ORDER BY " +
+            "username")
     DataSource.Factory<Integer, User> getFriends();
 
-    @Query("SELECT * FROM user WHERE (isFriend = 1 | requestPending = 1 | " +
-            "isRequesting = 1) & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE (isFriend | requestPending | " +
+            "isRequesting) & NOT isBlocked ORDER BY isBlocked, username")
     DataSource.Factory<Integer, User> getFriendsAndPending();
 
-    @Query("SELECT * FROM user WHERE isFriend = 1 & isBlocked = 0")
+    @Query("SELECT * FROM user WHERE (isFriend | requestPending | " +
+            "isRequesting | isBlocked) ORDER BY isBlocked, username")
+    DataSource.Factory<Integer, User> getAll();
+
+    @Query("SELECT * FROM user WHERE isFriend & NOT isBlocked")
     LiveData<List<User>> getFriendsAsList();
 
     @Query("SELECT * FROM user")
     List<User> getAllAsList();
+
+    @Query("SELECT * FROM user INNER JOIN groupmembership ON user.userId = " +
+            "groupmembership.userId WHERE groupmembership.sharing")
+    LiveData<List<User>> getCurrentlySending();
+
+    @Query("UPDATE groupmembership SET sharing = (:currentDate < sharingUntil)")
+    void updateSending(long currentDate);
 
     @Query("UPDATE user SET isBlocked = :isBlocked WHERE userId = :userId")
     void setBlocked(int userId, boolean isBlocked);
@@ -66,5 +84,8 @@ public interface UserDao {
 
     @Query("UPDATE user SET username = :name WHERE userId = :userId")
     void setUserName(int userId, String name);
+
+    @Query("DELETE FROM user")
+    void deleteAllUsers();
 
 }

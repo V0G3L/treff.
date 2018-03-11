@@ -34,7 +34,7 @@ public class JoinEventCommand extends AbstractCommand {
         public final String token;
 
         public Request(int groupId, int id, String token) {
-            super("join-event");
+            super(CmdDesc.JOIN_EVENT.toString());
             this.groupId = groupId;
             this.id = id;
             this.token = token;
