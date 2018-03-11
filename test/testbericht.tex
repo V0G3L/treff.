@@ -69,17 +69,25 @@
 	\subsection{Funktionale Anforderungen}
 		\subsubsection{Plicht}
 			\begin{itemize}
-              \item \textbf{Erstellung von Verabredungen innerhalb einer Gruppe:}\\
-							\label{notification}Gruppenmitglieder werden nicht automatisch
-							gebeten, ihren Standort freizugeben. Die Verwendung von
-							Push-Benachrichtigungen stellte sich ohne Verwendung von
-							Google-Services als äußerst schwierig und zeitaufwendig heraus.
-							Da jede andere Form von Benachrichtigung nicht zweckmäßig ist,
-							wurde auf diese verzichtet.
+                \item \textbf{Erstellung von Verabredungen innerhalb einer Gruppe:}\\
+							\label{notification}Gruppenmitglieder werden nicht
+                            automatisch gebeten, ihren Standort freizugeben.
+                            Die Verwendung von Push-Benachrichtigungen stellte
+                            sich ohne Verwendung von Google-Services als
+                            äußerst schwierig und zeitaufwendig heraus. Da jede
+                            andere Form von Benachrichtigung nicht zweckmäßig
+                            ist, wurde auf diese verzichtet.
                 \item \textbf{Standortanfrage:}\\
 							\label{requestPosition}Da diese Funktion ohne
 							Push-Benachrichtigungen nicht zweckmäßig ist,
 							wurde sie nicht implementiert
+                \item \textbf{Verwaltung von Kontodaten:}\\
+                            \label{deleteaccount}Das Löschen von Accounts wurde
+                            implementiert, aber während der Qualitätssicherung
+                            ist aufgefallen das grobe Fehler gemacht wurden.
+                            Da das Beheben dieser Fehler als sehr Komplex
+                            herausgestellt hat, wurde aus Zeitgründen darauf
+                            verzichtet.
 			\end{itemize}
 
 		\subsubsection{Kür}
@@ -136,20 +144,20 @@
 						\end{itemize}
 				\item \textbf{T50 : Verabredung erstellen}
 					\begin{itemize}
-						\item Der Dialog zur Benachrichtigung der anderen Mitglieder
-									erscheint nicht (vgl \ref{notification})
+						\item Der Dialog zur Benachrichtigung der anderen
+                            Mitglieder erscheint nicht (vgl. \ref{notification})
 					\end{itemize}
 				\item \textbf{T70 : Standortanfrage}
 					\begin{itemize}
-						\item nicht implementiert (vgl \ref{requestPosition})
+						\item nicht implementiert (vgl. \ref{requestPosition})
 					\end{itemize}
 				\item \textbf{T80 : Kontoverwaltung}
 					\begin{itemize}
-          	\item Beim Löschen eines Accounts werden nicht die nötigen Updates
-                	produziert, um diesen aus all seinen Gruppen, Verabredungen,
-                	Abstimmungen etc zu entfernen
-          	\item Bei Änderungen wird keine Bestätigungsmail versand, da dies
-									keinen Mehrwert mit sich bringen würde
+                        \item nicht möglich (vgl. \ref{deleteaccount})
+          	            \item Das Implementieren von Emailversand stellte sich
+                            zum Ende der Implementierungsphase, als
+                            komplizierter als gedacht heraus, weshalb aus
+                            Zeitgründen darauf verzichtet wurde.
 					\end{itemize}
 				\end{itemize}
 
