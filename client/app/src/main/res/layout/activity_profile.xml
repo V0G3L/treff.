@@ -8,7 +8,6 @@
             type="org.pispeb.treffpunkt.client.view.profile.ProfileViewModel" />
     </data>
 
-
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,184 +41,49 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
-                <!-- layout with first components -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/usernametext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:text="@string/username"/>
 
-                    <TextView
-                        android:id="@+id/usernametext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/username"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/newpasswordtext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/new_password"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@={vm.oldUsername}"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/usernameinput"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/name"
-                        android:inputType="textPersonName"
-                        android:text="@={vm.username}"
-                        android:visibility="gone" />
-
-                    <EditText
-                        android:id="@+id/newpassword"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:inputType="textPassword"
-                        android:text="@={vm.password}"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <!-- layout with second components -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:text="@={vm.oldUsername}"/>
 
-                    <TextView
-                        android:id="@+id/emailtext"
-                        android:layout_width="123dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/email"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/oldpasswordtext"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/old_password"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@={vm.oldEmail}"
-                        android:textSize="20sp" />
-
-                    <EditText
-                        android:id="@+id/emailinput"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:hint="@string/email"
-                        android:inputType="textEmailAddress"
-                        android:text="@={vm.email}"
-                        android:visibility="gone" />
-
-                    <EditText
-                        android:id="@+id/oldpassword"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:ems="10"
-                        android:inputType="textPassword"
-                        android:text="@{vm.oldPassword}"
-                        android:visibility="gone" />
-
-                </LinearLayout>
-
-                <!-- layout with buttons -->
-                <LinearLayout
+                <TextView
+                    android:id="@+id/emailtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:orientation="horizontal">
+                    android:text="@string/email"/>
 
-                    <Button
-                        android:id="@+id/cancalbutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/cancel"
-                        android:visibility="gone"
-                        android:onClick="@{v -> vm.onCancelClick()}"/>
-
-                    <Button
-                        android:id="@+id/savedatabutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:backgroundTint="@color/colorAccent"
-                        android:onClick="@{v -> vm.onSaveDataClick()}"
-                        android:text="@string/save"
-                        android:textColor="@color/white"
-                        android:visibility="gone" />
-
-                    <Button
-                        android:id="@+id/editdatabutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:backgroundTint="@color/colorAccent"
-                        android:onClick="@{v -> vm.onEditDataClick()}"
-                        android:text="@string/edit_data"
-                        android:textColor="@color/white" />
-
-                    <Button
-                        android:id="@+id/savepasswordbutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:backgroundTint="@color/colorAccent"
-                        android:onClick="@{v -> vm.onSavePasswordClick()}"
-                        android:text="@string/save"
-                        android:textColor="@color/white"
-                        android:visibility="gone" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="right"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content"
+                    android:text="@={vm.oldEmail}"/>
 
-                    <Button
-                        android:id="@+id/editpassword"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:backgroundTint="@color/colorAccent"
-                        android:onClick="@{v -> vm.onEditPasswordClick()}"
-                        android:text="@string/edit_password"
-                        android:textColor="@color/white"
-                        />
+                <Button
+                    android:id="@+id/editdatabutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:onClick="@{v -> vm.onEditDataClick()}"
+                    android:text="@string/edit_data"
+                    android:textColor="@color/white" />
 
-                </LinearLayout>
+
+                <Button
+                    android:id="@+id/editpassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorAccent"
+                    android:onClick="@{v -> vm.onEditPasswordClick()}"
+                    android:text="@string/edit_password"
+                    android:textColor="@color/white" />
+
             </LinearLayout>
         </FrameLayout>
 

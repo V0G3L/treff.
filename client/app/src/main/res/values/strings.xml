@@ -80,11 +80,11 @@
     <string name="request_pending">Request pending</string>
     <string name="accept">Accept</string>
     <string name="decline">Decline</string>
-    <string name="username">Username:\u0020</string>
-    <string name="new_password">new password:\u0020</string>
+    <string name="username">Username</string>
+    <string name="new_password">New password:</string>
     <string name="name">Name</string>
-    <string name="email">Email:\u0020</string>
-    <string name="old_password">old password:\u0020</string>
+    <string name="email">Email</string>
+    <string name="old_password">Current password</string>
     <string name="save">Save</string>
     <string name="edit_data">Edit data</string>
     <string name="edit_password">Edit password</string>

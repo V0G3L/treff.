@@ -52,9 +52,9 @@
     <string name="blocked">Blockiert</string>
     <string name="unblock">Entblocken</string>
     <string name="error_internal">Interner Fehler, bitte erneut versuchen</string>
-    <string name="username">Nutzername:\u0020</string>
-    <string name="new_password">neues Passwort:\u0020</string>
-    <string name="old_password">altes Passwort:\u0020</string>
+    <string name="username">Benutzername</string>
+    <string name="new_password">Neues Passwort</string>
+    <string name="old_password">Altes Passwort</string>
     <string name="edit_data">Daten ändern</string>
     <string name="save">Speichern</string>
     <string name="edit_password">Passwort ändern</string>
@@ -66,7 +66,7 @@
     <string name="accept">Akzeptieren</string>
     <string name="decline">Ablehnen</string>
     <string name="name">Name</string>
-    <string name="email">Email:</string>
+    <string name="email">Email</string>
     <string name="tap_for_back">Zurück zur App</string>
     <string name="how_long">Wie lange möchtest du deine Position teilen?</string>
     <string name="share_location_for">Teile Position für</string>

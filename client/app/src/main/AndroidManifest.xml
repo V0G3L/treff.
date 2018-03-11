@@ -62,6 +62,10 @@
 
         <activity android:name="org.pispeb.treffpunkt.client.view.profile.ProfileActivity"
             android:launchMode="singleTask"/>
+        <activity
+            android:name="org.pispeb.treffpunkt.client.view.profile.EditProfileActivity"/>
+        <activity
+            android:name="org.pispeb.treffpunkt.client.view.profile.EditPasswordActivity"/>
 
         <activity android:name="org.pispeb.treffpunkt.client.view.friend.FriendActivity"/>
         <activity android:name="org.pispeb.treffpunkt.client.view.home.friendList.AddFriendActivity"/>

@@ -34,6 +34,7 @@ public class ProfileViewModel extends ViewModel {
         oldUsername = username;
         email = pref.getString(ctx.getString(R.string.key_email), "");
         oldEmail = email;
+        oldPassword = "";
 
         state = new SingleLiveEvent<>();
         state.setValue(new State(ViewCall.IDLE, 0));
