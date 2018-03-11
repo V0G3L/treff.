@@ -30,7 +30,7 @@ public class GroupSettingsActivity extends AppCompatActivity {
     // id of the group
     private int groupId;
 
-    GroupViewModel vm;
+    private GroupViewModel vm;
     private ActivityGroupSettingsBinding binding;
 
     private List<User> friends;
@@ -86,9 +86,26 @@ public class GroupSettingsActivity extends AppCompatActivity {
             case SHOW_ADD_MEMBER_DIALOG:
                 showAddMemberDialog();
                 break;
+            case DISPLAY_MEMBERSHIP:
+                showKickDialog();
+                break;
             default:
                 Log.e("Group Settings", "Illegal VM State");
         }
+    }
+
+    private void showKickDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(vm.getLastSelected().getUsername());
+        builder.setPositiveButton(R.string.kick_user, (dialog, which)
+                -> {
+            vm.kickUser();
+            dialog.dismiss();
+        });
+        builder.setNegativeButton(R.string.ok, ((dialog, which) -> {
+            dialog.dismiss();
+        }));
+        builder.show();
     }
 
     private void showAddMemberDialog() {

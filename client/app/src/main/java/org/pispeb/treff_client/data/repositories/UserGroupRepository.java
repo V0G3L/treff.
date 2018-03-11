@@ -139,7 +139,8 @@ public class UserGroupRepository {
 
             //delete group memberships
             userGroupDao.deleteGroupMemberships(
-                    userGroupDao.getGroupMembershipsByGroupId(group.getGroupId()));
+                    userGroupDao
+                            .getGroupMembershipsByGroupId(group.getGroupId()));
 
             //delete group events;
             eventDao.deleteEvents(
@@ -175,9 +176,11 @@ public class UserGroupRepository {
      * @param members array of users to remove
      */
     public void removeGroupMembers(int groupId, int[] members) {
-        for (int i = 0; i < members.length; i++) {
-            userGroupDao.delete(new GroupMembership(members[i], groupId));
-        }
+        assert backgroundHandler.post(() -> {
+            for (int i = 0; i < members.length; i++) {
+                userGroupDao.delete(new GroupMembership(members[i], groupId));
+            }
+        });
     }
 
     /**
@@ -221,13 +224,23 @@ public class UserGroupRepository {
     }
 
     /**
-     * request the server to remove members from group
+     * request the server to add members to group
      *
      * @param groupId effected group
      * @param members effected members
      */
     public void requestAddMembersToGroup(int groupId, int... members) {
         encoder.addGroupMembers(groupId, members);
+    }
+
+    /**
+     * request the server to remove members from group
+     *
+     * @param groupId id of the group
+     * @param members array of member ids to be kicked
+     */
+    public void requestKickMembers(int groupId, int... members) {
+        encoder.removeGroupMembers(groupId, members);
     }
 
     /**

@@ -18,10 +18,12 @@ import java.util.List;
  */
 
 public class GroupViewModel extends ViewModel
-        implements MemberListAdapter. MemberClickedListener{
+        implements MemberListAdapter.MemberClickedListener {
     // group currently displayed
     private LiveData<UserGroup> group;
     private LiveData<List<User>> members;
+
+    private User lastSelected;
 
     // repos
     private UserGroupRepository userGroupRepository;
@@ -38,6 +40,7 @@ public class GroupViewModel extends ViewModel
 
     /**
      * set the group to be displayed
+     *
      * @param groupId id of that group
      */
     public void setGroupById(int groupId) {
@@ -54,6 +57,7 @@ public class GroupViewModel extends ViewModel
 
     /**
      * add member given its id
+     *
      * @param userId id of user to be added
      */
     public void addMember(int userId) {
@@ -71,7 +75,8 @@ public class GroupViewModel extends ViewModel
 
     @Override
     public void onItemClicked(int position, User user) {
-        state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
+        lastSelected = user;
+        state.setValue(new State(ViewCall.DISPLAY_MEMBERSHIP,
                 user.getUserId()));
     }
 
@@ -91,4 +96,15 @@ public class GroupViewModel extends ViewModel
         return state;
     }
 
+    public User getLastSelected() {
+        return lastSelected;
+    }
+
+    public void kickUser() {
+        if (group.getValue() != null) {
+            userGroupRepository
+                    .requestKickMembers(group.getValue().getGroupId(),
+                            lastSelected.getUserId());
+        }
+    }
 }

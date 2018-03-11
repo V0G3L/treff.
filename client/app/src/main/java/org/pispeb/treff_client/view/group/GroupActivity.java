@@ -22,6 +22,7 @@ import org.pispeb.treff_client.view.group.chat.GroupChatFragment;
 import org.pispeb.treff_client.view.group.eventList.AddEventActivity;
 import org.pispeb.treff_client.view.group.eventList.GroupEventListFragment;
 import org.pispeb.treff_client.view.ui_components.ViewPagerAdapter;
+import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 import java.util.Calendar;
@@ -42,6 +43,7 @@ public class GroupActivity extends AppCompatActivity
     private ActivityGroupBinding binding;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private GroupViewModel vm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,7 @@ public class GroupActivity extends AppCompatActivity
 
         groupId = (int) getIntent().getExtras().get(GRP_INTENT);
 
-        GroupViewModel vm = ViewModelProviders
+        vm = ViewModelProviders
                 .of(this, ViewModelFactory.getInstance(this))
                 .get(GroupViewModel.class);
 
