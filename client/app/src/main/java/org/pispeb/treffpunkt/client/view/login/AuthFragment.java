@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import org.pispeb.treffpunkt.client.R;
+import org.pispeb.treffpunkt.client.data.networking.RequestEncoder;
 import org.pispeb.treffpunkt.client.databinding.DialogTextinputBinding;
 
 public class AuthFragment extends Fragment {
@@ -57,5 +58,8 @@ public class AuthFragment extends Fragment {
                 .putString(getString(R.string.key_server_address),
                         serverAddress)
                 .apply();
+        if(!defaultAddress) {
+            RequestEncoder.getInstance().closeConnection();
+        }
     }
 }
