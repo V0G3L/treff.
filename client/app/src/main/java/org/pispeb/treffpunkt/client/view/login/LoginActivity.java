@@ -16,13 +16,17 @@ import org.pispeb.treffpunkt.client.view.home.HomeActivity;
  */
 public class LoginActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.activity_login, new LoginFragment()).commit();
 
+        LoginFragment loginFragment = new LoginFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.activity_login, loginFragment).commit();
+
+        // check if logged in already
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(this);
         String token = pref.getString(getString(R.string.key_token), "");
@@ -33,5 +37,16 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void toRegister() {
+        RegisterFragment registerFragment = new RegisterFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.activity_login, registerFragment).commit();
+    }
+
+    public void toLogin() {
+        LoginFragment loginFragment = new LoginFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.activity_login, loginFragment).commit();
+    }
 }
 

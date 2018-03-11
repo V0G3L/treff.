@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +34,13 @@ public class LoginFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        vm = ViewModelProviders
-                .of(this, ViewModelFactory.getInstance(getContext()))
-                .get(LoginViewModel.class);
+        vm = ViewModelProviders.of(this, ViewModelFactory.getInstance
+                (getContext())).get(LoginViewModel.class);
+
+        vm.getState().observe(this, this::callback);
+
+        vm.setUsername(PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString(getString(R.string.username_path), ""));
     }
 
     @Override
@@ -44,22 +49,16 @@ public class LoginFragment extends Fragment{
 
         binding = FragmentLoginBinding.inflate(inflater, container, false);
 
-
-        vm.getState().observe(this, state -> callback(state));
         binding.setVm(vm);
-
-        vm.setUsername(PreferenceManager.getDefaultSharedPreferences(getContext())
-                .getString(getString(R.string.username_path), ""));
 
         // Inflate the layout for this fragment
         return binding.getRoot();
-
-
     }
 
     private void callback(State state) {
         switch (state.call) {
             case IDLE:
+
                 binding.progressBar.setVisibility(View.GONE);
                 binding.authentification.setVisibility(View.GONE);
                 binding.inputLogPassword.setVisibility(View.VISIBLE);
@@ -68,6 +67,7 @@ public class LoginFragment extends Fragment{
                 binding.inputLogUsername.setErrorEnabled(false);
                 binding.signupLink.setVisibility(View.VISIBLE);
                 binding.loginButton.setVisibility(View.VISIBLE);
+
                 break;
             case EMPTY_PASSWORD:
                 binding.inputLogPassword.setErrorEnabled(true);
@@ -78,27 +78,26 @@ public class LoginFragment extends Fragment{
                 binding.inputLogUsername.setError(getString(R.string.missing_username));
                 break;
             case LOGIN:
-                vm.setPassword(binding.inputLogPassword.getEditText().getText().toString());
+
                 binding.progressBar.setVisibility(View.VISIBLE);
                 binding.authentification.setVisibility(View.VISIBLE);
                 binding.inputLogPassword.setVisibility(View.GONE);
                 binding.inputLogUsername.setVisibility(View.GONE);
                 binding.signupLink.setVisibility(View.GONE);
                 binding.loginButton.setVisibility(View.GONE);
+
                 break;
             case GO_TO_REGISTER:
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.activity_login, new RegisterFragment()).commit();
+                ((LoginActivity) getActivity()).toRegister();
                 break;
             case SUCCESS:
                 SharedPreferences preferences = PreferenceManager
                         .getDefaultSharedPreferences(getContext());
                 preferences.edit().putString(getString(R.string.key_userName),
                         vm.getUsername()).apply();
-                Intent intent = new Intent(getActivity(), HomeActivity.class);
+                Intent intent = new Intent(getContext(), HomeActivity.class);
                 this.startActivity(intent);
                 break;
-            default:
         }
     }
 }

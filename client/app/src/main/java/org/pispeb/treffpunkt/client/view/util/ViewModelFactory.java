@@ -114,8 +114,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         } else if (AddEventViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new AddEventViewModel(eventRepository,
                     userGroupRepository);
-        } else if (RegisterViewModel.class.isAssignableFrom(modelClass)) {
-            return (T) new RegisterViewModel(encoder);
         } else if (ProfileViewModel.class.isAssignableFrom(modelClass)) {
             return (T) new ProfileViewModel(encoder);
         } else if (NavigationViewModel.class.isAssignableFrom(modelClass)) {
