@@ -13,7 +13,7 @@ public class EditUsernameTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new EditUsernameCommand(mockName, mockToken);
+        command = new EditUsernameCommand(mockName, mockToken, "");
     }
 
     @Override

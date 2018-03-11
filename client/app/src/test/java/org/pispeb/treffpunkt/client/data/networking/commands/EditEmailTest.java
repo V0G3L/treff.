@@ -13,7 +13,7 @@ public class EditEmailTest extends AbstractCommandTest {
 
     @Override
     public void initCommand() {
-        command = new EditEmailCommand(mockEmail, mockToken);
+        command = new EditEmailCommand(mockEmail, mockToken, "");
     }
 
     @Override

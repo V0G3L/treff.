@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.pispeb.treffpunkt.client.data.entities.EntitiesTestSuite;
 import org.pispeb.treffpunkt.client.data.networking.NetworkingTestSuite;
 import org.pispeb.treffpunkt.client.data.repositories.RepositoryTestSuite;
+import org.pispeb.treffpunkt.client.view.viewmodels.ViewModelsTestSuite;
 
 /**
  * All tests that don't require to be run on the device
@@ -14,7 +15,8 @@ import org.pispeb.treffpunkt.client.data.repositories.RepositoryTestSuite;
 @Suite.SuiteClasses({
         NetworkingTestSuite.class,
         EntitiesTestSuite.class,
-        RepositoryTestSuite.class
+        RepositoryTestSuite.class,
+        ViewModelsTestSuite.class
 })
 public class AllTestSuite {
 }
