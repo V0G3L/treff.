@@ -36,7 +36,7 @@
     <string name="about_title">Über uns</string>
     <string name="login_username">Benutzername</string>
     <string name="login_password">Passwort</string>
-    <string name="login_email">Email-Adresse</string>
+    <string name="login_email">Email-Adresse (optional)</string>
     <string name="login_login">Einloggen</string>
     <string name="login_register">Registrieren</string>
     <string name="login_auth">Authentifizieren</string>

@@ -32,15 +32,24 @@ public class ProfileViewModel extends ViewModel {
         this.encoder = encoder;
         ctx = TreffPunkt.getAppContext();
         pref = PreferenceManager.getDefaultSharedPreferences(ctx);
+
         username = new MutableLiveData<>();
         username.setValue(pref.getString(ctx.getString(R.string.key_userName), ""));
+        newUsername = username.getValue();
+
         email = new MutableLiveData<>();
-        email.setValue(pref.getString(ctx.getString(R.string.key_email), ""));
+        String preferencesEmail = pref.getString(ctx.getString(R.string.key_email), "");
+        if (preferencesEmail.equals("")) {
+            email.setValue(ctx.getString(R.string.settings_no_email));
+            newEmail = "";
+        }
+        else {
+            email.setValue(preferencesEmail);
+            newEmail = email.getValue();
+        }
+
         password = "";
         confirmPassword = "";
-
-        newUsername = username.getValue();
-        newEmail = email.getValue();
         newPassword = password;
 
         state = new SingleLiveEvent<>();

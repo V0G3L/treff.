@@ -5,6 +5,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.databinding.ActivityEditPasswordBinding;
@@ -30,8 +31,13 @@ public class EditPasswordActivity extends AppCompatActivity  {
 
         vm.getState().observe(this, state -> callback(state));
 
-        binding.toolbar.setTitle(getString(R.string.edit_password));
-        setSupportActionBar(binding.toolbar);
+        //toolbar title, back navigation
+        Toolbar toolbar = binding.toolbar;
+        toolbar.setTitle(getString(R.string.edit_password));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void callback(State state) {

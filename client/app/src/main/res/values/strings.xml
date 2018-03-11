@@ -39,57 +39,13 @@
     <!-- login/register -->
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
-    <string name="login_email">Email-Addresse</string>
+    <string name="login_email">Email-Address (optional) </string>
     <string name="login_login">Login</string>
     <string name="login_register">Register</string>
     <string name="login_auth">Authenticating…</string>
 
     <!--Service description-->
     <string name="gps_service_description" translatable="false">Provides GPS Location for the \"treff.\"-App</string>
-    <string name="mute_chat_setting">Mute Chat</string>
-    <string name="mute_location_requests_settings">Mute location requests</string>
-
-
-    <!-- TODO more specific comments -->
-    <!-- GUI texts -->
-    <string name="username_contact">Contact\'s Username</string>
-    <string name="add_contact">Add contact</string>
-    <string name="cancel">Cancel</string>
-    <string name="ok">OK</string>
-    <string name="block">Block</string>
-    <string name="private_group">Private Group</string>
-    <string name="groupname">Groupname</string>
-    <string name="create_group">Create Group</string>
-    <string name="poll_or_event">What do you want to add?</string>
-    <string name="poll">Poll</string>
-    <string name="event">Event</string>
-    <string name="leave_group">Leave group</string>
-    <string name="event_title">Event Title</string>
-    <string name="manage_groups">Manage Groups</string>
-    <string name="prompt_email">Email-Address</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Log in or register</string>
-    <string name="action_sign_in_short">Log in</string>
-    <string name="error_invalid_email">Not a valid email-address</string>
-    <string name="error_invalid_password">Password too short</string>
-    <string name="error_incorrect_password">Password not correct</string>
-    <string name="error_field_required">Required field</string>
-    <string name="share_location">Share Location</string>
-    <string name="user_is_requesting">Contact Request</string>
-    <string name="request_from">Contact Request from </string>
-    <string name="request_pending">Request pending</string>
-    <string name="accept">Accept</string>
-    <string name="decline">Decline</string>
-    <string name="username">Username</string>
-    <string name="new_password">New password:</string>
-    <string name="name">Name</string>
-    <string name="email">Email</string>
-    <string name="old_password">Current password</string>
-    <string name="save">Save</string>
-    <string name="edit_data">Edit data</string>
-    <string name="edit_password">Edit password</string>
-    <string name="settings_no_email">No email specified</string>
-
 
     <!-- error codes -->
     <string name="error_errorcode_invalid">Unknown error code</string>
@@ -132,6 +88,56 @@
     <string name="error_perm_edit_event">Missing permission to edit the event</string>
     <string name="error_perm_create_poll">Missing permission to create polls in this group</string>
     <string name="error_perm_edit_poll">Missing permission to edit the poll</string>
+    <string name="error_invalid_email">Not a valid email-address</string>
+    <string name="error_invalid_password">Password too short</string>
+    <string name="error_incorrect_password">Password not correct</string>
+    <string name="error_field_required">Required field</string>
+
+    <!-- server change -->
+    <string name="key_server_address" translatable="false">server_address</string>
+    <string name="key_using_default_server" translatable="false">
+        using_default_server</string>
+    <string name="login_server_address">Server address (empty for
+        default)</string>
+    <string name="error_cant_connect">Can\'t connect to server</string>
+
+
+
+
+    <!-- TODO more specific comments -->
+    <string name="username_contact">Contact\'s Username</string>
+    <string name="add_contact">Add contact</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="block">Block</string>
+    <string name="private_group">Private Group</string>
+    <string name="groupname">Groupname</string>
+    <string name="create_group">Create Group</string>
+    <string name="poll_or_event">What do you want to add?</string>
+    <string name="poll">Poll</string>
+    <string name="event">Event</string>
+    <string name="leave_group">Leave group</string>
+    <string name="event_title">Event Title</string>
+    <string name="manage_groups">Manage Groups</string>
+    <string name="prompt_email">Email-Address</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Log in or register</string>
+    <string name="action_sign_in_short">Log in</string>
+    <string name="share_location">Share Location</string>
+    <string name="user_is_requesting">Contact Request</string>
+    <string name="request_from">Contact Request from </string>
+    <string name="request_pending">Request pending</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="username">Username</string>
+    <string name="new_password">New password:</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="old_password">Current password</string>
+    <string name="save">Save</string>
+    <string name="edit_data">Edit data</string>
+    <string name="edit_password">Edit password</string>
+    <string name="settings_no_email">No email specified</string>
     <string name="channel_name" translatable="false">treff.</string>
     <string name="channel_description" translatable="false">Transmitting location…</string>
     <string name="tap_for_back">Tap to open treff.</string>
@@ -148,13 +154,10 @@
     <string name="missing_password">Please enter a password</string>
     <string name="missing_username">Please enter an username</string>
     <string name="invalid_email">Invalid email</string>
-    <string name="login_server_address">Server address (empty for
-        default)</string>
-    <string name="key_server_address" translatable="false">server_address</string>
-    <string name="key_using_default_server" translatable="false">
-        using_default_server</string>
-    <string name="error_cant_connect">Can\'t connect to server</string>
     <string name="username_already_in_use">Username already in use</string>
     <string name="email_already_in_use">Email address already in use</string>
     <string name="button_change_server">Change Server</string>
+    <string name="mute_chat_setting">Mute Chat</string>
+    <string name="mute_location_requests_settings">Mute location requests</string>
+
 </resources>
