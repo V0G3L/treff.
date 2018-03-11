@@ -571,6 +571,15 @@ user group will be deleted.}
 user-not-in-group}
 {group-change}
 
+\apiCommand{leave-group}
+{Removes the executing user from a group in which he is a member.}
+{id/int/The ID of the group.
+If the executing user is the last remaining member of the user group then the
+user group will be deleted.}
+{}
+{group-id-invalid}
+{group-change}
+
 \apiCommand{get-membership-details}
 {Gets the membership details of an account in a user group of which the
 executing user is a member.

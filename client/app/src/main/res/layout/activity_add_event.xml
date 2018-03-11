@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.group.eventList.AddEventViewModel" />
+            type="org.pispeb.treffpunkt.client.view.group.eventList.AddEventViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout

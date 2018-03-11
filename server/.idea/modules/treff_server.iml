@@ -37,7 +37,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-validator:commons-validator:1.6" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.5" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j:2.2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-beanutils:commons-beanutils:1.9.2" level="project" />
@@ -46,6 +46,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Gradle: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-core:2.2.3" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-linux64:10.1.13" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-win32:10.1.20" level="project" />
@@ -63,7 +64,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-validator:commons-validator:1.6" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.5" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j:2.2.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-beanutils:commons-beanutils:1.9.2" level="project" />
@@ -72,6 +73,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-core:2.2.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-linux64:10.1.13" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-win32:10.1.20" level="project" />
@@ -89,7 +91,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: commons-codec:commons-codec:1.11" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: commons-validator:commons-validator:1.6" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
-    <orderEntry type="library" scope="TEST" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j:2.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12" level="project" />
@@ -101,6 +103,7 @@
     <orderEntry type="library" scope="TEST" name="Gradle: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-core:2.2.3" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-linux64:10.1.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-db-win32:10.1.20" level="project" />

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="message"
-            type="org.pispeb.treff_client.data.entities.ChatMessage"/>
+            type="org.pispeb.treffpunkt.client.data.entities.ChatMessage"/>
     </data>
 
     <android.support.constraint.ConstraintLayout

@@ -5,7 +5,7 @@
 
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.group.GroupViewModel"/>
+            type="org.pispeb.treffpunkt.client.view.group.GroupViewModel"/>
     </data>
         <!-- The main content view -->
         <android.support.design.widget.CoordinatorLayout

@@ -5,7 +5,7 @@
 
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.home.map.MapViewModel" />
+            type="org.pispeb.treffpunkt.client.view.home.map.MapViewModel" />
     </data>
 
     <android.support.constraint.ConstraintLayout

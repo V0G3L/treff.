@@ -3,7 +3,7 @@
     <data>
         <variable
             name="user"
-            type="org.pispeb.treff_client.data.entities.User"/>
+            type="org.pispeb.treffpunkt.client.data.entities.User"/>
     </data>
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

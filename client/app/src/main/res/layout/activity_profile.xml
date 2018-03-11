@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.profile.ProfileViewModel" />
+            type="org.pispeb.treffpunkt.client.view.profile.ProfileViewModel" />
     </data>
 
 

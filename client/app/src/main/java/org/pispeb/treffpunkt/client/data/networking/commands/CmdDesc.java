@@ -1,0 +1,58 @@
+package org.pispeb.treffpunkt.client.data.networking.commands;
+
+/**
+ * Mapping Commands to their tags in json objects
+ */
+
+public enum CmdDesc {
+    ACCEPT_CONTACT_REQUEST,
+    ADD_GROUP_MEMBERS,
+    ADD_POLL_OPTION,
+    BLOCK_ACCOUNT,
+    CANCEL_CONTACT_REQUEST,
+    CREATE_EVENT,
+    CREATE_GROUP,
+    CREATE_POLL,
+    DELETE_ACCOUNT,
+    EDIT_EMAIL,
+    EDIT_EVENT,
+    EDIT_GROUP,
+    EDIT_PASSWORD,
+    EDIT_POLL,
+    EDIT_POLLOPTION,
+    EDIT_USERNAME,
+    GET_CONTACT_LIST,
+    GET_EVENT_DETAILS,
+    GET_GROUP_DETAILS,
+    GET_PERMISSIONS,
+    GET_POLL_DETAILS,
+    GET_USER_DETAILS,
+    GET_USER_ID,
+    JOIN_EVENT,
+    LEAVE_EVENT,
+    LEAVE_GROUP,
+    LIST_GROUPS,
+    LOGIN,
+    PUBLISH_POSITION,
+    REGISTER,
+    REJECT_CONTACT_REQUEST,
+    REMOVE_CONTACT,
+    REMOVE_EVENT,
+    REMOVE_GROUP_MEMBERS,
+    REMOVE_POLL,
+    REMOVE_POLL_OPTION,
+    REQUEST_POSITION,
+    REQUEST_UPDATES,
+    RESET_PASSWORD,
+    RESET_PASSWORD_CONFIRM,
+    SEND_CHAT_MESSAGE,
+    SEND_CONTACT_REQUEST,
+    UNBLOCK_ACCOUNT,
+    UPDATE_POSITION,
+    VOTE_FOR_OPTION,
+    WITHDRAW_VOTE_FOR_OPTION;
+
+    public String toString() {
+        return this.name().toLowerCase().replace('_','-');
+    }
+}

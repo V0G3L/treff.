@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.pispeb.treff_client">
+    package="org.pispeb.treffpunkt.client">
 
     <!-- internet connection -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -24,10 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".view.util.TreffPunkt">
+        android:name="org.pispeb.treffpunkt.client.view.util.TreffPunkt">
 
         <activity
-            android:name=".view.login.LoginActivity"
+            android:name="org.pispeb.treffpunkt.client.view.login.LoginActivity"
             android:noHistory="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -37,7 +37,7 @@
         </activity>
 
         <activity
-            android:name=".view.home.HomeActivity"
+            android:name="org.pispeb.treffpunkt.client.view.home.HomeActivity"
             android:launchMode="singleTask">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
@@ -46,32 +46,32 @@
         </activity>
 
         <activity
-            android:name=".view.group.GroupActivity"
+            android:name="org.pispeb.treffpunkt.client.view.group.GroupActivity"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name=".view.group.GroupSettingsActivity"/>
+            android:name="org.pispeb.treffpunkt.client.view.group.GroupSettingsActivity"/>
 
         <activity
-            android:name=".view.settings.SettingsActivity"
+            android:name="org.pispeb.treffpunkt.client.view.settings.SettingsActivity"
             android:launchMode="singleTask"/>
 
         <activity
-            android:name=".view.about.AboutActivity"
+            android:name="org.pispeb.treffpunkt.client.view.about.AboutActivity"
             android:launchMode="singleTask"/>
 
-        <activity android:name=".view.profile.ProfileActivity"
+        <activity android:name="org.pispeb.treffpunkt.client.view.profile.ProfileActivity"
             android:launchMode="singleTask"/>
 
-        <activity android:name=".view.friend.FriendActivity"/>
-        <activity android:name=".view.home.friendList.AddFriendActivity"/>
+        <activity android:name="org.pispeb.treffpunkt.client.view.friend.FriendActivity"/>
+        <activity android:name="org.pispeb.treffpunkt.client.view.home.friendList.AddFriendActivity"/>
         <activity
-            android:name=".view.home.groupList.AddGroupActivity"
+            android:name="org.pispeb.treffpunkt.client.view.home.groupList.AddGroupActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".view.group.eventList.AddEventActivity"/>
+        <activity android:name="org.pispeb.treffpunkt.client.view.group.eventList.AddEventActivity"/>
 
         <service
-            android:name=".data.gps_handling.GPSProvider"
+            android:name="org.pispeb.treffpunkt.client.data.gps_handling.GPSProvider"
             android:exported="false"
             android:description="@string/gps_service_description"/>
 

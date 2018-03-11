@@ -25,7 +25,7 @@ dependencies {
     implementation "commons-validator:commons-validator:1.6"
     implementation "com.fasterxml.jackson.module:jackson-modules-java8:2.9.4"
     implementation "org.slf4j:slf4j-api:1.7.25"
-    implementation "org.slf4j:slf4j-simple:1.7.25"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation "org.slf4j:log4j-over-slf4j:1.7.5"
     testImplementation "junit:junit:4.12"
     testImplementation "com.jcabi:jcabi-matchers:1.3"

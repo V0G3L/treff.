@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.login.LoginViewModel" />
+            type="org.pispeb.treffpunkt.client.view.login.LoginViewModel" />
     </data>
 
     <ScrollView

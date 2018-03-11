@@ -80,3 +80,6 @@ treff_server/out
 
 # Java Logs
 *.log
+
+# custom sutff
+.idea/artifacts/

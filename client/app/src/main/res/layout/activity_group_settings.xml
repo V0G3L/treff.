@@ -4,7 +4,7 @@
     <data>
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.group.GroupViewModel"/>
+            type="org.pispeb.treffpunkt.client.view.group.GroupViewModel"/>
     </data>
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"

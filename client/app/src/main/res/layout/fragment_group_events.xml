@@ -4,7 +4,7 @@
     <data>
         <variable
             name="vm"
-            type="org.pispeb.treff_client.view.group.eventList.GroupEventListViewModel"/>
+            type="org.pispeb.treffpunkt.client.view.group.eventList.GroupEventListViewModel"/>
     </data>
 
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
