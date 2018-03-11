@@ -80,6 +80,10 @@ public class ProfileViewModel extends ViewModel {
         }
     }
 
+    public void onCancel() {
+        state.setValue(new State(ViewCall.PROFILE, 0));
+    }
+
     public MutableLiveData<String> getUsernameLiveData() {
         return username;
     }

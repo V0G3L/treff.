@@ -44,7 +44,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/name"
                 android:inputType="textPersonName"
-                android:text="@={vm.newUsername}"/>
+                android:text="@={vm.newUsername}"
+                android:layout_margin="@dimen/padding_standard"/>
 
             <EditText
                 android:id="@+id/emailinput"
@@ -52,7 +53,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
-                android:text="@={vm.newEmail}"/>
+                android:text="@={vm.newEmail}"
+                android:layout_margin="@dimen/padding_standard"/>
 
             <EditText
                 android:id="@+id/passwordinput"
@@ -60,7 +62,8 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"
                 android:inputType="textPassword"
-                android:text="@={vm.confirmPassword}"/>
+                android:text="@={vm.confirmPassword}"
+                android:layout_margin="@dimen/padding_standard"/>
 
             <Button
                 android:id="@+id/savedatabutton"
@@ -69,8 +72,15 @@
                 android:backgroundTint="@color/colorAccent"
                 android:onClick="@{v -> vm.onSaveDataClick()}"
                 android:text="@string/save"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:layout_margin="@dimen/padding_standard"/>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{v -> vm.onCancel()}"
+                android:text="@string/cancel"
+                android:layout_margin="@dimen/padding_standard"/>
 
         </LinearLayout>
 

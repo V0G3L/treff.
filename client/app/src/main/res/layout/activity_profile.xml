@@ -45,23 +45,29 @@
                     android:id="@+id/usernametext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/username"/>
+                    android:text="@string/username"
+                    android:padding="@dimen/padding_standard"/>
 
                 <TextView
                     android:id="@+id/username"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_standard"
+                    android:textSize="24sp"/>
 
                 <TextView
                     android:id="@+id/emailtext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/email"/>
+                    android:text="@string/email"
+                    android:padding="@dimen/padding_standard"/>
 
                 <TextView
                     android:id="@+id/email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_standard"
+                    android:textSize="24sp"/>
 
                 <Button
                     android:id="@+id/editdatabutton"
@@ -70,17 +76,17 @@
                     android:backgroundTint="@color/colorAccent"
                     android:onClick="@{v -> vm.onEditDataClick()}"
                     android:text="@string/edit_data"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:layout_margin="@dimen/padding_standard"/>
 
 
                 <Button
                     android:id="@+id/editpassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorAccent"
                     android:onClick="@{v -> vm.onEditPasswordClick()}"
                     android:text="@string/edit_password"
-                    android:textColor="@color/white" />
+                    android:layout_margin="@dimen/padding_standard" />
 
             </LinearLayout>
         </FrameLayout>
