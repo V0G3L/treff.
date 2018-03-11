@@ -100,11 +100,13 @@ public class GroupViewModel extends ViewModel
         return lastSelected;
     }
 
-    public void kickUser() {
+    public void kickUser(int groupId, int... members) {
         if (group.getValue() != null) {
-            userGroupRepository
-                    .requestKickMembers(group.getValue().getGroupId(),
-                            lastSelected.getUserId());
+            userGroupRepository.requestKickMembers(groupId, members);
         }
+    }
+
+    public void changeGroupName(int groupId, String newName) {
+        userGroupRepository.requestNameChange(groupId, newName);
     }
 }

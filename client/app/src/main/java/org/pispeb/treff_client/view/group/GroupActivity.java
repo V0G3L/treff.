@@ -68,7 +68,6 @@ public class GroupActivity extends AppCompatActivity
 
         //toolbar
         Toolbar toolbar = binding.toolbarGroup;
-        toolbar.inflateMenu(R.menu.group_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

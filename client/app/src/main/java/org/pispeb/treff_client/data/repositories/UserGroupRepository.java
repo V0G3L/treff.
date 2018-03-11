@@ -244,6 +244,15 @@ public class UserGroupRepository {
     }
 
     /**
+     * request the name of a group to be changed
+     * @param groupId id of the group
+     * @param newName new name of the group
+     */
+    public void requestNameChange(int groupId, String newName) {
+        encoder.editGroup(groupId, newName);
+    }
+
+    /**
      * request a list of all groups from the server
      */
     public void requestRefresh() {

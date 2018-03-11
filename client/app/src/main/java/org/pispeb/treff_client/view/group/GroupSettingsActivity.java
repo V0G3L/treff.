@@ -2,13 +2,19 @@ package org.pispeb.treff_client.view.group;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.data.entities.User;
@@ -21,7 +27,8 @@ import java.util.List;
 
 
 /**
- *  Shows group details/members and settings, allows adding/removing users, leaving etc
+ * Shows group details/members and settings, allows adding/removing users,
+ * leaving etc
  */
 public class GroupSettingsActivity extends AppCompatActivity {
 
@@ -38,13 +45,14 @@ public class GroupSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_group_settings);
+        binding = DataBindingUtil
+                .setContentView(this, R.layout.activity_group_settings);
 
         groupId = (int) getIntent().getExtras().get(GRP_INTENT);
 
         vm = ViewModelProviders
-            .of(this, ViewModelFactory.getInstance(this))
-            .get(GroupViewModel.class);
+                .of(this, ViewModelFactory.getInstance(this))
+                .get(GroupViewModel.class);
 
 
         vm.getState().observe(this, this::callback);
@@ -74,6 +82,19 @@ public class GroupSettingsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.edit_groupname) {
+            showEditDialog();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.group_settings_bar, menu);
+        return true;
+    }
 
     private void callback(State state) {
         switch (state.call) {
@@ -94,12 +115,40 @@ public class GroupSettingsActivity extends AppCompatActivity {
         }
     }
 
+    private void showEditDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        EditText input = new EditText(this);
+        input.setText(vm.getGroup().getValue().getName());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
+            dialog.dismiss();
+        }));
+        builder.setPositiveButton(R.string.ok, ((dialog, which) -> {
+            if (!input.getText().equals("")) {
+                vm.changeGroupName(groupId, input.getText().toString());
+                dialog.dismiss();
+            }
+        }));
+        builder.show();
+    }
+
     private void showKickDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        builder.setTitle(vm.getLastSelected().getUsername());
+        User k = vm.getLastSelected();
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(this);
+        int id = pref.getInt(getString(R.string.key_userId), -1);
+        if (id == k.getUserId()) {
+            return;
+        }
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog
+                .Builder(
+                this);
+        builder.setTitle(k.getUsername());
         builder.setPositiveButton(R.string.kick_user, (dialog, which)
                 -> {
-            vm.kickUser();
+            vm.kickUser(groupId, k.getUserId());
             dialog.dismiss();
         });
         builder.setNegativeButton(R.string.ok, ((dialog, which) -> {

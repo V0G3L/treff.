@@ -144,4 +144,5 @@
     <string name="error_username_taken">Username already in use</string>
     <string name="error_session">Invalid session</string>
     <string name="kick_user">Kick user!</string>
+    <string name="edit_group">Edit</string>
 </resources>

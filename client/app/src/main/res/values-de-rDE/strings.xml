@@ -71,4 +71,5 @@
     <string name="how_long">Wie lange möchtest du deine Position teilen?</string>
     <string name="share_location_for">Teile Position für</string>
     <string name="cancel_sharing">Positionsübertragung abbrechen</string>
+    <string name="edit_group">Edit</string>
 </resources>
