@@ -69,14 +69,14 @@
 	\subsection{Funktionale Anforderungen}
 		\subsubsection{Plicht}
 			\begin{itemize}
-				\item Erstellung von Verabredungen innerhalb einer Gruppe:\\
+                \item \textbf{Erstellung von Verabredungen innerhalb einer Gruppe:}\\
 							\label{notification}Gruppenmitglieder werden nicht automatisch
 							gebeten, ihren Standort freizugeben. Die Verwendung von
 							Push-Benachrichtigungen stellte sich ohne Verwendung von
 							Google-Services als äußerst schwierig und zeitaufwendig heraus.
 							Da jede andere Form von Benachrichtigung nicht zweckmäßig ist,
 							wurde auf diese verzichtet.
-				\item Standortanfrage:\\
+                \item \textbf{Standortanfrage:}\\
 							\label{requestPosition}Da diese Funktion ohne
 							Push-Benachrichtigungen nicht zweckmäßig ist,
 							wurde sie nicht implementiert
@@ -84,31 +84,31 @@
 
 		\subsubsection{Kür}
 			\begin{itemize}
-				\item Abstimmungen:\\
+                \item \textbf{Abstimmungen:}\\
 							Nur auf Serverseite implementiert und nicht vollständig getestet.
-				\item Gruppenrollen und -rechte:\\
+                \item \textbf{Gruppenrollen und -rechte:}\\
 							Nur auf Serverseite implementiert und getestet.
-				\item Detaillierte Innenraumkarten:\\
+                \item \textbf{Detaillierte Innenraumkarten:}\\
 							nicht implementiert.
-				\item Stummschalten:\\
+                \item \textbf{Stummschalten:}\\
 							nicht implementiert
-				\item Zeitplan für Positionsübertragung:\\
+                \item \textbf{Zeitplan für Positionsübertragung:}\\
 							nicht implementiert
-				\item Passwortzurücksetzung:\\
+                \item \textbf{Passwortzurücksetzung:}\\
 							nicht implementiert
 			\end{itemize}
 
 	\subsection{Nicht-Funktionale Anforderungen}
 		\subsubsection{Plicht}
 			\begin{itemize}
-				\item Einfache Bedienung:\\
+                \item \textbf{Einfache Bedienung:}\\
 							%TODO von jemand der beschreiben kann inwieweit wir
 							%Material Design einhalten
-				\item Mobile Nutzung:\\
+                \item \textbf{Mobile Nutzung:}\\
 							%TODO tut das?
-				\item Nutzeraufkommen:\\
+                \item \textbf{Nutzeraufkommen:}\\
 							%TODO tut das?
-				\item Datenschutz:\\
+                \item \textbf{Datenschutz:}\\
 				  		%TODO tut das?
 			\end{itemize}
 
@@ -167,12 +167,33 @@
 
 	\subsubsection{Ungetestete Testszenarien}
 		\begin{itemize}
-    	\item T100: Abstimmungen klientseitig nicht implementiert
-			\item T120: Innenraumkarten nicht implementiert
-			\item T130: Stummschalten nicht implementiert
-			\item T140: Gruppenrollen und -rechte klientseitig nicht implementiert
-			\item T180: Passwort zurücksetzen nicht implementiert
-			\item T190: Zeitplan für Positionsübertragung nicht implementiert
+    	    \item T100: Abstimmungen\\
+                \begin{itemize}
+                \item serverseitig implementiert, aber aus Zeitgründen nicht
+                    vollständig getestet
+                \item klientseitig nicht implementiert
+                \end{itemize}
+			\item T120: Innenraumkarten\\
+                \begin{itemize}
+                \item weder server- noch klientseitig implementiert
+                \end{itemize}
+			\item T130: Stummschalten\\
+                \begin{itemize}
+                \item weder server- noch klientseitig implementiert
+                \end{itemize}
+			\item T140: Gruppenrollen und -rechte\\
+                \begin{itemize}
+                \item serverseitig implementiert und getestet
+                \item klientseitig nicht implementiert
+                \end{itemize}
+			\item T180: Passwort zurücksetzen\\
+                \begin{itemize}
+                \item weder server- noch klientseitig implementiert
+                \end{itemize}
+			\item T190: Zeitplan für Positionsübertragung\\
+                \begin{itemize}
+                \item weder server- noch klientseitig implementiert
+                \end{itemize}
 		\end{itemize}
 
 \section{Art der Tests}
