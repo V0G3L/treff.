@@ -53,8 +53,9 @@ public class UpdatePositionCommand extends AbstractCommand {
         Set<Account> accountsToLock = new HashSet<>();
         for (Usergroup g : actingAccount.getAllGroups().values()) {
             getSafeForReading(g);
-            if (new Date().before(
-                    g.getLocationSharingTimeEndOfMember(actingAccount))) {
+            Date sharingUntil
+                    = g.getLocationSharingTimeEndOfMember(actingAccount);
+            if (sharingUntil != null && new Date().before(sharingUntil)) {
                 accountsToLock.addAll(g.getAllMembers().values());
             }
             releaseReadLock(g);

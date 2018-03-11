@@ -22,8 +22,15 @@
           <element id="library" level="project" name="Gradle: mysql:mysql-connector-java:8.0.8-dmr" />
           <element id="library" level="project" name="Gradle: commons-dbutils:commons-dbutils:1.7" />
           <element id="library" level="project" name="Gradle: commons-codec:commons-codec:1.11" />
+          <element id="library" level="project" name="Gradle: commons-validator:commons-validator:1.6" />
           <element id="library" level="project" name="Gradle: org.slf4j:slf4j-api:1.7.25" />
+          <element id="library" level="project" name="Gradle: org.slf4j:slf4j-simple:1.7.25" />
+          <element id="library" level="project" name="Gradle: org.slf4j:log4j-over-slf4j:1.7.5" />
           <element id="library" level="project" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j:2.2.3" />
+          <element id="library" level="project" name="Gradle: commons-beanutils:commons-beanutils:1.9.2" />
+          <element id="library" level="project" name="Gradle: commons-digester:commons-digester:1.8.1" />
+          <element id="library" level="project" name="Gradle: commons-logging:commons-logging:1.2" />
+          <element id="library" level="project" name="Gradle: commons-collections:commons-collections:3.2.2" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.9.4" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.4" />
           <element id="library" level="project" name="Gradle: ch.vorburger.mariaDB4j:mariaDB4j-core:2.2.3" />
@@ -36,11 +43,6 @@
           <element id="library" level="project" name="Gradle: org.apache.commons:commons-lang3:3.4" />
           <element id="library" level="project" name="Gradle: commons-io:commons-io:2.5" />
           <element id="library" level="project" name="Gradle: org.springframework:spring-core:4.3.6.RELEASE" />
-          <element id="library" level="project" name="Gradle: commons-logging:commons-logging:1.2" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-validator/commons-validator/1.6/e989d1e87cdd60575df0765ed5bac65c905d7908/commons-validator-1.6.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-beanutils/commons-beanutils/1.9.2/7a87d845ad3a155297e8f67d9008f4c1e5656b71/commons-beanutils-1.9.2.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-digester/commons-digester/1.8.1/3dec9b9c7ea9342d4dbe8c38560080d85b44a015/commons-digester-1.8.1.jar" />
-          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/commons-collections/commons-collections/3.2.2/8ad72fe39fa8c91eaaf12aadb21e0c3661fe26d5/commons-collections-3.2.2.jar" />
         </element>
       </element>
     </root>

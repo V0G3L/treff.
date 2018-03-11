@@ -360,7 +360,9 @@ from oldest to youngest (see chapter \ref{subsec:Update-desc}).}
 \apiCommand{edit-username}
 {Changes the executing user's username.}
 {user/string/New username.
-Same restrictions as in chapter \ref{subsec:Account-desc} apply.}
+Same restrictions as in chapter \ref{subsec:Account-desc} apply.,
+pass/string/Password of the account.
+May not be longer than 128 unicode symbols.}
 {}
 {username-already-in-use}
 {account-change}

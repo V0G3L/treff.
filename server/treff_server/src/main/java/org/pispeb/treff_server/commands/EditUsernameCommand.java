@@ -72,11 +72,14 @@ public class EditUsernameCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final String username;
+        final String pass;
 
         public Input(@JsonProperty("user") String username,
+                     @JsonProperty("pass") String pass,
                      @JsonProperty("token") String token) {
             super(token);
             this.username = username;
+            this.pass = pass;
         }
 
         @Override
