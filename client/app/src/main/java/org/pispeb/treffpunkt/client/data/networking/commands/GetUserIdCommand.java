@@ -16,6 +16,7 @@ import org.pispeb.treffpunkt.client.data.repositories.UserRepository;
 
 public class GetUserIdCommand extends AbstractCommand {
 
+    private final String username;
     private final UserRepository userRepository;
     private Request output;
     private final RequestEncoder encoder;
@@ -24,6 +25,7 @@ public class GetUserIdCommand extends AbstractCommand {
                             UserRepository userRepository,
                             RequestEncoder encoder) {
         super(Response.class);
+        this.username = user;
         output = new Request(user, token);
         this.userRepository = userRepository;
         this.encoder = encoder;
@@ -37,14 +39,9 @@ public class GetUserIdCommand extends AbstractCommand {
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
         Response response = (Response) abstractResponse;
-        userRepository.addUser(new User(
-                response.id,
-                output.user,
-                false,
-                false,
-                false,
-                false,
-                new Location(LocationManager.GPS_PROVIDER)));
+        if (userRepository.getUser(response.id) == null)
+            User.getPlaceholderAndScheduleQuery(response.id, userRepository,
+                    (user) -> user.setUsername(username));
         encoder.sendContactRequest(response.id);
     }
 

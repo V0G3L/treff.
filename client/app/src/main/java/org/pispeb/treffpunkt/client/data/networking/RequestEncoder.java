@@ -153,7 +153,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     private synchronized void executeCommand(AbstractCommand command) {
         commands.add(new CommandJob(command, this, false));
         Log.i("Encoder", "Command queue size: " + commands.size());
-        nextCommand();
+        if (idle)
+            nextCommand();
     }
 
     private synchronized void executeCommand(AbstractCommand command,
@@ -161,7 +162,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
                                              boolean abortOnCantConnect) {
         commands.add(new CommandJob(command, failHandler, abortOnCantConnect));
         Log.i("Encoder", "Command queue size: " + commands.size());
-        nextCommand();
+        if (idle)
+            nextCommand();
     }
 
     /**

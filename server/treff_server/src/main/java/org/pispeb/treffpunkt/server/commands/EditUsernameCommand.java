@@ -40,6 +40,10 @@ public class EditUsernameCommand extends AbstractCommand {
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
+        if (!actingAccount.checkPassword(input.pass)) {
+            return new ErrorOutput(ErrorCode.CREDWRONG);
+        }
+
         // edit username
         try {
             actingAccount.setUsername(input.username);
