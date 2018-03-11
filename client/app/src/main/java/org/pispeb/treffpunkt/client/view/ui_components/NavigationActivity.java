@@ -101,6 +101,10 @@ public abstract class NavigationActivity extends AppCompatActivity {
 
                         Intent logoutIntent = new Intent(thisActivity,
                                 LoginActivity.class);
+                        logoutIntent.setFlags(
+                                Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
+                                Intent.FLAG_ACTIVITY_NEW_TASK);
+
                         startActivity(logoutIntent);
                         finish();
                         return true;
