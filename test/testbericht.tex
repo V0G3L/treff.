@@ -66,93 +66,133 @@
 %%%%%%%%%%%%%%%%%%%
 \pagebreak
 \section{Nicht Erfüllte Anforderungen}
-\subsection{Funktionale Anforderungen}
-\subsubsection{Plicht}
-TODO
-\subsubsection{Kür}
-\paragraph{\small Abstimmungen:} \hspace{0pt} \\
-Nur auf Serverseite implementiert und nicht vollständig getestet.
+	\subsection{Funktionale Anforderungen}
+		\subsubsection{Plicht}
+			\begin{itemize}
+				\item Erstellung von Verabredungen innerhalb einer Gruppe:\\
+							\label{notification}Gruppenmitglieder werden nicht automatisch
+							gebeten, ihren Standort freizugeben. Die Verwendung von
+							Push-Benachrichtigungen stellte sich ohne Verwendung von
+							Google-Services als äußerst schwierig und zeitaufwendig heraus.
+							Da jede andere Form von Benachrichtigung nicht zweckmäßig ist,
+							wurde auf diese verzichtet.
+				\item Standortanfrage:\\
+							\label{requestPosition}Da diese Funktion ohne
+							Push-Benachrichtigungen nicht zweckmäßig ist,
+							wurde sie nicht implementiert
+			\end{itemize}
 
-\paragraph{\small Gruppenrollen und -rechte:} \hspace{0pt} \\
-Nur auf Serverseite implementiert und getestet.
+		\subsubsection{Kür}
+			\begin{itemize}
+				\item Abstimmungen:\\
+							Nur auf Serverseite implementiert und nicht vollständig getestet.
+				\item Gruppenrollen und -rechte:\\
+							Nur auf Serverseite implementiert und getestet.
+				\item Detaillierte Innenraumkarten:\\
+							nicht implementiert.
+				\item Stummschalten:\\
+							nicht implementiert
+				\item Zeitplan für Positionsübertragung:\\
+							nicht implementiert
+				\item Passwortzurücksetzung:\\
+							nicht implementiert
+			\end{itemize}
 
-\paragraph{\small Innenraumkarten:} \hspace{0pt} \\
-Detaillierte Innenraumkarten wurden nicht implementiert.
-
-\paragraph{\small Eigener server:} \hspace{0pt} \\
-Die Möglichkeit, einen eigenen Server auf der zwischen Server und Klient
-definierten Schnittstelle aufbauend zu entwickeln, ist gegeben.
-Allerdings ist die Adresse des Servers im Klient fest verankert und ein
-Server-Wechsel erfordert minimale Änderungen am Quellcode.
-
-\paragraph{\small Serverwechsel:} \hspace{0pt} \\
-Das Wechseln des Servers innerhalb der App ist nicht ohne Quellcode-Änderungen
-möglich.
-
-\paragraph{\small Stummschalten:} \hspace{0pt} \\
-Stummschalten ist nicht implementiert.
-
-\paragraph{\small Zeitplan für Positionsübertragung:} \hspace{0pt} \\
-Das Übermitteln der Position nach einem Zeitplan ist nicht möglich.
-
-\paragraph{\small Passwortzurücksetzung:} \hspace{0pt} \\
-Das Zurücksetzen des Passworts ist nicht möglich.
-
-\paragraph{\small Sprachen:} \hspace{0pt} \\
-Die App bietet eine deutsche und eine englische Übersetzung.
-Diese passt sich automatisch der Systemsprache an.
-
-\subsection{Nicht-Funktionale Anforderungen}
-\subsubsection{Plicht}
-\paragraph{\small Einfache Bedienung:} \hspace{0pt} \\
-%TODO
-TODO von jemand der beschreiben kann inwieweit wir Material Design einhalten
-
-\paragraph{\small Nutzeraufkommen:} \hspace{0pt} \\
-TODO %TODO
+	\subsection{Nicht-Funktionale Anforderungen}
+		\subsubsection{Plicht}
+			\begin{itemize}
+				\item Einfache Bedienung:\\
+							%TODO von jemand der beschreiben kann inwieweit wir
+							%Material Design einhalten
+				\item Mobile Nutzung:\\
+							%TODO tut das?
+				\item Nutzeraufkommen:\\
+							%TODO tut das?
+				\item Datenschutz:\\
+				  		%TODO tut das?
+			\end{itemize}
 
 \section{Testszenarien}
 
-\subsection{Pflichtanforderungen}
-	\subsubsection{funktionierende Testszenarien}
-	\begin{itemize}
-		\item T10 : Account erstellen
-		\item T20 : Kontakt hinzufügen
-		\item T40 : Karte anzeigen
-		\item T60 : Übertragung der eigenen Position an die Gruppe
-	\end{itemize}
-
-	\subsubsection{Problematische Testszenarien}
-	\begin{itemize}
-		\item T80 : Kontoverwaltung
+	\subsection{Pflichtanforderungen}
+		\subsubsection{funktionierende Testszenarien}
 			\begin{itemize}
-            \item Beim Löschen eines Accounts werden nicht die nötigen Updates
-                produziert, um diesen aus all seinen Gruppen, Verabredungen,
-                Abstimmungen etc zu entfernen
-            \item Beim Ändern des Passworts wird keine Bestätigungsmail versand
+				\item T10 : Account erstellen
+				\item T30 : Gruppe erstellen
+				\item T60 : Übertragung der eigenen Position an die Gruppe
+				\item T90 : Terminplanung
 			\end{itemize}
-	\end{itemize}
 
-\subsection{Küranforderung}
-	\subsubsection{Funktionierende Testszenarien}
-	\begin{itemize}
-	\item placeholder
-        %TODO:
-        % Sollten gehen:
-        % - T110 (Chat)
-        % - T150 (Wechsel Deutsch -> Englisch)
+		\subsubsection{Problematische Testszenarien}
+			\begin{itemize}
+				\item T20 : Kontakt hinzufügen
+					\begin{itemize}
+						\item Angepasste Reaktion zur Entwurfsänderung "Kontaktanfragen"
+					\end{itemize}
+				\item T40 : Karte anzeigen
+					\begin{itemize}
+						\item Beim ersten Öffnen der Karte nach dem Starten der App kann
+									dies ein paar Sekunden dauern.
+						\end{itemize}
+				\item T50 : Verabredung erstellen
+					\begin{itemize}
+						\item Der Dialog zur Benachrichtigung der anderen Mitglieder
+									erscheint nicht (vgl \ref{notification})
+					\end{itemize}
+				\item T70 : Standortanfrage
+					\begin{itemize}
+						\item nicht implementiert (vgl \ref{requestPosition})
+					\end{itemize}
+				\item T80 : Kontoverwaltung
+					\begin{itemize}
+          	\item Beim Löschen eines Accounts werden nicht die nötigen Updates
+                	produziert, um diesen aus all seinen Gruppen, Verabredungen,
+                	Abstimmungen etc zu entfernen
+          	\item Bei Änderungen wird keine Bestätigungsmail versand, da dies
+									keinen Mehrwert mit sich bringen würde
+					\end{itemize}
+				\end{itemize}
+
+	\subsection{Küranforderung}
+		\subsubsection{Funktionierende Testszenarien}
+			\begin{itemize}
+				\item placeholder
+        	%TODO:
+        	% Sollten gehen:
+        	% - T110 (Chat)
+        	% - T150 (Wechsel Deutsch -> Englisch)
+					% - T160: Eigene Server
+					% - T170: Serverwechsel
 	\end{itemize}
 
 	\subsubsection{Ungetestete Testszenarien}
-	\begin{itemize}
-        \item T100: Abstimmungen klientseitig nicht implementiert
-		\item T120: Innenraumkarten nicht implementiert
-		\item T130: Stummschalten nicht implementiert
-		\item T140: Gruppenrollen und -rechte klientseitig nicht implementiert
-		\item T160: Eigene Server %TODO
-		\item T170: Serverwechsel %TODO
-		\item T180: Passwort zurücksetzen nicht implementiert
-		\item T190: Zeitplan für Positionsübertragung nicht implementiert
-	\end{itemize}
+		\begin{itemize}
+    	\item T100: Abstimmungen klientseitig nicht implementiert
+			\item T120: Innenraumkarten nicht implementiert
+			\item T130: Stummschalten nicht implementiert
+			\item T140: Gruppenrollen und -rechte klientseitig nicht implementiert
+			\item T180: Passwort zurücksetzen nicht implementiert
+			\item T190: Zeitplan für Positionsübertragung nicht implementiert
+		\end{itemize}
 
+\section{Art der Tests}
+	\subsection{Server}
+		\begin{itemize}
+			\item Überwiegend Junit %TODO Coverage
+			\item Zusätzlich Anwendungsfälle
+		\end{itemize}
+
+	\subsection{Klient}
+		\begin{itemize}
+			\item Wenig Junit %TODO Coverage
+			\item Überwiegend Anwendungsfälle
+		\end{itemize}
+
+\section{Probleme beim Testen}
+	\begin{itemize}
+		\item Concurrency der commands schwer zu testen
+		\item Client schwer mit Junit zu testen
+		\item Client benötigt funktionierenden Server um getestet zu werden
+		\item Unterschiedliche Androidversionen verhalten unterschiedlich
+	\end{itemize}
 \end{document}
