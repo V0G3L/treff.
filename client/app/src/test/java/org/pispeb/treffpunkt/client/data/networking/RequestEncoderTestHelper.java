@@ -19,6 +19,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -102,9 +103,9 @@ public abstract class RequestEncoderTestHelper {
         doAnswer(invocation -> {
             Object[] args = invocation.getArguments();
             String message = (String) args[0];
-            mockConnectionHandler.sendMessage(message);
+            mockConnectionHandler.sendMessage(message, true);
             return null;
-        }).when(testEncoder).sendToCH(anyString());
+        }).when(testEncoder).sendToCH(anyString(), anyBoolean());
 
         // set mock ConnectionHandler for any actions that don't require
         // running in a background thread
@@ -115,7 +116,7 @@ public abstract class RequestEncoderTestHelper {
             Object[] args = invocation.getArguments();
             System.out.println((String) args[0]);
             return null;
-        }).when(mockConnectionHandler).sendMessage(anyString());
+        }).when(mockConnectionHandler).sendMessage(anyString(), true);
 
     }
 }

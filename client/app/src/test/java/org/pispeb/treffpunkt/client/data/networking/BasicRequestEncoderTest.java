@@ -9,6 +9,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Matchers.contains;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -46,14 +47,14 @@ public class BasicRequestEncoderTest extends RequestEncoderTestHelper {
     @Test
     public void simpleCommandTest() {
         testEncoder.sendChatMessage(groupId, message1);
-        verify(mockConnectionHandler).sendMessage(contains(message1));
+        verify(mockConnectionHandler).sendMessage(contains(message1), anyBoolean());
     }
 
     @Test
     public void commandQueueTest1() {
         testEncoder.sendChatMessage(groupId, message1);
         testEncoder.sendChatMessage(groupId, message2);
-        verify(mockConnectionHandler).sendMessage(contains(message1));
+        verify(mockConnectionHandler).sendMessage(contains(message1), anyBoolean());
     }
 
     @Test
@@ -65,12 +66,14 @@ public class BasicRequestEncoderTest extends RequestEncoderTestHelper {
         testEncoder.onResponse("{}");
         testEncoder.onResponse("{}");
 
-        verify(mockConnectionHandler, times(2)).sendMessage(stringCaptor.capture());
+        verify(mockConnectionHandler, times(2))
+                .sendMessage(stringCaptor.capture(), anyBoolean());
         List<String> chCalls = stringCaptor.getAllValues();
         assertTrue(chCalls.get(0).contains(message1));
         assertTrue(chCalls.get(1).contains(message2));
 
-        verify(mockChatRepository, times(2)).addMessage(msgCaptor.capture());
+        verify(mockChatRepository, times(2))
+                .addMessage(msgCaptor.capture());
         List<ChatMessage> repoCalls = msgCaptor.getAllValues();
         assertEquals(repoCalls.get(0).getContent(), message1);
         assertEquals(repoCalls.get(1).getContent(), message2);
