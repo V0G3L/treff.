@@ -387,8 +387,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
      *
      * @param username the new username
      */
-    public synchronized void editUsername(String username) {
-        executeCommand(new EditUsernameCommand(username, getToken()));
+    public synchronized void editUsername(String username, String password) {
+        executeCommand(new EditUsernameCommand(username, getToken(), password));
     }
 
     /**
@@ -396,8 +396,8 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
      *
      * @param email the new email
      */
-    public synchronized void editEmail(String email) {
-        executeCommand(new EditEmailCommand(email, getToken()));
+    public synchronized void editEmail(String email, String password) {
+        executeCommand(new EditEmailCommand(email, getToken(), password));
     }
 
     /**

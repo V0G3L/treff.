@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 
@@ -15,9 +17,9 @@ public class EditEmailCommand extends AbstractCommand{
 
     private Request output;
 
-    public EditEmailCommand(String email, String token) {
+    public EditEmailCommand(String email, String token, String password) {
         super(Response.class);
-        output = new Request(email, token);
+        output = new Request(email, token, password);
     }
 
     @Override
@@ -37,12 +39,15 @@ public class EditEmailCommand extends AbstractCommand{
     public static class Request extends AbstractRequest {
 
         public final String email;
+        @JsonProperty("pass")
+        public final String password;
         public final String token;
 
-        public Request(String email, String token) {
+        public Request(String email, String token, String password) {
             super(CmdDesc.EDIT_EMAIL.toString());
             this.email = email;
             this.token = token;
+            this.password = password;
         }
     }
 

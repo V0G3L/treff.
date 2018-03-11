@@ -17,9 +17,9 @@ public class EditUsernameCommand extends AbstractCommand{
 
     private Request output;
 
-    public EditUsernameCommand(String username, String token) {
+    public EditUsernameCommand(String username, String token, String password) {
         super(Response.class);
-        output = new Request(username, token);
+        output = new Request(username, token, password);
     }
 
     @Override
@@ -40,12 +40,15 @@ public class EditUsernameCommand extends AbstractCommand{
 
         @JsonProperty("user")
         public final String username;
+        @JsonProperty("pass")
+        public final String password;
         @JsonProperty("token")
         public final String token;
 
-        public Request(String username, String token) {
+        public Request(String username, String token, String password) {
             super(CmdDesc.EDIT_USERNAME.toString());
             this.username = username;
+            this.password = password;
             this.token = token;
         }
     }

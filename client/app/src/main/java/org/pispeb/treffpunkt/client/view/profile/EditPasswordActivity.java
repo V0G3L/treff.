@@ -39,12 +39,8 @@ public class EditPasswordActivity extends AppCompatActivity  {
     private void callback(State state) {
         switch (state.call) {
 
-            case IDLE:
-                break;
-            case EDIT_DATA:
-                break;
-
-            case EDIT_PASSWORD:
+            case PROFILE:
+                finish();
                 break;
             default:
                 break;

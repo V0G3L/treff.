@@ -19,8 +19,9 @@ public class ProfileViewModel extends ViewModel {
     private String username;
     private String oldEmail;
     private String email;
-    private String password;
     private String oldPassword;
+    private String password;
+    private String confirmPassword;
 
     private SingleLiveEvent<State> state;
     private Context ctx;
@@ -98,16 +99,24 @@ public class ProfileViewModel extends ViewModel {
         return oldPassword;
     }
 
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
     public void onSaveDataClick() {
         if(!username.equals("") && !username.equals(oldUsername)) {
-            encoder.editUsername(username);
+            encoder.editUsername(username, confirmPassword);
             oldUsername = username;
         }
         if (!email.equals("") && !email.equals(oldEmail)) {
-            encoder.editEmail(email);
+            encoder.editEmail(email, confirmPassword);
             oldEmail = email;
         }
-        state.setValue(new State(ViewCall.IDLE, 0));
+        state.setValue(new State(ViewCall.PROFILE, 0));
     }
 
     public void onEditDataClick() {
@@ -122,7 +131,7 @@ public class ProfileViewModel extends ViewModel {
         if (!oldPassword.equals("") && !password.equals("")) {
             encoder.editPassword(oldPassword, password);
         }
-        state.setValue(new State(ViewCall.IDLE, 0));
+        state.setValue(new State(ViewCall.PROFILE, 0));
     }
 
     public void onCancelClick() {

@@ -18,12 +18,14 @@ import org.pispeb.treffpunkt.client.view.util.ViewModelFactory;
 public class RegisterCommand extends AbstractCommand{
 
     private String email;
+    private String pass;
     private Request output;
     private Context ctx;
 
     public RegisterCommand(String user, String pass, String email) {
         super(Response.class);
         this.email = email;
+        this.pass = pass;
         output = new Request(user, pass);
     }
 
@@ -46,7 +48,7 @@ public class RegisterCommand extends AbstractCommand{
 
         if (!email.equals("")){
             RequestEncoder encoder = ViewModelFactory.getInstance(ctx).getEncoder();
-            encoder.editEmail(email);
+            encoder.editEmail(email, pass);
 
         }
     }
