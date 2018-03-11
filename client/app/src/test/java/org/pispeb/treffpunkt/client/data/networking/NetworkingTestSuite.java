@@ -10,9 +10,7 @@ import org.pispeb.treffpunkt.client.data.networking.commands.CommandsTestSuite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        CommandsTestSuite.class,
-        BasicRequestEncoderTest.class,
-        RequestEncoderCommandsTest.class
+        CommandsTestSuite.class
 })
 public class NetworkingTestSuite {
 }

@@ -2,6 +2,7 @@ package org.pispeb.treffpunkt.client.data.networking.commands;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.pispeb.treffpunkt.client.data.networking.commands.updates.UpdatesTestSuite;
 
 /**
  * All command test classes
@@ -51,7 +52,8 @@ import org.junit.runners.Suite;
         UnblockAccountTest.class,
         UpdatePositionTest.class,
         VoteForOptionTest.class,
-        WithdrawVoteForOptionTest.class
+        WithdrawVoteForOptionTest.class,
+        UpdatesTestSuite.class
 })
 public class CommandsTestSuite {
 }
