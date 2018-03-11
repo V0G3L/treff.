@@ -132,6 +132,7 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     public void startRequestUpdates() {
         RequestEncoder thisEnc = this;
+        this.updateTimer = new Timer();
         // request Updates periodically
         updateTimer.schedule(new TimerTask() {
             @Override

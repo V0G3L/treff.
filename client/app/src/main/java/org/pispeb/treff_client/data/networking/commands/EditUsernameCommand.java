@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.view.util.TreffPunkt;
 
@@ -36,7 +38,9 @@ public class EditUsernameCommand extends AbstractCommand{
 
     public static class Request extends AbstractRequest {
 
+        @JsonProperty("user")
         public final String username;
+        @JsonProperty("token")
         public final String token;
 
         public Request(String username, String token) {
@@ -47,8 +51,5 @@ public class EditUsernameCommand extends AbstractCommand{
     }
 
     //server returns empty json object
-    public static class Response extends AbstractResponse {
-        public Response() {
-        }
-    }
+    public static class Response extends AbstractResponse { }
 }
