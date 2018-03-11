@@ -122,4 +122,21 @@
     <string name="email_already_in_use">Emailadresse schon in Benutzung</string>
     <string name="profile_title">Profil</string>
     <string name="button_change_server">Server wechseln</string>
+    <string name="about_text">
+        Die Entwickler:
+        \nWir sind Tim Schmidt, Lukas Dippon, Fabian Röpke, Simon Vögele, Jens Kienle und Matthias
+        Noll. Wir sind Studenten am Karlsruher Institut für Technologie (KIT) und haben "treff."
+        im Rahmen des PSE-Projekts (Praxis in der Softwareentwicklung) entworfen und entwickelt.
+        \n
+        \nDie App:\nUnsere App "treff." bietet Ihnen die Möglichkeit ihre Verabredungen zu organisieren.
+        Egal ob Kinobesuche mit Freunden, Treffen mit Kollegen oder dem Zusammenfinden von
+        Familienmitgliedern auf einem Ausflug, mit "treff." können Sie ganz einfach einen
+        Treffpunkt vereinbaren, die Standorte der Beteiligten auf einer geteilten Karte anzeigen
+        lassen und sich reibungslos zusammenfinden.
+        \n
+        \nOpen Source:
+        \nUnser Quellcode ist öffentlich zugänglich und unter der "GNU Affero General Public License v3.0" (AGPLv3) lizenziert.\n
+        \nDatenschutz:
+        \nUnsere App hält sich an die EU-Datenschutzrichtlinien.
+    </string>
 </resources>

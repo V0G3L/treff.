@@ -35,6 +35,24 @@
 
     <!-- about activity -->
     <string name="about_title">About us</string>
+    <string name="about_text">
+        The Developers:
+        \nWe are Tim Schmidt, Lukas Dippon, Fabian Röpke, Simon Vögele, Jens Kienle and Matthias Noll.
+        We are students of the Karlsruhe Institute of Technology (KIT) and have developed "treff."
+        as a project with the goal of learning how to develop software and work as a team.
+        \n
+        \nThe App:
+        \nOur app "treff." offers you the possibility to manage your events, appointments and
+        meetings. It doesn\'t matter if it\'s a cinema visit with your friends, a meeting with
+        colleagues or a trip with your family members; with "treff." you can easily decide on
+        the location, share your positions on a shared map and meet without any problems.
+        \n
+        \nOpen Source:
+        \nOur source code is publicly available and is licensed under the "GNU Affero General Public License v3.0" (AGPLv3).
+        \n
+        \nPrivacy:
+        \nWe are following the privacy guidelines of the EU.
+    </string>
 
     <!-- login/register -->
     <string name="login_username">Username</string>
@@ -100,9 +118,6 @@
     <string name="login_server_address">Server address (empty for
         default)</string>
     <string name="error_cant_connect">Can\'t connect to server</string>
-
-
-
 
     <!-- TODO more specific comments -->
     <string name="username_contact">Contact\'s Username</string>
