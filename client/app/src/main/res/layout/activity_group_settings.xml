@@ -24,38 +24,38 @@
             android:background="?attr/colorPrimary">
         </android.support.v7.widget.Toolbar>
 
-        <LinearLayout
-            android:id="@+id/switchMuteChat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_padding">
-            <Switch
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:showText="false"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="@string/mute_chat_setting"/>
-        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/switchMuteChat"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="@dimen/activity_padding">-->
+            <!--<Switch-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:showText="false"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:text="@string/mute_chat_setting"/>-->
+        <!--</LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/switchMutePos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_padding">
-            <Switch
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:showText="false"/>
+        <!--<LinearLayout-->
+            <!--android:id="@+id/switchMutePos"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="@dimen/activity_padding">-->
+            <!--<Switch-->
+                <!--android:layout_width="48dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:showText="false"/>-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:text="@string/mute_location_requests_settings"/>
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginLeft="16dp"-->
+                <!--android:text="@string/mute_location_requests_settings"/>-->
+        <!--</LinearLayout>-->
 
 
         <android.support.v7.widget.RecyclerView

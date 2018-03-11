@@ -70,11 +70,13 @@ public class AddEventActivity extends AppCompatActivity {
             Location l = new Location("gps");
             l.setLatitude(lat);
             l.setLongitude(lon);
+            binding.map.getController().setCenter(new GeoPoint(lat, lon));
             vm.setupForEdit(id, groupId, name, l, new Date(start), new Date
                     (end));
         } else {
             int groupId = getIntent().getIntExtra(INTENT_GRP, -1);
             vm.setupForCreate(groupId);
+            binding.map.getController().setCenter(new GeoPoint(49d, 9d));
         }
 
         binding.notifyChange();
@@ -120,7 +122,6 @@ public class AddEventActivity extends AppCompatActivity {
         map.setTilesScaledToDpi(true);
         IMapController controller = map.getController();
         controller.setZoom(MapFragment.STANDARD_ZOOM_LEVEL);
-        controller.setCenter(new GeoPoint(49d, 9d));
 
         binding.setVm(vm);
     }
