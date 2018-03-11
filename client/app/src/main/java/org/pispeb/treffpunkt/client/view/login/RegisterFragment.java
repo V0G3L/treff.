@@ -69,15 +69,15 @@ public class RegisterFragment extends Fragment {
                 break;
             case INVALID_EMAIL:
                 binding.inputRegEmail.setErrorEnabled(true);
-                binding.inputRegEmail.setError("Invalid email");
+                binding.inputRegEmail.setError(getString(R.string.invalid_email));
                 break;
             case EMPTY_PASSWORD:
                 binding.inputRegPassword.setErrorEnabled(true);
-                binding.inputRegPassword.setError("Please enter a password");
+                binding.inputRegPassword.setError(getString(R.string.missing_password));
                 break;
             case EMPTY_USERNAME:
                 binding.inputRegUsername.setErrorEnabled(true);
-                binding.inputRegUsername.setError("Please enter an username");
+                binding.inputRegUsername.setError(getString(R.string.missing_username));
                 break;
             case REGISTER:
                 vm.setPassword(binding.inputRegPassword.getEditText().getText().toString());

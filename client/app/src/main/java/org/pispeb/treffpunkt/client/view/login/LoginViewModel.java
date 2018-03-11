@@ -47,8 +47,16 @@ public class LoginViewModel extends ViewModel {
         this.password = password;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
 
     public void onLogin() {
+
+        if(!validateInput()){
+            return;
+        }
 
         state.setValue(new State(ViewCall.LOGIN, 0));
 
@@ -71,6 +79,23 @@ public class LoginViewModel extends ViewModel {
 
     public void onGoToRegister() {
         state.setValue(new State(ViewCall.GO_TO_REGISTER, 0));
+    }
+
+    private boolean validateInput() {
+        boolean validUsername;
+        boolean alidPassword;
+
+        state.setValue(new State(ViewCall.IDLE, 0));
+
+        validUsername = !username.equals("");
+        alidPassword = !password.equals("");
+        if (!alidPassword) {
+            state.setValue(new State(ViewCall.EMPTY_PASSWORD, 0));
+        }
+        if (!validUsername) {
+            state.setValue(new State(ViewCall.EMPTY_USERNAME, 0));
+        }
+        return (alidPassword && validUsername);
     }
 
 }

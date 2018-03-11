@@ -145,4 +145,7 @@
     <string name="error_session">Invalid session</string>
     <string name="kick_user">Kick user!</string>
     <string name="edit_group">Edit</string>
+    <string name="missing_password">Please enter a password</string>
+    <string name="missing_username">Please enter an username</string>
+    <string name="invalid_email">Invalid email</string>
 </resources>

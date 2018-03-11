@@ -72,4 +72,7 @@
     <string name="share_location_for">Teile Position für</string>
     <string name="cancel_sharing">Positionsübertragung abbrechen</string>
     <string name="edit_group">Edit</string>
+    <string name="missing_password">Bitte Passwort eingeben</string>
+    <string name="missing_username">Bitte Nutzername eingeben</string>
+    <string name="invalid_email">Ungültige Email-Adresse</string>
 </resources>

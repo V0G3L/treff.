@@ -91,23 +91,23 @@ public class RegisterViewModel extends ViewModel {
 
     private boolean validateInput() {
         boolean validEmail;
-        boolean vusername;
-        boolean vpassword;
+        boolean validUsername;
+        boolean validPassword;
 
         state.setValue(new State(ViewCall.IDLE, 0));
 
         validEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.equals("");
-        vusername = !username.equals("");
-        vpassword = !password.equals("");
+        validUsername = !username.equals("");
+        validPassword = !password.equals("");
         if (!validEmail) {
             state.setValue(new State(ViewCall.INVALID_EMAIL, 0));
         }
-        if (!vpassword) {
+        if (!validPassword) {
             state.setValue(new State(ViewCall.EMPTY_PASSWORD, 0));
         }
-        if (!vusername) {
+        if (!validUsername) {
             state.setValue(new State(ViewCall.EMPTY_USERNAME, 0));
         }
-        return (validEmail && vpassword && vusername);
+        return (validEmail && validPassword && validUsername);
     }
 }
