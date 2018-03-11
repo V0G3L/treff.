@@ -141,4 +141,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             }
         }
     }
+
+    /**
+     *
+     * @return An instance of RequestEncoder
+     */
+    public RequestEncoder getEncoder() {
+        return encoder;
+    }
 }

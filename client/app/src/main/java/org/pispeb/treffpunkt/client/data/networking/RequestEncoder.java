@@ -311,13 +311,15 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener {
 
     /**
      * Method to perform a register request
-     *
-     * @param username .
+     *  @param username .
      * @param password .
+     * @param email
      */
-    public synchronized void register(String username, String password) {
-        executeCommand(new RegisterCommand(username, password));
+    public synchronized void register(String username, String password, String email) {
+        executeCommand(new RegisterCommand(username, password, email));
     }
+
+
 
     /**
      * Method to perform a login request

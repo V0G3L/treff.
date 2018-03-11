@@ -17,9 +17,9 @@ import org.pispeb.treffpunkt.client.view.util.ViewCall;
  */
 public class RegisterViewModel extends ViewModel {
 
-    private String username;
-    private String email;
-    private String password;
+    private String username = "";
+    private String email = "";
+    private String password = "";
 
     private SingleLiveEvent<State> state;
 
@@ -37,6 +37,10 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void onRegister() {
+
+        if(!validateInput()){
+            return;
+        }
         state.setValue(new State(ViewCall.REGISTER, 0));
 
         SharedPreferences.OnSharedPreferenceChangeListener prefListener;
@@ -53,7 +57,8 @@ public class RegisterViewModel extends ViewModel {
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);
 
-        encoder.register(username, password);
+
+        encoder.register(username, password, email);
     }
 
     public void onGoToLogin() {
@@ -78,5 +83,31 @@ public class RegisterViewModel extends ViewModel {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    private boolean validateInput() {
+        boolean validEmail;
+        boolean vusername;
+        boolean vpassword;
+
+        state.setValue(new State(ViewCall.IDLE, 0));
+
+        validEmail = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.equals("");
+        vusername = !username.equals("");
+        vpassword = !password.equals("");
+        if (!validEmail) {
+            state.setValue(new State(ViewCall.INVALID_EMAIL, 0));
+        }
+        if (!vpassword) {
+            state.setValue(new State(ViewCall.EMPTY_PASSWORD, 0));
+        }
+        if (!vusername) {
+            state.setValue(new State(ViewCall.EMPTY_USERNAME, 0));
+        }
+        return (validEmail && vpassword && vusername);
     }
 }

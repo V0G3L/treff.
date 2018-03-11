@@ -14,7 +14,7 @@ public class RequestEncoderCommandsTest extends RequestEncoderTestHelper {
 
     @Test
     public void registerTest() {
-        testEncoder.register(mockUserName, mockPassword);
+        testEncoder.register(mockUserName, mockPassword, "");
         verify(mockConnectionHandler).sendMessage(contains("\"cmd\":\"" +
                 CmdDesc.REGISTER.toString() + "\""));
     }

@@ -59,10 +59,25 @@ public class RegisterFragment extends Fragment {
                 binding.progressBar.setVisibility(View.GONE);
                 binding.authentification.setVisibility(View.GONE);
                 binding.inputRegPassword.setVisibility(View.VISIBLE);
+                binding.inputRegPassword.setErrorEnabled(false);
                 binding.inputRegUsername.setVisibility(View.VISIBLE);
+                binding.inputRegUsername.setErrorEnabled(false);
                 binding.inputRegEmail.setVisibility(View.VISIBLE);
+                binding.inputRegEmail.setErrorEnabled(false);
                 binding.gotoLogin.setVisibility(View.VISIBLE);
                 binding.loginButton.setVisibility(View.VISIBLE);
+                break;
+            case INVALID_EMAIL:
+                binding.inputRegEmail.setErrorEnabled(true);
+                binding.inputRegEmail.setError("Invalid email");
+                break;
+            case EMPTY_PASSWORD:
+                binding.inputRegPassword.setErrorEnabled(true);
+                binding.inputRegPassword.setError("Please enter a password");
+                break;
+            case EMPTY_USERNAME:
+                binding.inputRegUsername.setErrorEnabled(true);
+                binding.inputRegUsername.setError("Please enter an username");
                 break;
             case REGISTER:
                 vm.setPassword(binding.inputRegPassword.getEditText().getText().toString());
