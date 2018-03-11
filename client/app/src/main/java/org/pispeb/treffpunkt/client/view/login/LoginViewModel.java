@@ -29,6 +29,7 @@ public class LoginViewModel extends ViewModel {
     private Handler uiHandler = new Handler(Looper.getMainLooper());
 
     private final RequestEncoder encoder;
+    private SharedPreferences.OnSharedPreferenceChangeListener prefListener;
 
     public LoginViewModel(RequestEncoder encoder) {
         this.state = new SingleLiveEvent<>();
@@ -72,6 +73,7 @@ public class LoginViewModel extends ViewModel {
         if(!validateInput()){
             return;
         }
+        Log.i("Login", "onLogin");
 
         state.setValue(new State(ViewCall.LOGIN, 0));
 
@@ -139,7 +141,8 @@ public class LoginViewModel extends ViewModel {
     }
 
     private void listenForSuccessfulLogin() {
-        SharedPreferences.OnSharedPreferenceChangeListener prefListener;
+
+        Log.i("Login", "listen");
 
         Context ctx = TreffPunkt.getAppContext();
         SharedPreferences pref
@@ -148,8 +151,11 @@ public class LoginViewModel extends ViewModel {
         pref.edit().putString(ctx.getString(R.string.key_token), "").apply();
 
         prefListener = (prefs, key) -> {
-            if(key.equals(ctx.getString(R.string.key_token)))
+            Log.i("Login", "pref change");
+            if(key.equals(ctx.getString(R.string.key_token))) {
+                Log.i("Login", "token change");
                 state.setValue(new State(ViewCall.SUCCESS, 0));
+            }
         };
 
         pref.registerOnSharedPreferenceChangeListener(prefListener);

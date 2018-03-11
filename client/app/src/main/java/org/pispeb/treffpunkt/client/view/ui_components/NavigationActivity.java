@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ViewSwitcher;
 
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.databinding.ActivityNavigationBinding;
@@ -104,6 +105,7 @@ public abstract class NavigationActivity extends AppCompatActivity {
                         logoutIntent.setFlags(
                                 Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
                                 Intent.FLAG_ACTIVITY_NEW_TASK);
+                        ViewModelFactory.closeConnection();
 
                         startActivity(logoutIntent);
                         finish();
