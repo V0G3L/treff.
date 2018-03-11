@@ -4,18 +4,20 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import org.pispeb.treff_client.data.repositories.UserRepository;
+import org.pispeb.treff_client.view.util.SingleLiveEvent;
+import org.pispeb.treff_client.view.util.State;
+import org.pispeb.treff_client.view.util.ViewCall;
 
 public class AddFriendViewModel extends ViewModel {
 
     private UserRepository userRepository;
     private String username;
-    MutableLiveData<Boolean> done;
+    SingleLiveEvent<State> state;
 
     public AddFriendViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
         username = "";
-        done = new MutableLiveData<>();
-        done.setValue(false);
+        this.state = new SingleLiveEvent<>();
     }
 
     public String getUsername() {
@@ -27,17 +29,17 @@ public class AddFriendViewModel extends ViewModel {
     }
 
     public void onCancelClick() {
-        done.postValue(true);
+        state.postValue(new State(ViewCall.CANCEL, 0));
     }
 
     public void onOkClick() {
         if (!username.equals("")) {
             userRepository.requestAddUser(username);
-            done.postValue(true);
+            state.postValue(new State(ViewCall.SUCCESS, 0));
         }
     }
 
-    public MutableLiveData<Boolean> getDone() {
-        return done;
+    public SingleLiveEvent<State> getState() {
+        return state;
     }
 }

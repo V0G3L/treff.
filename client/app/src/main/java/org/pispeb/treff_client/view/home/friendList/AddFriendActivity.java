@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 
 import org.pispeb.treff_client.R;
 import org.pispeb.treff_client.databinding.ActivityAddFriendBinding;
+import org.pispeb.treff_client.view.util.State;
 import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 /**
@@ -17,17 +18,19 @@ import org.pispeb.treff_client.view.util.ViewModelFactory;
 
 public class AddFriendActivity extends AppCompatActivity {
 
+    private AddFriendViewModel vm;
+    private ActivityAddFriendBinding binding;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final ActivityAddFriendBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_add_friend);
-        AddFriendViewModel vm = ViewModelProviders.of(this, ViewModelFactory.getInstance(this)).get(AddFriendViewModel.class);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_add_friend);
+        vm = ViewModelProviders.of(this, ViewModelFactory
+                .getInstance(this)).get(AddFriendViewModel.class);
         binding.setVm(vm);
 
-        vm.getDone().observe(this, done -> {
-            if(done) {
-                finish();
-            }
+        vm.getState().observe(this, state -> {
+            callback(state);
         });
 
         //toolbar
@@ -37,5 +40,16 @@ public class AddFriendActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
+    }
+
+    private void callback(State state) {
+        switch (state.call) {
+            case SUCCESS:
+                finish();
+                break;
+            case CANCEL:
+                finish();
+                break;
+        }
     }
 }
