@@ -1,13 +1,19 @@
 DOC_NAME	:= testbericht
+PRES_NAME	:= presentation
 
-default: prep doc
+default: prep both
 
 doc:	prep build/$(DOC_NAME).pdf
+pres:	prep build/$(PRES_NAME).pdf
+
+both:	prep doc pres
 
 prep:	svg uml lst
 
 docdev: CONT_FLAG = -pvc
 docdev: latex-force prep doc
+presdev: CONT_FLAG = -pvc
+presdev: latex-force prep pres
 
 all: prep doc
 
