@@ -241,14 +241,14 @@
             \end{figure}
         }
         \only<5->{
-            \begin{minipage}{.48\textwidth}
+            \begin{minipage}{.5\textwidth}
                 \centering
                 Problem:\\
                 Millisekunden-Präzision nicht ausreichend
-            \end{minipage}
-        }
-        \only<6->{
-                \begin{minipage}{.48\textwidth}
+            \end{minipage}%
+        }%
+        \only<6->{%
+                \begin{minipage}{.5\textwidth}
                 \centering
                 Lösung:\\
                 Sortierung über IDs statt Timestamps
@@ -292,10 +292,11 @@
                 \textbf{Kommunikation}
                 \begin{itemize}
                     \setlength\itemsep{0.3em}
-                    \item[--] Tägliche Treffen der Teilgruppen über den
-                        VoIP-Dienst Discord
-                    \item[--] Absprachen zwischen den Teilgruppen bei Fragen
-                        über Discord und den Instant Messenger Telegram
+                    \item[--] Regelmäßige Treffen innerhalb der Teilgruppen
+                        über VoIP-Dienste
+                    \item[--] Klärung von Fragen zur API zwischen den
+                        Teilgruppen über VoIP und den Instant Messenger
+                        Telegram
                 \end{itemize}
             \end{minipage}
     \end{frame}
@@ -304,7 +305,27 @@
 %%%%%%%% Reflection %%%%%%%%%%
 
 	\begin{frame}[plain]
-        \frametitle{\textbf{Selbstreflexion} -- Titel}
+        \frametitle{\textbf{Selbstreflexion}}
+        \begin{minipage}{0.5\textwidth}
+            \textbf{Positive Erfahrungen}
+            \begin{itemize}
+                \item[--] TODO % TODO
+            \end{itemize}
+        \end{minipage}%
+        \begin{minipage}{0.5\textwidth}
+            \textbf{Mögl. Verbesserungen}
+            \begin{itemize}
+                \item[--] Mehr Leute im Client-Team
+                \item[--] Projekt zu groß?
+                    \begin{itemize}
+                        \item[-] 30k LoC statt 10k LoC
+                    \end{itemize}
+                \item[--] Nebenläufigkeit bereits im Entwurf komplett
+                    durchplanen
+                \item[--] Fertige Frameworks für Interaktionen mit
+                    SQL-Datenbank nutzen
+            \end{itemize}
+        \end{minipage}
     \end{frame}
 
 \end{document}
