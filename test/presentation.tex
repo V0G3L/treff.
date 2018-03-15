@@ -259,8 +259,58 @@
 %%%%%%%% Client %%%%%%%%%%
 
 	\begin{frame}[plain]
-        \frametitle{\textbf{Client} -- Titel}
-    \end{frame}
+        \frametitle{\textbf{Klient} -- Herausforderungen}
+
+        \begin{itemize}
+          \item[-] Nutzeroberfläche schwer automatisch zu testen
+          \item[-] Android Komponenten teilweise schwer zu mocken
+          \item[-] Server ist für die meisten Funktionen notwendig
+        \end{itemize}
+  \end{frame}
+
+\begin{frame}[plain]
+        \frametitle{\textbf{Klient} -- Testmethoden: Unit Tests}
+
+        \begin{itemize}
+          \item[-] Viewmodels
+          \item[-] Entitäten
+          \item[-] Repositories
+          \item[-] Commands und Updates
+          \item[-] Requestencoder
+        \end{itemize}
+  \end{frame}
+
+\begin{frame}[plain]
+        \frametitle{\textbf{Klient} -- Testmethoden: Instrumentation Tests}
+
+        \begin{itemize}
+          \item[-] Komponenten, für die Mock Klassen nicht zweckmäßig sind
+          \item[-] Werden direkt auf Smartphone ausgeführt
+          \item[-] DAOs
+        \end{itemize}
+  \end{frame}
+
+\begin{frame}[plain]
+        \frametitle{\textbf{Klient} -- Testmethoden: Manuell auf Smartphone}
+
+        \begin{itemize}
+          \item[-] Simulierter Server
+          \item[-] Gut Zum Testen der Nutzeroberfläche
+          \item[-] Größtenteils schon Integrationstests des gesamten Klienten
+          \item[-] Sehr Zeitaufwändig bei mehreren Iterationen
+        \end{itemize}
+  \end{frame}
+
+\begin{frame}[plain]
+        \frametitle{\textbf{Klient} -- Gefundene Fehler (Auswahl)}
+
+        \begin{itemize}
+          \item[-] Flüchtigkeitsfehler
+          \item[-] Stabilität bei Verbindungsabbrüchen
+          \item[-] Kleinere Anzeigefehler (noch offen)
+          \item[-] Updatestruktur des Klienten (noch offen)
+        \end{itemize}
+  \end{frame}
 
 %%%%%%%% Workflow %%%%%%%%%%
     \begin{frame}[plain]
