@@ -17,6 +17,8 @@
 \usepackage{listings}
 \usepackage{bera}
 \usepackage{pdfpages}
+\usepackage{colortbl}
+\usepackage{chronosys}
 
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
@@ -141,6 +143,44 @@
                    gestellten Servers
         \end{itemize}
   \end{frame}
+
+  \begin{frame}[plain]
+        \frametitle<1-3>{\textbf{Server} -- Deadlocks}
+        \only<1>{
+            \begin{figure}
+                \begin{tabular}{ c | c | c }
+                    \textbf{Test \#} & \textbf{Run \#} & \textbf{Result} \\
+                    \hline
+                    1 & 1 & \cellcolor{green!25}Works \\
+                    1 & 2 & \cellcolor{green!25}Works \\
+                    1 & 3 & \cellcolor{gray!25}Doesn't terminate \\
+                    1 & 4 & \cellcolor{green!25}Works \\
+                    1 & 5 & \cellcolor{gray!25}Doesn't terminate \\
+                \end{tabular}
+                \caption{Effektivität von Concurrency-Tests hängt vom Scheduler
+                ab}
+            \end{figure}
+        }
+        \only<2-3>{
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                arrowcolor=red,width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=30pt]{13}{\code{readLock(x)}}
+                \chronoevent{25}{\code{Set s = \{u,v,w,x,y,z\}}}
+                \chronoevent[markdepth=30pt]{40}{\code{writeLockAllInSet(s)}}
+                \chronoperiode[color=cyan]{13}{20}{CS 1}
+                \chronoperiode[color=red,dates=false]{40}{50}{Deadlock}
+                \stopchronology
+                \caption{Deadlocks auch bei $\vert Threads\vert = 1$}
+            \end{figure}
+        }
+        \only<3>{
+            \centering{$\implies$ Statische Analyse nötig}
+        }
+
+    \end{frame}
 
 %%%%%%%% Client %%%%%%%%%%
 
