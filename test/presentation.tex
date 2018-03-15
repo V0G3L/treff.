@@ -135,8 +135,8 @@
   \end{frame}
 
   \begin{frame}[plain]
-        \frametitle<1-3>{\textbf{Server} -- Deadlocks}
-        \only<1>{
+        \frametitle{\textbf{Server} -- Deadlocks}
+        \only<-2>{
             \begin{figure}
                 \begin{tabular}{ c | c | c }
                     \textbf{Test \#} & \textbf{Run \#} & \textbf{Result} \\
@@ -151,7 +151,12 @@
                 ab}
             \end{figure}
         }
-        \only<2-3>{
+        \only<2>{
+            \centering{Kein Compiler-Fehler/-Warnung und nicht reproduzierbar
+            im Debugger}\\
+            \centering{$\implies$ Statische Analyse nötig}
+        }
+        \only<3>{
             \begin{figure}
                 \footnotesize
                 \startchronology[startyear=1,stopyear=50,dates=false,
@@ -160,16 +165,95 @@
                 \chronoevent[markdepth=30pt]{13}{\code{readLock(x)}}
                 \chronoevent{25}{\code{Set s = \{u,v,w,x,y,z\}}}
                 \chronoevent[markdepth=30pt]{40}{\code{writeLockAllInSet(s)}}
-                \chronoperiode[color=cyan]{13}{20}{CS 1}
+                \chronoperiode[color=cyan]{13}{22}{Crit. Section}
                 \chronoperiode[color=red,dates=false]{40}{50}{Deadlock}
                 \stopchronology
                 \caption{Deadlocks auch bei $\vert Threads\vert = 1$}
             \end{figure}
         }
-        \only<3>{
-            \centering{$\implies$ Statische Analyse nötig}
+        \only<4>{
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                arrowcolor=orange,width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=45pt]{13}{\code{readLock(x)}}
+                \chronoevent[markdepth=15pt]{22}{\code{releaseReadLock(x)}}
+                \chronoevent[markdepth=45pt]{30}{\code{Set s = new HashSet()}}
+                \chronoevent[markdepth=15pt]{40}{%
+                    \code{writeLockAllInSet(s)}}
+                \chronoperiode[color=cyan]{13}{22}{Crit. Section}
+                \chronoperiode[color=orange,dates=false]{40}{50}{Pot. Deadlock}
+                \stopchronology
+                \caption{Deadlocks durch falsche Locking-Order}
+            \end{figure}
         }
 
+    \end{frame}
+
+    \begin{frame}[plain]
+        \frametitle{\textbf{Server} -- Scheinbar zufällige Update-Listen}
+        \only<1-3>{
+            \begin{itemize}
+                \item 1. 24 Updates produzieren
+                \item 2. 24 mal alle Updates abrufen
+            \end{itemize}
+        }
+        \vspace{20px}
+        \begin{minipage}{0.45\textwidth}
+            \only<2-3>{
+                \begin{figure}
+                    \begin{tabular}{ c | c }
+                        \textbf{Query \#} & \textbf{Response} \\
+                        \hline
+                        1 & (1,2,3,\dots,24) \\
+                        2 & () \\
+                        3 & () \\
+                        4 & () \\
+                        5 & () \\
+                        \dots & () \\
+                    \end{tabular}
+                    \caption{Erwartete Ausgabe}
+                \end{figure}
+            }
+        \end{minipage}
+        \begin{minipage}{0.45\textwidth}
+            \only<3-3>{
+                \begin{figure}
+                    \begin{tabular}{ c | c }
+                        \textbf{Query \#} & \textbf{Response} \\
+                        \hline
+                        1 & (1,4,9,13,15,18,21,23) \\
+                        2 & (2,5,10,14,16,19,22) \\
+                        3 & (3,6,11,17,20,24) \\
+                        4 & (7) \\
+                        5 & (8) \\
+                        \dots & () \\
+                    \end{tabular}
+                    \caption{Tatsächliche Ausgabe}
+                \end{figure}
+            }
+        \end{minipage}
+        \only<4->{
+            \begin{figure}
+                \includegraphics[width=300px]{images/server-updates-compareto.png}
+                \caption{Ungewollte Äquivalenz durch Zeitvergleich}
+            \end{figure}
+        }
+        \only<5->{
+            \begin{minipage}{.48\textwidth}
+                \centering
+                Problem:\\
+                Millisekunden-Präzision nicht ausreichend
+            \end{minipage}
+        }
+        \only<6->{
+                \begin{minipage}{.48\textwidth}
+                \centering
+                Lösung:\\
+                Sortierung über IDs statt Timestamps
+            \end{minipage}
+        }
     \end{frame}
 
 %%%%%%%% Client %%%%%%%%%%
