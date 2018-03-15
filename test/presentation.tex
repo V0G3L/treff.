@@ -84,17 +84,63 @@
 	\maketitle
 	\end{frame}
 
-%%%%%%%% API %%%%%%%%%%
+%%%%%%%% Vergleich mit Pflichtenheft %%%%%%%%%%
 
 	\begin{frame}[plain]
-        \frametitle{\textbf{API} -- Titel}
-    \end{frame}
+        \frametitle{\textbf{Vergleich mit Pflichtenheft} -- Anforderungen}
+
+        \begin{itemize}
+          \item[-] einige Kür-Kriterien nicht oder teilweise erfüllt
+          \item[-] keine Push-Benachrichtigungen \\
+                   $\Rightarrow$ keine Chatbenachrichtigungen,
+                   Standortanfragen etc
+          \item[-] Nutzerkonten können nicht gelöscht werden \\
+                   (schwerwiegende Lockingprobleme)
+          \item[-] Material Design mehr als Richtlinien, weniger als Gesetz
+          \item[-] Leistung bei hohem Nutzeraufkommen nicht garantiert
+        \end{itemize}
+
+  \end{frame}
+
+  \begin{frame}[plain]
+        \frametitle{\textbf{Vergleich mit Pflichtenheft} -- Testszenarien}
+
+        \begin{itemize}
+          \item[-] kleine Abweichungen in den Reaktionen \\
+                   (Entwurfsänderung oder obige Probleme)
+          \item[-] teilweise ungetestete Szenarien \\
+                   (fehlende Implementierung)
+          \item[-] Email wird nicht wie spezifiziert verwendet
+        \end{itemize}
+
+  \end{frame}
 
 %%%%%%%% Server %%%%%%%%%%
 
 	\begin{frame}[plain]
         \frametitle{\textbf{Server} -- Titel}
-    \end{frame}
+  \end{frame}
+
+  \begin{frame}[plain]
+        \frametitle{\textbf{Server} -- Art der Tests und Überdeckung}
+        \begin{itemize}
+            \item[-] 82\% Zeilenabdeckung durch JUnit
+            \item[-] TODO näher auf die Tests eingehen?
+            \item[-] implementierte aber ungenutzte Befehle / Funktionen
+            \item[-] Nebenläufigkeit getestet durch Szenarien
+                  und Client-Debugging
+        \end{itemize}
+  \end{frame}
+
+  \begin{frame}[plain]
+        \frametitle{\textbf{Server} -- Probleme}
+
+        \begin{itemize}
+          \item[-] Nebenläufigkeit schwer testbar
+          \item[-] Inkompetenz bei Verwendung des zur Verfügung
+                   gestellten Servers
+        \end{itemize}
+  \end{frame}
 
 %%%%%%%% Client %%%%%%%%%%
 
@@ -108,7 +154,7 @@
         \frametitle{\textbf{Workflow} -- Titel}
     \end{frame}
 
-%%%%%%%% Relection %%%%%%%%%%
+%%%%%%%% Reflection %%%%%%%%%%
 
 	\begin{frame}[plain]
         \frametitle{\textbf{Selbstreflexion} -- Titel}
