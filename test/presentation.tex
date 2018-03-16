@@ -92,14 +92,12 @@
         \frametitle{\textbf{Vergleich mit Pflichtenheft} -- Anforderungen}
 
         \begin{itemize}
-          \item[-] einige Kür-Kriterien nicht oder teilweise erfüllt
-          \item[-] keine Push-Benachrichtigungen \\
-                   $\Rightarrow$ keine Chatbenachrichtigungen,
-                   Standortanfragen etc
-          \item[-] Nutzerkonten können nicht gelöscht werden \\
-                   (schwerwiegende Lockingprobleme)
-          \item[-] Material Design mehr als Richtlinien, weniger als Gesetz
-          \item[-] Leistung bei hohem Nutzeraufkommen nicht garantiert
+          \item[--] einige Kür-Kriterien nicht oder teilweise erfüllt
+          \item[--] keine Benachrichtigungen für
+                    z.B. Chat, Standortanfragen etc
+          \item[--] Nutzerkonten können nicht gelöscht werden
+          \item[--] Material Design mehr als Richtlinien, weniger als Gesetz
+          \item[--] Leistung bei hohem Nutzeraufkommen nicht garantiert
         \end{itemize}
 
   \end{frame}
@@ -108,11 +106,11 @@
         \frametitle{\textbf{Vergleich mit Pflichtenheft} -- Testszenarien}
 
         \begin{itemize}
-          \item[-] kleine Abweichungen in den Reaktionen \\
-                   (Entwurfsänderung oder obige Probleme)
-          \item[-] teilweise ungetestete Szenarien \\
-                   (fehlende Implementierung)
-          \item[-] Email wird nicht wie spezifiziert verwendet
+          \item[--] kleine Abweichungen in den Reaktionen
+                    durch Entwurfsänderungen oder obige Probleme
+          \item[--] teilweise ungetestete Szenarien aufgrund
+                    fehlender Implementierungen
+          \item[--] Email wird nicht wie spezifiziert verwendet
         \end{itemize}
 
   \end{frame}
@@ -128,9 +126,9 @@
         \frametitle{\textbf{Server} -- Probleme}
 
         \begin{itemize}
-          \item[-] Nebenläufigkeit schwer testbar
-          \item[-] Inkompetenz bei Verwendung des zur Verfügung
-                   gestellten Servers
+          \item[--] Nebenläufigkeit schwer testbar
+          \item[--] Inkompetenz bei Verwendung des zur Verfügung
+                    gestellten Servers
         \end{itemize}
   \end{frame}
 
@@ -262,9 +260,9 @@
         \frametitle{\textbf{Klient} -- Herausforderungen}
 
         \begin{itemize}
-          \item[-] Nutzeroberfläche schwer automatisch zu testen
-          \item[-] Android Komponenten teilweise schwer zu mocken
-          \item[-] Server ist für die meisten Funktionen notwendig
+          \item[--] Nutzeroberfläche schwer automatisch zu testen
+          \item[--] Android Komponenten teilweise schwer zu mocken
+          \item[--] Server ist für die meisten Funktionen notwendig
         \end{itemize}
   \end{frame}
 
@@ -284,9 +282,9 @@
         \frametitle{\textbf{Klient} -- Testmethoden: Instrumentation Tests}
 
         \begin{itemize}
-          \item[-] Komponenten, für die Mock Klassen nicht zweckmäßig sind
-          \item[-] Werden direkt auf Smartphone ausgeführt
-          \item[-] DAOs
+          \item[--] Komponenten, für die Mock Klassen nicht zweckmäßig sind
+          \item[--] Werden direkt auf Smartphone ausgeführt
+          \item[--] DAOs
         \end{itemize}
   \end{frame}
 
@@ -305,10 +303,10 @@
         \frametitle{\textbf{Klient} -- Gefundene Fehler (Auswahl)}
 
         \begin{itemize}
-          \item[-] Flüchtigkeitsfehler
-          \item[-] Stabilität bei Verbindungsabbrüchen
-          \item[-] Kleinere Anzeigefehler (noch offen)
-          \item[-] Updatestruktur des Klienten (noch offen)
+          \item[--] Flüchtigkeitsfehler
+          \item[--] Stabilität bei Verbindungsabbrüchen
+          \item[--] Kleinere Anzeigefehler (noch offen)
+          \item[--] Updatestruktur des Klienten (noch offen)
         \end{itemize}
   \end{frame}
 
@@ -320,15 +318,15 @@
                 \setlength\itemsep{0.3em}
                 \item[--] 3 Personen für den Klient
                     \begin{itemize}
-                        \item[-] Fabian
-                        \item[-] Lukas
-                        \item[-] Matthias
+                        \item[--] Fabian
+                        \item[--] Lukas
+                        \item[--] Matthias
                     \end{itemize}
                 \item[--] 3 Personen für den Server
                     \begin{itemize}
-                        \item[-] Jens
-                        \item[-] Simon
-                        \item[-] Tim
+                        \item[--] Jens
+                        \item[--] Simon
+                        \item[--] Tim
                     \end{itemize}
             \end{itemize}
     \end{frame}
@@ -356,27 +354,28 @@
 
 	\begin{frame}[plain]
         \frametitle{\textbf{Selbstreflexion}}
-        \begin{minipage}{0.5\textwidth}
-            \textbf{Positive Erfahrungen}
-            \begin{itemize}
-                \item[--] TODO % TODO
-            \end{itemize}
-        \end{minipage}%
-        \begin{minipage}{0.5\textwidth}
+        %\begin{minipage}{0.5\textwidth}
+        %    \textbf{Positive Erfahrungen}
+        %    \begin{itemize}
+        %        \item[--] TODO % TODO
+        %    \end{itemize}
+        %\end{minipage}%
+        %\begin{minipage}{0.5\textwidth}
             \textbf{Mögl. Verbesserungen}
             \begin{itemize}
                 \item[--] Mehr Leute im Client-Team
                 \item[--] Projekt zu groß?
                     \begin{itemize}
-                        \item[-] 30k LoC statt 10k LoC
+                        \item[--] 30k LoC statt 10k LoC
                     \end{itemize}
                 \item[--] Nebenläufigkeit bereits im Entwurf komplett
                     durchplanen
                 \item[--] Fertige Frameworks für Interaktionen mit
                     SQL-Datenbank nutzen
                 \item[--] Google Services für Login/Push/Chat etc
+                \item[--] Bessere Kommunikation zwischen den Teilgruppen
             \end{itemize}
-        \end{minipage}
+        %\end{minipage}
     \end{frame}
 
 \end{document}
