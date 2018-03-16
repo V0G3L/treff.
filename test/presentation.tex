@@ -354,28 +354,37 @@
 
 	\begin{frame}[plain]
         \frametitle{\textbf{Selbstreflexion}}
-        %\begin{minipage}{0.5\textwidth}
-        %    \textbf{Positive Erfahrungen}
-        %    \begin{itemize}
-        %        \item[--] TODO % TODO
-        %    \end{itemize}
-        %\end{minipage}%
-        %\begin{minipage}{0.5\textwidth}
-            \textbf{Mögl. Verbesserungen}
-            \begin{itemize}
-                \item[--] Mehr Leute im Client-Team
-                \item[--] Projekt zu groß?
-                    \begin{itemize}
-                        \item[--] 30k LoC statt 10k LoC
-                    \end{itemize}
-                \item[--] Nebenläufigkeit bereits im Entwurf komplett
-                    durchplanen
-                \item[--] Fertige Frameworks für Interaktionen mit
-                    SQL-Datenbank nutzen
-                \item[--] Google Services für Login/Push/Chat etc
-                \item[--] Bessere Kommunikation zwischen den Teilgruppen
-            \end{itemize}
-        %\end{minipage}
+        \only<1>{
+            \begin{minipage}{0.4\textwidth}
+                \textbf{Positive Erfahrungen}
+                \begin{itemize}
+                    \item[--] Bereits alle führenden IM vom Markt verdrängt
+                \end{itemize}
+            \end{minipage}%
+            \hspace{0.1\textwidth}%
+            \begin{minipage}{0.5\textwidth}
+                \textbf{Mögl. Verbesserungen}
+                \begin{itemize}
+                    \item[--] Mehr Leute im Client-Team
+                    \item[--] Projekt zu groß?
+                        \begin{itemize}
+                            \item[-] 30k LoC statt 10k LoC
+                        \end{itemize}
+                    \item[--] Nebenläufigkeit bereits im Entwurf komplett
+                        durchplanen
+                    \item[--] Fertige Frameworks für Interaktionen mit
+                        SQL-Datenbank nutzen
+                    \item[--] Bessere Kommunikation zwischen den Teilgruppen
+                \end{itemize}
+            \end{minipage}
+        }
+        \only<2>{
+            \begin{figure}
+                \includegraphics[height=0.8\textheight]%
+                {images/treff-in-use-already.png}
+                \caption{Graphisch dargestellte aussagekräftige Nutzerstudie}
+            \end{figure}
+        }
     \end{frame}
 
 \end{document}
