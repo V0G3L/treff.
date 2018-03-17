@@ -1,13 +1,13 @@
-PRES_NAME	:= presentation
+PRES_NAME	:= abschluss
 
 default: prep pres
+
+dev: presdev
 
 pres:	prep build/$(PRES_NAME).pdf
 
 prep:	svg uml lst
 
-docdev: CONT_FLAG = -pvc
-docdev: latex-force prep doc
 presdev: CONT_FLAG = -pvc
 presdev: latex-force prep pres
 
@@ -33,7 +33,6 @@ build/%.pdf: %.tex *.sty
 build/listings/%.pdf: listings/%.tex *.sty
 	mkdir -p build/listings
 	latexmk -pdf -g -f -auxdir=build/listings -outdir=build/listings $<
-
 
 clean:
 	rm -f *.tmp *.tui *.log *.tuc *.mp *.bbl *.blg *.fls *.idx *.aux *.out *.fdb_latexmk *.ilg *.ind
