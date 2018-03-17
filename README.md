@@ -22,9 +22,15 @@ Server admins are advised to disallow connections via insecure channels.
   document)
 * `entwurf`: Design document and presentation thereof (German document, figures
   in English)
+* `implementierung`: Documentation of design changes made during implementation
+and presentation thereof (German document)
 * `test`: Quality assurance documents and presentation thereof (German
   document)
 * `abschluss`: Final presentation (German document)
+
+Note that the documents in `pflichtenheft`, `entwurf`, `test`, `abschluss`, and
+`implementation` (except `protocol`) might contain outdated documents as those
+were created at different points in time during development.
 
 ## Development status
 This is a student project that started as part of a software development module
