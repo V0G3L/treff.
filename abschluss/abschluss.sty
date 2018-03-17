@@ -1,0 +1,347 @@
+\ProvidesPackage{abschluss}
+\RequirePackage{xcolor}
+\RequirePackage{expl3}
+\RequirePackage{caption}
+\RequirePackage{tikz}
+\RequirePackage{calc}
+\RequirePackage[framemethod=tikz]{mdframed}
+\RequirePackage{etoolbox}
+\RequirePackage{listings}
+\RequirePackage{bera}
+\RequirePackage{textpos}
+
+\parindent 0pt
+
+%\ExplSyntaxOn
+
+\newcounter{apiCommand}
+\newtoggle{apiCmdBG}
+\toggletrue{apiCmdBG}
+\newcommand{\apiCmdClr}{gray!20}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Defines a new object description
+% Params:
+%   1: Name of the object type
+%   2: Complete description
+%   - Each row: key / type / value
+%   - Rows seperated by comma
+%   - type and id will be auto-generated, do not supply them
+%   3: Changes in recursively complete description
+%   - Each row: key / new type / new value
+%   - Rows seperated by comma
+%   4: Additional restrictions imposed on string values
+%   - Each row: key / restriction
+%   - Rows seperated by comma
+\newcommand{\apiDesc}[4]{
+    \vbox{
+        \subsection{#1}\label{subsec:#1-desc}
+        \apiDescSection{Shallow\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{#1}}},
+            id/int/Unique identifier,
+            checksum/string/Checksum of the recursively complete description of
+            this object (see chapter \ref{sec:checksum}).}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{
+        \apiDescSection{Complete\\Description}%
+        \apiDescTableHeader%
+        \apiTableEntry{%
+            type/string/\code{\enquote{\MakeLowercase{#1}}},
+            id/int/Unique identifier,
+            #2}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        %
+    }
+    \vbox{%
+        \apiDescSection{Recursively\\complete\\Description}%
+        All properties not listed here are the same as in the complete description.
+
+        \apiDescTableHeader%
+        \ifstrempty{#3}{%
+            \apiTableEntry{---/---/No changes}%
+            {\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        }{%
+            \apiTableEntry{#3}{\apiDescColKey}{\apiDescColType}{\apiDescColValue}%
+        }%
+    }
+    \vbox{
+        \ifstrempty{#4}{%
+            % dont print additional restrictions section
+        }{%
+            \apiDescSection{Additional\\restrictions\\to string\\values}%
+            \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                                p{\apiDescColRestr\textwidth} }
+                \textbf{Key} & \textbf{Restrictions} \\
+                \hline
+            \end{tabular}\\
+            \foreach \key/\restr in {#4} {
+                \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                                    p{\apiDescColRestr\textwidth} }
+                    \hfill\textbf{\key} & \restr
+                \end{tabular}\\
+            }%
+        }%
+    }
+}
+\newcommand{\apiDescTableHeader}{
+    \begin{tabular}[t]{ p{\apiDescColKey\textwidth}
+                        p{\apiDescColType\textwidth}
+                        p{\apiDescColValue\textwidth} }
+        \textbf{Key} & \textbf{Type} & \textbf{Value} \\
+        \hline
+    \end{tabular}\\
+}
+\newcommand{\apiDescSection}[1]{%
+    \begin{textblock*}{25mm}(-25mm,7mm)%
+        {#1}%
+    \end{textblock*}%
+}
+\newcommand{\apiDescColKey}{0.2}
+\newcommand{\apiDescColType}{0.15}
+\newcommand{\apiDescColValue}{0.65}
+\newcommand{\apiDescColRestr}{0.8}
+
+% Defines a new API-command
+% Params:
+%   1: op-value
+%   2: Description
+%   3: Arguments
+%   4: Return values
+%   5: Errorcodes
+%   6: Update produced (empty for getters)
+%   - Each row: key / type / value
+%   - Rows seperated by comma
+\newtoggle{apiErrorPrint}
+\newcommand{\apiCommand}[6]{
+    \iftoggle{apiCmdBG}{%
+        \renewcommand{\apiCmdClr}{gray!20}
+    }{%
+        \renewcommand{\apiCmdClr}{gray!10}
+    }
+    \begin{mdframed}[hidealllines=true,backgroundcolor=\apiCmdClr]%
+    \vspace{8pt}
+    \stepcounter{apiCommand}
+    Command~\arabic{apiCommand}:~\textbf{#1}
+    \\#2
+    \\\ifstrempty{#3}{%
+        \par No additional parameters.
+    }{%
+        \par Parameters:
+        \\\apiArgument{#3}
+    }
+    \par Return values:
+    \\\ifstrempty{#4}{%
+        \\\apiArgument{---/---/Empty JSON object}
+    }{%
+        \\\apiArgument{#4}
+    }
+    \\\ifstrempty{#5}{%
+        \par No additional error codes.
+    }{%
+        \par Error codes:
+        \\\apiErrorPrint{#5}
+    }
+    \\\ifstrempty{#6}{%
+        \par Produces no update.
+    }{%
+        \par Produces update of type \code{#6}.
+    }
+    \end{mdframed}%
+    \iftoggle{apiCmdBG}{%
+        \togglefalse{apiCmdBG}%
+    }{%
+        \toggletrue{apiCmdBG}%
+    }%
+}
+
+\newcounter{updateType}
+\newtoggle{updateTypeBG}
+\newcommand{\updateTypeClr}{gray!20}
+\newcommand{\updateType}[2]{
+    \stepcounter{updateType}
+    \iftoggle{updateTypeBG}{%
+        \renewcommand{\updateTypeClr}{gray!20}
+    }{%
+        \renewcommand{\updateTypeClr}{gray!10}
+    }
+    \begin{mdframed}[hidealllines=true,backgroundcolor=\updateTypeClr]%
+    Type~\arabic{updateType}:~\code{#1}\\
+    {#2}
+    \end{mdframed}%
+    \iftoggle{updateTypeBG}{%
+        \togglefalse{updateTypeBG}%
+    }{%
+        \toggletrue{updateTypeBG}%
+    }%
+}
+
+% Defines an argument for an API-command
+% Params:
+%   1: op-value and description,
+%      seperated by forward slash (/)
+\newcommand{\apiArgument}[1]{
+    \apiTableEntry{#1}{0.2}{0.1}{0.63}
+}
+
+% Defines an error code for an API-command
+% Params:
+%   1: numerical error code and description,
+%      seperated by forward slash (/)
+\newcommand{\apiErrorPrint}[1]{
+    \foreach \errID in {#1} {
+        \begin{tabular}[t]{ p{0.22\textwidth} p{0.73\textwidth} }%
+            \hfill\textbf{\apiErrorRef{\errID}} &%
+                \GetProperty{api-error-object:\errID}{api-error-desc}
+        \end{tabular}\\
+    }%
+}
+
+\newcommand{\apiErrorNew}[3]{
+    \rdflabel{api-error-object:#1}
+    \AddPropertyEx{api-error-defined}{yes}
+    \AddPropertyEx{api-error-code}{#2}
+    \AddPropertyEx{api-error-desc}{#3}
+}
+
+\newcommand{\apiErrorRef}[1]{%
+    \hyperref[api-error-object:#1]{%
+        \GetProperty{api-error-object:#1}{api-error-code}%
+    }%
+}
+
+\newcommand{\aETColSizeA}{0.15}
+\newcommand{\aETColSizeB}{0.8}
+\newcommand{\apiErrorTable}{
+    \begin{tabular}[t]{ p{\aETColSizeA\textwidth} p{\aETColSizeB\textwidth} }
+        \textbf{Error code} & \textbf{Description} \\
+        \hline
+    \end{tabular}\\
+    \Bind{?f}{api-error-defined}{yes}{%
+        \begin{tabular}[t]{ p{\aETColSizeA\textwidth}
+                p{\aETColSizeB\textwidth} }
+            \hfill\textbf{\GetProperty{\GetVal{?f}}{api-error-code}} &%
+                \GetProperty{\GetVal{?f}}{api-error-desc}
+        \end{tabular}\\
+    }%
+}
+
+% Creates a table entry for use in API definitions
+% Params:
+%   1: values for both cells in row,
+%      seperated by forward slash (/)
+%   2: Relative width of first column
+%   3: Relative width of second column
+%   4: Relative width of third column
+\newcommand{\apiTableEntry}[4]{
+    \foreach \key/\type/\value in {#1} {
+        \begin{tabular}[t]{ p{#2\textwidth} p{#3\textwidth} p{#4\textwidth} }
+            \hfill\textbf{\key} & \code{\type} & \value
+        \end{tabular}\\
+    }
+    \vspace{4pt}
+}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+\lstdefinelanguage{norm}{
+    basicstyle=\normalfont\ttfamily,
+    escapeinside={(*}{*)},
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+    language=Python,
+    basicstyle=\normalfont\ttfamily,
+    otherkeywords={self},
+    keywordstyle=\ttb\color{deepblue},
+    emph={normalize},
+    emphstyle=\ttb\color{deepred},
+    stringstyle=\color{deepgreen},
+    frame=tb,
+    showstringspaces=false,
+    backgroundcolor=\color{background},
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    escapeinside={(*}{*)},
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+%\ExplSyntaxOff
