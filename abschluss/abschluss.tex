@@ -167,7 +167,22 @@
   \begin{frame}[plain]
       \frametitle{\textbf{Server -- Struktur}}
       % TODO: Knappe Übersicht über Command Design, Interfaces- und SQL-Package
-      TODO
+
+      \begin{tikzpicture}
+        \tikzstyle{every node} = [rounded corners=8pt, fill = lightgray]
+        \node (login) at (0, 0) {LoginCommand};
+        \node (create) at (5, 0) {CreateGroupCommand};
+        \node (details) at (10, 0) {GetGroupDetails};
+        \node<2->[] (account) at (2.22, -2) {Account};
+        \node<2->[] (group) at (7.75, -2) {Group};
+        \node<3->[] (accsql) at (2.22, -4) {AccountSQL};
+        \node<3->[] (grsql) at (7.75, -4) {GroupSQL};
+        \foreach \src/\des in {login/account, create/account, create/group, details/group}
+            \path<2->[dashed, ->] (\src) edge (\des);
+        \foreach \src/\des in {account/accsql, group/grsql}
+            \path<3->[dashed, ->] (\src) edge (\des);
+      \end{tikzpicture}
+
   \end{frame}
 
   \begin{frame}[plain]
