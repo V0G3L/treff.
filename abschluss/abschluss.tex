@@ -19,6 +19,8 @@
 \usepackage{pdfpages}
 \usepackage{colortbl}
 \usepackage{chronosys}
+\usepackage{tikz}
+\usetikzlibrary{trees}
 
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
@@ -163,9 +165,122 @@
   \end{frame}
 
   \begin{frame}[plain]
-      \frametitle{\textbf{Interessante Stellen - Server}}
-      %TODO Locking, rdm Updates
+      \frametitle{\textbf{Server -- Struktur}}
+      % TODO: Knappe Übersicht über Command Design, Interfaces- und SQL-Package
+      TODO
   \end{frame}
+
+  \begin{frame}[plain]
+        \frametitle{\textbf{Server} -- Locking und Deadlocks}
+        \only<1>{
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=30pt]{8}{\code{readLock(x)}}
+                \chronoevent{13}{\code{x.getFoo()}}
+                \chronoevent{32}{\code{x.getBar()}}
+                \chronoevent[markdepth=30pt]{38}{\code{releaseReadLock(x)}}
+                \chronoperiode[color=cyan]{8}{38}{Crit. Section}
+                \stopchronology
+                \caption{Thread 1}
+            \end{figure}
+            \vspace{-30pt}
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                arrowcolor=cyan,width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=30pt]{14}{\code{writeLock(x)}}
+                \chronoevent[markdepth=30pt]{39}{\code{x.setFoo(2)}}
+                \chronoperiode[color=orange]{14}{38}{Blocked}
+                \chronoperiode[color=cyan]{38}{50}{Crit. Section}
+                \stopchronology
+                \caption{Thread 2}
+            \end{figure}
+        }
+        \only<2>{
+            \begin{minipage}{.5\textwidth}
+                \textbf{Locking order}
+                \begin{itemize}
+                    \item[1.] Von oben nach unten in der\\Zugriffshierarchie
+                    \item[2.] Usergroups vor Updates;\\Events vor Polls
+                    \item[3.] Niedrige IDs vor hohen IDs
+                \end{itemize}
+            \end{minipage}%
+            \begin{minipage}{.5\textwidth}
+                \begin{figure}
+                    \begin{tikzpicture}[level distance=1.5cm,
+                        level 1/.style={sibling distance=3cm},
+                        level 2/.style={sibling distance=1.5cm}]
+                        \node{Account}
+                                child {node {Usergroup} edge from parent[->]
+                                child {node {Event}}
+                                child {node {Poll}
+                                    child {node {PollOption}}
+                                }
+                            }
+                            child {node {Update} edge from parent[->]};
+                    \end{tikzpicture}
+                    \caption{Zugriffshierarchie}
+                \end{figure}
+            \end{minipage}
+        }
+        \only<3>{
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                arrowcolor=red,width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=30pt]{13}{\code{readLock(x)}}
+                \chronoevent{25}{\code{Set s = \{u,v,w,x,y,z\}}}
+                \chronoevent[markdepth=30pt]{40}{\code{writeLockAllInSet(s)}}
+                \chronoperiode[color=cyan]{13}{22}{Crit. Section}
+                \chronoperiode[color=red,dates=false]{40}{50}{Deadlock}
+                \stopchronology
+                \caption{Deadlocks auch bei $\vert Threads\vert = 1$}
+            \end{figure}
+        }
+        \only<4-5>{
+            \begin{figure}
+                \begin{tabular}{ c | c | c }
+                    \textbf{Test \#} & \textbf{Run \#} & \textbf{Result} \\
+                    \hline
+                    1 & 1 & \cellcolor{green!25}Works \\
+                    1 & 2 & \cellcolor{green!25}Works \\
+                    1 & 3 & \cellcolor{gray!25}Doesn't terminate \\
+                    1 & 4 & \cellcolor{green!25}Works \\
+                    1 & 5 & \cellcolor{gray!25}Doesn't terminate \\
+                \end{tabular}
+                \caption{Effektivität von Concurrency-Tests hängt vom Scheduler
+                ab}
+            \end{figure}
+        }
+        \only<5>{
+            \centering{Kein Compiler-Fehler/-Warnung und nicht reproduzierbar
+            im Debugger}\\
+            \centering{$\implies$ Statische Analyse nötig}
+        }
+        \only<6>{
+            \begin{figure}
+                \footnotesize
+                \startchronology[startyear=1,stopyear=50,dates=false,
+                arrowcolor=orange,width=0.9\textwidth]
+                \chronoevent{1}{\code{call execute()}}
+                \chronoevent[markdepth=45pt]{13}{\code{readLock(x)}}
+                \chronoevent[markdepth=15pt]{22}{\code{releaseReadLock(x)}}
+                \chronoevent[markdepth=45pt]{30}{\code{Set s = new HashSet()}}
+                \chronoevent[markdepth=15pt]{40}{%
+                    \code{writeLockAllInSet(s)}}
+                \chronoperiode[color=cyan]{13}{22}{Crit. Section}
+                \chronoperiode[color=orange,dates=false]{40}{50}{Pot. Deadlock}
+                \stopchronology
+                \caption{Deadlocks durch falsche Locking-Order}
+            \end{figure}
+        }
+
+    \end{frame}
 
   \begin{frame}[plain]
       \frametitle{\textbf{Interessante Stellen - Client}}
@@ -205,6 +320,9 @@
           \item[--] Profil- und Gruppenbilder
           %TODO Bilder auf dem anderen Bildschirm?
         \end{itemize}
+        %TODO unerfüllte Kür
+        %TODO Erfülltheitstabelle:
+        % Features x (Server-Impl., Server-Getestet, Client-Impl., Client-Test)
   \end{frame}
 
 \end{document}
