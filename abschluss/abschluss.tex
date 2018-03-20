@@ -185,7 +185,6 @@
               \item[--] Mehrere sequentielle Anfragen pro Verbindung möglich
               \item[--] Befehle im JSON-Format
                   \begin{itemize}
-                      \item[$\implies$] menschenlesbar
                       \item[$\implies$] leicht zu implementieren
                       \item[$\implies$] Objekte leicht serialisierbar
                   \end{itemize}
@@ -242,8 +241,8 @@
                 width=0.9\textwidth]
                 \chronoevent{1}{\code{call execute()}}
                 \chronoevent[markdepth=30pt]{8}{\code{readLock(x)}}
-                \chronoevent{13}{\code{x.getFoo()}}
-                \chronoevent{32}{\code{x.getBar()}}
+                \chronoevent{15}{\code{x.isInGroup(g)}}
+                \chronoevent{31}{\code{x.chat(g, foo)}}
                 \chronoevent[markdepth=30pt]{38}{\code{releaseReadLock(x)}}
                 \chronoperiode[color=cyan]{8}{38}{Crit. Section}
                 \stopchronology
@@ -256,7 +255,7 @@
                 arrowcolor=cyan,width=0.9\textwidth]
                 \chronoevent{1}{\code{call execute()}}
                 \chronoevent[markdepth=30pt]{14}{\code{writeLock(x)}}
-                \chronoevent[markdepth=30pt]{39}{\code{x.setFoo(2)}}
+                \chronoevent[markdepth=30pt]{39}{\code{x.leaveGroup(g)}}
                 \chronoperiode[color=orange]{14}{38}{Blocked}
                 \chronoperiode[color=cyan]{38}{50}{Crit. Section}
                 \stopchronology
@@ -465,39 +464,28 @@
   
   \begin{frame}[plain]
       \frametitle{\textbf{Erweiterungsmöglichkeiten}}
-        \begin{itemize}
-          \item[--] Abstimmungen
-          \item[--] Gruppenrollen und -rechte
-          \item[--] Detaillierte Innenraumkarten
-          \item[--] Benachrichtigungen
-          \item[--] Stummschalten
-        \end{itemize}
-  \end{frame}
-  
-  
-  \begin{frame}[plain]
-      \frametitle{\textbf{Erweiterungsmöglichkeiten}}
-        \begin{minipage}{0.45\textwidth}
-			Mockup Gruppe stummschalten
-		\end{minipage}	
-		\begin{minipage}{0.45\textwidth}
-			\includegraphics[height = \paperheight - 50pt]{images/gui-mockups/group_members.png}
-		\end{minipage}
-  \end{frame}
-  
-  
-  \begin{frame}[plain]
-      \frametitle{\textbf{Erweiterungsmöglichkeiten}}
-        \begin{itemize}
-          \item[--] Abstimmungen
-          \item[--] Gruppenrollen und -rechte
-          \item[--] Detaillierte Innenraumkarten
-          \item[--] Benachrichtigungen
-          \item[--] Stummschalten
-          \item[--] Zeitplan für Positionsübertragung
-          \item[--] Passwortzurücksetzung
-          \item[--] Profil- und Gruppenbilder
-        \end{itemize}
+		\begin{minipage}{0.45\textwidth}%
+            \begin{figure}%
+                \begin{itemize}
+                \item[--] Abstimmungen
+                \item[--] Gruppenrollen und -rechte
+                \item[--] Detaillierte Innenraumkarten
+                \item[--] Benachrichtigungen
+                \item[--] Stummschalten
+                \item[--] Zeitplan für Positionsübertragung
+                \item[--] Passwortzurücksetzung
+                \item[--] Profil- und Gruppenbilder
+                \end{itemize}%
+            \end{figure}%
+		\end{minipage}%
+        \hspace{.05\textwidth}%
+		\only<1>{%
+            \begin{minipage}{0.5\textwidth}%
+                \begin{figure}%
+                    \includegraphics[height = \paperheight - 50pt]{images/gui-mockups/group_members.png}%
+                \end{figure}%
+            \end{minipage}%
+        }
   \end{frame}
 
 \end{document}
