@@ -346,6 +346,7 @@ public class AccountSQL extends SQLObject implements Account {
                 ConfigKeys.LOGIN_TOKEN_BYTES.toString()));
         byte[] loginTokenBytes = new byte[loginTokenByteSize];
         secureRandom.nextBytes(loginTokenBytes);
+        // TODO: more efficient encoding
         String loginToken = Hex.encodeHexString(loginTokenBytes);
         database.update(
                 "UPDATE %s SET logintoken=? WHERE id=?;",

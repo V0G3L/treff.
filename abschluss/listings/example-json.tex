@@ -1,0 +1,20 @@
+\documentclass[aspectratio=0510]{beamer}
+
+\usepackage{listingspdf}
+
+\begin{document}
+    \newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+    \node[shape=circle,draw,inner sep=1pt] (char) {\scriptsize #1};}}
+    \begin{lstlisting}[language=json,firstnumber=1]
+{   "type": "event",
+    "id": 2,
+    "title": "Beispielverabredung 1010",
+    "creator": 200,
+    "time-start": 1514761200000,
+    "time-end": 1515000600000,
+    "latitude": 49.011978,
+    "longitude": 8.416377,
+    "participants": [ 3, 200, 43378 ]
+}
+    \end{lstlisting}
+\end{document}

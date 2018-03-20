@@ -124,7 +124,7 @@
 %%%%%%%% Umsetzung %%%%%%%%%%
 
   \begin{frame}[plain]
-      \frametitle{\textbf{Arbeitsweise - Arbeitsaufteilung}}
+      \frametitle{\textbf{Arbeitsweise} - Arbeitsaufteilung}
       \begin{itemize}
           \setlength\itemsep{0.3em}
           \item[--] 3 Personen für den Klient
@@ -143,7 +143,7 @@
   \end{frame}
 
   \begin{frame}[plain]
-      \frametitle{\textbf{Arbeitsweise - Tools}}
+      \frametitle{\textbf{Arbeitsweise} - Tools}
       \begin{minipage}{0.45\textwidth}
         \begin{itemize}
           \item[--] GitHub
@@ -160,7 +160,7 @@
   \end{frame}
 
   \begin{frame}[plain]
-      \frametitle{\textbf{Arbeitsweise - Kommunikation}}
+      \frametitle{\textbf{Arbeitsweise} - Kommunikation}
       \begin{minipage}{0.45\textwidth}
         \begin{itemize}
           \item[--] Telegram
@@ -172,6 +172,41 @@
         \includegraphics[width = \columnwidth - 30pt]
           {images/meet-im-voip.png}
       \end{minipage}
+  \end{frame}
+
+%%%%%%%% Server %%%%%%%%%%
+
+  \begin{frame}[plain]
+      \frametitle{\textbf{Server} -- API}
+      \begin{minipage}{0.45\textwidth}
+          \begin{itemize}
+              \item[--] Websocket
+              \item[--] TLS-Verschlüsselung
+              \item[--] Mehrere sequentielle Anfragen pro Verbindung möglich
+              \item[--] Befehle im JSON-Format
+                  \begin{itemize}
+                      \item[$\implies$] menschenlesbar
+                      \item[$\implies$] leicht zu implementieren
+                      \item[$\implies$] Objekte leicht serialisierbar
+                  \end{itemize}
+          \end{itemize}
+      \end{minipage}%
+      \hspace{.05\textwidth}%
+      \begin{minipage}{0.5\textwidth}
+          % trim=left bottom right top
+          \begin{figure}
+              \includegraphics
+              [clip, trim=10pt 200pt 140pt 05pt,width=0.95\textwidth]
+              {build/listings/login-json.pdf}
+              \caption{Request}
+          \end{figure}
+          \begin{figure}
+              \includegraphics
+              [clip, trim=10pt 155pt 140pt 05pt,width=0.95\textwidth]
+              {build/listings/login-json-response.pdf}
+              \caption{Response}
+          \end{figure}
+      \end{minipage}%
   \end{frame}
 
   \begin{frame}[plain]
