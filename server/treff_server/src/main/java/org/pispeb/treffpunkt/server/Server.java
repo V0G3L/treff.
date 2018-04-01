@@ -2,7 +2,6 @@ package org.pispeb.treffpunkt.server;
 
 import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 import org.pispeb.treffpunkt.server.networking.RequestHandler;
-import org.pispeb.treffpunkt.server.sql.SQLDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,13 +51,9 @@ public class Server {
             }
         }
 
-        try {
-            accountManager = new SQLDatabase(config).getEntityManagerSQL();
-            requestHandler = new RequestHandler(accountManager);
-        } catch (SQLException | NoSuchAlgorithmException e) {
-            // TODO: error message and exit
-            e.printStackTrace();
-        }
+        // TODO: init Hibernate
+//            accountManager = new SQLDatabase(config).getEntityManagerSQL();
+//            requestHandler = new RequestHandler(accountManager);
     }
 
     public AccountManager getAccountManager() {

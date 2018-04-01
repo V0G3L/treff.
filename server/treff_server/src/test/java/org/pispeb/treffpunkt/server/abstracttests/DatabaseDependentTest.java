@@ -2,21 +2,16 @@ package org.pispeb.treffpunkt.server.abstracttests;
 
 import ch.vorburger.exec.ManagedProcessException;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.pispeb.treffpunkt.server.TestDatabase;
 import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.sql.SQLDatabase;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public abstract class DatabaseDependentTest extends JsonDependentTest {
 
     protected static Properties config;
-    protected SQLDatabase sqlDatabase;
     protected AccountManager accountManager;
 
     @BeforeClass
@@ -24,11 +19,12 @@ public abstract class DatabaseDependentTest extends JsonDependentTest {
         config = TestDatabase.startDBAndGetConfig();
     }
 
-    @Before
-    public void prepareDB() throws SQLException, NoSuchAlgorithmException {
-        sqlDatabase = new SQLDatabase(config);
-        accountManager = sqlDatabase.getEntityManagerSQL();
-    }
+//    TODO: remove
+//    @Before
+//    public void prepareDB() throws SQLException, NoSuchAlgorithmException {
+//        sqlDatabase = new SQLDatabase(config);
+//        accountManager = sqlDatabase.getEntityManagerSQL();
+//    }
 
     @After
     public void resetDB() throws ManagedProcessException {

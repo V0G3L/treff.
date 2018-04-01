@@ -3,7 +3,6 @@ package org.pispeb.treffpunkt.server.interfaces;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateEmailException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
 import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.sql.AccountSQL;
 
 import java.util.Date;
 import java.util.Map;

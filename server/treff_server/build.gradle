@@ -17,6 +17,7 @@ gretty {
 }
 
 dependencies {
+    implementation "org.hibernate:hibernate-core:5.2.16.Final"
     implementation "javax.json:javax.json-api:1.0"
     implementation "org.glassfish:javax.json:1.0.2"
     implementation "mysql:mysql-connector-java:8.0.8-dmr"

@@ -16,7 +16,6 @@ import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 import org.pispeb.treffpunkt.server.interfaces.Update;
 import org.pispeb.treffpunkt.server.interfaces.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
-import org.pispeb.treffpunkt.server.sql.AccountSQL;
 
 import java.util.*;
 
