@@ -4,15 +4,19 @@ import org.hibernate.Session;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.exceptions.AccountNotInGroupException;
-import org.pispeb.treffpunkt.server.hibernate.GroupMembership.GMKey;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -28,11 +32,12 @@ public class Usergroup extends DataObject {
     @Column
     private String name;
     @OneToMany(mappedBy = "usergroup", orphanRemoval = true)
-    private Map<GMKey, GroupMembership> memberships;
+    @MapKey(name = "account")
+    private Map<Account, GroupMembership> memberships = new HashMap<>();
     @OneToMany(orphanRemoval = true)
-    private Set<Event> events;
+    private Set<Event> events = new HashSet<>();
     @OneToMany(orphanRemoval = true)
-    private Set<Poll> polls;
+    private Set<Poll> polls = new HashSet<>();
 
     /**
      * Set this groups name
@@ -64,11 +69,8 @@ public class Usergroup extends DataObject {
      * @param member The member to be added
      */
     public void addMember(Account member, Session session) {
-        GMKey key = new GMKey(member, this);
-        GroupMembership gm = new GroupMembership();
-        gm.setAccount(member);
-        gm.setUsergroup(this);
-        this.memberships.put(key, gm);
+        GroupMembership gm = new GroupMembership(member, this);
+        this.memberships.put(member, gm);
         member.addMembership(gm);
         session.save(gm);
     }
@@ -83,13 +85,12 @@ public class Usergroup extends DataObject {
      * @param member The member to be removed
      */
     public void removeMember(Account member, Session session) {
-        GMKey key = new GMKey(member, this);
-        GroupMembership gm = memberships.get(key);
+        GroupMembership gm = memberships.get(member);
         if (gm == null)
             throw new AccountNotInGroupException();
 
         member.removeMembership(gm);
-        memberships.remove(key); // gets deleted by orphanremoval
+        memberships.remove(member); // gets deleted by orphanremoval
         if (memberships.isEmpty())
             session.delete(this);
     }
@@ -197,7 +198,7 @@ public class Usergroup extends DataObject {
      */
     public boolean checkPermissionOfMember(Account member, Permission permission)
             throws AccountNotInGroupException {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return true; // TODO: implement
     }
 
     /**
@@ -212,7 +213,9 @@ public class Usergroup extends DataObject {
      * @see java.util.Collections#unmodifiableMap(Map)
      */
     public Map<Permission, Boolean> getPermissionsOfMember(Account member) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        // TODO: implement
+        return Arrays.stream(Permission.values())
+                .collect(Collectors.toMap(Function.identity(), p -> true));
     }
 
     /**
@@ -232,7 +235,7 @@ public class Usergroup extends DataObject {
     public void setPermissionOfMember(Account member, Permission permission,
                                       boolean valid)
             throws AccountNotInGroupException {
-        throw new UnsupportedOperationException(); // TODO: implement
+        // TODO: implement
     }
 
     /**
@@ -248,11 +251,10 @@ public class Usergroup extends DataObject {
      */
     public Date getLocationSharingTimeEndOfMember(Account member)
             throws AccountNotInGroupException {
-        GMKey key = new GMKey(member, this);
-        if (!memberships.containsKey(key))
+        if (!memberships.containsKey(member))
             throw new AccountNotInGroupException();
 
-        return memberships.get(key).getLocShareTimeEnd();
+        return memberships.get(member).getLocShareTimeEnd();
     }
 
     /**
@@ -268,10 +270,9 @@ public class Usergroup extends DataObject {
      */
     public void setLocationSharingTimeEndOfMember(Account member, Date timeEnd)
             throws AccountNotInGroupException {
-        GMKey key = new GMKey(member, this);
-        if (!memberships.containsKey(key))
+        if (!memberships.containsKey(member))
             throw new AccountNotInGroupException();
 
-        memberships.get(key).setLocShareTimeEnd(timeEnd);
+        memberships.get(member).setLocShareTimeEnd(timeEnd);
     }
 }

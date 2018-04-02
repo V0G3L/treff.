@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.GroupDependentTest;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
@@ -68,6 +69,7 @@ public class EditGroupCommandTest extends GroupDependentTest {
         assertErrorOutput(output, 1201);
     }
 
+    @Ignore
     @Test
     public void noPermissions() {
         EditGroupCommand editGroupCommand

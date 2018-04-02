@@ -20,6 +20,7 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -449,7 +450,7 @@ public class Account extends DataObject {
      * order of their creation time.
      */
     public SortedSet<Update> getUndeliveredUpdates() {
-        return undeliveredUpdates;
+        return new TreeSet<>(undeliveredUpdates);
     }
 
     /**

@@ -1,28 +1,46 @@
 package org.pispeb.treffpunkt.server.hibernate;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "groupmemberships")
-@IdClass(GroupMembership.GMKey.class)
+@Table(name = "groupmemberships",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"account", "usergroup"}))
 public class GroupMembership {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
     @ManyToOne(optional = false)
-    private Account account;
-    @Id
+    @JoinColumn(name = "account")
+    public Account account;
     @ManyToOne(optional = false)
-    private Usergroup usergroup;
+    @JoinColumn(name = "usergroup")
+    public Usergroup usergroup;
 
     @Column
     private Date locShareTimeEnd;
+
+    public GroupMembership() {
+    }
+
+    public GroupMembership(Account account, Usergroup usergroup) {
+        this.account = account;
+        this.usergroup = usergroup;
+    }
 
     public Date getLocShareTimeEnd() {
         return locShareTimeEnd;
@@ -46,36 +64,5 @@ public class GroupMembership {
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    public static class GMKey implements Serializable {
-
-        public Account account;
-        public Usergroup usergroup;
-
-        public GMKey() { }
-
-        public GMKey(Account account, Usergroup usergroup) {
-            this.account = account;
-            this.usergroup = usergroup;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (!(obj instanceof GMKey))
-                return false;
-
-            GMKey other = (GMKey) obj;
-            return account.getID() == other.account.getID()
-                    && usergroup.getID() == other.usergroup.getID();
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 41;
-            hash = 31 * hash + account.getID();
-            hash = 31 * hash + usergroup.getID();
-            return hash;
-        }
     }
 }

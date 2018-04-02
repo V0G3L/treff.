@@ -28,8 +28,6 @@ public abstract class DatabaseDependentTest extends JsonDependentTest {
     protected static Properties config;
     protected AccountManager accountManager;
     protected SessionFactory sessionFactory;
-    protected static Session ss;
-    protected static Transaction tx;
 
     @BeforeClass
     public static void getDB() throws IOException, ManagedProcessException {
@@ -60,15 +58,6 @@ public abstract class DatabaseDependentTest extends JsonDependentTest {
                 .addAnnotatedClass(Update.class)
                 .addAnnotatedClass(Usergroup.class)
                 .buildSessionFactory();
-        // open session and transaction
-        ss = sessionFactory.openSession();
-        tx = ss.beginTransaction();
-    }
-
-    @After
-    public void closeSession() {
-        tx.commit();
-        ss.close();
     }
 
 //    TODO: remove
@@ -80,6 +69,7 @@ public abstract class DatabaseDependentTest extends JsonDependentTest {
 
     @After
     public void resetDB() throws ManagedProcessException {
+        sessionFactory.close();
         TestDatabase.resetDB();
     }
 }

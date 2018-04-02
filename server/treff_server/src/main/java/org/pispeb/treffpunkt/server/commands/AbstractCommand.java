@@ -89,40 +89,46 @@ public abstract class AbstractCommand {
         // start session and transaction and create AccountManager
         session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
-        accountManager = new AccountManager(session);
+        try { // always close session
+            accountManager = new AccountManager(session);
 
-        // for commands that require login, check token
-        if (commandInput instanceof CommandInputLoginRequired) {
-            CommandInputLoginRequired cmdInputLoginReq
-                    = (CommandInputLoginRequired) commandInput;
+            // for commands that require login, check token
+            if (commandInput instanceof CommandInputLoginRequired) {
+                CommandInputLoginRequired cmdInputLoginReq
+                        = (CommandInputLoginRequired) commandInput;
 
-            if (!cmdInputLoginReq.checkToken(accountManager)) {
-                return errorToString(ErrorCode.TOKENINVALID);
-            }
-        }
-
-        try {
-            CommandOutput output = executeInternal(commandInput);
-
-            // commit changes
-            try {
-                tx.commit();
-            } catch (RollbackException e) {
-                // try rollback
-                try {
-                    tx.rollback();
-                } catch (PersistenceException eP) {
-                    throw new ProgrammingException(String.format(
-                            "Rollback failed!\nCommit exception:\n%s\nRollback exception:\n%s\n",
-                            e.getMessage(),
-                            eP.getMessage()));
+                if (!cmdInputLoginReq.checkToken(accountManager)) {
+                    return errorToString(ErrorCode.TOKENINVALID);
                 }
+            }
+
+            try {
+                CommandOutput output = executeInternal(commandInput);
+                // need to serialize output before closing session
+                String outputString = mapper.writeValueAsString(output);
+
+                // commit changes
+                try {
+                    tx.commit();
+                    return outputString;
+                } catch (RollbackException e) {
+                    // try rollback
+                    try {
+                        tx.rollback();
+                    } catch (PersistenceException eP) {
+                        throw new ProgrammingException(String.format(
+                                "Rollback failed!\n" +
+                                        "Commit exception:\n%s\nRollback exception:\n%s\n",
+                                e.getMessage(),
+                                eP.getMessage()));
+                    }
+                    throw new ProgrammingException(e);
+                }
+            } catch (JsonProcessingException e) {
                 throw new ProgrammingException(e);
             }
+        } finally {
             session.close();
-            return mapper.writeValueAsString(output);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
         }
     }
 

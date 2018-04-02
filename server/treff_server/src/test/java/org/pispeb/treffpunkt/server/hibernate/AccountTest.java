@@ -3,6 +3,7 @@ package org.pispeb.treffpunkt.server.hibernate;
 import org.junit.Before;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.DatabaseDependentTest;
+import org.pispeb.treffpunkt.server.abstracttests.HibernateTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -10,7 +11,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class AccountTest extends DatabaseDependentTest {
+public class AccountTest extends HibernateTest {
 
     private static Account instance;
     private static Account instance2;
