@@ -27,11 +27,11 @@ public class AccountManager {
     }
 
     private <T extends DataObject> T getByUniqueField(Class<T> clazz, String fieldName,
-                                                             Object expectedValue) {
+                                                      Object expectedValue) {
         CriteriaQuery<T> query = cb.createQuery(clazz);
         Root<T> from = query.from(clazz);
-        query.select(from);
-        query.where(cb.equal(from.get(fieldName), expectedValue));
+        query.select(from)
+                .where(cb.equal(from.get(fieldName), expectedValue));
         return session.createQuery(query).uniqueResult();
     }
 
@@ -43,7 +43,7 @@ public class AccountManager {
      * supplied username or <code>null</code> if no such account exists.
      */
     public Account getAccountByUsername(String username) {
-        return getByUniqueField(Account.class, "accounts.username", username);
+        return getByUniqueField(Account.class, "username", username);
     }
 
     /**
@@ -54,7 +54,7 @@ public class AccountManager {
      * supplied email address or <code>null</code> if no such account exists.
      */
     public Account getAccountByEmail(String email) {
-        return getByUniqueField(Account.class, "accounts.email", email);
+        return getByUniqueField(Account.class, "email", email);
     }
 
     /**
@@ -99,7 +99,7 @@ public class AccountManager {
      * supplied login token or <code>null</code> if no such account exists.
      */
     public Account getAccountByLoginToken(String token) {
-        return getByUniqueField(Account.class, "accounts.loginToken", token);
+        return getByUniqueField(Account.class, "loginToken", token);
     }
 
     /**

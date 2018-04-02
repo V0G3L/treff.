@@ -13,20 +13,30 @@ import static org.junit.Assert.assertTrue;
 public class AccountTest extends DatabaseDependentTest {
 
     private static Account instance;
+    private static Account instance2;
 
     private final String username = "w4rum";
     private final String email = "foo@bar.info";
     private final String password = "4+1d10+2AP";
     private int id;
+    private final String username2 = "w4rum2";
+    private final String email2 = "foo2222@bar.info";
+    private final String password2 = "4+1d10+2AP222";
+    private int id2;
 
 
     @Before
-    public void createAccount() {
+    public void createAccounts() {
         instance = new Account();
         instance.setUsername(username);
         instance.setEmail(email);
         instance.setPassword(password);
+        instance2 = new Account();
+        instance2.setUsername(username2);
+        instance2.setEmail(email2);
+        instance2.setPassword(password2);
         id = (int) ss.save(instance);
+        id2 = (int) ss.save(instance2);
         reload();
     }
 
@@ -54,6 +64,21 @@ public class AccountTest extends DatabaseDependentTest {
     }
 
     @Test
+    public void contactSyncWithCommit() {
+        instance.sendContactRequest(instance2);
+        assertTrue(instance.getAllOutgoingContactRequests().containsKey(instance2.getID()));
+        saveAndReload();
+        assertTrue(instance2.getAllIncomingContactRequests().containsKey(instance.getID()));
+    }
+
+    @Test
+    public void contactSyncWithoutCommit() {
+        instance.sendContactRequest(instance2);
+        assertTrue(instance.getAllOutgoingContactRequests().containsKey(instance2.getID()));
+        assertTrue(instance2.getAllIncomingContactRequests().containsKey(instance.getID()));
+    }
+
+    @Test
     public void delete() {
         assertNotNull(instance);
 
@@ -65,6 +90,7 @@ public class AccountTest extends DatabaseDependentTest {
 
     private void saveAndReload() {
         ss.update(instance);
+        ss.update(instance2);
         reload();
     }
 

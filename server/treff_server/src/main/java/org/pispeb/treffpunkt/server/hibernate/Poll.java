@@ -2,7 +2,9 @@ package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ import java.util.Map;
  * An object representing a poll with an question, a point in time at which
  * voting closes and poll options up for voting.
  */
+@Entity
+@Table(name = "polls")
 public class Poll extends DataObject {
 
     @ManyToOne

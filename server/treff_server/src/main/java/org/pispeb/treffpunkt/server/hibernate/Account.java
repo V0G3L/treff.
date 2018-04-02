@@ -13,6 +13,7 @@ import org.pispeb.treffpunkt.server.interfaces.AccountUpdateListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -20,9 +21,11 @@ import javax.persistence.Table;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import static org.pispeb.treffpunkt.server.PasswordHash.generatePasswordHash;
@@ -52,24 +55,27 @@ public class Account extends DataObject {
     @Column
     private Date timeMeasured;
 
-    @OneToMany(orphanRemoval = true)
+    @ManyToMany
     @OrderBy("id ASC")
-    private SortedSet<Update> undeliveredUpdates;
+    private SortedSet<Update> undeliveredUpdates = new TreeSet<>();
 
     @OneToMany(mappedBy = "account")
-    private Set<GroupMembership> memberships;
+    private Set<GroupMembership> memberships = new HashSet<>();
 
     @ManyToMany
-    private Set<Account> incomingRequests;
+    @JoinTable(name = "account_requests")
+    private Set<Account> incomingRequests = new HashSet<>();
     @ManyToMany(mappedBy = "incomingRequests")
-    private Set<Account> outgoingRequests;
+    private Set<Account> outgoingRequests = new HashSet<>();
 
     // contacts need to be updated on both sides
     // no idea how to nicely implement symmetric reflexive relations in Hibernate
-    @OneToMany
-    private Set<Account> contacts;
-    @OneToMany
-    private Set<Account> blocks;
+    @ManyToMany
+    @JoinTable(name = "account_contacts")
+    private Set<Account> contacts = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "account_blocks")
+    private Set<Account> blocks = new HashSet<>();
 
     /**
      * Returns the username of this account.
@@ -207,10 +213,11 @@ public class Account extends DataObject {
      * @param receiver The {@code Account} which to send the contact request to
      */
     public void sendContactRequest(Account receiver) {
-        if (outgoingRequests.contains((Account) receiver))
+        if (outgoingRequests.contains(receiver))
             throw new ContactRequestAlreadySentException();
 
-        outgoingRequests.add((Account) receiver);
+        outgoingRequests.add(receiver);
+        receiver.incomingRequests.add(this);
     }
 
     /**
@@ -224,13 +231,13 @@ public class Account extends DataObject {
      * @param sender The {@code Account} that sent the contact request
      */
     public void acceptContactRequest(Account sender) {
-        Account senderHib = (Account) sender;
-        if (!incomingRequests.contains(senderHib))
+        if (!incomingRequests.contains(sender))
             throw new ContactRequestNonexistantException();
 
-        incomingRequests.remove(senderHib);
-        contacts.add(senderHib);
-        senderHib.contacts.add(senderHib);
+        incomingRequests.remove(sender);
+        sender.outgoingRequests.remove(this);
+        contacts.add(sender);
+        sender.contacts.add(this);
     }
 
     /**
@@ -247,6 +254,7 @@ public class Account extends DataObject {
             throw new ContactRequestNonexistantException();
 
         incomingRequests.remove(sender);
+        sender.outgoingRequests.remove(this);
     }
 
     /**
@@ -286,9 +294,8 @@ public class Account extends DataObject {
      * @param account The account to be removed from the contact list
      */
     public void removeContact(Account account) {
-        Account other = (Account) account;
-        contacts.remove(other);
-        other.contacts.remove(this);
+        contacts.remove(account);
+        account.contacts.remove(this);
     }
 
     /**
@@ -316,7 +323,7 @@ public class Account extends DataObject {
      * @param account The {@code Account} to block
      */
     public void addBlock(Account account) {
-        this.blocks.add((Account) account);
+        this.blocks.add(account);
     }
 
     /**
@@ -328,7 +335,7 @@ public class Account extends DataObject {
      * @param account The {@code Account} to unblock
      */
     public void removeBlock(Account account) {
-        this.blocks.remove((Account) account);
+        this.blocks.remove(account);
     }
 
     /**
@@ -428,7 +435,8 @@ public class Account extends DataObject {
      * @param update The {@code Update} to add
      */
     public void addUpdate(Update update) {
-        undeliveredUpdates.add((Update) update);
+        undeliveredUpdates.add(update);
+        update.addAffectedAccount(this);
     }
 
     /**
@@ -452,7 +460,8 @@ public class Account extends DataObject {
      * Requires a {@code ReadLock}.
      */
     public void markUpdateAsDelivered(Update update) {
-        undeliveredUpdates.remove((Update) update);
+        undeliveredUpdates.remove(update);
+        update.removeAffectedAccount(this);
     }
 
     /**
@@ -481,4 +490,11 @@ public class Account extends DataObject {
         throw new UnsupportedOperationException(); // TODO: implement
     }
 
+    void addMembership(GroupMembership gm) {
+        memberships.add(gm);
+    }
+
+    void removeMembership(GroupMembership gm) {
+        memberships.remove(gm);
+    }
 }

@@ -64,9 +64,12 @@ public class Usergroup extends DataObject {
      * @param member The member to be added
      */
     public void addMember(Account member, Session session) {
+        GMKey key = new GMKey(member, this);
         GroupMembership gm = new GroupMembership();
         gm.setAccount(member);
         gm.setUsergroup(this);
+        this.memberships.put(key, gm);
+        member.addMembership(gm);
         session.save(gm);
     }
 
@@ -81,9 +84,11 @@ public class Usergroup extends DataObject {
      */
     public void removeMember(Account member, Session session) {
         GMKey key = new GMKey(member, this);
-        if (!memberships.containsKey(key))
+        GroupMembership gm = memberships.get(key);
+        if (gm == null)
             throw new AccountNotInGroupException();
 
+        member.removeMembership(gm);
         memberships.remove(key); // gets deleted by orphanremoval
         if (memberships.isEmpty())
             session.delete(this);

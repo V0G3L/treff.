@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import com.jcabi.matchers.RegexMatchers;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.CommandTest;
@@ -25,8 +26,7 @@ public class RegisterCommandTest extends CommandTest {
         // throws exception if not a number
         output.getInt("id");
         Assert.assertTrue(output.containsKey("token"));
-        Assert.assertThat(output.getString("token"),
-                RegexMatchers.matchesPattern("[0-9a-f]{128}"));
+        Assert.assertTrue(Base64.isBase64(output.getString("token")));
     }
 
     @Test

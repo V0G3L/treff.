@@ -20,7 +20,6 @@ import java.util.Date;
  */
 public class BlockAccountCommand extends ManageBlockCommand {
 
-
     public BlockAccountCommand(SessionFactory sessionFactory,
                                ObjectMapper mapper) {
         super(sessionFactory, mapper);

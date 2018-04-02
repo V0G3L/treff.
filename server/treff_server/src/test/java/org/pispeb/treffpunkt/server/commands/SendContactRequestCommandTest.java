@@ -26,6 +26,9 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         User receiver = users[3];
         JsonObject output = execute(sender, receiver);
 
+        // Assert that sender didn't get an update
+        assertNoUpdatesForUser(sender);
+
         ContactList receiverContacts = getContactsOfUser(receiver);
         ContactList senderContacts = getContactsOfUser(sender);
 
@@ -66,6 +69,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
                 // or factory method in MultipleUsersTest?
                 new User("username", "password", invalidID, "no token"));
         assertCommandFailed(output, 1200);
+        assertNoUpdatesForUser(users[0]);
     }
 
     @Test
@@ -73,6 +77,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         block(users[2], users[3]);
         JsonObject output = execute(users[2], users[3]);
         assertCommandFailed(output, 1506);
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
@@ -80,15 +85,18 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         block(users[3], users[2]);
         JsonObject output = execute(users[2], users[3]);
         assertErrorOutput(output, 1505);
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
     public void alreadySent() {
         execute(users[2], users[3]);
         JsonObject output = execute(users[2], users[3]);
+        assertNoUpdatesForUser(users[2]);
         // Can't use assertCommandFailed here because we expect to the first
         // command to work
         assertErrorOutput(output, 1503);
+        assertNoUpdatesForUser(users[2]);
     }
 
     @Test
@@ -104,15 +112,20 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         JsonObject output = runCommand(acceptContactRequestCommand, input);
         Assert.assertTrue(output.isEmpty());
 
+        // discard accept update
+        getSingleUpdateForUser(users[1]);
+
         // make sure contact relation is created
         Assert.assertTrue(
                 getContactsOfUser(users[0]).contacts.contains(users[1].id));
 
         output = execute(users[1], users[0]);
         assertErrorOutput(output, 1500);
+        assertNoUpdatesForUser(users[1]);
 
         output = execute(users[0], users[1]);
         assertErrorOutput(output, 1500);
+        assertNoUpdatesForUser(users[0]);
     }
 
     @Test
@@ -167,12 +180,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
                 = getCommandStubForUser(this.cmd, sender);
         input.add("id", receiver.id);
 
-        JsonObject output = runCommand(sendContactRequestCommand, input);
-
-        // Assert that receiver didn't get an update
-        assertNoUpdatesForUser(users[0]);
-
-        return output;
+        return runCommand(sendContactRequestCommand, input);
     }
 
     /**

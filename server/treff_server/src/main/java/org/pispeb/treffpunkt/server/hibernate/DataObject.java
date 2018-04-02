@@ -104,7 +104,7 @@ public abstract class DataObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "id")
     private int id;
 
     /**
@@ -138,7 +138,7 @@ public abstract class DataObject {
                 .collect(Collectors.toMap(DataObject::getID, Function.identity())));
     }
 
-    public void setProperties(Properties config) {
+    public static void setProperties(Properties config) {
         DataObject.config = config;
     }
 }

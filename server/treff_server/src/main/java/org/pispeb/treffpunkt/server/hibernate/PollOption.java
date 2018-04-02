@@ -2,6 +2,8 @@ package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -10,6 +12,8 @@ import java.util.concurrent.locks.ReadWriteLock;
  * An object representing a poll option with a position, a start and end time
  * which voting closes and poll options up for voting.
  */
+@Entity
+@Table(name = "polloptions")
 public class PollOption extends DataObject {
     /**
          * Sets the position of this {@code PollOption}

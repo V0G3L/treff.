@@ -9,6 +9,7 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
@@ -60,10 +61,28 @@ public class SendContactRequestCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.CONTACTREQUESTPENDING);
         }
 
+        // check symmetric add
+        if (actingAccount.getAllIncomingContactRequests().containsKey(newContact.getID())) {
+            // add both accounts as contact instead
+            actingAccount.acceptContactRequest(newContact);
+            ContactRequestAnswerUpdate updateForActing =
+                    new ContactRequestAnswerUpdate(new Date(), newContact.getID(), true);
+            ContactRequestAnswerUpdate updateForNew =
+                    new ContactRequestAnswerUpdate(new Date(), actingAccount.getID(), true);
+            try {
+                accountManager.createUpdate(
+                        mapper.writeValueAsString(updateForActing), actingAccount);
+                accountManager.createUpdate(
+                        mapper.writeValueAsString(updateForNew), newContact);
+            } catch (JsonProcessingException e) {
+                throw new ProgrammingException(e);
+            }
+            return new Output();
+        }
+
         // send request
         actingAccount.sendContactRequest(newContact);
 
-        // TODO: send other updates on symmetric add
         // create update
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),

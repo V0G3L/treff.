@@ -2,7 +2,9 @@ package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ import java.util.Map;
  * An object representing a event with an title, position, start and end time
  * and a set of participants.
  */
+@Entity
+@Table(name = "events")
 public class Event extends DataObject {
 
     @ManyToOne
