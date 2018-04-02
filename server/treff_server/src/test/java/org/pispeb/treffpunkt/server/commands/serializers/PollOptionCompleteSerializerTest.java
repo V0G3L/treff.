@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
 
 import java.io.IOException;
 import java.io.StringWriter;

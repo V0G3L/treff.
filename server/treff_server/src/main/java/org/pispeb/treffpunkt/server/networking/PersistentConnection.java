@@ -1,9 +1,6 @@
 package org.pispeb.treffpunkt.server.networking;
 
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 import org.pispeb.treffpunkt.server.interfaces.AccountUpdateListener;
-import org.pispeb.treffpunkt.server.interfaces.Update;
 
 import javax.json.Json;
 import javax.json.JsonObject;

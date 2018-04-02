@@ -1,8 +1,5 @@
 package org.pispeb.treffpunkt.server.exceptions;
 
-import org.pispeb.treffpunkt.server.interfaces.Poll;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
-
 // TODO: use
 
 /**

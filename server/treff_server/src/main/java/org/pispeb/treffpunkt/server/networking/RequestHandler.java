@@ -4,12 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.*;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +40,15 @@ public class RequestHandler {
                 DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES);
     }
 
+    private final SessionFactory sessionFactory;
+
     private Map<String, Class<? extends AbstractCommand>>
             availableCommands = new HashMap<>();
 
-    private final AccountManager accountManager;
     private final Logger logger = LoggerFactory.getLogger("RequestHandler");
 
-    public RequestHandler(AccountManager accountManager) {
-        this.accountManager = accountManager;
+    public RequestHandler(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
         registerAllCommands();
     }
 

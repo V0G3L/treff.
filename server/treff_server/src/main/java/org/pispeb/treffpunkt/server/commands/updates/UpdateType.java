@@ -1,8 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.updates;
 
-import org.pispeb.treffpunkt.server.interfaces.Update;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
-
 /**
  * The type of an {@link Update}.
  */

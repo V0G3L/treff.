@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
@@ -9,9 +11,8 @@ import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateToSerialize;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.HashSet;
@@ -31,13 +32,13 @@ public abstract class GroupCommand extends AbstractCommand {
     private final Permission necessaryPermission;
     private final ErrorCode errorIfMissingPermission;
 
-    protected GroupCommand(AccountManager accountManager,
+    protected GroupCommand(SessionFactory sessionFactory,
                            Class<? extends GroupInput> expectedInput,
                            ObjectMapper mapper,
                            GroupLockType groupLockType,
                            Permission necessaryPermission, ErrorCode
                                    errorIfMissingPermission) {
-        super(accountManager, expectedInput, mapper);
+        super(sessionFactory, expectedInput, mapper);
         this.groupLockType = groupLockType;
         this.necessaryPermission = necessaryPermission;
         this.errorIfMissingPermission = errorIfMissingPermission;

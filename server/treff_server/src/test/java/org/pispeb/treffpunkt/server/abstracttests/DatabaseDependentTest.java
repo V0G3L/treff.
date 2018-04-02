@@ -4,7 +4,7 @@ import ch.vorburger.exec.ManagedProcessException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.pispeb.treffpunkt.server.TestDatabase;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 
 import java.io.IOException;
 import java.util.Properties;

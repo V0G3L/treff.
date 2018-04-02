@@ -1,11 +1,11 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 
 /**
  * a command to remove an account from the block list of the executing account,
@@ -14,9 +14,9 @@ import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 public class UnblockAccountCommand extends ManageBlockCommand {
 
 
-    public UnblockAccountCommand(AccountManager accountManager,
+    public UnblockAccountCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

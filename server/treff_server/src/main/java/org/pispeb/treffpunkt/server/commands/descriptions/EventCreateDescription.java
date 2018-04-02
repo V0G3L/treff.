@@ -2,7 +2,6 @@ package org.pispeb.treffpunkt.server.commands.descriptions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.interfaces.Event;
 
 import java.util.Date;
 

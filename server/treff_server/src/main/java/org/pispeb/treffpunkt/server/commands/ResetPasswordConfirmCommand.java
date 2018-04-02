@@ -1,11 +1,12 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 
 /**
  * TODO
@@ -13,9 +14,9 @@ import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 public class ResetPasswordConfirmCommand extends AbstractCommand {
 
 
-    public ResetPasswordConfirmCommand(AccountManager accountManager,
+    public ResetPasswordConfirmCommand(SessionFactory sessionFactory,
                                        ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
 		throw new UnsupportedOperationException();
     }
 

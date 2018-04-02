@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
 
 import java.io.IOException;
 

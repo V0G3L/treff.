@@ -1,16 +1,19 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.ManyToOne;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * An object representing a event with an title, position, start and end time
  * and a set of participants.
  */
-public interface Event extends DataObject, Comparable<Event> {
+public class Event extends DataObject {
+
+    @ManyToOne
+    private Account creator;
 
     /**
      * Sets the title of this {@code Event}
@@ -19,7 +22,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param title New title
      */
-    void setTitle(String title);
+    public void setTitle(String title) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the title of this {@code Event}
@@ -28,7 +33,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The title of this {@code Event}
      */
-    String getTitle();
+    public String getTitle() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Sets the position of this {@code Event}
@@ -37,7 +44,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param position New position
      */
-    void setPosition(Position position);
+    public void setPosition(Position position) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the position of this {@code Event}
@@ -46,7 +55,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The position of this {@code Event}
      */
-    Position getPosition();
+    public Position getPosition() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Sets the start time of this {@code Event}
@@ -55,7 +66,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param timeStart New start time
      */
-    void setTimeStart(Date timeStart);
+    public void setTimeStart(Date timeStart) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the start time of this {@code Event}
@@ -64,7 +77,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The start time of this {@code Event}
      */
-    Date getTimeStart();
+    public Date getTimeStart() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Sets the end time of this {@code Event}
@@ -73,7 +88,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param timeEnd New end time
      */
-    void setTimeEnd(Date timeEnd);
+    public void setTimeEnd(Date timeEnd) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the end time of this {@code Event}
@@ -82,7 +99,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The end time of this {@code Event}
      */
-    Date getTimeEnd();
+    public Date getTimeEnd() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the creator of this {@code Event}
@@ -91,7 +110,13 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The creator of this {@code Event}
      */
-    Account getCreator();
+    public Account getCreator() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
+
+    void setCreator(Account creator) {
+        this.creator = creator;
+    }
 
     /**
      * Adds a participant to this {@code Event}
@@ -100,7 +125,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param participant The participant
      */
-    void addParticipant(Account participant);
+    public void addParticipant(Account participant) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Removes a participant from this {@code Event}
@@ -109,7 +136,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param participant The participant
      */
-    void removeParticipant(Account participant);
+    public void removeParticipant(Account participant) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -121,6 +150,7 @@ public interface Event extends DataObject, Comparable<Event> {
      * {@code Event}.
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllParticipants();
-
+    public Map<Integer, ? extends Account> getAllParticipants() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 }

@@ -10,9 +10,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class AccountHibTest extends HibernateDependentTest {
+public class AccountTest extends HibernateDependentTest {
 
-    private static AccountHib instance;
+    private static Account instance;
 
     private final String username = "w4rum";
     private final String email = "foo@bar.info";
@@ -22,7 +22,7 @@ public class AccountHibTest extends HibernateDependentTest {
 
     @Before
     public void createAccount() {
-        instance = new AccountHib();
+        instance = new Account();
         instance.setUsername(username);
         instance.setEmail(email);
         instance.setPassword(password);
@@ -60,7 +60,7 @@ public class AccountHibTest extends HibernateDependentTest {
         ss.delete(instance);
         ss.flush();
 
-        assertNull(ss.get(AccountHib.class, id));
+        assertNull(ss.get(Account.class, id));
     }
 
     private void saveAndReload() {
@@ -71,7 +71,7 @@ public class AccountHibTest extends HibernateDependentTest {
     private void reload() {
         tx.commit();
         tx = ss.beginTransaction();
-        instance = ss.get(AccountHib.class, id);
+        instance = ss.get(Account.class, id);
     }
 
 }

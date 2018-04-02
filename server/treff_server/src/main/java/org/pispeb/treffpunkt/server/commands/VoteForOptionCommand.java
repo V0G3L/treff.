@@ -1,24 +1,15 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
-import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
-import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Poll;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * a command to vote for a poll option
@@ -26,9 +17,9 @@ import java.util.HashSet;
 public class VoteForOptionCommand extends PollOptionCommand {
 
 
-    public VoteForOptionCommand(AccountManager accountManager,
+    public VoteForOptionCommand(SessionFactory sessionFactory,
                                 ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper, PollOptionLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper, PollOptionLockType.WRITE_LOCK);
     }
 
     @Override

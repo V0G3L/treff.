@@ -1,22 +1,16 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.UsergroupEditDescription;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
-import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * a command to edit the name of a user group
@@ -24,9 +18,9 @@ import java.util.HashSet;
 public class EditGroupCommand extends GroupCommand {
 
 
-    public EditGroupCommand(AccountManager accountManager,
+    public EditGroupCommand(SessionFactory sessionFactory,
                             ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
+        super(sessionFactory,Input.class, mapper,
                 GroupLockType.WRITE_LOCK,
                 Permission.EDIT_GROUP,
                 ErrorCode.NOPERMISSIONEDITGROUP);

@@ -1,12 +1,12 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.EventCompleteSerializer;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Event;
 
 /**
  * a command to get a detailed description of an event of a user group
@@ -14,9 +14,9 @@ import org.pispeb.treffpunkt.server.interfaces.Event;
 public class GetEventDetailsCommand extends EventCommand {
 
 
-    public GetEventDetailsCommand(AccountManager accountManager,
+    public GetEventDetailsCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
+        super(sessionFactory,Input.class, mapper,
                 EventLockType.READ_LOCK);
     }
 

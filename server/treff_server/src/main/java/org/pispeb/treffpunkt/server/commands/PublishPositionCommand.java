@@ -1,13 +1,12 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.GroupMembershipChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
 
@@ -17,9 +16,9 @@ import java.util.Date;
  */
 public class PublishPositionCommand extends GroupCommand {
 
-    public PublishPositionCommand(AccountManager accountManager,
+    public PublishPositionCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
+        super(sessionFactory,Input.class, mapper,
                 GroupLockType.READ_LOCK,
                 null, null); // position publishing requires no permission
     }

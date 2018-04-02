@@ -1,11 +1,19 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
+import org.hibernate.Session;
+import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.exceptions.AccountNotInGroupException;
-import org.pispeb.treffpunkt.server.Permission;
+import org.pispeb.treffpunkt.server.hibernate.GroupMembership.GMKey;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * An object representing a user group with an name, set of {@link Event}s, set
@@ -13,7 +21,18 @@ import java.util.Map;
  * Each member has an associated set of {@link Permission}s and an associated
  * point in time until which that member shares its location with the group.
  */
-public interface Usergroup extends DataObject, Comparable<Usergroup> {
+@Entity
+@Table(name = "usergroups")
+public class Usergroup extends DataObject {
+
+    @Column
+    private String name;
+    @OneToMany(mappedBy = "usergroup", orphanRemoval = true)
+    private Map<GMKey, GroupMembership> memberships;
+    @OneToMany(orphanRemoval = true)
+    private Set<Event> events;
+    @OneToMany(orphanRemoval = true)
+    private Set<Poll> polls;
 
     /**
      * Set this groups name
@@ -22,7 +41,9 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *
      * @param name New name
      */
-    void setName(String name);
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Returns this group's name
@@ -31,7 +52,9 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *
      * @return This group's name
      */
-    String getName();
+    public String getName() {
+        return name;
+    }
 
     /**
      * Adds a member to this group.
@@ -40,7 +63,12 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *
      * @param member The member to be added
      */
-    void addMember(Account member);
+    public void addMember(Account member, Session session) {
+        GroupMembership gm = new GroupMembership();
+        gm.setAccount(member);
+        gm.setUsergroup(this);
+        session.save(gm);
+    }
 
     /**
      * Removes a member from this group.
@@ -51,7 +79,15 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *
      * @param member The member to be removed
      */
-    void removeMember(Account member);
+    public void removeMember(Account member, Session session) {
+        GMKey key = new GMKey(member, this);
+        if (!memberships.containsKey(key))
+            throw new AccountNotInGroupException();
+
+        memberships.remove(key); // gets deleted by orphanremoval
+        if (memberships.isEmpty())
+            session.delete(this);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -62,7 +98,38 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @return Map of {@code Accounts} that are members of this group
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllMembers();
+    public Map<Integer, ? extends Account> getAllMembers() {
+        Set<Account> members = memberships.values().stream()
+                .map(GroupMembership::getAccount)
+                .collect(Collectors.toSet());
+        return toMap(members);
+    }
+
+    /**
+     * Returns an unmodifiable [ID -> {@code Event}] map holding all
+     * {@code Event}s that part of this group.
+     * <p>
+     * Requires a {@code ReadLock}.
+     *
+     * @return Map of {@code Event} that are part of this group
+     * @see java.util.Collections#unmodifiableMap(Map)
+     */
+    public Map<Integer, ? extends Event> getAllEvents() {
+        return toMap(events);
+    }
+
+    /**
+     * Returns an unmodifiable [ID -> {@code Poll}] map holding all
+     * {@code Poll}s that part of this group.
+     * <p>
+     * Requires a {@code ReadLock}.
+     *
+     * @return Map of {@code Poll} that are part of this group
+     * @see java.util.Collections#unmodifiableMap(Map)
+     */
+    public Map<Integer, ? extends Poll> getAllPolls() {
+        return toMap(polls);
+    }
 
     /**
      * Creates a new {@code Event} with the supplied details.
@@ -76,19 +143,17 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @param creator   The {@code Account} that created the new {@code Event}
      * @return The newly created {@code Event}
      */
-    Event createEvent(String title, Position position, Date timeStart,
-                      Date timeEnd, Account creator);
-
-    /**
-     * Returns an unmodifiable [ID -> {@code Event}] map holding all
-     * {@code Event}s that part of this group.
-     * <p>
-     * Requires a {@code ReadLock}.
-     *
-     * @return Map of {@code Event} that are part of this group
-     * @see java.util.Collections#unmodifiableMap(Map)
-     */
-    Map<Integer, ? extends Event> getAllEvents();
+    public Event createEvent(String title, Position position, Date timeStart,
+                             Date timeEnd, Account creator, Session session) {
+        Event event = new Event();
+        event.setTitle(title);
+        event.setPosition(position);
+        event.setTimeStart(timeStart);
+        event.setTimeEnd(timeEnd);
+        event.setCreator(creator);
+        session.save(event);
+        return event;
+    }
 
     /**
      * Creates a new {@code Poll} with the supplied details.
@@ -101,19 +166,16 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      *                    for multiple {@link PollOption}s at once
      * @return The newly created {@code Poll}
      */
-    Poll createPoll(String question, Account creator, Date timeVoteClose,
-                    boolean multichoice);
-
-    /**
-     * Returns an unmodifiable [ID -> {@code Poll}] map holding all
-     * {@code Poll}s that part of this group.
-     * <p>
-     * Requires a {@code ReadLock}.
-     *
-     * @return Map of {@code Poll} that are part of this group
-     * @see java.util.Collections#unmodifiableMap(Map)
-     */
-    Map<Integer, ? extends Poll> getAllPolls();
+    public Poll createPoll(String question, Account creator, Date timeVoteClose,
+                           boolean multichoice, Session session) {
+        Poll poll = new Poll();
+        poll.setQuestion(question);
+        poll.setCreator(creator);
+        poll.setTimeVoteClose(timeVoteClose);
+        poll.setMultiChoice(multichoice);
+        session.save(poll);
+        return poll;
+    }
 
     /**
      * Checks whether the supplied member has the supplied
@@ -128,8 +190,10 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @throws AccountNotInGroupException if the supplied {@code Account} is not
      *                                    a member of this group
      */
-    boolean checkPermissionOfMember(Account member, Permission permission)
-            throws AccountNotInGroupException;
+    public boolean checkPermissionOfMember(Account member, Permission permission)
+            throws AccountNotInGroupException {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns an unmodifiable [{@code Permission} -> {@code Boolean}] map
@@ -142,7 +206,9 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @return Map of {@code Boolean}s for all available {@code Permission}s
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Permission, Boolean> getPermissionsOfMember(Account member);
+    public Map<Permission, Boolean> getPermissionsOfMember(Account member) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Grants or removes the supplied {@code Permission} to or from the supplied
@@ -158,9 +224,11 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @throws AccountNotInGroupException if the supplied {@code Account} is not
      *                                    a member of this group
      */
-    void setPermissionOfMember(Account member, Permission permission,
-                               boolean valid)
-            throws AccountNotInGroupException;
+    public void setPermissionOfMember(Account member, Permission permission,
+                                      boolean valid)
+            throws AccountNotInGroupException {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Returns the point in time until which the supplied member shares its
@@ -173,8 +241,14 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @throws AccountNotInGroupException if the supplied {@code Account} is not
      *                                    a member of this group
      */
-    Date getLocationSharingTimeEndOfMember(Account member)
-            throws AccountNotInGroupException;
+    public Date getLocationSharingTimeEndOfMember(Account member)
+            throws AccountNotInGroupException {
+        GMKey key = new GMKey(member, this);
+        if (!memberships.containsKey(key))
+            throw new AccountNotInGroupException();
+
+        return memberships.get(key).getLocShareTimeEnd();
+    }
 
     /**
      * Sets the point in time until which the supplied member shares its
@@ -187,7 +261,12 @@ public interface Usergroup extends DataObject, Comparable<Usergroup> {
      * @throws AccountNotInGroupException if the supplied {@code Account} is not
      *                                    a member of this group
      */
-    void setLocationSharingTimeEndOfMember(Account member, Date timeEnd)
-            throws AccountNotInGroupException;
+    public void setLocationSharingTimeEndOfMember(Account member, Date timeEnd)
+            throws AccountNotInGroupException {
+        GMKey key = new GMKey(member, this);
+        if (!memberships.containsKey(key))
+            throw new AccountNotInGroupException();
 
+        memberships.get(key).setLocShareTimeEnd(timeEnd);
+    }
 }

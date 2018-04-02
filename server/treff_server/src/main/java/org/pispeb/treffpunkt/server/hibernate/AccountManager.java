@@ -1,20 +1,39 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
+import org.hibernate.Session;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
 
-import java.util.Map;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * An interface for an underlying database that allows retrieval of
+ * An interface for an Hibernate database that allows retrieval and
  * creation of {@link Account}s and creation of {@link Update}s.
+ * TODO: specify session dependency
  * The user of this interface can supply a username or an email address to
  * retrieve an existing account, represented by an {@link Account} object.
  */
-public interface AccountManager {
+public class AccountManager {
 
-    // no has/contains methods because simple getters are atomic
-    // this prevents having to lock the AccountManager
+    private final Session session;
+    private final CriteriaBuilder cb;
+
+    public AccountManager(Session session) {
+        this.session = session;
+        this.cb = session.getCriteriaBuilder();
+    }
+
+    private <T extends DataObject> T getByUniqueField(Class<T> clazz, String fieldName,
+                                                             Object expectedValue) {
+        CriteriaQuery<T> query = cb.createQuery(clazz);
+        Root<T> from = query.from(clazz);
+        query.select(from);
+        query.where(cb.equal(from.get(fieldName), expectedValue));
+        return session.createQuery(query).uniqueResult();
+    }
 
     /**
      * Returns the account that is associated with the given username.
@@ -23,7 +42,9 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied username or <code>null</code> if no such account exists.
      */
-    Account getAccountByUsername(String username);
+    public Account getAccountByUsername(String username) {
+        return getByUniqueField(Account.class, "accounts.username", username);
+    }
 
     /**
      * Returns the account that is associated with the given email address.
@@ -32,7 +53,9 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied email address or <code>null</code> if no such account exists.
      */
-    Account getAccountByEmail(String email);
+    public Account getAccountByEmail(String email) {
+        return getByUniqueField(Account.class, "accounts.email", email);
+    }
 
     /**
      * Returns the account that is associated with the given ID.
@@ -41,16 +64,9 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied ID or <code>null</code> if no such account exists.
      */
-    Account getAccount(int id);
-
-    /**
-     * Returns an unmodifiable [ID -> {@code Account}] map holding all
-     * {@code Account}s that have been registered and not deleted.
-     *
-     * @return Unmodifiable [ID -> {@code Account}] map
-     * @see java.util.Collections#unmodifiableMap(Map)
-     */
-    Map<Integer, ? extends Account> getAllAccounts();
+    public Account getAccount(int id) {
+        return session.get(Account.class, id);
+    }
 
     /**
      * Creates a new account with the supplied username and password.
@@ -63,8 +79,17 @@ public interface AccountManager {
      *                                    No account will be
      *                                    created in this case.
      */
-    Account createAccount(String username, String password)
-            throws DuplicateUsernameException;
+    public Account createAccount(String username, String password)
+            throws DuplicateUsernameException {
+        if (getAccountByUsername(username) != null)
+            throw new DuplicateUsernameException();
+
+        Account account = new Account();
+        account.setUsername(username);
+        account.setPassword(password);
+        session.save(account);
+        return account;
+    }
 
     /**
      * Returns the account that is associated with the given login token.
@@ -73,7 +98,9 @@ public interface AccountManager {
      * @return An {@link Account} object representing the account with the
      * supplied login token or <code>null</code> if no such account exists.
      */
-    Account getAccountByLoginToken(String token);
+    public Account getAccountByLoginToken(String token) {
+        return getByUniqueField(Account.class, "accounts.loginToken", token);
+    }
 
     /**
      * Create a new {@code Update} with the supplied content and the supplied
@@ -86,13 +113,18 @@ public interface AccountManager {
      * <p>
      * Requires the {@code ReadLock} of all affected {@link Account}s to be
      * held.
-     *  @param updateContent The content of the {@code Update} in the format
-     *                      specified in the treffpunkt protocol document
+     *
+     * @param updateContent    The content of the {@code Update} in the format
+     *                         specified in the treffpunkt protocol document
      * @param affectedAccounts The set of {@code Account} that are affected by
      *                         this {@code Update}
      */
-    void createUpdate(String updateContent,
-                      Set<? extends Account> affectedAccounts);
+    public void createUpdate(String updateContent, Set<? extends Account> affectedAccounts) {
+        Update update = new Update();
+        update.setContent(updateContent);
+        affectedAccounts.forEach(a -> a.addUpdate(update));
+        session.save(update);
+    }
 
     /**
      * Convenience method for creating an {@code Update} that affects only a
@@ -101,13 +133,15 @@ public interface AccountManager {
      * Requires the {@code ReadLock} of the affected {@link Account} to be
      * held.
      *
-     * @param updateContent The content of the {@code Update} in the format
-     *                      specified in the treffpunkt protocol document
+     * @param updateContent   The content of the {@code Update} in the format
+     *                        specified in the treffpunkt protocol document
      * @param affectedAccount The {@code Account} that is affected by this
      *                        {@code Update}
      * @see #createUpdate(String, Set)
      */
-    void createUpdate(String updateContent,
-                      Account affectedAccount);
-
+    public void createUpdate(String updateContent, Account affectedAccount) {
+        Set<Account> set = new HashSet<>();
+        set.add(affectedAccount);
+        createUpdate(updateContent, set);
+    }
 }

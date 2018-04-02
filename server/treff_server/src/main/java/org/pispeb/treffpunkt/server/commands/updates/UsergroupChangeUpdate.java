@@ -3,7 +3,6 @@ package org.pispeb.treffpunkt.server.commands.updates;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.serializers.UsergroupCompleteSerializer;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
 
 import java.util.Date;
 

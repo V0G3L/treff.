@@ -7,10 +7,10 @@ import org.hibernate.cfg.Configuration;
 import org.junit.After;
 import org.junit.Before;
 import org.pispeb.treffpunkt.server.ConfigKeys;
-import org.pispeb.treffpunkt.server.hibernate.AccountHib;
-import org.pispeb.treffpunkt.server.hibernate.DataObjectHib;
-import org.pispeb.treffpunkt.server.hibernate.UpdateHib;
-import org.pispeb.treffpunkt.server.hibernate.UsergroupHib;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.DataObject;
+import org.pispeb.treffpunkt.server.hibernate.Update;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 
 public class HibernateDependentTest extends DatabaseDependentTest {
 
@@ -32,10 +32,10 @@ public class HibernateDependentTest extends DatabaseDependentTest {
                         config.getProperty(ConfigKeys.DB_USER.toString()))
                 .setProperty("hibernate.connection.password",
                         config.getProperty(ConfigKeys.DB_PASS.toString()))
-                .addAnnotatedClass(AccountHib.class)
-                .addAnnotatedClass(DataObjectHib.class)
-                .addAnnotatedClass(UpdateHib.class)
-                .addAnnotatedClass(UsergroupHib.class)
+                .addAnnotatedClass(Account.class)
+                .addAnnotatedClass(DataObject.class)
+                .addAnnotatedClass(Update.class)
+                .addAnnotatedClass(Usergroup.class)
                 .buildSessionFactory();
 
         // open session and transaction

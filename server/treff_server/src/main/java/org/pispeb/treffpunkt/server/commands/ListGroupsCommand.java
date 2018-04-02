@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -9,9 +11,6 @@ import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.UsergroupShallowSerializer;
 import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.HashSet;
@@ -23,9 +22,9 @@ import java.util.Set;
 public class ListGroupsCommand extends AbstractCommand {
 
 
-    public ListGroupsCommand(AccountManager accountManager,
+    public ListGroupsCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

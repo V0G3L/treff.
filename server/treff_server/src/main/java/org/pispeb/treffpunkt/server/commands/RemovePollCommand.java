@@ -1,13 +1,13 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollDeletionUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -18,9 +18,9 @@ import java.util.Date;
 public class RemovePollCommand extends GroupCommand {
 
 
-    public RemovePollCommand(AccountManager accountManager,
+    public RemovePollCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
+        super(sessionFactory,Input.class, mapper,
                 GroupLockType.WRITE_LOCK,
                 null, null); // poll removal needs special permissions
     }
