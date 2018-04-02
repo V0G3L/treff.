@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.networking;
 
 import com.jcabi.matchers.RegexMatchers;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.DatabaseDependentTest;
@@ -63,7 +64,6 @@ public class RequestHandlerTest extends DatabaseDependentTest{
         // throws exception if not a number
         response.getInt("id");
         Assert.assertTrue(response.containsKey("token"));
-        Assert.assertThat(response.getString("token"),
-                RegexMatchers.matchesPattern("[0-9a-f]{128}"));
+        Assert.assertTrue(Base64.isBase64(response.getString("token")));
     }
 }

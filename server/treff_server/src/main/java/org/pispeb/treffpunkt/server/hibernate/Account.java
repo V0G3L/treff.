@@ -101,7 +101,15 @@ public class Account extends DataObject {
      *                                    The username of this account remains
      *                                    unchanged in this case.
      */
-    public void setUsername(String username) throws DuplicateUsernameException {
+    public void setUsername(String username, AccountManager accountManager)
+            throws DuplicateUsernameException {
+        if (accountManager.getAccountByUsername(username) != null)
+            throw new DuplicateUsernameException();
+
+        this.username = username;
+    }
+
+    void setUsername(String username) {
         this.username = username;
     }
 
@@ -161,7 +169,15 @@ public class Account extends DataObject {
      *                                 The email address of this account remains
      *                                 unchanged in this case.
      */
-    public void setEmail(String email) throws DuplicateEmailException {
+    public void setEmail(String email, AccountManager accountManager)
+            throws DuplicateEmailException {
+        if (accountManager.getAccountByEmail(email) != null)
+            throw new DuplicateEmailException();
+
+        this.email = email;
+    }
+
+    void setEmail(String email) {
         this.email = email;
     }
 

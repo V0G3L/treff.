@@ -151,13 +151,9 @@ public class Usergroup extends DataObject {
      */
     public Event createEvent(String title, Position position, Date timeStart,
                              Date timeEnd, Account creator, Session session) {
-        Event event = new Event();
-        event.setTitle(title);
-        event.setPosition(position);
-        event.setTimeStart(timeStart);
-        event.setTimeEnd(timeEnd);
-        event.setCreator(creator);
+        Event event = new Event(title, position, timeStart, timeEnd, creator);
         session.save(event);
+        events.add(event);
         return event;
     }
 
@@ -174,12 +170,9 @@ public class Usergroup extends DataObject {
      */
     public Poll createPoll(String question, Account creator, Date timeVoteClose,
                            boolean multichoice, Session session) {
-        Poll poll = new Poll();
-        poll.setQuestion(question);
-        poll.setCreator(creator);
-        poll.setTimeVoteClose(timeVoteClose);
-        poll.setMultiChoice(multichoice);
+        Poll poll = new Poll(question, multichoice, timeVoteClose, creator);
         session.save(poll);
+        polls.add(poll);
         return poll;
     }
 

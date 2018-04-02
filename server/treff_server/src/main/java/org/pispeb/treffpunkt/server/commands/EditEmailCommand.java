@@ -38,7 +38,7 @@ public class EditEmailCommand extends AbstractCommand {
         // edit email
         // TODO: don't use exceptions for this
         try {
-            actingAccount.setEmail(input.email);
+            actingAccount.setEmail(input.email, accountManager);
         } catch (DuplicateEmailException e) {
             return new ErrorOutput(ErrorCode.EMAILINVALID);
         }

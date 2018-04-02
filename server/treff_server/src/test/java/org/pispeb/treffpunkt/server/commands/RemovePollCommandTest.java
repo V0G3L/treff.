@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.EventDependentTest;
 import org.pispeb.treffpunkt.server.abstracttests.PollDependentTest;
@@ -59,6 +60,7 @@ public class RemovePollCommandTest extends PollDependentTest {
         assertErrorOutput(output, 1203);
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         JsonObject output = execute(users[2]);

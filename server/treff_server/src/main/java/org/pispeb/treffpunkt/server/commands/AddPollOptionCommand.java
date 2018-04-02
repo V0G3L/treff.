@@ -50,7 +50,7 @@ public class AddPollOptionCommand extends PollCommand {
 
         // add poll option
         PollOption pO = poll.addPollOption(input.pollOption.position,
-                input.pollOption.timeStart, input.pollOption.timeEnd);
+                input.pollOption.timeStart, input.pollOption.timeEnd, session);
 
          // create update
         PollOptionChangeUpdate update =

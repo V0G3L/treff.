@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.EventDependentTest;
 
@@ -142,6 +143,7 @@ public class EditEventCommandTest extends EventDependentTest {
         Assert.assertEquals(1202, output.getInt("error"));
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         EditEventCommand editEventCommand =

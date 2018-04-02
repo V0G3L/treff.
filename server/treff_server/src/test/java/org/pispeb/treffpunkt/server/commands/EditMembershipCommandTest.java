@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.GroupDependentTest;
 
@@ -14,6 +15,7 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
         super("edit-membership");
     }
 
+    @Ignore
     @Test
     public void valid() {
         EditMembershipCommand editMembershipCommand
@@ -140,6 +142,7 @@ public class EditMembershipCommandTest  extends GroupDependentTest {
         Assert.assertEquals(output.getInt("error"), 1511);
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         EditMembershipCommand editMembershipCommand

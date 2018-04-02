@@ -38,9 +38,15 @@ public abstract class ChangeGroupMembersCommand extends GroupCommand {
 
         // check if a new member is already part of the group or not in group
         for (Account curAcc : changedAccs) {
-            if (addMembers ^ !usergroup.getAllMembers().containsKey(curAcc.getID()))
+            boolean isInGroup = usergroup.getAllMembers().containsKey(curAcc.getID());
+            if (addMembers && isInGroup)
                 return new ErrorOutput(ErrorCode.USERALREADYINGROUP);
+            if (!addMembers && !isInGroup)
+                return new ErrorOutput(ErrorCode.USERNOTINGROUP);
         }
+
+        // if removing members, also add Update to removed members
+        Set<Account> oldMembers = new HashSet<>(usergroup.getAllMembers().values());
 
         // add all new members to the group
         for (Account curAcc : changedAccs) {
@@ -56,7 +62,11 @@ public abstract class ChangeGroupMembersCommand extends GroupCommand {
                         actingAccount.getID(),
                         usergroup);
 
-        addUpdateToAllOtherMembers(update);
+        if (addMembers)
+            addUpdateToAllOtherMembers(update);
+        else {
+            addUpdateToOtherMembers(update, oldMembers);
+        }
 
         //respond
         return new Output();

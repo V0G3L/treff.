@@ -2,6 +2,7 @@ package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.PollDependentTest;
 
@@ -105,6 +106,7 @@ public class EditPollCommandTest extends PollDependentTest {
         Assert.assertEquals(1203, output.getInt("error"));
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         JsonObjectBuilder input =

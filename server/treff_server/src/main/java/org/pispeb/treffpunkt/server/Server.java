@@ -5,6 +5,10 @@ import org.hibernate.cfg.Configuration;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.pispeb.treffpunkt.server.hibernate.DataObject;
+import org.pispeb.treffpunkt.server.hibernate.Event;
+import org.pispeb.treffpunkt.server.hibernate.GroupMembership;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.hibernate.Update;
 import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.RequestHandler;
@@ -68,11 +72,17 @@ public class Server {
                         config.getProperty(ConfigKeys.DB_PASS.toString()))
                 .addAnnotatedClass(Account.class)
                 .addAnnotatedClass(DataObject.class)
+                .addAnnotatedClass(Event.class)
+                .addAnnotatedClass(GroupMembership.class)
+                .addAnnotatedClass(Poll.class)
+                .addAnnotatedClass(PollOption.class)
                 .addAnnotatedClass(Update.class)
                 .addAnnotatedClass(Usergroup.class)
                 .buildSessionFactory();
 //            accountManager = new SQLDatabase(config).getEntityManagerSQL();
             requestHandler = new RequestHandler(sessionFactory);
+
+            DataObject.setProperties(config);
     }
 
     public RequestHandler getRequestHandler() {

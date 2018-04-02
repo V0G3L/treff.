@@ -2,11 +2,16 @@ package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An object representing a event with an title, position, start and end time
@@ -16,8 +21,34 @@ import java.util.Map;
 @Table(name = "events")
 public class Event extends DataObject {
 
+    @Column
+    private String title;
+    @Column
+    private double latitude;
+    @Column
+    private double longitude;
+    @Column
+    private Date timeStart;
+    @Column
+    private Date timeEnd;
+
     @ManyToOne
     private Account creator;
+
+    @ManyToMany
+    @JoinTable(name = "event_participants")
+    private Set<Account> participants = new HashSet<>();
+
+    public Event() { }
+
+    Event(String title, Position position, Date timeStart, Date timeEnd, Account creator) {
+        this.title = title;
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.creator = creator;
+    }
 
     /**
      * Sets the title of this {@code Event}
@@ -27,7 +58,7 @@ public class Event extends DataObject {
      * @param title New title
      */
     public void setTitle(String title) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        this.title = title;
     }
 
     /**
@@ -38,7 +69,7 @@ public class Event extends DataObject {
      * @return The title of this {@code Event}
      */
     public String getTitle() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return title;
     }
 
     /**
@@ -49,7 +80,8 @@ public class Event extends DataObject {
      * @param position New position
      */
     public void setPosition(Position position) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
     }
 
     /**
@@ -60,7 +92,7 @@ public class Event extends DataObject {
      * @return The position of this {@code Event}
      */
     public Position getPosition() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return new Position(latitude, longitude);
     }
 
     /**
@@ -71,7 +103,7 @@ public class Event extends DataObject {
      * @param timeStart New start time
      */
     public void setTimeStart(Date timeStart) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        this.timeStart = timeStart;
     }
 
     /**
@@ -82,7 +114,7 @@ public class Event extends DataObject {
      * @return The start time of this {@code Event}
      */
     public Date getTimeStart() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return timeStart;
     }
 
     /**
@@ -93,7 +125,7 @@ public class Event extends DataObject {
      * @param timeEnd New end time
      */
     public void setTimeEnd(Date timeEnd) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        this.timeEnd = timeEnd;
     }
 
     /**
@@ -104,7 +136,7 @@ public class Event extends DataObject {
      * @return The end time of this {@code Event}
      */
     public Date getTimeEnd() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return timeEnd;
     }
 
     /**
@@ -115,11 +147,7 @@ public class Event extends DataObject {
      * @return The creator of this {@code Event}
      */
     public Account getCreator() {
-        throw new UnsupportedOperationException(); // TODO: implement
-    }
-
-    void setCreator(Account creator) {
-        this.creator = creator;
+        return creator;
     }
 
     /**
@@ -130,7 +158,7 @@ public class Event extends DataObject {
      * @param participant The participant
      */
     public void addParticipant(Account participant) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        participants.add(participant);
     }
 
     /**
@@ -141,7 +169,7 @@ public class Event extends DataObject {
      * @param participant The participant
      */
     public void removeParticipant(Account participant) {
-        throw new UnsupportedOperationException(); // TODO: implement
+        participants.remove(participant);
     }
 
     /**
@@ -155,6 +183,6 @@ public class Event extends DataObject {
      * @see java.util.Collections#unmodifiableMap(Map)
      */
     public Map<Integer, ? extends Account> getAllParticipants() {
-        throw new UnsupportedOperationException(); // TODO: implement
+        return toMap(participants);
     }
 }

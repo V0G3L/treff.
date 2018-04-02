@@ -1,9 +1,7 @@
 package org.pispeb.treffpunkt.server.abstracttests;
 
 import ch.vorburger.exec.ManagedProcessException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +9,6 @@ import org.junit.BeforeClass;
 import org.pispeb.treffpunkt.server.ConfigKeys;
 import org.pispeb.treffpunkt.server.TestDatabase;
 import org.pispeb.treffpunkt.server.hibernate.Account;
-import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.pispeb.treffpunkt.server.hibernate.DataObject;
 import org.pispeb.treffpunkt.server.hibernate.Event;
 import org.pispeb.treffpunkt.server.hibernate.GroupMembership;
@@ -26,7 +23,6 @@ import java.util.Properties;
 public abstract class DatabaseDependentTest extends JsonDependentTest {
 
     protected static Properties config;
-    protected AccountManager accountManager;
     protected SessionFactory sessionFactory;
 
     @BeforeClass

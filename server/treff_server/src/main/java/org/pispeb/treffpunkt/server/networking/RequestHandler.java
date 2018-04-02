@@ -5,14 +5,55 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.hibernate.SessionFactory;
-import org.pispeb.treffpunkt.server.commands.*;
+import org.pispeb.treffpunkt.server.commands.AbstractCommand;
+import org.pispeb.treffpunkt.server.commands.AcceptContactRequestCommand;
+import org.pispeb.treffpunkt.server.commands.AddGroupMembersCommand;
+import org.pispeb.treffpunkt.server.commands.AddPollOptionCommand;
+import org.pispeb.treffpunkt.server.commands.BlockAccountCommand;
+import org.pispeb.treffpunkt.server.commands.CancelContactRequestCommand;
+import org.pispeb.treffpunkt.server.commands.CreateEventCommand;
+import org.pispeb.treffpunkt.server.commands.CreateGroupCommand;
+import org.pispeb.treffpunkt.server.commands.CreatePollCommand;
+import org.pispeb.treffpunkt.server.commands.EditEmailCommand;
+import org.pispeb.treffpunkt.server.commands.EditEventCommand;
+import org.pispeb.treffpunkt.server.commands.EditGroupCommand;
+import org.pispeb.treffpunkt.server.commands.EditMembershipCommand;
+import org.pispeb.treffpunkt.server.commands.EditPasswordCommand;
+import org.pispeb.treffpunkt.server.commands.EditPollCommand;
+import org.pispeb.treffpunkt.server.commands.EditPollOptionCommand;
+import org.pispeb.treffpunkt.server.commands.EditUsernameCommand;
+import org.pispeb.treffpunkt.server.commands.GetContactListCommand;
+import org.pispeb.treffpunkt.server.commands.GetEventDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetGroupDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetMembershipDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetPollDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetPollOptionDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetUserDetailsCommand;
+import org.pispeb.treffpunkt.server.commands.GetUserIdCommand;
+import org.pispeb.treffpunkt.server.commands.JoinEventCommand;
+import org.pispeb.treffpunkt.server.commands.LeaveEventCommand;
+import org.pispeb.treffpunkt.server.commands.LeaveGroupCommand;
+import org.pispeb.treffpunkt.server.commands.ListGroupsCommand;
+import org.pispeb.treffpunkt.server.commands.LoginCommand;
+import org.pispeb.treffpunkt.server.commands.PublishPositionCommand;
+import org.pispeb.treffpunkt.server.commands.RegisterCommand;
+import org.pispeb.treffpunkt.server.commands.RejectContactRequestCommand;
+import org.pispeb.treffpunkt.server.commands.RemoveContactCommand;
+import org.pispeb.treffpunkt.server.commands.RemoveEventCommand;
+import org.pispeb.treffpunkt.server.commands.RemoveGroupMembersCommand;
+import org.pispeb.treffpunkt.server.commands.RemovePollCommand;
+import org.pispeb.treffpunkt.server.commands.RemovePollOptionCommand;
+import org.pispeb.treffpunkt.server.commands.RequestPositionCommand;
+import org.pispeb.treffpunkt.server.commands.RequestUpdatesCommand;
+import org.pispeb.treffpunkt.server.commands.SendChatMessageCommand;
+import org.pispeb.treffpunkt.server.commands.SendContactRequestCommand;
+import org.pispeb.treffpunkt.server.commands.UnblockAccountCommand;
+import org.pispeb.treffpunkt.server.commands.UpdatePositionCommand;
+import org.pispeb.treffpunkt.server.commands.VoteForOptionCommand;
+import org.pispeb.treffpunkt.server.commands.WithdrawVoteForOptionCommand;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateCommandIdentifier;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.hibernate.Account;
-import org.pispeb.treffpunkt.server.hibernate.AccountManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -21,6 +62,7 @@ import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Class to decode and handle JSON-encoded requests
@@ -45,7 +87,7 @@ public class RequestHandler {
     private Map<String, Class<? extends AbstractCommand>>
             availableCommands = new HashMap<>();
 
-    private final Logger logger = LoggerFactory.getLogger("RequestHandler");
+    private final Logger logger = Logger.getLogger("RequestHandler");
 
     public RequestHandler(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -104,10 +146,10 @@ public class RequestHandler {
             return new Response(outputString);
         } catch (Exception e) {
             // TODO: wtf, don't log plaintext credentials
-            logger.error("Internal server error on request\n\n" +
-                    "{}\n\n" +
+            logger.severe(String.format("Internal server error on request\n\n" +
+                    "%s\n\n" +
                     "Error message:\n" +
-                    "{}", requestString, e.getMessage());
+                    "%s", requestString, e.getMessage()));
             return new Response(Json.createObjectBuilder()
                     .add("error", ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                     .build()

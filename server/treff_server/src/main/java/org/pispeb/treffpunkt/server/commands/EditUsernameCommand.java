@@ -44,7 +44,7 @@ public class EditUsernameCommand extends AbstractCommand {
         // edit username
         // TODO: don't use exceptions for this
         try {
-            actingAccount.setUsername(input.username);
+            actingAccount.setUsername(input.username, accountManager);
         } catch (DuplicateUsernameException e) {
             return new ErrorOutput(ErrorCode.USERNAMEALREADYINUSE);
         }

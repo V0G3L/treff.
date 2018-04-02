@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.EventDependentTest;
 
@@ -120,6 +121,7 @@ public class CreateEventCommandTest extends EventDependentTest {
         assertErrorOutput(output, 1000);
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         JsonObject output = execute(users[2]);
