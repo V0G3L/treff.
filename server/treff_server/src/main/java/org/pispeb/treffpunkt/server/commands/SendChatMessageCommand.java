@@ -1,10 +1,11 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.ChatUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 
 import java.util.Date;
 
@@ -14,10 +15,9 @@ import java.util.Date;
 public class SendChatMessageCommand extends GroupCommand {
 
 
-    public SendChatMessageCommand(AccountManager accountManager,
+    public SendChatMessageCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.READ_LOCK,
+        super(sessionFactory,Input.class, mapper,
                 null, null); // chatting requires no permission
     }
 
@@ -40,7 +40,7 @@ public class SendChatMessageCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("message") String message,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.message = message;
         }
 

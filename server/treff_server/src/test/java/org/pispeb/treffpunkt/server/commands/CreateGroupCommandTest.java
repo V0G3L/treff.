@@ -23,7 +23,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
     @Test
     public void validRequest() {
         CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
+                = new CreateGroupCommand(sessionFactory, mapper);
         JsonArray members = Json.createArrayBuilder()
                 .add(ownUser.id)
                 .add(users[1].id)
@@ -42,7 +42,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 Matchers.greaterThanOrEqualTo(0));
 
         GetGroupDetailsCommand getGroupDetailsCommand
-                = new GetGroupDetailsCommand(accountManager, mapper);
+                = new GetGroupDetailsCommand(sessionFactory, mapper);
         JsonObjectBuilder input =
                 getCommandStubForUser("get-group-details", users[0])
                 .add("id", groupId);
@@ -81,7 +81,7 @@ public class CreateGroupCommandTest extends MultipleUsersTest {
                 || id == users[2].id || id == users[3].id)
             id += 42;
         CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
+                = new CreateGroupCommand(sessionFactory, mapper);
         JsonArray members = Json.createArrayBuilder()
                 .add(ownUser.id)
                 .add(id)

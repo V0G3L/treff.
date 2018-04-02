@@ -47,7 +47,7 @@ public abstract class PollDependentTest extends GroupDependentTest {
         input.add("poll", pollDesc);
 
         JsonObject output
-                = runCommand(new CreatePollCommand(accountManager, mapper),
+                = runCommand(new CreatePollCommand(sessionFactory, mapper),
                 input);
         pollID = output.getInt("id");
         pollCreatorID = ownUser.id;
@@ -130,7 +130,7 @@ public abstract class PollDependentTest extends GroupDependentTest {
     protected JsonObject getPollDesc(int groupID, int pollID,
                                       User executingUser) {
         return runCommand(
-                new GetPollDetailsCommand(accountManager, mapper),
+                new GetPollDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-poll-details", executingUser)
                         .add("group-id", groupID)
                         .add("id", pollID))

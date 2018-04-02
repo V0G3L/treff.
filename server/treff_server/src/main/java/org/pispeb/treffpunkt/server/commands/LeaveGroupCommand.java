@@ -1,18 +1,13 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * a command to remove accounts from a user group
@@ -20,16 +15,15 @@ import java.util.Set;
 public class LeaveGroupCommand extends GroupCommand {
 
 
-    public LeaveGroupCommand(AccountManager accountManager,
+    public LeaveGroupCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
+        super(sessionFactory, Input.class, mapper,
                 null, null); // leaving a group requires no special permission
     }
 
     @Override
     protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        usergroup.removeMember(actingAccount);
+        usergroup.removeMember(actingAccount, session);
 
         // create update for all members except the acting account
         UsergroupChangeUpdate update =
@@ -51,8 +45,6 @@ public class LeaveGroupCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() { }
-    }
+    public static class Output extends CommandOutput { }
 
 }

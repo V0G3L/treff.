@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.EventDependentTest;
 
@@ -28,7 +29,7 @@ public class RemoveEventCommandTest extends EventDependentTest {
 
         // check that event details can no longer be queried
         output = runCommand(
-                new GetEventDetailsCommand(accountManager, mapper),
+                new GetEventDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-event-details", users[0])
                         .add("group-id", groupId)
                         .add("id", eventID));
@@ -58,6 +59,7 @@ public class RemoveEventCommandTest extends EventDependentTest {
         assertErrorOutput(output, 1202);
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         JsonObject output = execute(users[2]);
@@ -82,7 +84,7 @@ public class RemoveEventCommandTest extends EventDependentTest {
                 .add("group-id", groupID)
                 .add("id", eventID);
 
-        return runCommand(new RemoveEventCommand(accountManager, mapper),
+        return runCommand(new RemoveEventCommand(sessionFactory, mapper),
                 input);
     }
 }

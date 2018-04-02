@@ -1,8 +1,15 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +17,38 @@ import java.util.Set;
  * An object representing a event with an title, position, start and end time
  * and a set of participants.
  */
-public interface Event extends DataObject, Comparable<Event> {
+@Entity
+@Table(name = "events")
+public class Event extends DataObject {
+
+    @Column
+    private String title;
+    @Column
+    private double latitude;
+    @Column
+    private double longitude;
+    @Column
+    private Date timeStart;
+    @Column
+    private Date timeEnd;
+
+    @ManyToOne
+    private Account creator;
+
+    @ManyToMany
+    @JoinTable(name = "event_participants")
+    private Set<Account> participants = new HashSet<>();
+
+    public Event() { }
+
+    Event(String title, Position position, Date timeStart, Date timeEnd, Account creator) {
+        this.title = title;
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
+        this.timeStart = timeStart;
+        this.timeEnd = timeEnd;
+        this.creator = creator;
+    }
 
     /**
      * Sets the title of this {@code Event}
@@ -19,7 +57,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param title New title
      */
-    void setTitle(String title);
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * Returns the title of this {@code Event}
@@ -28,7 +68,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The title of this {@code Event}
      */
-    String getTitle();
+    public String getTitle() {
+        return title;
+    }
 
     /**
      * Sets the position of this {@code Event}
@@ -37,7 +79,10 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param position New position
      */
-    void setPosition(Position position);
+    public void setPosition(Position position) {
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
+    }
 
     /**
      * Returns the position of this {@code Event}
@@ -46,7 +91,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The position of this {@code Event}
      */
-    Position getPosition();
+    public Position getPosition() {
+        return new Position(latitude, longitude);
+    }
 
     /**
      * Sets the start time of this {@code Event}
@@ -55,7 +102,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param timeStart New start time
      */
-    void setTimeStart(Date timeStart);
+    public void setTimeStart(Date timeStart) {
+        this.timeStart = timeStart;
+    }
 
     /**
      * Returns the start time of this {@code Event}
@@ -64,7 +113,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The start time of this {@code Event}
      */
-    Date getTimeStart();
+    public Date getTimeStart() {
+        return timeStart;
+    }
 
     /**
      * Sets the end time of this {@code Event}
@@ -73,7 +124,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param timeEnd New end time
      */
-    void setTimeEnd(Date timeEnd);
+    public void setTimeEnd(Date timeEnd) {
+        this.timeEnd = timeEnd;
+    }
 
     /**
      * Returns the end time of this {@code Event}
@@ -82,7 +135,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The end time of this {@code Event}
      */
-    Date getTimeEnd();
+    public Date getTimeEnd() {
+        return timeEnd;
+    }
 
     /**
      * Returns the creator of this {@code Event}
@@ -91,7 +146,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @return The creator of this {@code Event}
      */
-    Account getCreator();
+    public Account getCreator() {
+        return creator;
+    }
 
     /**
      * Adds a participant to this {@code Event}
@@ -100,7 +157,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param participant The participant
      */
-    void addParticipant(Account participant);
+    public void addParticipant(Account participant) {
+        participants.add(participant);
+    }
 
     /**
      * Removes a participant from this {@code Event}
@@ -109,7 +168,9 @@ public interface Event extends DataObject, Comparable<Event> {
      *
      * @param participant The participant
      */
-    void removeParticipant(Account participant);
+    public void removeParticipant(Account participant) {
+        participants.remove(participant);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -121,6 +182,7 @@ public interface Event extends DataObject, Comparable<Event> {
      * {@code Event}.
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllParticipants();
-
+    public Map<Integer, ? extends Account> getAllParticipants() {
+        return toMap(participants);
+    }
 }

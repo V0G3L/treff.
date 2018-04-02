@@ -1,15 +1,49 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
+import org.hibernate.Session;
 import org.pispeb.treffpunkt.server.Position;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An object representing a poll with an question, a point in time at which
  * voting closes and poll options up for voting.
  */
-public interface Poll extends DataObject, Comparable<Poll> {
+@Entity
+@Table(name = "polls")
+public class Poll extends DataObject {
+
+    @Column
+    private String question;
+    @Column
+    private boolean isMultiChoice;
+    @Column
+    private Date timeVoteClose;
+
+    @ManyToOne
+    private Account creator;
+
+    @OneToMany
+    private Set<PollOption> options = new HashSet<>();
+
+    public Poll() { }
+
+    Poll(String question, boolean isMultiChoice, Date timeVoteClose, Account creator) {
+        this.question = question;
+        this.isMultiChoice = isMultiChoice;
+        this.timeVoteClose = timeVoteClose;
+        this.creator = creator;
+    }
 
     /**
      * Gets the title of this {@code Poll}
@@ -18,7 +52,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @return The question
      */
-    String getQuestion();
+    public String getQuestion() {
+        return question;
+    }
 
     /**
      * Sets the title of this {@code Poll}
@@ -27,21 +63,31 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @param question New question
      */
-    void setQuestion(String question);
+    public void setQuestion(String question) {
+        this.question = question;
+    }
 
-    Map<Integer, ? extends PollOption> getPollOptions();
+    public Map<Integer, ? extends PollOption> getPollOptions() {
+        return toMap(options);
+    }
 
     /**
      * Creates a new {@code PollOption} with the supplied details
      * <p>
      * Requires a {@code WriteLock}.
      *
-     * @param position The position of the new {@code PollOption}
+     * @param position  The position of the new {@code PollOption}
      * @param timeStart The start time of the new {@code PollOption}
-     * @param timeEnd The end time of the new {@code PollOption}
+     * @param timeEnd   The end time of the new {@code PollOption}
      * @return The newly created {@code PollOption}
      */
-    PollOption addPollOption(Position position, Date timeStart, Date timeEnd);
+    public PollOption addPollOption(Position position, Date timeStart, Date timeEnd,
+                                    Session session) {
+        PollOption option = new PollOption(position, timeStart, timeEnd);
+        session.save(option);
+        options.add(option);
+        return option;
+    }
 
     /**
      * Checks whether an {@code Account} can vote for multiple
@@ -52,7 +98,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      * @return {@code true} if and only if voting for multiple
      * {@code PollOption}s is allowed
      */
-    boolean isMultiChoice();
+    public boolean isMultiChoice() {
+        return isMultiChoice;
+    }
 
     /**
      * Sets whether an {@code Account} can vote for multiple {@code PollOption}s
@@ -63,7 +111,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      * @param multiChoice {@code true} if and only if voting for multiple
      *                    {@code PollOption}s is to be allowed
      */
-    void setMultiChoice(boolean multiChoice);
+    public void setMultiChoice(boolean multiChoice) {
+        this.isMultiChoice = multiChoice;
+    }
 
     /**
      * Gets the vote close time of this {@code Poll}
@@ -72,7 +122,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @return The vote close time
      */
-    Date getTimeVoteClose();
+    public Date getTimeVoteClose() {
+        return timeVoteClose;
+    }
 
     /**
      * Sets the vote close time of this {@code Poll}
@@ -81,7 +133,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @param timeVoteClose The vote close time
      */
-    void setTimeVoteClose(Date timeVoteClose);
+    public void setTimeVoteClose(Date timeVoteClose) {
+        this.timeVoteClose = timeVoteClose;
+    }
 
     /**
      * Gets the creator of this {@code Poll}
@@ -90,7 +144,9 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @return The creator
      */
-    Account getCreator();
+    public Account getCreator() {
+        return creator;
+    }
 
     /**
      * Ends the poll, locking the voting and creating an {@link Event} based
@@ -102,5 +158,7 @@ public interface Poll extends DataObject, Comparable<Poll> {
      *
      * @return The created Event
      */
-    Event endPoll();
+    public Event endPoll() {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 }

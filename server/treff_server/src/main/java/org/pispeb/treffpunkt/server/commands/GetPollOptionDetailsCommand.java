@@ -1,23 +1,24 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.serializers
         .PollOptionCompleteSerializer;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 
 public class GetPollOptionDetailsCommand extends PollOptionCommand {
 
-    public GetPollOptionDetailsCommand(AccountManager accountManager,
-                                 ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper, PollOptionLockType.READ_LOCK);
+    public GetPollOptionDetailsCommand(SessionFactory sessionFactory,
+                                       ObjectMapper mapper) {
+        super(sessionFactory, Input.class, mapper);
     }
 
     @Override
-    protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
+    protected CommandOutput executeOnPollOption(PollOptionInput pollOptionInput) {
         return new Output(pollOption);
     }
 

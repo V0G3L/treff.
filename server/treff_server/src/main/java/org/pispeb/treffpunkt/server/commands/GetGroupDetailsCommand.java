@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -8,50 +10,41 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.UsergroupCompleteSerializer;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
  * a command to get a detailed description of a user group
  */
-public class GetGroupDetailsCommand extends AbstractCommand {
+public class GetGroupDetailsCommand extends GroupCommand {
 
 
-    public GetGroupDetailsCommand(AccountManager accountManager,
+    public GetGroupDetailsCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory, Input.class, mapper,
+                null, null); // getting details requires no permission
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected CommandOutput executeOnGroup(GroupInput groupInput) {
+        Input input = (Input) groupInput;
 
-        // check if account still exists
-        Account actingAccount =
-                getSafeForReading(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+        Account actingAccount = input.getActingAccount();
 
         // get group
-        Usergroup group
-                = getSafeForReading(actingAccount.getAllGroups()
-                .get(input.groupId));
+        Usergroup group = actingAccount.getAllGroups().get(input.groupID);
         if (group == null)
             return new ErrorOutput(ErrorCode.GROUPIDINVALID);
 
         return new Output(group);
     }
 
-    public static class Input extends CommandInputLoginRequired {
-
-        final int groupId;
+    public static class Input extends GroupInput {
 
         public Input(@JsonProperty("id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token);
-            this.groupId = groupId;
+            super(token, groupId);
         }
     }
 

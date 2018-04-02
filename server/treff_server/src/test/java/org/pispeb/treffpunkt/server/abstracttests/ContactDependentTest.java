@@ -24,7 +24,7 @@ public abstract class ContactDependentTest extends ContactRequestDependentTest {
 
     private void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+                = new AcceptContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser("accept-contact-request", receiver);

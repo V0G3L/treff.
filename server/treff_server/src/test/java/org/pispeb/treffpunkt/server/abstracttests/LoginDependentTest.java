@@ -37,7 +37,7 @@ public abstract class LoginDependentTest extends CommandTest {
                                    String password) {
 
         RegisterCommand registerCommand
-                = new RegisterCommand(accountManager, mapper);
+                = new RegisterCommand(sessionFactory, mapper);
         JsonObject output = runCommand(registerCommand,
                 Json.createObjectBuilder()
                         .add("cmd", "register")

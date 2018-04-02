@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.serializers
         .PollOptionCompleteSerializer;
-import org.pispeb.treffpunkt.server.interfaces.PollOption;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 
 import java.util.Date;
 

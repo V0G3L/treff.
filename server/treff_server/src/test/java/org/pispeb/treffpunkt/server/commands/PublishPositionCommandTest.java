@@ -19,7 +19,7 @@ public class PublishPositionCommandTest extends PositionTest {
     public void validPublication() {
         // get the current membership
         GetMembershipDetailsCommand getMembershipDetailsCommand
-                = new GetMembershipDetailsCommand(accountManager, mapper);
+                = new GetMembershipDetailsCommand(sessionFactory, mapper);
         JsonObjectBuilder input
                 = getCommandStubForUser("get-membership-details", ownUser);
 
@@ -75,7 +75,7 @@ public class PublishPositionCommandTest extends PositionTest {
     @Override
     protected JsonObject execute(User exec, int group, long time) {
         PublishPositionCommand publishPositionCommand
-                = new PublishPositionCommand(accountManager, mapper);
+                = new PublishPositionCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, exec);

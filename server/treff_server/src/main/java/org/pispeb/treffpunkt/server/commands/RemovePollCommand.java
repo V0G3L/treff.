@@ -1,13 +1,14 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollDeletionUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Poll;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -15,26 +16,17 @@ import java.util.Date;
 /**
  * a command to delete a poll of a user group
  */
-public class RemovePollCommand extends GroupCommand {
+public class RemovePollCommand extends PollCommand {
 
 
-    public RemovePollCommand(AccountManager accountManager,
+    public RemovePollCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
-                null, null); // poll removal needs special permissions
+        super(sessionFactory, Input.class, mapper);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        Input input = (Input) groupInput;
-
-        // get poll
-        Poll poll
-                = getSafeForWriting(usergroup.getAllPolls().get(input.pollId));
-        if (poll == null) {
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
-        }
+    protected CommandOutput executeOnPoll(PollInput pollInput) {
+        Input input = (Input) pollInput;
 
         // check that actingAccount is creator or has edit permissions
         if (!usergroup.checkPermissionOfMember(actingAccount, Permission
@@ -42,9 +34,6 @@ public class RemovePollCommand extends GroupCommand {
                 && !(poll.getCreator().getID() == actingAccount.getID())) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
-
-        // remove the poll
-        poll.delete();
 
         // create update
         PollDeletionUpdate update =
@@ -54,22 +43,21 @@ public class RemovePollCommand extends GroupCommand {
                         poll.getID());
         addUpdateToAllOtherMembers(update);
 
+        // remove the poll
+        poll.delete(session);
+
         // respond
         return new Output();
     }
 
-    public static class Input extends GroupInput {
-
-        final int pollId;
+    public static class Input extends PollInput {
 
         public Input(@JsonProperty("id") int pollId,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token, groupId);
-            this.pollId = pollId;
+            super(token, groupId, pollId);
         }
     }
 
-    public static class Output extends CommandOutput {
-    }
+    public static class Output extends CommandOutput { }
 }

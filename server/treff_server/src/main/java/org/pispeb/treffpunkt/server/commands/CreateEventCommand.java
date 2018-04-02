@@ -1,23 +1,18 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.EventCreateDescription;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
-import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.EventChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Event;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
+import org.pispeb.treffpunkt.server.hibernate.Event;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
-import java.util.HashSet;
 
 /**
  * a command to create an event
@@ -25,10 +20,9 @@ import java.util.HashSet;
 public class CreateEventCommand extends GroupCommand {
 
 
-    public CreateEventCommand(AccountManager accountManager,
+    public CreateEventCommand(SessionFactory sessionFactory,
                               ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
+        super(sessionFactory,Input.class, mapper,
                 Permission.CREATE_EVENT,
                 ErrorCode.NOPERMISSIONCREATEEVENT);
     }
@@ -51,7 +45,8 @@ public class CreateEventCommand extends GroupCommand {
                 input.event.position,
                 input.event.timeStart,
                 input.event.timeEnd,
-                input.getActingAccount());
+                input.getActingAccount(),
+                session);
 
         // create update
         EventChangeUpdate update =
@@ -74,7 +69,7 @@ public class CreateEventCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("event") EventCreateDescription event,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.groupId = groupId;
             this.event = event;
         }

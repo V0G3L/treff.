@@ -1,14 +1,21 @@
 package org.pispeb.treffpunkt.server;
 
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.DataObject;
+import org.pispeb.treffpunkt.server.hibernate.Event;
+import org.pispeb.treffpunkt.server.hibernate.GroupMembership;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
+import org.pispeb.treffpunkt.server.hibernate.Update;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.RequestHandler;
-import org.pispeb.treffpunkt.server.sql.SQLDatabase;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.Properties;
 
 public class Server {
@@ -18,9 +25,8 @@ public class Server {
             ".properties").getFile();
     private static final String CONFIG_FILE_PATH = "config.properties";
     private static Server instance = null;
-
-    private AccountManager accountManager;
-    private RequestHandler requestHandler;
+    private final SessionFactory sessionFactory;
+    private final RequestHandler requestHandler;
 
     public static Server getInstance() {
         if (instance == null)
@@ -52,22 +58,35 @@ public class Server {
             }
         }
 
-        try {
-            accountManager = new SQLDatabase(config).getEntityManagerSQL();
-            requestHandler = new RequestHandler(accountManager);
-        } catch (SQLException | NoSuchAlgorithmException e) {
-            // TODO: error message and exit
-            e.printStackTrace();
-        }
-    }
+        // TODO: init Hibernate
+        sessionFactory = new Configuration()
+                .configure()
+                .setProperty("hibernate.connection.url",
+                        String.format("jdbc:mysql://%s:%d/%s?serverTimezone=UTC",
+                                config.getProperty(ConfigKeys.DB_ADDRESS.toString()),
+                                Integer.parseInt(config.getProperty(ConfigKeys.DB_PORT.toString())),
+                                config.getProperty(ConfigKeys.DB_DBNAME.toString())))
+                .setProperty("hibernate.connection.username",
+                        config.getProperty(ConfigKeys.DB_USER.toString()))
+                .setProperty("hibernate.connection.password",
+                        config.getProperty(ConfigKeys.DB_PASS.toString()))
+                .addAnnotatedClass(Account.class)
+                .addAnnotatedClass(DataObject.class)
+                .addAnnotatedClass(Event.class)
+                .addAnnotatedClass(GroupMembership.class)
+                .addAnnotatedClass(Poll.class)
+                .addAnnotatedClass(PollOption.class)
+                .addAnnotatedClass(Update.class)
+                .addAnnotatedClass(Usergroup.class)
+                .buildSessionFactory();
+//            accountManager = new SQLDatabase(config).getEntityManagerSQL();
+            requestHandler = new RequestHandler(sessionFactory);
 
-    public AccountManager getAccountManager() {
-        return accountManager;
+            DataObject.setProperties(config);
     }
 
     public RequestHandler getRequestHandler() {
         return requestHandler;
     }
-
 
 }

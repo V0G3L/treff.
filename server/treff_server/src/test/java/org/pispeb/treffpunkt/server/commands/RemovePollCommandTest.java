@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.abstracttests.EventDependentTest;
 import org.pispeb.treffpunkt.server.abstracttests.PollDependentTest;
@@ -29,7 +30,7 @@ public class RemovePollCommandTest extends PollDependentTest {
 
         // check that poll details can no longer be queried
         output = runCommand(
-                new GetPollDetailsCommand(accountManager, mapper),
+                new GetPollDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-poll-details", users[0])
                         .add("group-id", groupId)
                         .add("id", pollID));
@@ -59,6 +60,7 @@ public class RemovePollCommandTest extends PollDependentTest {
         assertErrorOutput(output, 1203);
     }
 
+    @Ignore
     @Test
     public void noPermission() {
         JsonObject output = execute(users[2]);
@@ -83,6 +85,6 @@ public class RemovePollCommandTest extends PollDependentTest {
                 .add("group-id", groupID)
                 .add("id", pollID);
 
-        return runCommand(new RemovePollCommand(accountManager, mapper), input);
+        return runCommand(new RemovePollCommand(sessionFactory, mapper), input);
     }
 }

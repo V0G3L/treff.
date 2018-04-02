@@ -38,7 +38,7 @@ public abstract class EventDependentTest extends GroupDependentTest {
     @Before
     public void prepareEvent() {
         CreateEventCommand createEventCommand
-                = new CreateEventCommand(accountManager, mapper);
+                = new CreateEventCommand(sessionFactory, mapper);
 
         // ownUser created the group and thus
         // has the permission to create events
@@ -157,7 +157,7 @@ public abstract class EventDependentTest extends GroupDependentTest {
     protected JsonObject getEventDesc(int groupID, int eventID,
                                       User executingUser) {
         return runCommand(
-                new GetEventDetailsCommand(accountManager, mapper),
+                new GetEventDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-event-details", executingUser)
                         .add("group-id", groupID)
                         .add("id", eventID))

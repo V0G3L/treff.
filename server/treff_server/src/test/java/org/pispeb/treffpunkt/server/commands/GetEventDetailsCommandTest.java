@@ -33,7 +33,7 @@ public class GetEventDetailsCommandTest extends EventDependentTest{
     @Test
     public void groupIdInvalid() {
         JsonObject output =
-                runCommand(new GetEventDetailsCommand(accountManager, mapper),
+                runCommand(new GetEventDetailsCommand(sessionFactory, mapper),
                         inputBuilder.add("group-id",groupId+1)
                                 .add("id",eventID));
         Assert.assertEquals(1201, output.getInt("error"));
@@ -42,7 +42,7 @@ public class GetEventDetailsCommandTest extends EventDependentTest{
     @Test
     public void eventIdInvalid() {
         JsonObject output =
-                runCommand(new GetEventDetailsCommand(accountManager, mapper),
+                runCommand(new GetEventDetailsCommand(sessionFactory, mapper),
                         inputBuilder.add("group-id",groupId+1)
                                 .add("id",eventID));
         Assert.assertEquals(1201, output.getInt("error"));

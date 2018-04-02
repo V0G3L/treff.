@@ -53,7 +53,7 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
 
     protected List<JsonObject> getUpdatesForUser(User user) {
         RequestUpdatesCommand requestUpdatesCommand
-                = new RequestUpdatesCommand(accountManager, mapper);
+                = new RequestUpdatesCommand(sessionFactory, mapper);
         JsonObject output = runCommand(requestUpdatesCommand,
                 getCommandStubForUser("request-updates", user));
         return output.getJsonArray("updates")
@@ -66,7 +66,7 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
 
     protected JsonObject getSingleUpdateForUser(User user) {
         List<JsonObject> allUpdates = getUpdatesForUser(user);
-        Assert.assertTrue(allUpdates.size() == 1);
+        Assert.assertEquals(1, allUpdates.size());
         return allUpdates.get(0);
     }
 
@@ -82,7 +82,7 @@ public abstract class MultipleUsersTest extends LoginDependentTest {
      */
     protected ContactList getContactsOfUser(User user) {
         GetContactListCommand getContactListCommand
-                = new GetContactListCommand(accountManager, mapper);
+                = new GetContactListCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser("get-contact-list", user);

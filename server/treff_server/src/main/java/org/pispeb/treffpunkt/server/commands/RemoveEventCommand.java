@@ -1,13 +1,14 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.EventDeletionUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Event;
+import org.pispeb.treffpunkt.server.hibernate.Event;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -18,10 +19,9 @@ import java.util.Date;
 public class RemoveEventCommand extends GroupCommand {
 
 
-    public RemoveEventCommand(AccountManager accountManager,
+    public RemoveEventCommand(SessionFactory sessionFactory,
                               ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
+        super(sessionFactory,Input.class, mapper,
                 null, null); // 'remove' needs special permission checking
     }
 
@@ -30,8 +30,7 @@ public class RemoveEventCommand extends GroupCommand {
         Input input = (Input) groupInput;
 
         // get event
-        Event event = getSafeForWriting(usergroup.getAllEvents()
-                .get(input.eventId));
+        Event event = usergroup.getAllEvents().get(input.eventId);
         if (event == null) {
             return new ErrorOutput(ErrorCode.EVENTIDINVALID);
         }
@@ -43,9 +42,6 @@ public class RemoveEventCommand extends GroupCommand {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
         }
 
-        // remove the event
-        event.delete();
-
         // create update
         EventDeletionUpdate update =
                 new EventDeletionUpdate(new Date(),
@@ -53,6 +49,9 @@ public class RemoveEventCommand extends GroupCommand {
                         usergroup.getID(),
                         event.getID());
         addUpdateToAllOtherMembers(update);
+
+        // remove the event
+        event.delete(session);
 
         // respond
         return new Output();
@@ -65,11 +64,10 @@ public class RemoveEventCommand extends GroupCommand {
         public Input(@JsonProperty("id") int eventId,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.eventId = eventId;
         }
     }
 
-    public static class Output extends CommandOutput {
-    }
+    public static class Output extends CommandOutput { }
 }

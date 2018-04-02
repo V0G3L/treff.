@@ -17,7 +17,7 @@ public class LoginCommandTest extends MultipleUsersTest {
 
     @Test
     public void valid() {
-        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
+        LoginCommand loginCommand = new LoginCommand(sessionFactory, mapper);
         inputBuilder.add("user", users[1].username);
         inputBuilder.add("pass", users[1].password);
         JsonObject output
@@ -32,7 +32,7 @@ public class LoginCommandTest extends MultipleUsersTest {
 
     @Test
     public void invalidUsername() {
-        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
+        LoginCommand loginCommand = new LoginCommand(sessionFactory, mapper);
         inputBuilder.add("user", "sevenforthedwarflords");
         inputBuilder.add("pass", "inhallsofstone");
         JsonObject output = runCommand(loginCommand,inputBuilder);
@@ -42,7 +42,7 @@ public class LoginCommandTest extends MultipleUsersTest {
 
     @Test
     public void invalidCredentials() {
-        LoginCommand loginCommand = new LoginCommand(accountManager, mapper);
+        LoginCommand loginCommand = new LoginCommand(sessionFactory, mapper);
         inputBuilder.add("user", users[1].username);
         inputBuilder.add("pass", "nineformortalmen");
         JsonObject output = runCommand(loginCommand,inputBuilder);

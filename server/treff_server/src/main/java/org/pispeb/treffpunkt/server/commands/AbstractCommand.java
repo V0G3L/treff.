@@ -1,18 +1,23 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.DataObject;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import javax.json.JsonObject;
+import javax.persistence.PersistenceException;
+import javax.persistence.RollbackException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,11 +31,11 @@ import java.util.function.Function;
  */
 public abstract class AbstractCommand {
 
-    protected AccountManager accountManager;
+    private final SessionFactory sessionFactory;
     private final Class<? extends CommandInput> expectedInput;
     protected final ObjectMapper mapper;
-
-    private Set<Lock> acquiredLocks = new HashSet<>();
+    protected AccountManager accountManager;
+    protected Session session;
 
     /**
      * Constructs a new command that operates on the database represented by
@@ -49,10 +54,10 @@ public abstract class AbstractCommand {
      * @param expectedInput
      * @param mapper
      */
-    protected AbstractCommand(AccountManager accountManager,
+    protected AbstractCommand(SessionFactory sessionFactory,
                               Class<? extends CommandInput> expectedInput,
                               ObjectMapper mapper) {
-        this.accountManager = accountManager;
+        this.sessionFactory = sessionFactory;
         this.expectedInput = expectedInput;
         this.mapper = mapper;
     }
@@ -81,30 +86,53 @@ public abstract class AbstractCommand {
         if (!commandInput.syntaxCheck())
             return errorToString(ErrorCode.SYNTAXINVALID);
 
-        // for commands that require login, set account manager and check token
-        if (commandInput instanceof CommandInputLoginRequired) {
-            CommandInputLoginRequired cmdInputLoginReq
-                    = (CommandInputLoginRequired) commandInput;
+        // start session and transaction and create AccountManager
+        session = sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        try { // always close session
+            accountManager = new AccountManager(session);
 
-            cmdInputLoginReq.setAccountManager(accountManager);
-            if (cmdInputLoginReq.getActingAccount() == null) {
-                return errorToString(ErrorCode.TOKENINVALID);
+            // for commands that require login, check token
+            if (commandInput instanceof CommandInputLoginRequired) {
+                CommandInputLoginRequired cmdInputLoginReq
+                        = (CommandInputLoginRequired) commandInput;
+
+                if (!cmdInputLoginReq.checkToken(accountManager)) {
+                    return errorToString(ErrorCode.TOKENINVALID);
+                }
             }
-        }
 
-        // make sure to release all locks after execution
-        try {
-            // serialize before releasing locks
-            CommandOutput output = executeInternal(commandInput);
-            return mapper.writeValueAsString(output);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
+            try {
+                CommandOutput output = executeInternal(commandInput);
+                // need to serialize output before closing session
+                String outputString = mapper.writeValueAsString(output);
+
+                // commit changes
+                try {
+                    tx.commit();
+                    return outputString;
+                } catch (RollbackException e) {
+                    // try rollback
+                    try {
+                        tx.rollback();
+                    } catch (PersistenceException eP) {
+                        throw new ProgrammingException(String.format(
+                                "Rollback failed!\n" +
+                                        "Commit exception:\n%s\nRollback exception:\n%s\n",
+                                e.getMessage(),
+                                eP.getMessage()));
+                    }
+                    throw new ProgrammingException(e);
+                }
+            } catch (JsonProcessingException e) {
+                throw new ProgrammingException(e);
+            }
         } finally {
-            releaseAllLocks();
+            session.close();
         }
     }
 
-    protected abstract CommandOutput executeInternal(CommandInput commandInput) throws JsonProcessingException;
+    protected abstract CommandOutput executeInternal(CommandInput commandInput);
 
     private String errorToString(ErrorCode errorCode) {
         try {
@@ -112,80 +140,6 @@ public abstract class AbstractCommand {
         } catch (JsonProcessingException e) {
             throw new ProgrammingException(e);
         }
-    }
-
-    private void acquireLock(Lock lock) {
-        acquiredLocks.add(lock);
-        lock.lock();
-    }
-
-    private void releaseLock(Lock lock) {
-        if (!acquiredLocks.contains(lock))
-            throw new IllegalArgumentException(
-                    "A lock was to be released that was not acquired before.");
-        acquiredLocks.remove(lock);
-        lock.unlock();
-    }
-
-    protected void releaseReadLock(DataObject obj) {
-        releaseLock(obj.getReadWriteLock().readLock());
-    }
-
-    protected void releaseWriteLock(DataObject obj) {
-        releaseLock(obj.getReadWriteLock().writeLock());
-    }
-
-    private void releaseAllLocks() {
-        acquiredLocks.forEach(Lock::unlock);
-        acquiredLocks.clear();
-    }
-
-    private <T extends DataObject> T getSafe(T obj,
-                                             Function<T, Lock> lockFunction) {
-        // make sure the object exists, i.e. it is not null
-        if (obj == null)
-            return null;
-        // acquire the lock and make sure the object was not deleted (in the
-        // meantime)
-        acquireLock(lockFunction.apply(obj));
-        if (obj.isDeleted())
-            return null;
-        else
-            return obj;
-    }
-
-    /**
-     * Checks that the supplied {@link DataObject} is not equal to null,
-     * acquires its ReadLock and checks that the {@code DataObject} was not
-     * deleted before the lock was acquired.
-     * <p>
-     * Will return the supplied {@code DataObject} if all checks are
-     * successful or
-     * null otherwise.
-     *
-     * @param obj The {@code DataObject} for which the checks are to be made.
-     *            May be null.
-     * @param <T> A subclass of {@code DataObject}.
-     * @return The supplied {@code DataObject} if all checks were successful
-     * and the lock has been acquired, null otherwise.
-     */
-    protected <T extends DataObject> T getSafeForReading(T obj) {
-        return getSafe(obj, t -> t.getReadWriteLock().readLock());
-    }
-
-    /**
-     * Like {@link #getSafeForReading(DataObject)} but acquires the WriteLock
-     * instead.
-     *
-     * @param obj The {@code DataObject} for which the checks are to be made.
-     *            May be null.
-     * @param <T> A subclass of {@code DataObject}.
-     * @return The supplied {@code DataObject} if all checks were successful
-     * and the lock has been acquired, null otherwise.
-     * @see #getSafeForReading(DataObject)
-     */
-    protected <T extends DataObject> T getSafeForWriting(T obj) {
-        return getSafe(obj, t -> t.getReadWriteLock().writeLock());
     }
 
     /**

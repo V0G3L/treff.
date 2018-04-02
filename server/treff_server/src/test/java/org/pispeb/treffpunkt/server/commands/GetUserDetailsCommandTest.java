@@ -20,7 +20,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
     @Test
     public void valid() {
         GetUserDetailsCommand getUserDetailsCommand
-                = new GetUserDetailsCommand(accountManager, mapper);
+                = new GetUserDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", users[1].id);
         JsonObject output = runCommand(getUserDetailsCommand, inputBuilder);
 
@@ -35,7 +35,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
     @Test
     public void invalidToken() {
         GetUserDetailsCommand getUserDetailsCommand
-                = new GetUserDetailsCommand(accountManager, mapper);
+                = new GetUserDetailsCommand(sessionFactory, mapper);
         JsonObjectBuilder inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "get-user-details")
                 .add("token", "0")
@@ -48,7 +48,7 @@ public class GetUserDetailsCommandTest extends MultipleUsersTest {
     @Test
     public void invalidUserId() {
         GetUserDetailsCommand getUserDetailsCommand
-                = new GetUserDetailsCommand(accountManager, mapper);
+                = new GetUserDetailsCommand(sessionFactory, mapper);
         int invalidUserId = 23;
         while (invalidUserId == ownUser.id || invalidUserId == users[1].id
                 || invalidUserId == users[2].id || invalidUserId == users[3].id)

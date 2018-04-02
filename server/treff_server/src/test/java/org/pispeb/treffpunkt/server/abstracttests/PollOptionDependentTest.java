@@ -44,7 +44,7 @@ public abstract class PollOptionDependentTest extends PollDependentTest {
                 .add("poll-option", pollOption.build());
 
         JsonObject output =
-                runCommand(new AddPollOptionCommand(accountManager, mapper),
+                runCommand(new AddPollOptionCommand(sessionFactory, mapper),
                         input);
         pollOptionId = output.getInt("id");
 

@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
@@ -8,8 +10,7 @@ import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateEmailException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
@@ -18,29 +19,26 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class EditEmailCommand extends AbstractCommand {
 
 
-    public EditEmailCommand(AccountManager accountManager,
+    public EditEmailCommand(SessionFactory sessionFactory,
                             ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) throws
             DatabaseException {
         Input input = (Input) commandInput;
-
-        // check if account still exists
-        Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+        Account actingAccount = input.getActingAccount();
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.pass)) {
             return new ErrorOutput(ErrorCode.CREDWRONG);
         }
+
         // edit email
+        // TODO: don't use exceptions for this
         try {
-            actingAccount.setEmail(input.email);
+            actingAccount.setEmail(input.email, accountManager);
         } catch (DuplicateEmailException e) {
             return new ErrorOutput(ErrorCode.EMAILINVALID);
         }
@@ -67,10 +65,6 @@ public class EditEmailCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 
 }

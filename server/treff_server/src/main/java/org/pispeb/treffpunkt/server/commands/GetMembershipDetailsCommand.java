@@ -1,12 +1,13 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -17,11 +18,10 @@ import java.util.Date;
 public class GetMembershipDetailsCommand extends GroupCommand {
 
 
-    public GetMembershipDetailsCommand(AccountManager accountManager,
+    public GetMembershipDetailsCommand(SessionFactory sessionFactory,
                                        ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.READ_LOCK,
-                null,null);
+        super(sessionFactory, Input.class, mapper,
+                null, null);
     }
 
     @Override
@@ -29,12 +29,14 @@ public class GetMembershipDetailsCommand extends GroupCommand {
         Input input = (Input) commandInput;
 
         Account account = accountManager.getAccount(input.id);
-        if (null == account
-                .getAllGroups().get(input.groupId))
+        if (account == null)
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
+        if (!usergroup.getAllMembers().containsKey(account.getID()))
             return new ErrorOutput(ErrorCode.USERNOTINGROUP);
 
+        // assemble output
         Date d = usergroup.getLocationSharingTimeEndOfMember(account);
-        long locationSharingTime = (d == null)?0:d.getTime();
+        long locationSharingTime = (d == null) ? 0 : d.getTime();
         MembershipDescription mB =
                 new MembershipDescription(usergroup.getID(), account.getID(),
                         locationSharingTime,
@@ -51,7 +53,7 @@ public class GetMembershipDetailsCommand extends GroupCommand {
         public Input(@JsonProperty("id") int id,
                      @JsonProperty("group-id") int groupId,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[]{id});
+            super(token, groupId);
             this.id = id;
             this.groupId = groupId;
         }

@@ -1,17 +1,17 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.interfaces.Update;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Update;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -22,9 +22,9 @@ import java.util.SortedSet;
 public class RequestUpdatesCommand extends AbstractCommand {
 
 
-    public RequestUpdatesCommand(AccountManager accountManager,
+    public RequestUpdatesCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
@@ -32,14 +32,12 @@ public class RequestUpdatesCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
+        Account actingAccount = input.getActingAccount();
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get the Updates
-        SortedSet<? extends Update> updates
-                = actingAccount.getUndeliveredUpdates();
+        SortedSet<Update> updates = actingAccount.getUndeliveredUpdates();
         // LinkedHashSet to preserve insertion order
         Set<String> updatecontents = new LinkedHashSet<>();
         for (Update u : updates) {

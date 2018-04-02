@@ -63,7 +63,7 @@ public class RemoveContactCommandTest
      */
     private JsonObject execute(User removing, User removed) {
         RemoveContactCommand removeContactCommand
-                = new RemoveContactCommand(accountManager, mapper);
+                = new RemoveContactCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, removing);

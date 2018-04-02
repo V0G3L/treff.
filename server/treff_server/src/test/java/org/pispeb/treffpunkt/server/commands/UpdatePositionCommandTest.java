@@ -43,7 +43,7 @@ public class UpdatePositionCommandTest extends GroupDependentTest {
                 .add("group", group);
 
         JsonObject output = runCommand(
-                new CreateGroupCommand(accountManager, mapper), input);
+                new CreateGroupCommand(sessionFactory, mapper), input);
 
         int secondGroupID = output.getInt("id");
 
@@ -59,7 +59,7 @@ public class UpdatePositionCommandTest extends GroupDependentTest {
                     .add("group-id", groupID)
                     .add("time-end", timeEnd);
 
-            runCommand(new PublishPositionCommand(accountManager, mapper),
+            runCommand(new PublishPositionCommand(sessionFactory, mapper),
                     input);
         }
 
@@ -128,7 +128,7 @@ public class UpdatePositionCommandTest extends GroupDependentTest {
                 .add("time-measured", timeMeasured);
 
         JsonObject output
-                = runCommand(new UpdatePositionCommand(accountManager, mapper),
+                = runCommand(new UpdatePositionCommand(sessionFactory, mapper),
                 inputBuilder);
 
         return output;

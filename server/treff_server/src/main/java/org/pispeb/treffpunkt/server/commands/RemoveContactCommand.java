@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,8 +12,7 @@ import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -22,40 +23,25 @@ import java.util.Date;
 public class RemoveContactCommand extends AbstractCommand {
 
 
-    public RemoveContactCommand(AccountManager accountManager,
+    public RemoveContactCommand(SessionFactory sessionFactory,
                                 ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        Account account, actingAccount;
-
-        // get accounts in the right locking order
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount
-                    = getSafeForWriting(input.getActingAccount());
-            account = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        } else {
-            account = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-            actingAccount
-                    = getSafeForWriting(input.getActingAccount());
-        }
-
-        if (actingAccount == null)
-                return new ErrorOutput(ErrorCode.TOKENINVALID);
-        if (account == null)
-                return new ErrorOutput(ErrorCode.USERIDINVALID);
+        Account actingAccount = input.getActingAccount();
+        Account otherAccount = accountManager.getAccount(input.id);
+        if (otherAccount == null)
+            return new ErrorOutput(ErrorCode.USERIDINVALID);
 
         // check if the accounts are contacts
-        if (!actingAccount.getAllContacts().containsKey(input.id))
+        if (!actingAccount.getAllContacts().containsKey(otherAccount.getID()))
             return new ErrorOutput(ErrorCode.NOTINCONTACT);
 
-        actingAccount.removeContact(account);
+        actingAccount.removeContact(otherAccount);
 
         // create update
         UpdatesWithoutSpecialParameters update =
@@ -63,8 +49,7 @@ public class RemoveContactCommand extends AbstractCommand {
                         actingAccount.getID(),
                         UpdateType.REMOVE_CONTACT);
         try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    account);
+            accountManager.createUpdate(mapper.writeValueAsString(update), otherAccount);
         } catch (JsonProcessingException e) {
              throw new ProgrammingException(e);
         }
@@ -83,10 +68,5 @@ public class RemoveContactCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-
-        }
-    }
+    public static class Output extends CommandOutput { }
 }

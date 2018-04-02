@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.interfaces;
 
-import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Update;
 
 /**
  * A listener belonging to a single {@link Account} that performs

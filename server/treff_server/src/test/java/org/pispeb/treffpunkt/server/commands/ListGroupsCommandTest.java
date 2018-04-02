@@ -18,7 +18,7 @@ public class ListGroupsCommandTest extends GroupDependentTest {
     @Test
     public void validOneGroup() {
         ListGroupsCommand listGroupsCommand =
-                new ListGroupsCommand(accountManager, mapper);
+                new ListGroupsCommand(sessionFactory, mapper);
         JsonObject output = runCommand(listGroupsCommand, inputBuilder);
         JsonArray groups = output.getJsonArray("groups");
         Assert.assertEquals(1, groups.size());
@@ -31,7 +31,7 @@ public class ListGroupsCommandTest extends GroupDependentTest {
     @Test
     public void validTwoGroup() {
         CreateGroupCommand createGroupCommand =
-                new CreateGroupCommand(accountManager, mapper);
+                new CreateGroupCommand(sessionFactory, mapper);
         JsonArray members = Json.createArrayBuilder()
                 .add(ownUser.id)
                 .add(users[2].id)
@@ -49,7 +49,7 @@ public class ListGroupsCommandTest extends GroupDependentTest {
         int othergroupid = createoutput.getInt("id");
 
         ListGroupsCommand listGroupsCommand =
-                new ListGroupsCommand(accountManager, mapper);
+                new ListGroupsCommand(sessionFactory, mapper);
         JsonObject output = runCommand(listGroupsCommand, inputBuilder);
         JsonArray groups = output.getJsonArray("groups");
         Assert.assertEquals(2, groups.size());

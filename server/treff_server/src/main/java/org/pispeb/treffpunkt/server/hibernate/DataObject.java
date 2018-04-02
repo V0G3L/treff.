@@ -1,9 +1,19 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
+import org.hibernate.Session;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReadWriteLock;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class defining common properties and methods of the domain model
@@ -60,8 +70,8 @@ import java.util.concurrent.locks.ReadWriteLock;
  * ({@link Usergroup}, {@link Update}), they are to be locked in the following
  * order:
  * <ul>
- *     <li>{@code Event}s are to be locked before {@code Poll}s</li>
- *     <li>{@code Usergroup}s are to be locked before {@code Update}s</li>
+ * <li>{@code Event}s are to be locked before {@code Poll}s</li>
+ * <li>{@code Usergroup}s are to be locked before {@code Update}s</li>
  * </ul>
  * If two objects are of the same type, they are to be locked in ascending order
  * of their IDs.
@@ -84,15 +94,18 @@ import java.util.concurrent.locks.ReadWriteLock;
  * <p>
  * Further consequences of a deletion, i.e. effects on other {@code DataObject}s
  * are specified in the documentation of the subtype's {@code delete()} method.
+ * <p>
+ * TODO: remove Locking stuff
  */
-public interface DataObject {
+@MappedSuperclass
+public abstract class DataObject {
 
-    /**
-     * Returns the {@code ReadWriteLock} of this {@code DataObject}.
-     *
-     * @return The {@code ReadWriteLock} of this {@code DataObject}
-     */
-    ReadWriteLock getReadWriteLock();
+    protected static Properties config;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
 
     /**
      * Deletes this {@code DataObject}.
@@ -100,15 +113,9 @@ public interface DataObject {
      * {@link DataObject} or the specific subtype's documentation of this
      * method.
      */
-    void delete();
-
-    /**
-     * Returns whether this DataObject has been deleted.
-     *
-     * @return <code>true</code> if and only if this {@code DataObject} has
-     * been deleted.
-     */
-    boolean isDeleted();
+    public void delete(Session session) {
+        session.delete(this);
+    }
 
     /**
      * Returns this {@code DataObjects} unique numerical identifier.
@@ -116,6 +123,22 @@ public interface DataObject {
      *
      * @return This {@code DataObject}s unique numerical identifier.
      */
-    int getID();
+    public int getID() {
+        return id;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        return this.getClass().equals(obj.getClass())
+                && this.getID() == ((DataObject) obj).getID();
+    }
+
+    protected <T extends DataObject> Map<Integer, T> toMap(Collection<T> coll) {
+        return Collections.unmodifiableMap(coll.stream()
+                .collect(Collectors.toMap(DataObject::getID, Function.identity())));
+    }
+
+    public static void setProperties(Properties config) {
+        DataObject.config = config;
+    }
 }

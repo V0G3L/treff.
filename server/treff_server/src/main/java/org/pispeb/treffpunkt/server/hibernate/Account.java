@@ -1,20 +1,82 @@
-package org.pispeb.treffpunkt.server.interfaces;
+package org.pispeb.treffpunkt.server.hibernate;
 
+import org.apache.commons.codec.binary.Base64;
+import org.hibernate.Session;
+import org.pispeb.treffpunkt.server.ConfigKeys;
+import org.pispeb.treffpunkt.server.PasswordHash;
+import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.exceptions.ContactRequestAlreadySentException;
+import org.pispeb.treffpunkt.server.exceptions.ContactRequestNonexistantException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateEmailException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
-import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.sql.AccountSQL;
+import org.pispeb.treffpunkt.server.interfaces.AccountUpdateListener;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import static org.pispeb.treffpunkt.server.PasswordHash.generatePasswordHash;
 
 /**
  * An object representing an account with an associated username, email address,
  * and password.
  */
-public interface Account extends DataObject, Comparable<Account> {
+@Entity
+@Table(name = "accounts")
+public class Account extends DataObject {
+
+    @Column(nullable = false, unique = true)
+    private String username;
+    @Column(unique = true)
+    private String email;
+    @Column(unique = true)
+    private String loginToken;
+    @Column(nullable = false)
+    private String passwordHash;
+    @Column(nullable = false)
+    private String passwortSalt;
+    @Column
+    private double latitude;
+    @Column
+    private double longitude;
+    @Column
+    private Date timeMeasured;
+
+    @ManyToMany
+    @OrderBy("id ASC")
+    private SortedSet<Update> undeliveredUpdates = new TreeSet<>();
+
+    @OneToMany(mappedBy = "account")
+    private Set<GroupMembership> memberships = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "account_requests")
+    private Set<Account> incomingRequests = new HashSet<>();
+    @ManyToMany(mappedBy = "incomingRequests")
+    private Set<Account> outgoingRequests = new HashSet<>();
+
+    // contacts need to be updated on both sides
+    // no idea how to nicely implement symmetric reflexive relations in Hibernate
+    @ManyToMany
+    @JoinTable(name = "account_contacts")
+    private Set<Account> contacts = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "account_blocks")
+    private Set<Account> blocks = new HashSet<>();
 
     /**
      * Returns the username of this account.
@@ -23,7 +85,9 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @return The username of this account.
      **/
-    String getUsername();
+    public String getUsername() {
+        return username;
+    }
 
     /**
      * Sets the username of this account.
@@ -37,7 +101,17 @@ public interface Account extends DataObject, Comparable<Account> {
      *                                    The username of this account remains
      *                                    unchanged in this case.
      */
-    void setUsername(String username) throws DuplicateUsernameException;
+    public void setUsername(String username, AccountManager accountManager)
+            throws DuplicateUsernameException {
+        if (accountManager.getAccountByUsername(username) != null)
+            throw new DuplicateUsernameException();
+
+        this.username = username;
+    }
+
+    void setUsername(String username) {
+        this.username = username;
+    }
 
     /**
      * Checks whether the supplied password matches the password of this
@@ -49,7 +123,12 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return <code>true</code> if and only if the supplied password matches
      * the password of this account.
      */
-    boolean checkPassword(String password);
+    public boolean checkPassword(String password) {
+        byte[] correctHash = generatePasswordHash(password,
+                Base64.decodeBase64(passwortSalt))
+                .hash;
+        return Arrays.equals(Base64.decodeBase64(passwordHash), correctHash);
+    }
 
     /**
      * Sets the password of this account.
@@ -58,7 +137,13 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param password The new password
      */
-    void setPassword(String password);
+    public void setPassword(String password) {
+        PasswordHash passwordHash
+                = generatePasswordHash(password);
+        // Store new salt and new hash in DB
+        this.passwortSalt = Base64.encodeBase64String(passwordHash.salt);
+        this.passwordHash = Base64.encodeBase64String(passwordHash.hash);
+    }
 
     /**
      * Returns the email address of this account.
@@ -68,7 +153,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The email address of this account.
      * If no email address has been set yet, this will return an empty string.
      **/
-    String getEmail();
+    public String getEmail() {
+        return email;
+    }
 
     /**
      * Sets the email address of this account.
@@ -82,7 +169,17 @@ public interface Account extends DataObject, Comparable<Account> {
      *                                 The email address of this account remains
      *                                 unchanged in this case.
      */
-    void setEmail(String email) throws DuplicateEmailException;
+    public void setEmail(String email, AccountManager accountManager)
+            throws DuplicateEmailException {
+        if (accountManager.getAccountByEmail(email) != null)
+            throw new DuplicateEmailException();
+
+        this.email = email;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Usergroup}] map holding all
@@ -93,7 +190,12 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Map of {@code Usergroup} that this {@code Account} is a member of
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Usergroup> getAllGroups();
+    public Map<Integer, Usergroup> getAllGroups() {
+        Set<Usergroup> groups = memberships.stream()
+                .map(GroupMembership::getUsergroup)
+                .collect(Collectors.toSet());
+        return toMap(groups);
+    }
 
     /**
      * Creates a new {@code Usergroup} with the specified name and members.
@@ -102,11 +204,19 @@ public interface Account extends DataObject, Comparable<Account> {
      * <p>
      * Requires a {@code ReadLock}.
      *
-     * @param name The name of the group
+     * @param name    The name of the group
      * @param members The members to be added in addition to this account
      * @return The created {@code Usergroup}
      */
-    Usergroup createGroup(String name, Set<Account> members);
+    public Usergroup createGroup(String name, Set<Account> members, Session session) {
+        members.add(this);
+
+        Usergroup usergroup = new Usergroup();
+        usergroup.setName(name);
+        session.save(usergroup);
+        members.forEach(m -> usergroup.addMember(m, session));
+        return usergroup;
+    }
 
     /**
      * Sends a contact request to the specified {@code Account}.
@@ -119,7 +229,13 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param receiver The {@code Account} which to send the contact request to
      */
-    void sendContactRequest(Account receiver);
+    public void sendContactRequest(Account receiver) {
+        if (outgoingRequests.contains(receiver))
+            throw new ContactRequestAlreadySentException();
+
+        outgoingRequests.add(receiver);
+        receiver.incomingRequests.add(this);
+    }
 
     /**
      * Accepts a contact request from the specified {@code Account} that was
@@ -131,7 +247,15 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param sender The {@code Account} that sent the contact request
      */
-    void acceptContactRequest(Account sender);
+    public void acceptContactRequest(Account sender) {
+        if (!incomingRequests.contains(sender))
+            throw new ContactRequestNonexistantException();
+
+        incomingRequests.remove(sender);
+        sender.outgoingRequests.remove(this);
+        contacts.add(sender);
+        sender.contacts.add(this);
+    }
 
     /**
      * Rejects a contact request from the specified {@code Account} that was
@@ -142,7 +266,13 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param sender The {@code Account} that sent the contact request
      */
-    void rejectContactRequest(Account sender);
+    public void rejectContactRequest(Account sender) {
+        if (!incomingRequests.contains((Account) sender))
+            throw new ContactRequestNonexistantException();
+
+        incomingRequests.remove(sender);
+        sender.outgoingRequests.remove(this);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -154,7 +284,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllIncomingContactRequests();
+    public Map<Integer, ? extends Account> getAllIncomingContactRequests() {
+        return toMap(incomingRequests);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -166,7 +298,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllOutgoingContactRequests();
+    public Map<Integer, ? extends Account> getAllOutgoingContactRequests() {
+        return toMap(outgoingRequests);
+    }
 
     /**
      * Removes an {@code Account} from this {@code Account}'s contact list and
@@ -176,7 +310,10 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param account The account to be removed from the contact list
      */
-    void removeContact(Account account);
+    public void removeContact(Account account) {
+        contacts.remove(account);
+        account.contacts.remove(this);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -188,8 +325,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllContacts();
-
+    public Map<Integer, ? extends Account> getAllContacts() {
+        return toMap(contacts);
+    }
 
     /**
      * Blocks the specified {@code Account}, preventing it from sending
@@ -201,7 +339,9 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param account The {@code Account} to block
      */
-    void addBlock(Account account);
+    public void addBlock(Account account) {
+        this.blocks.add(account);
+    }
 
     /**
      * Unblocks the specified {@code Account}, re-allowing it to send
@@ -211,7 +351,9 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param account The {@code Account} to unblock
      */
-    void removeBlock(Account account);
+    public void removeBlock(Account account) {
+        this.blocks.remove(account);
+    }
 
     /**
      * Returns an unmodifiable [ID -> {@code Account}] map holding all
@@ -223,7 +365,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return Unmodifiable [ID -> {@code Account}] map
      * @see java.util.Collections#unmodifiableMap(Map)
      */
-    Map<Integer, ? extends Account> getAllBlocks();
+    public Map<Integer, ? extends Account> getAllBlocks() {
+        return toMap(blocks);
+    }
 
     /**
      * Returns the last position stored for this {@code Account}.
@@ -233,7 +377,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The last position stored for this {@code Account} or null if
      * there is no stored position.
      */
-    Position getLastPosition();
+    public Position getLastPosition() {
+        return new Position(latitude, longitude);
+    }
 
     /**
      * Returns the time at which the last position stored for this
@@ -244,18 +390,24 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The time at which the last position stored for this
      * {@code Account} was measured or null if there is no stored position.
      */
-    Date getLastPositionTime();
+    public Date getLastPositionTime() {
+        return timeMeasured;
+    }
 
     /**
      * Updates this {@link Account}'s position.
      * <p>
      * Requires a {@code WriteLock}.
      *
-     * @param position The position to update to
+     * @param position     The position to update to
      * @param timeMeasured The time at which the specified position was
      *                     measured
      */
-    void updatePosition(Position position, Date timeMeasured);
+    public void updatePosition(Position position, Date timeMeasured) {
+        this.latitude = position.latitude;
+        this.longitude = position.longitude;
+        this.timeMeasured = timeMeasured;
+    }
 
     /**
      * Generates a new login token for this {@code Account} that can be used
@@ -269,14 +421,25 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @return The newly generated login token
      */
-    String generateNewLoginToken();
+    public String generateNewLoginToken() {
+        int loginTokenSize = Integer.parseInt(
+                config.getProperty(ConfigKeys.LOGIN_TOKEN_BYTES.toString()));
+        SecureRandom random = new SecureRandom();
+        byte[] loginTokenBytes = new byte[loginTokenSize];
+        random.nextBytes(loginTokenBytes);
+
+        this.loginToken = Base64.encodeBase64String(loginTokenBytes);
+        return this.loginToken;
+    }
 
     /**
      * Invalidates this {@code Account}s current login token
      * <p>
      * Requires a {@code ReadLock}.
      */
-    void invalidateLoginToken();
+    public void invalidateLoginToken() {
+        loginToken = null;
+    }
 
     /**
      * Adds an {@code Update} to this {@code Account}'s set of
@@ -288,7 +451,10 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param update The {@code Update} to add
      */
-    void addUpdate(Update update);
+    public void addUpdate(Update update) {
+        undeliveredUpdates.add(update);
+        update.addAffectedAccount(this);
+    }
 
     /**
      * Returns the set of {@code Update}s that affect this {@code Account}
@@ -299,7 +465,9 @@ public interface Account extends DataObject, Comparable<Account> {
      * @return The set of undelivered {@code Update}s, sorted in ascending
      * order of their creation time.
      */
-    SortedSet<? extends Update> getUndeliveredUpdates();
+    public SortedSet<Update> getUndeliveredUpdates() {
+        return new TreeSet<>(undeliveredUpdates);
+    }
 
     /**
      * Marks an {@code Update} that affects this {@code Account} as
@@ -308,7 +476,10 @@ public interface Account extends DataObject, Comparable<Account> {
      * <p>
      * Requires a {@code ReadLock}.
      */
-    void markUpdateAsDelivered(Update update);
+    public void markUpdateAsDelivered(Update update) {
+        undeliveredUpdates.remove(update);
+        update.removeAffectedAccount(this);
+    }
 
     /**
      * Registers an {@link AccountUpdateListener} whose
@@ -320,7 +491,9 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param updateListener The AccountUpdateListener to add
      */
-    void addUpdateListener(AccountUpdateListener updateListener);
+    public void addUpdateListener(AccountUpdateListener updateListener) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
     /**
      * Removes an {@link AccountUpdateListener}, no longer notifying it when an
@@ -330,36 +503,15 @@ public interface Account extends DataObject, Comparable<Account> {
      *
      * @param updateListener The AccountUpdateListener to remove
      */
-    void removeUpdateListener(AccountUpdateListener updateListener);
+    public void removeUpdateListener(AccountUpdateListener updateListener) {
+        throw new UnsupportedOperationException(); // TODO: implement
+    }
 
-    /**
-     * Deletes this account.
-     * This has, in addition to the effects detailed in {@link DataObject}, the
-     * following consequences:
-     * <ul>
-     *     <li>removes participation status of this account from all
-     *     active events</li>
-     *     <li>removes votes made by this account from all active poll
-     *     options</li>
-     *     <li>removes this account from all groups</li>
-     *     <li>removes all contacts of this account</li>
-     *     <li>cancels all contact requests made by this account</li>
-     *     <li>rejects all contact request for this account</li>
-     *     <li>removes all blocks made by or against this account</li>
-     *     <li>invalidates this account's login token</li>
-     * </ul>
-     *
-     * Requires a {@code WriteLock} on this {@code Account},
-     * {@code WriteLock}s on all of this {@code Account}'s groups,
-     * and {@code ReadLock}s on all of this {@code Account}'s contacts and all
-     * {@code Account}s that have sent or received a still pending contact
-     * request to/from this {@code Account}.
-     */
-    void delete();
+    void addMembership(GroupMembership gm) {
+        memberships.add(gm);
+    }
 
-    // Possible redesign: GetAffectedAccounts-method on all interfaces
-    // Will return a Set<Account> of affected accounts when a setter is
-    // invoked. Groups will return list of members. Accounts will return
-    // list of members of all groups, contact list and blocked-by list.
-    // All others will forward the call upwards until it hits Group.
+    void removeMembership(GroupMembership gm) {
+        memberships.remove(gm);
+    }
 }

@@ -2,12 +2,11 @@ package org.pispeb.treffpunkt.server.commands;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
+import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
@@ -16,50 +15,34 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
  */
 public abstract class ManageBlockCommand extends AbstractCommand {
 
-    protected ManageBlockCommand (AccountManager accountManager,
-                                  Class<? extends CommandInput> expectedInput,
-                                  ObjectMapper mapper) {
-        super(accountManager, expectedInput, mapper);
+    protected ManageBlockCommand(SessionFactory sessionFactory,
+                                 ObjectMapper mapper) {
+        super(sessionFactory, Input.class, mapper);
     }
 
     /**
-     * checks if the parameters are valid and locks the corresponding Entities
-     * @param input the input of the command
-     * @param command 0 if blocking account, 1 if unblocking account
+     * checks if the parameters are valid
+     *
+     * @param input   the input of the command
+     * @param issueBlock {@code true} if blocking account, {@code false} if unblocking account
      * @return the error code if an error occurred, null if not
      */
-    protected ErrorOutput checkParameters(Input input, int command) {
-        Account blockingAccount;
-        Account blockedAccount;
-
-        // get accounts
-        if (input.getActingAccount().getID() < input.accountId) {
-            blockingAccount = getSafeForReading(input.getActingAccount());
-            blockedAccount = getSafeForReading(
-                    accountManager.getAccount(input.accountId));
-        } else {
-            blockedAccount = getSafeForReading(
-                    accountManager.getAccount(input.accountId));
-            blockingAccount = getSafeForReading(input.getActingAccount());
-        }
-        if (blockingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
-        if (blockedAccount == null) {
+    protected ErrorOutput checkParameters(Input input, boolean issueBlock) {
+        Account actingAccount = input.getActingAccount();
+        Account otherAccount = accountManager.getAccount(input.accountId);
+        if (otherAccount == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
         // check block list
-        if (command == 0 && blockingAccount.getAllBlocks()
-                .containsKey(input.accountId)) {
+        if (issueBlock && actingAccount.getAllBlocks().containsKey(input.accountId)) {
             return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
         }
-        if (command == 1 && !blockingAccount.getAllBlocks()
-                .containsKey(input.accountId)) {
+        if (!issueBlock && !actingAccount.getAllBlocks().containsKey(input.accountId)) {
             return new ErrorOutput(ErrorCode.NOTBLOCKING);
         }
 
-        // if no error occurred
+        // if parameters are correct, return null
         return null;
     }
 
@@ -74,8 +57,5 @@ public abstract class ManageBlockCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 }

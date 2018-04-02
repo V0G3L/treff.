@@ -79,7 +79,7 @@ public class RejectContactRequestCommandTest
      */
     private JsonObject execute(User receiver, User sender) {
         RejectContactRequestCommand rejectContactRequestCommand
-                = new RejectContactRequestCommand(accountManager, mapper);
+                = new RejectContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, receiver);

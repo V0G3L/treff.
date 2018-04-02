@@ -21,7 +21,7 @@ public class UnblockAccountCommandTest
     @Before
     public void block() {
         BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+                = new BlockAccountCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, users[0]);
@@ -94,7 +94,7 @@ public class UnblockAccountCommandTest
      */
     private JsonObject execute(User blocker, User blocked) {
         UnblockAccountCommand unblockAccountCommand
-                = new UnblockAccountCommand(accountManager, mapper);
+                = new UnblockAccountCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, blocker);

@@ -1,9 +1,9 @@
 package org.pispeb.treffpunkt.server.networking;
 
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Update;
 import org.pispeb.treffpunkt.server.interfaces.AccountUpdateListener;
-import org.pispeb.treffpunkt.server.interfaces.Update;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -24,11 +24,11 @@ public class PersistentConnection implements AccountUpdateListener {
      * Takes over the connection of the specified {@link PrintWriter}
      * and writes update notifications onto it.
      *
-     * @param session The {@link Session} of an active connection
+     * @param wsSession The {@link Session} of an active WebSocket connection
      */
-    public PersistentConnection(Session session, AccountManager accountManager,
+    public PersistentConnection(Session wsSession, AccountManager accountManager,
                                 int userID)  {
-        this.session = session;
+        this.session = wsSession;
         this.observedAccount = accountManager.getAccount(userID);
         observedAccount.addUpdateListener(this);
     }

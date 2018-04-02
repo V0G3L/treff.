@@ -1,14 +1,17 @@
 package org.pispeb.treffpunkt.server.networking;
 
 import org.pispeb.treffpunkt.server.Server;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.websocket.*;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.io.EOFException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
 public class WebSocketEndpoint {
     private HashSet<Session> persistentConnections = new HashSet<>();
     private Server server;
-    private final Logger logger = LoggerFactory.getLogger("WS Endpoint");
+    private final Logger logger = Logger.getLogger("WS Endpoint");
 
     public WebSocketEndpoint() {
         this.server = Server.getInstance();
@@ -48,8 +51,9 @@ public class WebSocketEndpoint {
         // send back the answer
         if (response.requestedPersistentConnection) {
             persistentConnections.add(session);
-            new PersistentConnection(session,
-                    server.getAccountManager(), response.accountID);
+            // TODO: implement
+//            new PersistentConnection(session,
+//                    , response.accountID);
             return "{}";
         } else {
             logger.info(String.format("SENDING on %s: %s", session.getId(),

@@ -3,7 +3,7 @@ package org.pispeb.treffpunkt.server.commands.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.pispeb.treffpunkt.server.interfaces.Usergroup;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 
 import java.io.IOException;
 

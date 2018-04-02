@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
@@ -7,7 +9,6 @@ import org.pispeb.treffpunkt.server.commands.descriptions.PollEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -17,9 +18,8 @@ import java.util.Date;
  */
 public class EditPollCommand extends PollCommand {
 
-    public EditPollCommand(AccountManager accountManager, ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                PollLockType.WRITE_LOCK);
+    public EditPollCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

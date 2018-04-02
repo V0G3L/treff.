@@ -1,13 +1,12 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.GroupMembershipChangeUpdate;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
 
@@ -17,10 +16,9 @@ import java.util.Date;
  */
 public class PublishPositionCommand extends GroupCommand {
 
-    public PublishPositionCommand(AccountManager accountManager,
+    public PublishPositionCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper,
-                GroupLockType.READ_LOCK,
+        super(sessionFactory,Input.class, mapper,
                 null, null); // position publishing requires no permission
     }
 
@@ -54,7 +52,7 @@ public class PublishPositionCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("time-end") long timeEnd,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.timeEnd = new Date(timeEnd);
         }
 
@@ -64,8 +62,5 @@ public class PublishPositionCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 }

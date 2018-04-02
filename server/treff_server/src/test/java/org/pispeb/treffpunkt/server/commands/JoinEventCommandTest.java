@@ -71,7 +71,7 @@ public class JoinEventCommandTest extends EventDependentTest {
                 .add("id", eventID);
 
         return runCommand(
-                new JoinEventCommand(accountManager, mapper),
+                new JoinEventCommand(sessionFactory, mapper),
                 input);
     }
 

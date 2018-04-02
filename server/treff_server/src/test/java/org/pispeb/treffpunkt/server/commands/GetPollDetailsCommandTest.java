@@ -21,7 +21,7 @@ public class GetPollDetailsCommandTest extends PollDependentTest {
                 .add("id", pollID);
 
         JsonObject pollDesc
-                = runCommand(new GetPollDetailsCommand(accountManager, mapper),
+                = runCommand(new GetPollDetailsCommand(sessionFactory, mapper),
                 inputBuilder)
                 .getJsonObject("poll");
 
@@ -35,7 +35,7 @@ public class GetPollDetailsCommandTest extends PollDependentTest {
                 .add("id", pollID);
 
         JsonObject output
-                = runCommand(new GetPollDetailsCommand(accountManager, mapper),
+                = runCommand(new GetPollDetailsCommand(sessionFactory, mapper),
                 inputBuilder);
 
         assertEquals(1201, output.getInt("error"));
@@ -47,7 +47,7 @@ public class GetPollDetailsCommandTest extends PollDependentTest {
                 .add("id", pollID + 4); // invalid ID
 
         JsonObject output
-                = runCommand(new GetPollDetailsCommand(accountManager, mapper),
+                = runCommand(new GetPollDetailsCommand(sessionFactory, mapper),
                 inputBuilder);
 
         assertEquals(1203, output.getInt("error"));

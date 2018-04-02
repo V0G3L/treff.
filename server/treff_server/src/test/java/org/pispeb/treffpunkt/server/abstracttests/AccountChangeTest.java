@@ -21,7 +21,7 @@ public abstract class AccountChangeTest extends MultipleUsersTest {
      */
     protected JsonObject getUserDetails(User exec) {
         GetUserDetailsCommand getUserDetailsCommand
-                = new GetUserDetailsCommand(accountManager, mapper);
+                = new GetUserDetailsCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
         input.add("id", exec.id);
@@ -37,7 +37,7 @@ public abstract class AccountChangeTest extends MultipleUsersTest {
      */
     protected void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
+                = new SendContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);
@@ -53,7 +53,7 @@ public abstract class AccountChangeTest extends MultipleUsersTest {
      */
     protected void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+                = new AcceptContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, receiver);

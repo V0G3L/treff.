@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
+import org.hibernate.SessionFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,11 +9,11 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
-import org.pispeb.treffpunkt.server.interfaces.Account;
-import org.pispeb.treffpunkt.server.interfaces.AccountManager;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -22,30 +24,19 @@ import java.util.Date;
 public class SendContactRequestCommand extends AbstractCommand {
 
 
-    public SendContactRequestCommand(AccountManager accountManager,
+    public SendContactRequestCommand(SessionFactory sessionFactory,
                                      ObjectMapper mapper) {
-        super(accountManager, Input.class, mapper);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account actingAccount;
-        Account newContact;
 
-        // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForWriting(input.getActingAccount());
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        } else {
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-            actingAccount = getSafeForWriting(input.getActingAccount());
-        }
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
+        Account actingAccount = input.getActingAccount();
+
+        // get receiver account
+        Account newContact = accountManager.getAccount(input.id);
         if (newContact == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
@@ -70,10 +61,28 @@ public class SendContactRequestCommand extends AbstractCommand {
             return new ErrorOutput(ErrorCode.CONTACTREQUESTPENDING);
         }
 
+        // check symmetric add
+        if (actingAccount.getAllIncomingContactRequests().containsKey(newContact.getID())) {
+            // add both accounts as contact instead
+            actingAccount.acceptContactRequest(newContact);
+            ContactRequestAnswerUpdate updateForActing =
+                    new ContactRequestAnswerUpdate(new Date(), newContact.getID(), true);
+            ContactRequestAnswerUpdate updateForNew =
+                    new ContactRequestAnswerUpdate(new Date(), actingAccount.getID(), true);
+            try {
+                accountManager.createUpdate(
+                        mapper.writeValueAsString(updateForActing), actingAccount);
+                accountManager.createUpdate(
+                        mapper.writeValueAsString(updateForNew), newContact);
+            } catch (JsonProcessingException e) {
+                throw new ProgrammingException(e);
+            }
+            return new Output();
+        }
+
         // send request
         actingAccount.sendContactRequest(newContact);
 
-        // TODO: send other updates on symmetric add
         // create update
         UpdatesWithoutSpecialParameters update =
                 new UpdatesWithoutSpecialParameters(new Date(),
