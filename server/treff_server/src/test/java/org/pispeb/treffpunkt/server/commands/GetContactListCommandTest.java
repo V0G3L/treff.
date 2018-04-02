@@ -98,7 +98,7 @@ public class GetContactListCommandTest
     public void oneBlock() {
         // add user 2 to block list of user 3
         BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+                = new BlockAccountCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, users[3]);
@@ -132,7 +132,7 @@ public class GetContactListCommandTest
      */
     private JsonObject execute(User exec) {
         GetContactListCommand getContactListCommand
-                = new GetContactListCommand(accountManager, mapper);
+                = new GetContactListCommand(sessionFactory, mapper);
 
         JsonObject output
                 = runCommand(getContactListCommand,
@@ -153,7 +153,7 @@ public class GetContactListCommandTest
      */
     private void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
+                = new SendContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);

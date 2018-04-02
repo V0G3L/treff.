@@ -83,7 +83,7 @@ public class EditUsernameCommandTest extends AccountChangeTest {
      */
     private JsonObject execute(User exec, String newUsername) {
         EditUsernameCommand editUsernameCommand
-                = new EditUsernameCommand(accountManager, mapper);
+                = new EditUsernameCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
         input.add("user", newUsername);

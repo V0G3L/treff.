@@ -19,13 +19,12 @@ public class WithdrawVoteForOptionCommand extends PollOptionCommand {
 
     public WithdrawVoteForOptionCommand(SessionFactory sessionFactory,
                                         ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                PollOptionLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
-    protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
-        Input input = (Input) commandInput;
+    protected CommandOutput executeOnPollOption(PollOptionInput pollOptionInput) {
+        Input input = (Input) pollOptionInput;
 
         // check votes
         if (!pollOption.getVoters().containsKey(input

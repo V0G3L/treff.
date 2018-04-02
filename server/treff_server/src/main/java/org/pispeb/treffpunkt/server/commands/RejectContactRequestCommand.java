@@ -11,6 +11,7 @@ import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -29,22 +30,9 @@ public class RejectContactRequestCommand extends AbstractCommand {
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account actingAccount;
-        Account newContact;
+        Account actingAccount = input.getActingAccount();
+        Account newContact = accountManager.getAccount(input.id);
 
-        // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForReading(input.getActingAccount());
-            newContact = getSafeForReading(
-                    accountManager.getAccount(input.id));
-        } else {
-            newContact = getSafeForReading(
-                    accountManager.getAccount(input.id));
-            actingAccount = getSafeForReading(input.getActingAccount());
-        }
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
         if (newContact == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }

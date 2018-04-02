@@ -16,13 +16,15 @@ public abstract class CommandInputLoginRequired extends CommandInput {
         this.token = token;
     }
 
-    public Account getActingAccount(AccountManager accountManager) {
-        // only try retrieving the acting account if token wasn't checked before
+    public boolean checkToken(AccountManager accountManager) {
         if (!tokenChecked) {
             actingAccount = accountManager.getAccountByLoginToken(token);
             tokenChecked = true;
         }
+        return actingAccount != null;
+    }
 
+    public Account getActingAccount() {
         return actingAccount;
     }
 }

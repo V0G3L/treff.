@@ -12,6 +12,8 @@ import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.AccountChangeUpdate;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,17 +35,14 @@ public class EditUsernameCommand extends AbstractCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        // check if account still exists
-        Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+        Account actingAccount = input.getActingAccount();
 
         if (!actingAccount.checkPassword(input.pass)) {
             return new ErrorOutput(ErrorCode.CREDWRONG);
         }
 
         // edit username
+        // TODO: don't use exceptions for this
         try {
             actingAccount.setUsername(input.username);
         } catch (DuplicateUsernameException e) {
@@ -52,24 +51,15 @@ public class EditUsernameCommand extends AbstractCommand {
 
         // TODO Incoming blocks
         // create the update
-        Set<Account> affected = new TreeSet<Account>();
+        // collect affected accounts
+        Set<Account> affected = new HashSet<>();
         affected.addAll(actingAccount.getAllContacts().values());
         affected.addAll(actingAccount.getAllIncomingContactRequests().values());
         affected.addAll(actingAccount.getAllOutgoingContactRequests().values());
         for (Usergroup g : actingAccount.getAllGroups().values()) {
-            getSafeForReading(g);
             affected.addAll(g.getAllMembers().values());
-            releaseReadLock(g);
         }
-        releaseWriteLock(actingAccount);
 
-        HashSet<Account> sucessfullyLocked = new HashSet<Account>();
-        for (Account a : affected){
-            a = getSafeForReading(a);
-            if (a != null) {
-                sucessfullyLocked.add(a);
-            }
-        }
         AccountChangeUpdate update = new AccountChangeUpdate(new Date(),
                 actingAccount.getID(), actingAccount);
         try {
@@ -101,11 +91,6 @@ public class EditUsernameCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-        }
-    }
-
+    public static class Output extends CommandOutput { }
 
 }

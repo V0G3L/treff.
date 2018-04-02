@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.EventCompleteSerializer;
+import org.pispeb.treffpunkt.server.hibernate.Event;
 
 /**
  * a command to get a detailed description of an event of a user group
@@ -16,8 +17,7 @@ public class GetEventDetailsCommand extends EventCommand {
 
     public GetEventDetailsCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                EventLockType.READ_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

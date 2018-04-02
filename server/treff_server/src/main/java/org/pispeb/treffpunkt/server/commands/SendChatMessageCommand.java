@@ -18,7 +18,6 @@ public class SendChatMessageCommand extends GroupCommand {
     public SendChatMessageCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.READ_LOCK,
                 null, null); // chatting requires no permission
     }
 
@@ -41,7 +40,7 @@ public class SendChatMessageCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("message") String message,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.message = message;
         }
 

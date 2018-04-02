@@ -12,6 +12,7 @@ import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.*;
@@ -38,8 +39,7 @@ public class DeleteAccountCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
+        Account actingAccount = input.getActingAccount();
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
@@ -64,59 +64,59 @@ public class DeleteAccountCommand extends AbstractCommand {
         // also need to lock all groups and all group members (for updates)
         // will first lock all groups, collect members, then unlock and acquire
         // all locks in correct order
-        Map<Usergroup, Set<Account>> members = new HashMap<>();
-        for (Usergroup g : actingAccount.getAllGroups().values()) {
-            // usergroup locking order not important since we're
-            // releasing the locks immediately
-            getSafeForReading(g);
-
-            Set<Account> curMembers = new HashSet<>(g.getAllMembers().values());
-            members.put(g, curMembers);
-            accountsToLock.addAll(curMembers);
-
-            releaseReadLock(g);
-        }
-
-        // need to remember successfully locked accounts because we have
-        // to filter out accounts from the other sets that couldn't be locked
-        releaseReadLock(actingAccount);
-        Set<Account> successfullyLockedAccounts = new HashSet<>();
-        for (Account a : accountsToLock) {
-            if (a.getID() == actingAccount.getID()) {
-                a = getSafeForWriting(a);
-                if (a == null)
-                    return new ErrorOutput(ErrorCode.TOKENINVALID);
-            } else {
-                a = getSafeForReading(a);
-            }
-
-            if (a != null)
-                successfullyLockedAccounts.add(a);
-        }
-
-        Set<Usergroup> successfullyLockedGroups = new HashSet<>();
-        for (Usergroup group : members.keySet()) {
-            getSafeForWriting(group);
-            if (group != null)
-                successfullyLockedGroups.add(group);
-        }
-
-
-
-        UpdatesWithoutSpecialParameters update
-               = new UpdatesWithoutSpecialParameters(new Date(),
-                actingAccount.getID(), UpdateType.ACCOUNT_DELETION);
-
-        // delete account
-        actingAccount.delete();
-
-        // create update
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    accountsToLock);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
-        }
+//        Map<Usergroup, Set<Account>> members = new HashMap<>();
+//        for (Usergroup g : actingAccount.getAllGroups().values()) {
+//            // usergroup locking order not important since we're
+//            // releasing the locks immediately
+//            getSafeForReading(g);
+//
+//            Set<Account> curMembers = new HashSet<>(g.getAllMembers().values());
+//            members.put(g, curMembers);
+//            accountsToLock.addAll(curMembers);
+//
+//            releaseReadLock(g);
+//        }
+//
+//        // need to remember successfully locked accounts because we have
+//        // to filter out accounts from the other sets that couldn't be locked
+//        releaseReadLock(actingAccount);
+//        Set<Account> successfullyLockedAccounts = new HashSet<>();
+//        for (Account a : accountsToLock) {
+//            if (a.getID() == actingAccount.getID()) {
+//                a = getSafeForWriting(a);
+//                if (a == null)
+//                    return new ErrorOutput(ErrorCode.TOKENINVALID);
+//            } else {
+//                a = getSafeForReading(a);
+//            }
+//
+//            if (a != null)
+//                successfullyLockedAccounts.add(a);
+//        }
+//
+//        Set<Usergroup> successfullyLockedGroups = new HashSet<>();
+//        for (Usergroup group : members.keySet()) {
+//            getSafeForWriting(group);
+//            if (group != null)
+//                successfullyLockedGroups.add(group);
+//        }
+//
+//
+//
+//        UpdatesWithoutSpecialParameters update
+//               = new UpdatesWithoutSpecialParameters(new Date(),
+//                actingAccount.getID(), UpdateType.ACCOUNT_DELETION);
+//
+//        // delete account
+//        actingAccount.delete();
+//
+//        // create update
+//        try {
+//            accountManager.createUpdate(mapper.writeValueAsString(update),
+//                    accountsToLock);
+//        } catch (JsonProcessingException e) {
+//            throw new ProgrammingException(e);
+//        }
 
         return new Output();
     }
@@ -137,10 +137,6 @@ public class DeleteAccountCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 
 }

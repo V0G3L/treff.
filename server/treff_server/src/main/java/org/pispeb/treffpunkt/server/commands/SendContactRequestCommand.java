@@ -12,6 +12,7 @@ import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -30,22 +31,11 @@ public class SendContactRequestCommand extends AbstractCommand {
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account actingAccount;
-        Account newContact;
 
-        // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForWriting(input.getActingAccount());
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        } else {
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-            actingAccount = getSafeForWriting(input.getActingAccount());
-        }
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
+        Account actingAccount = input.getActingAccount();
+
+        // get receiver account
+        Account newContact = accountManager.getAccount(input.id);
         if (newContact == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }

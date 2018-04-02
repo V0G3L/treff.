@@ -98,7 +98,7 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
      */
     private JsonObject execute(User exec) {
         RequestUpdatesCommand requestUpdatesCommand
-                = new RequestUpdatesCommand(accountManager, mapper);
+                = new RequestUpdatesCommand(sessionFactory, mapper);
 
         JsonObject output = runCommand(requestUpdatesCommand,
                 getCommandStubForUser(this.cmd, exec));
@@ -117,7 +117,7 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
      */
     private void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
+                = new SendContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);
@@ -133,7 +133,7 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
      */
     private void acceptRequest(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+                = new AcceptContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, receiver);
@@ -149,7 +149,7 @@ public class RequestUpdatesCommandTest extends MultipleUsersTest {
      */
     private void block(User blocker, User blocked) {
         BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+                = new BlockAccountCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, blocker);

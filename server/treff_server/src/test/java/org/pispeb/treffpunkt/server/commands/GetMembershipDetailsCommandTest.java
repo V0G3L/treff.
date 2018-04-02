@@ -15,7 +15,7 @@ public class GetMembershipDetailsCommandTest extends GroupDependentTest {
     @Test
     public void valid() {
         GetMembershipDetailsCommand getMembershipDetailsCommand
-                = new GetMembershipDetailsCommand(accountManager, mapper);
+                = new GetMembershipDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", users[1].id)
                 .add("group-id", groupId);
 
@@ -41,7 +41,7 @@ public class GetMembershipDetailsCommandTest extends GroupDependentTest {
                 || id == users[2].id || id == users[3].id)
             id += 23;
         GetMembershipDetailsCommand getMembershipDetailsCommand
-                = new GetMembershipDetailsCommand(accountManager, mapper);
+                = new GetMembershipDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", id)
                 .add("group-id", groupId);
 
@@ -57,7 +57,7 @@ public class GetMembershipDetailsCommandTest extends GroupDependentTest {
         while (id == groupId)
             id += 5;
         GetMembershipDetailsCommand getMembershipDetailsCommand
-                = new GetMembershipDetailsCommand(accountManager, mapper);
+                = new GetMembershipDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", users[1].id)
                 .add("group-id", id);
 
@@ -70,7 +70,7 @@ public class GetMembershipDetailsCommandTest extends GroupDependentTest {
     @Test
     public void notInGroup() {
         GetMembershipDetailsCommand getMembershipDetailsCommand
-                = new GetMembershipDetailsCommand(accountManager, mapper);
+                = new GetMembershipDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", users[3].id)
                 .add("group-id", groupId);
 

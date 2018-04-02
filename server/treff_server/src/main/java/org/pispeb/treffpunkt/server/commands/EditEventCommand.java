@@ -21,8 +21,7 @@ public class EditEventCommand extends EventCommand {
 
     public EditEventCommand(SessionFactory sessionFactory,
                             ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                EventLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

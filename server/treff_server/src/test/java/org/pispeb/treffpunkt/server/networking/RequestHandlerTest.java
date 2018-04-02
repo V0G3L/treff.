@@ -49,7 +49,7 @@ public class RequestHandlerTest extends DatabaseDependentTest{
 
     @Test
     public void validCommand() {
-        RequestHandler requestHandler = new RequestHandler(accountManager);
+        RequestHandler requestHandler = new RequestHandler(sessionFactory);
         JsonObjectBuilder inputBuilder = Json.createObjectBuilder();
         inputBuilder.add("cmd","register");
 

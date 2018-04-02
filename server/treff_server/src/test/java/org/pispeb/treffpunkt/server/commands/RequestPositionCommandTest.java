@@ -53,7 +53,7 @@ public class RequestPositionCommandTest extends PositionTest {
     @Override
     protected JsonObject execute(User exec, int group, long time) {
         RequestPositionCommand requestPositionCommand
-                = new RequestPositionCommand(accountManager, mapper);
+                = new RequestPositionCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, exec);

@@ -21,7 +21,7 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
         inputBuilder.add("group-id", groupId)
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
-        runCommand(new RemovePollOptionCommand(accountManager, mapper),
+        runCommand(new RemovePollOptionCommand(sessionFactory, mapper),
                 inputBuilder);
 
         for (int i = 1; i < 3; i++) {
@@ -40,7 +40,7 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
         JsonObject output = runCommand(
-                new RemovePollOptionCommand(accountManager, mapper),
+                new RemovePollOptionCommand(sessionFactory, mapper),
                 inputBuilder);
 
         Assert.assertEquals(1201, output.getInt("error"));
@@ -52,7 +52,7 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
                 .add("poll-id", pollID + 1337)
                 .add("id", pollOptionId);
         JsonObject output = runCommand(
-                new RemovePollOptionCommand(accountManager, mapper),
+                new RemovePollOptionCommand(sessionFactory, mapper),
                 inputBuilder);
 
         Assert.assertEquals(1203, output.getInt("error"));
@@ -66,7 +66,7 @@ public class RemovePollOptionCommandTest extends PollOptionDependentTest {
                 .add("poll-id", pollID)
                 .add("id", pollOptionId);
         JsonObject output = runCommand(
-                new RemovePollOptionCommand(accountManager, mapper),
+                new RemovePollOptionCommand(sessionFactory, mapper),
                 input);
 
         Assert.assertEquals(2301, output.getInt("error"));

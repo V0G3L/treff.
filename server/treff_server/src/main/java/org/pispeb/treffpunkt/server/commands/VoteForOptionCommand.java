@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -19,12 +20,12 @@ public class VoteForOptionCommand extends PollOptionCommand {
 
     public VoteForOptionCommand(SessionFactory sessionFactory,
                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper, PollOptionLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
-    protected CommandOutput executeOnPollOption(PollOptionInput commandInput) {
-        Input input = (Input) commandInput;
+    protected CommandOutput executeOnPollOption(PollOptionInput pollOptionInput) {
+        Input input = (Input) pollOptionInput;
 
         // check votes
         if (pollOption.getVoters().containsKey(input

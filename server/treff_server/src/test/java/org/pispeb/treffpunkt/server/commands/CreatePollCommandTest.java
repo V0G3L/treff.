@@ -27,7 +27,7 @@ public class CreatePollCommandTest extends PollDependentTest {
         // use poll created by @Before
         // check that poll is listed in group
         JsonArray pollIDArray = runCommand(
-                new GetGroupDetailsCommand(accountManager, mapper),
+                new GetGroupDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-group-details", ownUser)
                         .add("id", groupId))
                 .getJsonObject("group")
@@ -63,7 +63,7 @@ public class CreatePollCommandTest extends PollDependentTest {
         inputBuilder.add("poll", pollDesc);
 
         JsonObject output
-                = runCommand(new CreatePollCommand(accountManager, mapper),
+                = runCommand(new CreatePollCommand(sessionFactory, mapper),
                 inputBuilder);
 
         Assert.assertEquals(1201, output.getInt("error"));
@@ -85,7 +85,7 @@ public class CreatePollCommandTest extends PollDependentTest {
         input.add("poll", pollDesc);
 
         JsonObject output
-                = runCommand(new CreatePollCommand(accountManager, mapper),
+                = runCommand(new CreatePollCommand(sessionFactory, mapper),
                 input);
 
         Assert.assertEquals(2300,output.getInt("error"));

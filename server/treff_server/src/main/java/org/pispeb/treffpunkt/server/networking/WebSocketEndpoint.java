@@ -1,6 +1,7 @@
 package org.pispeb.treffpunkt.server.networking;
 
 import org.pispeb.treffpunkt.server.Server;
+import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +49,9 @@ public class WebSocketEndpoint {
         // send back the answer
         if (response.requestedPersistentConnection) {
             persistentConnections.add(session);
-            new PersistentConnection(session,
-                    server.getAccountManager(), response.accountID);
+            // TODO: implement
+//            new PersistentConnection(session,
+//                    , response.accountID);
             return "{}";
         } else {
             logger.info(String.format("SENDING on %s: %s", session.getId(),

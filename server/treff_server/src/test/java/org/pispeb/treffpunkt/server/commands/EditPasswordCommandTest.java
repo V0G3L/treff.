@@ -18,7 +18,7 @@ public class EditPasswordCommandTest extends LoginDependentTest {
     public void validPasswordChange() {
         // change the password
         EditPasswordCommand editPasswordCommand
-                = new EditPasswordCommand(accountManager, mapper);
+                = new EditPasswordCommand(sessionFactory, mapper);
 
         inputBuilder.add("pass", ownUser.password)
                 .add("new-pass", NEWPASS);
@@ -30,7 +30,7 @@ public class EditPasswordCommandTest extends LoginDependentTest {
 
         // try to login with the old password
         LoginCommand loginCommand
-                = new LoginCommand(accountManager, mapper);
+                = new LoginCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "login")
@@ -54,7 +54,7 @@ public class EditPasswordCommandTest extends LoginDependentTest {
     public void invalidPassword() {
         // try to change the password
         EditPasswordCommand editPasswordCommand
-                = new EditPasswordCommand(accountManager, mapper);
+                = new EditPasswordCommand(sessionFactory, mapper);
 
         inputBuilder.add("pass", "wrong password")
                 .add("new-pass", NEWPASS);
@@ -66,7 +66,7 @@ public class EditPasswordCommandTest extends LoginDependentTest {
 
         // try to login with the new password
         LoginCommand loginCommand
-                = new LoginCommand(accountManager, mapper);
+                = new LoginCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "login")
@@ -92,7 +92,7 @@ public class EditPasswordCommandTest extends LoginDependentTest {
      */
     private void assertNoUpdate() {
         RequestUpdatesCommand requestUpdatesCommand
-                = new RequestUpdatesCommand(accountManager, mapper);
+                = new RequestUpdatesCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "request-updates")

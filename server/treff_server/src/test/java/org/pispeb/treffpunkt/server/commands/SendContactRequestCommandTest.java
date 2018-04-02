@@ -95,7 +95,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
     public void alreadyInContacts() {
         // accept contact request sent from 1 to 0 during @Before
         AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+                = new AcceptContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser("accept-contact-request", users[0]);
@@ -145,7 +145,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
         JsonObjectBuilder input
                 = getCommandStubForUser("block-account", blocker);
         BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+                = new BlockAccountCommand(sessionFactory, mapper);
         input.add("id", blocked.id);
         runCommand(blockAccountCommand, input);
     }
@@ -161,7 +161,7 @@ public class SendContactRequestCommandTest extends ContactRequestDependentTest {
     private JsonObject execute(User sender,
                               User receiver) {
         SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
+                = new SendContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);

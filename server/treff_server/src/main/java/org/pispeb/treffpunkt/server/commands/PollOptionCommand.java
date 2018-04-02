@@ -5,41 +5,30 @@ import org.hibernate.SessionFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 public abstract class PollOptionCommand extends PollCommand {
+
     protected PollOption pollOption;
 
-    private final PollOptionLockType pollOptionLockType;
-
-    protected PollOptionCommand(AccountManager accountManager,
+    protected PollOptionCommand(SessionFactory sessionFactory,
                           Class<? extends PollInput> expectedInput,
-                          ObjectMapper mapper,
-                                PollOptionLockType pollOptionLockType) {
-        super(accountManager, expectedInput, mapper, PollLockType.READ_LOCK); // polls need special permission checking
-        this.pollOptionLockType = pollOptionLockType;
+                          ObjectMapper mapper) {
+        super(sessionFactory, expectedInput, mapper); // polls need special permission checking
     }
 
     protected CommandOutput executeOnPoll(PollInput pollInput) {
         PollOptionInput input = (PollOptionInput) pollInput;
+
         pollOption = poll.getPollOptions().get(input.pollOptionID);
-        // lock poll option and check if it still exists
-        // get read- or write-lock depending on what subcommand poll needs
-        switch (this.pollOptionLockType) {
-            case READ_LOCK:
-                pollOption = getSafeForReading(pollOption);
-                break;
-            case WRITE_LOCK:
-                pollOption = getSafeForWriting(pollOption);
-                break;
-        }
         if (pollOption == null)
             return new ErrorOutput(ErrorCode.POLLIDINVALID);
 
         return executeOnPollOption(input);
     }
 
-    protected abstract CommandOutput executeOnPollOption(PollOptionInput pollInput);
+    protected abstract CommandOutput executeOnPollOption(PollOptionInput pollOptionInput);
 
     public abstract static class PollOptionInput extends PollInput {
 
@@ -50,11 +39,6 @@ public abstract class PollOptionCommand extends PollCommand {
             super(token, groupID, pollID);
             this.pollOptionID = pollOptionID;
         }
-    }
-
-    protected enum PollOptionLockType {
-        READ_LOCK,
-        WRITE_LOCK
     }
 
 }

@@ -29,7 +29,7 @@ public class RemovePollCommandTest extends PollDependentTest {
 
         // check that poll details can no longer be queried
         output = runCommand(
-                new GetPollDetailsCommand(accountManager, mapper),
+                new GetPollDetailsCommand(sessionFactory, mapper),
                 getCommandStubForUser("get-poll-details", users[0])
                         .add("group-id", groupId)
                         .add("id", pollID));
@@ -83,6 +83,6 @@ public class RemovePollCommandTest extends PollDependentTest {
                 .add("group-id", groupID)
                 .add("id", pollID);
 
-        return runCommand(new RemovePollCommand(accountManager, mapper), input);
+        return runCommand(new RemovePollCommand(sessionFactory, mapper), input);
     }
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
 import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -42,8 +44,6 @@ public class PollOptionCompleteSerializerTest {
                 .thenReturn(timeStart.getTime());
         when(pollOption.getTimeEnd())
                 .thenReturn(timeEnd.getTime());
-        when(pollOption.getReadWriteLock())
-                .thenReturn(new ReentrantReadWriteLock());
 
         // mock voters
         Map<Integer, Account> voters = new HashMap<>();

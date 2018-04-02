@@ -24,7 +24,7 @@ public class LeaveGroupCommandTest extends GroupDependentTest {
         // check that group is no longer listed user 0
         JsonObjectBuilder input = getCommandStubForUser("list-groups", ownUser);
         JsonArray groupsArray
-                = runCommand(new ListGroupsCommand(accountManager, mapper),
+                = runCommand(new ListGroupsCommand(sessionFactory, mapper),
                 input)
                 .getJsonArray("groups");
         Assert.assertEquals(0, groupsArray.size());
@@ -34,7 +34,7 @@ public class LeaveGroupCommandTest extends GroupDependentTest {
                 .add("id", groupId);
 
         JsonArray membersArray
-                = runCommand(new GetGroupDetailsCommand(accountManager, mapper),
+                = runCommand(new GetGroupDetailsCommand(sessionFactory, mapper),
                 input)
                 .getJsonObject("group")
                 .getJsonArray("members");
@@ -89,7 +89,7 @@ public class LeaveGroupCommandTest extends GroupDependentTest {
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, ownUser)
                 .add("id", groupID);
 
-        return runCommand(new LeaveGroupCommand(accountManager, mapper),
+        return runCommand(new LeaveGroupCommand(sessionFactory, mapper),
                 input);
     }
 }

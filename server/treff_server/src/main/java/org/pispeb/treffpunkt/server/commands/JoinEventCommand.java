@@ -19,8 +19,7 @@ public class JoinEventCommand extends EventCommand {
 
     public JoinEventCommand(SessionFactory sessionFactory,
                             ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                EventLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
@@ -56,6 +55,5 @@ public class JoinEventCommand extends EventCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-    }
+    public static class Output extends CommandOutput { }
 }

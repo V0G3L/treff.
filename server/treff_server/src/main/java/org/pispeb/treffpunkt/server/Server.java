@@ -72,7 +72,7 @@ public class Server {
                 .addAnnotatedClass(Usergroup.class)
                 .buildSessionFactory();
 //            accountManager = new SQLDatabase(config).getEntityManagerSQL();
-            requestHandler = new RequestHandler();
+            requestHandler = new RequestHandler(sessionFactory);
     }
 
     public RequestHandler getRequestHandler() {

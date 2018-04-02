@@ -69,7 +69,7 @@ public class CancelContactRequestCommandTest
      */
     private JsonObject execute(User sender, User receiver) {
         CancelContactRequestCommand cancelContactRequestCommand
-                = new CancelContactRequestCommand(accountManager, mapper);
+                = new CancelContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, sender);

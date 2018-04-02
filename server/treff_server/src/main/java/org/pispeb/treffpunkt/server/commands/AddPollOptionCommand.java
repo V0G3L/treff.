@@ -11,6 +11,7 @@ import org.pispeb.treffpunkt.server.commands.descriptions
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -23,8 +24,7 @@ public class AddPollOptionCommand extends PollCommand {
 
     public AddPollOptionCommand(SessionFactory sessionFactory,
                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                PollLockType.WRITE_LOCK);
+        super(sessionFactory, Input.class, mapper);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
     public void validDeletion() {
         // delete the account
         DeleteAccountCommand deleteAccountCommand
-                = new DeleteAccountCommand(accountManager, mapper);
+                = new DeleteAccountCommand(sessionFactory, mapper);
 
         inputBuilder.add("pass", ownUser.password);
         Assert.assertTrue(runCommand(deleteAccountCommand, inputBuilder)
@@ -38,7 +38,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
 
         // try to execute the get-contact-list command
         GetContactListCommand getContactListCommand
-                = new GetContactListCommand(accountManager, mapper);
+                = new GetContactListCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "get-contact-list")
@@ -51,7 +51,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
 
         // try to login with the old password and name
         LoginCommand loginCommand
-                = new LoginCommand(accountManager, mapper);
+                = new LoginCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "login")
@@ -66,7 +66,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
     public void invalidPassword() {
         // try to change the password
         DeleteAccountCommand deleteAccountCommand
-                = new DeleteAccountCommand(accountManager, mapper);
+                = new DeleteAccountCommand(sessionFactory, mapper);
 
         inputBuilder.add("pass", "wrong password");
         Assert.assertEquals(1101, runCommand(deleteAccountCommand, inputBuilder)
@@ -79,7 +79,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
 
         // execute the get-contact-list command
         GetContactListCommand getContactListCommand
-                = new GetContactListCommand(accountManager, mapper);
+                = new GetContactListCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "get-contact-list")
@@ -91,7 +91,7 @@ public class DeleteAccountCommandTest extends ContactDependentTest {
 
         // try to login with the new password
         LoginCommand loginCommand
-                = new LoginCommand(accountManager, mapper);
+                = new LoginCommand(sessionFactory, mapper);
 
         inputBuilder = Json.createObjectBuilder()
                 .add("cmd", "login")

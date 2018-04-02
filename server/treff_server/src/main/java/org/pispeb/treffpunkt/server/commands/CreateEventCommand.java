@@ -9,6 +9,7 @@ import org.pispeb.treffpunkt.server.commands.descriptions.EventCreateDescription
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.EventChangeUpdate;
+import org.pispeb.treffpunkt.server.hibernate.Event;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -22,7 +23,6 @@ public class CreateEventCommand extends GroupCommand {
     public CreateEventCommand(SessionFactory sessionFactory,
                               ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
                 Permission.CREATE_EVENT,
                 ErrorCode.NOPERMISSIONCREATEEVENT);
     }
@@ -45,7 +45,8 @@ public class CreateEventCommand extends GroupCommand {
                 input.event.position,
                 input.event.timeStart,
                 input.event.timeEnd,
-                input.getActingAccount());
+                input.getActingAccount(),
+                session);
 
         // create update
         EventChangeUpdate update =
@@ -68,7 +69,7 @@ public class CreateEventCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("event") EventCreateDescription event,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.groupId = groupId;
             this.event = event;
         }

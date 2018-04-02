@@ -16,7 +16,7 @@ public class RegisterCommandTest extends CommandTest {
     @Test
     public void valid() {
         RegisterCommand registerCommand
-                = new RegisterCommand(accountManager, mapper);
+                = new RegisterCommand(sessionFactory, mapper);
         inputBuilder.add("user", "w4rum");
         inputBuilder.add("pass", "D4nz1g0rW4r");
         JsonObject output = runCommand(registerCommand, inputBuilder);
@@ -32,14 +32,14 @@ public class RegisterCommandTest extends CommandTest {
     @Test
     public void usernameInUse() {
         RegisterCommand registerCommand
-                = new RegisterCommand(accountManager, mapper);
+                = new RegisterCommand(sessionFactory, mapper);
         inputBuilder.add("user", "w4rum");
         inputBuilder.add("pass", "underthesky");
         String input = inputBuilder.build().toString();
         registerCommand.execute(input);
 
         RegisterCommand registerCommand2
-                = new RegisterCommand(accountManager, mapper);
+                = new RegisterCommand(sessionFactory, mapper);
         JsonObject output = toJsonObject(registerCommand2.execute(input));
 
         Assert.assertEquals(output.getInt("error"), 1300);

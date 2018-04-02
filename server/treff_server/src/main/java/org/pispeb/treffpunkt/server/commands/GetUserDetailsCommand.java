@@ -10,6 +10,7 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.AccountCompleteSerializer;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
@@ -27,15 +28,8 @@ public class GetUserDetailsCommand extends AbstractCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-
         // get account
-        Account account = getSafeForReading(
-                accountManager.getAccount(input.id));
+        Account account = accountManager.getAccount(input.id);
         if (account == null)
             return new ErrorOutput(ErrorCode.USERIDINVALID);
 

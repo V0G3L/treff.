@@ -21,7 +21,6 @@ public class EditGroupCommand extends GroupCommand {
     public EditGroupCommand(SessionFactory sessionFactory,
                             ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
                 Permission.EDIT_GROUP,
                 ErrorCode.NOPERMISSIONEDITGROUP);
     }
@@ -49,7 +48,7 @@ public class EditGroupCommand extends GroupCommand {
 
         public Input(@JsonProperty("group") UsergroupEditDescription group,
                      @JsonProperty("token") String token) {
-            super(token, group.id, new int[0]);
+            super(token, group.id);
             this.group = group;
         }
 
@@ -59,9 +58,5 @@ public class EditGroupCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 }

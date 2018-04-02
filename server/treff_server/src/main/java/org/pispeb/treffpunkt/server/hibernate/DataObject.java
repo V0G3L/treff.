@@ -1,5 +1,7 @@
 package org.pispeb.treffpunkt.server.hibernate;
 
+import org.hibernate.Session;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -68,8 +70,8 @@ import java.util.stream.Collectors;
  * ({@link Usergroup}, {@link Update}), they are to be locked in the following
  * order:
  * <ul>
- *     <li>{@code Event}s are to be locked before {@code Poll}s</li>
- *     <li>{@code Usergroup}s are to be locked before {@code Update}s</li>
+ * <li>{@code Event}s are to be locked before {@code Poll}s</li>
+ * <li>{@code Usergroup}s are to be locked before {@code Update}s</li>
  * </ul>
  * If two objects are of the same type, they are to be locked in ascending order
  * of their IDs.
@@ -92,7 +94,7 @@ import java.util.stream.Collectors;
  * <p>
  * Further consequences of a deletion, i.e. effects on other {@code DataObject}s
  * are specified in the documentation of the subtype's {@code delete()} method.
- *
+ * <p>
  * TODO: remove Locking stuff
  */
 @MappedSuperclass
@@ -106,21 +108,21 @@ public abstract class DataObject {
     private int id;
 
     /**
-         * Deletes this {@code DataObject}.
-         * For a detailed specification of this method's consequences, see
-         * {@link DataObject} or the specific subtype's documentation of this
-         * method.
-         */
-    public void delete() {
-        throw new UnsupportedOperationException(); // TODO: implement
+     * Deletes this {@code DataObject}.
+     * For a detailed specification of this method's consequences, see
+     * {@link DataObject} or the specific subtype's documentation of this
+     * method.
+     */
+    public void delete(Session session) {
+        session.delete(this);
     }
 
     /**
-         * Returns this {@code DataObjects} unique numerical identifier.
-         * Note that IDs are only unique among the same {@code DataObject}-subtype.
-         *
-         * @return This {@code DataObject}s unique numerical identifier.
-         */
+     * Returns this {@code DataObjects} unique numerical identifier.
+     * Note that IDs are only unique among the same {@code DataObject}-subtype.
+     *
+     * @return This {@code DataObject}s unique numerical identifier.
+     */
     public int getID() {
         return id;
     }

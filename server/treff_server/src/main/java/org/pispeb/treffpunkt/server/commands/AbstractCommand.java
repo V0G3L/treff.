@@ -35,6 +35,7 @@ public abstract class AbstractCommand {
     private final Class<? extends CommandInput> expectedInput;
     protected final ObjectMapper mapper;
     protected AccountManager accountManager;
+    protected Session session;
 
     /**
      * Constructs a new command that operates on the database represented by
@@ -86,7 +87,7 @@ public abstract class AbstractCommand {
             return errorToString(ErrorCode.SYNTAXINVALID);
 
         // start session and transaction and create AccountManager
-        Session session = sessionFactory.openSession();
+        session = sessionFactory.openSession();
         Transaction tx = session.beginTransaction();
         accountManager = new AccountManager(session);
 
@@ -95,7 +96,7 @@ public abstract class AbstractCommand {
             CommandInputLoginRequired cmdInputLoginReq
                     = (CommandInputLoginRequired) commandInput;
 
-            if (cmdInputLoginReq.getActingAccount(accountManager) == null) {
+            if (!cmdInputLoginReq.checkToken(accountManager)) {
                 return errorToString(ErrorCode.TOKENINVALID);
             }
         }

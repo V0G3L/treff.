@@ -19,7 +19,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
     public void valid() {
         // removed user 2 from group
         RemoveGroupMembersCommand removeGroupMembersCommand
-                = new RemoveGroupMembersCommand(accountManager, mapper);
+                = new RemoveGroupMembersCommand(sessionFactory, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
                 .add(users[2].id);
         inputBuilder.add("id", groupId)
@@ -29,7 +29,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
 
         // check that user 2 was removed
         GetGroupDetailsCommand getGroupDetailsCommand
-                = new GetGroupDetailsCommand(accountManager, mapper);
+                = new GetGroupDetailsCommand(sessionFactory, mapper);
         JsonObjectBuilder input =
                 getCommandStubForUser("get-group-details", users[0])
                         .add("id", groupId);
@@ -77,7 +77,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
                 || id == users[2].id || id == users[3].id)
             id += 23;
         RemoveGroupMembersCommand removeGroupMembersCommand
-                = new RemoveGroupMembersCommand(accountManager, mapper);
+                = new RemoveGroupMembersCommand(sessionFactory, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
                 .add(id);
         inputBuilder.add("id", groupId)
@@ -94,7 +94,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
         while (id == groupId)
             id += 5;
         RemoveGroupMembersCommand removeGroupMembersCommand
-                = new RemoveGroupMembersCommand(accountManager, mapper);
+                = new RemoveGroupMembersCommand(sessionFactory, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
                 .add(users[3].id);
         inputBuilder.add("id", id)
@@ -108,7 +108,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
     @Test
     public void noPermission() {
         RemoveGroupMembersCommand removeGroupMembersCommand
-                = new RemoveGroupMembersCommand(accountManager, mapper);
+                = new RemoveGroupMembersCommand(sessionFactory, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
                 .add(users[1].id);
         JsonObjectBuilder input =
@@ -124,7 +124,7 @@ public class RemoveGroupMembersCommandTest extends GroupDependentTest {
     @Test
     public void notInGroup() {
         RemoveGroupMembersCommand addGroupMembersCommand
-                = new RemoveGroupMembersCommand(accountManager, mapper);
+                = new RemoveGroupMembersCommand(sessionFactory, mapper);
         JsonArrayBuilder members = Json.createArrayBuilder()
                 .add(users[3].id);
         inputBuilder.add("id", groupId)

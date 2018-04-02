@@ -3,6 +3,9 @@ package org.pispeb.treffpunkt.server.commands.serializers;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 
 import java.io.IOException;
 import java.io.StringWriter;

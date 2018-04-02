@@ -20,7 +20,6 @@ public class RequestPositionCommand extends GroupCommand {
     public RequestPositionCommand(SessionFactory sessionFactory,
                                   ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.READ_LOCK,
                 null, null); // requesting position requires no permission
     }
 
@@ -48,11 +47,10 @@ public class RequestPositionCommand extends GroupCommand {
         public Input(@JsonProperty("id") int groupId,
                      @JsonProperty("time") long time,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.time = new Date(time);
         }
     }
 
-    public static class Output extends CommandOutput {
-    }
+    public static class Output extends CommandOutput { }
 }

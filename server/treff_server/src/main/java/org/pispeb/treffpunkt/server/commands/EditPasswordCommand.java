@@ -8,6 +8,7 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
@@ -25,11 +26,7 @@ public class EditPasswordCommand extends AbstractCommand {
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
 
-        // check if account still exists
-        Account actingAccount
-                = getSafeForWriting(input.getActingAccount());
-        if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+        Account actingAccount = input.getActingAccount();
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.pass)) {
@@ -62,11 +59,6 @@ public class EditPasswordCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-
-        Output() {
-        }
-    }
-
+    public static class Output extends CommandOutput { }
 
 }

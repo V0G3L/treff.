@@ -92,7 +92,7 @@ public class BlockAccountCommandTest
      */
     private JsonObject execute(User blocker, User blocked) {
         BlockAccountCommand blockAccountCommand
-                = new BlockAccountCommand(accountManager, mapper);
+                = new BlockAccountCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, blocker);

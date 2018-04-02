@@ -61,7 +61,7 @@ public class SendChatMessageCommandTest extends GroupDependentTest {
      */
     private JsonObject execute(User author, int group, String message) {
         SendChatMessageCommand sendChatMessageCommand
-                = new SendChatMessageCommand(accountManager, mapper);
+                = new SendChatMessageCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, author);

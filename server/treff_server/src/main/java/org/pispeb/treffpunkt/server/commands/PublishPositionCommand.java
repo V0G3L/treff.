@@ -19,7 +19,6 @@ public class PublishPositionCommand extends GroupCommand {
     public PublishPositionCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.READ_LOCK,
                 null, null); // position publishing requires no permission
     }
 
@@ -53,7 +52,7 @@ public class PublishPositionCommand extends GroupCommand {
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("time-end") long timeEnd,
                      @JsonProperty("token") String token) {
-            super(token, groupId, new int[0]);
+            super(token, groupId);
             this.timeEnd = new Date(timeEnd);
         }
 
@@ -63,8 +62,5 @@ public class PublishPositionCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 }

@@ -31,7 +31,7 @@ public abstract class ContactRequestDependentTest extends MultipleUsersTest {
 
     private void sendRequest(User sender, User receiver) {
         SendContactRequestCommand sendContactRequestCommand
-                = new SendContactRequestCommand(accountManager, mapper);
+                = new SendContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser("send-contact-request", sender);

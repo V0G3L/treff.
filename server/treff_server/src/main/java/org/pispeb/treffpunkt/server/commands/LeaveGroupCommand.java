@@ -17,14 +17,13 @@ public class LeaveGroupCommand extends GroupCommand {
 
     public LeaveGroupCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
+        super(sessionFactory, Input.class, mapper,
                 null, null); // leaving a group requires no special permission
     }
 
     @Override
     protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        usergroup.removeMember(actingAccount);
+        usergroup.removeMember(actingAccount, session);
 
         // create update for all members except the acting account
         UsergroupChangeUpdate update =
@@ -46,8 +45,6 @@ public class LeaveGroupCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() { }
-    }
+    public static class Output extends CommandOutput { }
 
 }

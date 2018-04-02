@@ -1,39 +1,25 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import org.hibernate.SessionFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 public abstract class PollCommand extends GroupCommand {
     protected Poll poll;
 
-    private final PollLockType pollLockType;
-
-    protected PollCommand(AccountManager accountManager,
+    protected PollCommand(SessionFactory sessionFactory,
                           Class<? extends PollInput> expectedInput,
-                          ObjectMapper mapper,
-                          PollLockType pollLockType) {
-        super(accountManager, expectedInput, mapper, GroupLockType.READ_LOCK,
+                          ObjectMapper mapper) {
+        super(sessionFactory, expectedInput, mapper,
                 null, null); // polls need special permission checking
-        this.pollLockType = pollLockType;
     }
 
     protected CommandOutput executeOnGroup(GroupInput groupInput) {
         PollInput input = (PollInput) groupInput;
         poll = usergroup.getAllPolls().get(input.pollID);
-        // lock poll and check if it still exists
-        // get read- or write-lock depending on what subcommand poll needs
-        switch (this.pollLockType) {
-            case READ_LOCK:
-                poll = getSafeForReading(poll);
-                break;
-            case WRITE_LOCK:
-                poll = getSafeForWriting(poll);
-                break;
-        }
         if (poll == null)
             return new ErrorOutput(ErrorCode.POLLIDINVALID);
 
@@ -47,14 +33,8 @@ public abstract class PollCommand extends GroupCommand {
         final int pollID;
 
         protected PollInput(String token, int groupID, int pollID) {
-            super(token, groupID, new int[0]);
+            super(token, groupID);
             this.pollID = pollID;
         }
     }
-
-    protected enum PollLockType {
-        READ_LOCK,
-        WRITE_LOCK
-    }
-
 }

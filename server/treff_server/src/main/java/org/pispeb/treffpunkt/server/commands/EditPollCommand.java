@@ -19,8 +19,7 @@ import java.util.Date;
 public class EditPollCommand extends PollCommand {
 
     public EditPollCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                PollLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override

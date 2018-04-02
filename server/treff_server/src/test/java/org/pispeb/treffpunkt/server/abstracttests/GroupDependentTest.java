@@ -32,7 +32,7 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
     @Before
     public void createGroup() {
         CreateGroupCommand createGroupCommand
-                = new CreateGroupCommand(accountManager, mapper);
+                = new CreateGroupCommand(sessionFactory, mapper);
         Set<User> members = new HashSet<>();
         members.add(ownUser);
         members.add(users[1]);
@@ -56,7 +56,7 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
 
         // strip permissions from user 2
         EditMembershipCommand editMembershipCommand
-                = new EditMembershipCommand(accountManager, mapper);
+                = new EditMembershipCommand(sessionFactory, mapper);
         JsonObject permissionInput = Json.createObjectBuilder()
                 .add("edit_any_event", false)
                 .add("create_poll", false)
@@ -92,7 +92,7 @@ public abstract class GroupDependentTest extends MultipleUsersTest {
                 .add("id", this.groupId);
 
         JsonObject output
-                = runCommand(new GetGroupDetailsCommand(accountManager, mapper),
+                = runCommand(new GetGroupDetailsCommand(sessionFactory, mapper),
                 input);
 
         return output.getJsonObject("group");

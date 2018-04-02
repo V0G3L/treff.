@@ -10,6 +10,7 @@ import org.pispeb.treffpunkt.server.commands.descriptions.MembershipEditDescript
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.GroupMembershipChangeUpdate;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -21,8 +22,7 @@ public class EditMembershipCommand extends GroupCommand {
 
 
     public EditMembershipCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                GroupLockType.READ_LOCK,
+        super(sessionFactory, Input.class, mapper,
                 Permission.CHANGE_PERMISSIONS,
                 ErrorCode.NOPERMISSIONEDITPERMISSION);
     }
@@ -31,26 +31,26 @@ public class EditMembershipCommand extends GroupCommand {
     protected CommandOutput executeOnGroup(GroupInput commandInput) {
         Input input = (Input) commandInput;
 
-        Account account = getSafeForReading(accountManager
-                .getAccount(input.membershipEditDescription.accountID));
-        if (null == account)
+        Account otherAccount = accountManager.getAccount(input.membershipEditDescription.accountID);
+        if (otherAccount == null)
             return new ErrorOutput(ErrorCode.USERIDINVALID);
-        if(null == account.getAllGroups().get(usergroup.getID()))
+        if (!usergroup.getAllMembers().containsKey(otherAccount.getID()))
             return new ErrorOutput(ErrorCode.USERNOTINGROUP);
 
         // edit permissions
         for (Permission p
                 : input.membershipEditDescription.permissionMap.keySet()) {
-            usergroup.setPermissionOfMember(account, p,
+            usergroup.setPermissionOfMember(otherAccount, p,
                     input.membershipEditDescription.permissionMap.get(p));
         }
 
-        Date d = usergroup.getLocationSharingTimeEndOfMember(account);
-        long locationSharingTime = (d == null)?0:d.getTime();
+        // create Update
+        Date d = usergroup.getLocationSharingTimeEndOfMember(otherAccount);
+        long locationSharingTime = (d == null) ? 0 : d.getTime();
         MembershipDescription mB =
-                new MembershipDescription(usergroup.getID(), account.getID(),
+                new MembershipDescription(usergroup.getID(), otherAccount.getID(),
                         locationSharingTime,
-                        usergroup.getPermissionsOfMember(account)
+                        usergroup.getPermissionsOfMember(otherAccount)
                 );
         GroupMembershipChangeUpdate update =
                 new GroupMembershipChangeUpdate(new Date(),
@@ -73,6 +73,5 @@ public class EditMembershipCommand extends GroupCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-    }
+    public static class Output extends CommandOutput { }
 }

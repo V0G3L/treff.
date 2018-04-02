@@ -78,7 +78,7 @@ public class LeaveEventCommandTest extends EventDependentTest {
                 .add("group-id", groupId)
                 .add("id", eventID);
 
-        runCommand(new JoinEventCommand(accountManager, mapper), input);
+        runCommand(new JoinEventCommand(sessionFactory, mapper), input);
     }
 
     private JsonObject execute(User user) {
@@ -90,6 +90,6 @@ public class LeaveEventCommandTest extends EventDependentTest {
                 .add("group-id", groupID)
                 .add("id", eventID);
 
-        return runCommand(new LeaveEventCommand(accountManager, mapper), input);
+        return runCommand(new LeaveEventCommand(sessionFactory, mapper), input);
     }
 }

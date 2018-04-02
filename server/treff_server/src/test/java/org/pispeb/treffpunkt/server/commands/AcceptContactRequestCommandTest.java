@@ -73,7 +73,7 @@ public class AcceptContactRequestCommandTest
      */
     private JsonObject execute(User receiver, User sender) {
         AcceptContactRequestCommand acceptContactRequestCommand
-                = new AcceptContactRequestCommand(accountManager, mapper);
+                = new AcceptContactRequestCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input
                 = getCommandStubForUser(this.cmd, receiver);

@@ -1,5 +1,8 @@
 package org.pispeb.treffpunkt.server.abstracttests;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.pispeb.treffpunkt.server.commands.AbstractCommand;

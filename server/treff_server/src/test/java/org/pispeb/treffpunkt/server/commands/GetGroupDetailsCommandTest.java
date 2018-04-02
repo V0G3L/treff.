@@ -18,7 +18,7 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
     @Test
     public void valid() {
         GetGroupDetailsCommand getGroupDetailsCommand
-                = new GetGroupDetailsCommand(accountManager, mapper);
+                = new GetGroupDetailsCommand(sessionFactory, mapper);
         inputBuilder.add("id", groupId);
 
         JsonObject output = runCommand(getGroupDetailsCommand, inputBuilder);
@@ -42,7 +42,7 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
     @Test
     public void invalidToken() {
         GetGroupDetailsCommand getGroupDetailsCommand
-                = new GetGroupDetailsCommand(accountManager, mapper);
+                = new GetGroupDetailsCommand(sessionFactory, mapper);
         JsonObjectBuilder inputBuilder = Json.createObjectBuilder()
                 .add("cmd","get-group-details")
                 .add("token","0")
@@ -55,7 +55,7 @@ public class GetGroupDetailsCommandTest extends GroupDependentTest {
     @Test
     public void invalidGroupId() {
         GetGroupDetailsCommand getGroupDetailsCommand
-                = new GetGroupDetailsCommand(accountManager, mapper);
+                = new GetGroupDetailsCommand(sessionFactory, mapper);
         int invalidGroupId = 1337;
         while (invalidGroupId == groupId) {
             invalidGroupId += 23;

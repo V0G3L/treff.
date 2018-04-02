@@ -8,6 +8,7 @@ import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.PollCreateDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollChangeUpdate;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -20,7 +21,6 @@ public class CreatePollCommand extends GroupCommand {
     public CreatePollCommand(SessionFactory sessionFactory,
                              ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper,
-                GroupLockType.WRITE_LOCK,
                 Permission.CREATE_POLL, ErrorCode.NOPERMISSIONCREATEPOLL);
     }
 
@@ -31,7 +31,7 @@ public class CreatePollCommand extends GroupCommand {
         // create poll
         Poll poll = usergroup.createPoll(input.poll.question,
                 actingAccount, input.poll.timeVoteClose,
-                input.poll.isMultiChoice);
+                input.poll.isMultiChoice, session);
 
         // create update
         PollChangeUpdate update =

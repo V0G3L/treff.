@@ -21,7 +21,6 @@ import java.util.Date;
  */
 public class AcceptContactRequestCommand extends AbstractCommand {
 
-
     public AcceptContactRequestCommand(SessionFactory sessionFactory,
                                        ObjectMapper mapper) {
         super(sessionFactory,Input.class, mapper);
@@ -30,22 +29,10 @@ public class AcceptContactRequestCommand extends AbstractCommand {
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account actingAccount;
-        Account newContact;
+        Account actingAccount = input.getActingAccount();
+        Account newContact = accountManager.getAccount(input.id);
 
         // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForReading(input.getActingAccount());
-            newContact = getSafeForReading(
-                    accountManager.getAccount(input.id));
-        } else {
-            newContact = getSafeForReading(
-                    accountManager.getAccount(input.id));
-            actingAccount = getSafeForReading(input.getActingAccount());
-        }
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
         if (newContact == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
@@ -85,9 +72,6 @@ public class AcceptContactRequestCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 
 }

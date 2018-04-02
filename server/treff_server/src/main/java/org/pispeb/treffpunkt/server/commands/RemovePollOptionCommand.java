@@ -1,13 +1,13 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import org.hibernate.SessionFactory;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionDeletionUpdate;
+import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -15,31 +15,20 @@ import java.util.Date;
 /**
  * a command to delete an option of a poll of a user group
  */
-public class RemovePollOptionCommand extends PollCommand {
-
+public class RemovePollOptionCommand extends PollOptionCommand {
 
     public RemovePollOptionCommand(SessionFactory sessionFactory,
                                    ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper, PollLockType.WRITE_LOCK);
+        super(sessionFactory,Input.class, mapper);
     }
 
     @Override
-    protected CommandOutput executeOnPoll(PollInput commandInput) {
-        Input input = (Input) commandInput;
-
+    protected CommandOutput executeOnPollOption(PollOptionInput pollOptionInput) {
         // check permission
         if (!usergroup.checkPermissionOfMember(actingAccount, Permission
                 .EDIT_ANY_POLL)) {
             return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
         }
-
-        // get poll option
-        PollOption pollOption = poll.getPollOptions().get(input.optionId);
-        // lock poll option and check if it still exists
-        // get read- or write-lock depending on what subcommand poll needs
-        pollOption = getSafeForWriting(pollOption);
-        if (pollOption == null)
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
 
         // create update
         PollOptionDeletionUpdate update =
@@ -51,22 +40,19 @@ public class RemovePollOptionCommand extends PollCommand {
         addUpdateToAllOtherMembers(update);
 
         // remove the option
-        pollOption.delete();
+        pollOption.delete(session);
 
         // respond
         return new Output();
     }
 
-    public static class Input extends PollInput {
-
-        final int optionId;
+    public static class Input extends PollOptionInput {
 
         public Input(@JsonProperty("group-id") int groupId,
                      @JsonProperty("poll-id") int pollId,
                      @JsonProperty("id") int optionId,
                      @JsonProperty("token") String token) {
-            super(token, groupId, pollId);
-            this.optionId = optionId;
+            super(token, groupId, pollId, optionId);
         }
     }
 

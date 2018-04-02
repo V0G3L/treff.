@@ -73,11 +73,13 @@ public class RequestHandler {
             // unknown command error message
             String cmdString = request.getString("cmd");
             if (cmdString.equals("request-persistent-connection")) {
-                Account actingAccount = accountManager
-                        .getAccountByLoginToken(request.getString("token"));
-                if (actingAccount == null)
-                    return toErrorResponse(ErrorCode.TOKENINVALID);
-                return new Response(actingAccount.getID());
+                // TODO: implement
+//                Account actingAccount = accountManager
+//                        .getAccountByLoginToken(request.getString("token"));
+//                if (actingAccount == null)
+//                    return toErrorResponse(ErrorCode.TOKENINVALID);
+//                return new Response(actingAccount.getID());
+                return toErrorResponse(ErrorCode.UNKNOWN_COMMAND);
             }
 
             Class<? extends AbstractCommand> commandClass
@@ -89,8 +91,8 @@ public class RequestHandler {
             AbstractCommand command = null;
             try {
                 command = commandClass
-                        .getConstructor(AccountManager.class, ObjectMapper.class)
-                        .newInstance(accountManager, mapper);
+                        .getConstructor(SessionFactory.class, ObjectMapper.class)
+                        .newInstance(sessionFactory, mapper);
             } catch (InstantiationException | IllegalAccessException
                     | NoSuchMethodException | InvocationTargetException e) {
                 // This should only happen when a command class uses a

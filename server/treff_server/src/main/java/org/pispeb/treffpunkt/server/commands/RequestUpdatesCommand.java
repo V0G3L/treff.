@@ -8,6 +8,8 @@ import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
+import org.pispeb.treffpunkt.server.hibernate.Account;
+import org.pispeb.treffpunkt.server.hibernate.Update;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.LinkedHashSet;
@@ -30,14 +32,12 @@ public class RequestUpdatesCommand extends AbstractCommand {
         Input input = (Input) commandInput;
 
         // check if account still exists
-        Account actingAccount
-                = getSafeForReading(input.getActingAccount());
+        Account actingAccount = input.getActingAccount();
         if (actingAccount == null)
             return new ErrorOutput(ErrorCode.TOKENINVALID);
 
         // get the Updates
-        SortedSet<? extends Update> updates
-                = actingAccount.getUndeliveredUpdates();
+        SortedSet<Update> updates = actingAccount.getUndeliveredUpdates();
         // LinkedHashSet to preserve insertion order
         Set<String> updatecontents = new LinkedHashSet<>();
         for (Update u : updates) {

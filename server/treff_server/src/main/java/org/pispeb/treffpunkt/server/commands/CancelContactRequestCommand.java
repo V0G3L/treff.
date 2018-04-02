@@ -12,6 +12,7 @@ import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
+import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -25,35 +26,21 @@ public class CancelContactRequestCommand extends AbstractCommand {
 
     public CancelContactRequestCommand(SessionFactory sessionFactory,
                                        ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+        super(sessionFactory, Input.class, mapper);
     }
 
     @Override
     protected CommandOutput executeInternal(CommandInput commandInput) {
         Input input = (Input) commandInput;
-        Account actingAccount;
-        Account newContact;
 
-        // get accounts
-        if (input.getActingAccount().getID() < input.id) {
-            actingAccount = getSafeForWriting(input.getActingAccount());
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-        } else {
-            newContact = getSafeForWriting(
-                    accountManager.getAccount(input.id));
-            actingAccount = getSafeForWriting(input.getActingAccount());
-        }
-        if (actingAccount == null) {
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
-        }
+        Account actingAccount = input.getActingAccount();
+        Account newContact = accountManager.getAccount(input.id);
         if (newContact == null) {
             return new ErrorOutput(ErrorCode.USERIDINVALID);
         }
 
         // check if request exist
-        if (!actingAccount.getAllOutgoingContactRequests()
-                .containsKey(input.id)) {
+        if (!actingAccount.getAllOutgoingContactRequests().containsKey(input.id)) {
             return new ErrorOutput(ErrorCode.NOCONTACTREQUEST);
         }
 
@@ -86,9 +73,6 @@ public class CancelContactRequestCommand extends AbstractCommand {
         }
     }
 
-    public static class Output extends CommandOutput {
-        Output() {
-        }
-    }
+    public static class Output extends CommandOutput { }
 
 }

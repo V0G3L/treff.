@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.serializers.PollCompleteSerializer;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
 
 /**
  * a command to get a detailed description of a poll of a user group
@@ -15,7 +16,7 @@ public class GetPollDetailsCommand extends PollCommand {
 
     public GetPollDetailsCommand(SessionFactory sessionFactory,
                                  ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper, PollLockType.READ_LOCK);
+        super(sessionFactory, Input.class, mapper);
     }
 
     @Override

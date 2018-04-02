@@ -40,7 +40,7 @@ public class EditEmailCommandTest extends AccountChangeTest {
      */
     private JsonObject execute(User exec) {
         EditEmailCommand editEmailCommand
-                = new EditEmailCommand(accountManager, mapper);
+                = new EditEmailCommand(sessionFactory, mapper);
 
         JsonObjectBuilder input = getCommandStubForUser(this.cmd, exec);
         input.add("email", NEWMAIL);

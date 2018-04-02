@@ -3,6 +3,7 @@ package org.pispeb.treffpunkt.server.commands.updates;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.serializers.PollCompleteSerializer;
+import org.pispeb.treffpunkt.server.hibernate.Poll;
 
 import java.util.Date;
 
