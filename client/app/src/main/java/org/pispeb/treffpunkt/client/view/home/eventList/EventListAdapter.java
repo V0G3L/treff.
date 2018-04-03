@@ -16,9 +16,9 @@ import org.osmdroid.views.MapView;
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.data.entities.Event;
 import org.pispeb.treffpunkt.client.databinding.EventItemBinding;
-import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 import org.pispeb.treffpunkt.client.view.home.map.MapFragment;
 import org.pispeb.treffpunkt.client.view.home.map.markers.EventMarker;
+import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 
 /**
  * Adapter to hold {@link EventListViewHolder}s and display them in a list

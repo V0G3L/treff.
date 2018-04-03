@@ -65,6 +65,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.4'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
 
+    implementation 'commons-validator:commons-validator:1.6'
+
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
     // Optional -- Mockito framework

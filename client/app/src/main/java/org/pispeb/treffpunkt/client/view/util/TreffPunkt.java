@@ -12,7 +12,8 @@ import android.widget.Toast;
 public class TreffPunkt extends Application {
 
     public final static String STANDARD_URL =
-            "wss://treffpunkt.nsupdate.info/treff_server-0.1/ws";
+//            "wss://treffpunkt.nsupdate.info/treff_server-0.1/ws";
+            "ws://192.168.178.47:8080/treff_server-1.0/ws";
 
     private static Context context;
 

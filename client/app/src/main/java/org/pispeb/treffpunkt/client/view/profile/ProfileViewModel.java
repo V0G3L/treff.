@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.pispeb.treffpunkt.client.R;
 import org.pispeb.treffpunkt.client.data.networking.RequestEncoder;
 import org.pispeb.treffpunkt.client.view.util.SingleLiveEvent;
@@ -73,9 +74,13 @@ public class ProfileViewModel extends ViewModel {
             change = true;
         }
         if (!newEmail.equals("") && !newEmail.equals(email.getValue())) {
-            encoder.editEmail(newEmail, confirmPassword);
-            email.setValue(newEmail);
-            change = true;
+            if (EmailValidator.getInstance().isValid(newEmail)) {
+                encoder.editEmail(newEmail, confirmPassword);
+                email.setValue(newEmail);
+                change = true;
+            } else {
+                TreffPunkt.showToast(ctx.getString(R.string.invalid_email));
+            }
         }
         if (change) {
             state.setValue(new State(ViewCall.PROFILE, 0));

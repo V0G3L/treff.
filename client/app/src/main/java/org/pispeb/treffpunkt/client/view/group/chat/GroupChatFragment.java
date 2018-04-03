@@ -1,9 +1,9 @@
 package org.pispeb.treffpunkt.client.view.group.chat;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -49,8 +49,6 @@ public class GroupChatFragment extends Fragment {
         vm.getState().observe(this, state -> callback(state));
 
         binding.setVm(vm);
-
-
 
         binding.list.setAdapter(adapter);
         binding.list.setLayoutManager(new LinearLayoutManager(getContext(),
