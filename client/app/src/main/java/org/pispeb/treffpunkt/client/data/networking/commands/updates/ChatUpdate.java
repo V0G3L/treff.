@@ -26,6 +26,8 @@ public class ChatUpdate extends Update {
     public void applyUpdate(RepositorySet repositorySet) {
         // creator == sender of chat message
         User sender = repositorySet.userRepository.getUser(creator);
+        if (sender == null)
+            sender = User.getPlaceholderAndScheduleQuery(creator, repositorySet.userRepository);
 
         ChatMessage chatMessage = new ChatMessage(groupId, message,
                 sender.getUserId(), sender.getUsername(), timeCreated);

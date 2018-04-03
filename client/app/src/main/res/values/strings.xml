@@ -174,5 +174,8 @@
     <string name="button_change_server">Change Server</string>
     <string name="mute_chat_setting">Mute Chat</string>
     <string name="mute_location_requests_settings">Mute location requests</string>
+    <string name="flist_accept">Accept</string>
+    <string name="flist_decline">Decline</string>
+    <string name="flist_cancel_request">Cancel</string>
 
 </resources>

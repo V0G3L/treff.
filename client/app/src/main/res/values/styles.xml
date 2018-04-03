@@ -13,4 +13,12 @@
         <item name="colorAccent">#808080</item>
     </style>
 
+    <style name="AcceptButton" >
+        <item name="android:colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
+    <style name="DeclineButton" >
+        <item name="android:colorButtonNormal">@color/red</item>
+    </style>
+
 </resources>

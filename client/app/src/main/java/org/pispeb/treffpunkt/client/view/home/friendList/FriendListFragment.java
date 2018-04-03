@@ -81,37 +81,11 @@ public class FriendListFragment extends Fragment {
                 friendIntent.putExtra(FriendActivity.USER_INTENT, userId);
                 startActivity(friendIntent);
                 break;
-            case SHOW_PENDING_DIALOG:
-                builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(R.string.request_pending);
-                builder.setPositiveButton(R.string.ok, ((dialog, which) -> {
-                    dialog.dismiss();
-                }));
-                builder.setNegativeButton(R.string.cancel, ((dialog, which) -> {
-                    vm.cancel(userId);
-                    dialog.dismiss();
-                }));
-                builder.show();
-                break;
             case SHOW_BLOCKED_DIALOG:
                 builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(R.string.blocked);
                 builder.setPositiveButton(R.string.unblock, ((dialog, which) -> {
                     vm.unblock(userId);
-                    dialog.dismiss();
-                }));
-                builder.show();
-                break;
-            case SHOW_REQUESTING_DIALOG:
-                builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(getString(R.string.user_is_requesting));
-                builder.setPositiveButton(R.string.accept, ((dialog, which) -> {
-                    vm.accept(userId);
-                    dialog.dismiss();
-                }));
-                builder.setNegativeButton(R.string.decline,
-                        ((dialog, which) -> {
-                    vm.decline(userId);
                     dialog.dismiss();
                 }));
                 builder.show();

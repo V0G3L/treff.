@@ -8,16 +8,21 @@
     <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp">
+        android:layout_height="53dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        >
 
         <ImageView
             android:id="@+id/picture"
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
             android:src="@drawable/ic_account_circle_black_24dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
+            app:layout_constraintStart_toStartOf="parent"
             android:tint="@color/black"
             android:alpha="0.5"/>
 
@@ -31,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="@id/picture"
             android:textSize="16sp"
             android:textColor="@color/black"
-            android:layout_marginLeft="24dp"/>
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/info"
@@ -39,6 +44,39 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/username"
             app:layout_constraintBottom_toBottomOf="@id/username"
+            android:text="ASDASDASD"
+            android:layout_marginEnd="5pt"
+            app:layout_constraintEnd_toStartOf="@id/cancel_request_button"/>
+
+        <!-- Accept button -->
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/flist_accept"
+            android:theme="@style/AcceptButton"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/decline_button"/>
+
+        <!-- Decline button -->
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/decline_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/flist_decline"
+            android:theme="@style/DeclineButton"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Cancel request button -->
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/cancel_request_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/flist_cancel_request"
+            android:theme="@style/DeclineButton"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
     </android.support.constraint.ConstraintLayout>
 </layout>

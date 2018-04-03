@@ -45,6 +45,9 @@ public class FriendListAdapter
 
     public interface FriendClickedListener {
         void onItemClicked(int position, User user);
+        void onAcceptClicked(User user);
+        void onDeclineClicked(User user);
+        void onCancelClicked(User user);
     }
 
     public static final DiffCallback<User> diffCallback = new
@@ -83,23 +86,35 @@ class FriendListViewHolder extends RecyclerView.ViewHolder
         this.binding = binding;
         this.listener = listener;
         binding.getRoot().setOnClickListener(this);
+
+        binding.acceptButton.setOnClickListener(view
+                -> listener.onAcceptClicked(binding.getUser()));
+        binding.declineButton.setOnClickListener(view
+                -> listener.onDeclineClicked(binding.getUser()));
+        binding.cancelRequestButton.setOnClickListener(view
+                -> listener.onCancelClicked(binding.getUser()));
     }
 
     public void bindTo(User user) {
         // databinding
         binding.setUser(user);
+        binding.info.setVisibility(View.GONE);
+        binding.acceptButton.setVisibility(View.GONE);
+        binding.declineButton.setVisibility(View.GONE);
+        binding.cancelRequestButton.setVisibility(View.GONE);
         if (user.isRequesting()) {
-            binding.info.setText(R.string.user_is_requesting);
+//            binding.info.setText(R.string.user_is_requesting);
+            binding.acceptButton.setVisibility(View.VISIBLE);
+            binding.declineButton.setVisibility(View.VISIBLE);
         } else if (user.isRequestPending()) {
+            binding.info.setVisibility(View.VISIBLE);
             binding.info.setText(R.string.request_pending);
+            binding.cancelRequestButton.setVisibility(View.VISIBLE);
         } else if (user.isBlocked()) {
+            binding.info.setVisibility(View.VISIBLE);
             binding.info.setText(R.string.blocked);
-        } else {
-            binding.info.setText("");
-        }
+        } // no info-text or buttons for regular friends
     }
-
-
 
     @Override
     public void onClick(View v) {

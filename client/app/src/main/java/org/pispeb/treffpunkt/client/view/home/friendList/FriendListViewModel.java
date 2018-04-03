@@ -40,34 +40,31 @@ public class FriendListViewModel extends ViewModel
         state.setValue(new State(ViewCall.ADD_FRIEND, 0));
     }
 
-    public void decline(int userId) {
-        userRepository.requestDecline(userId);
+    @Override
+    public void onAcceptClicked(User user) {
+        userRepository.requestAccept(user.getUserId());
     }
 
-    public void accept(int userId) {
-        userRepository.requestAccept(userId);
+    @Override
+    public void onDeclineClicked(User user) {
+        userRepository.requestDecline(user.getUserId());
     }
 
-    public void unblock(int userId) {
-        userRepository.requestIsBlocked(userId, false);
+    @Override
+    public void onCancelClicked(User user) {
+        userRepository.requestCancel(user.getUserId());
     }
 
-    public void cancel(int userId) {
-        userRepository.requestCancel(userId);
+    public void unblock(int userID) {
+        userRepository.requestIsBlocked(userID, false);
     }
 
     @Override
     public void onItemClicked(int position, User user) {
-        if (user.isRequestPending()) {
-            state.setValue(new State(ViewCall.SHOW_PENDING_DIALOG,
-                    user.getUserId()));
-        } else if (user.isRequesting()) {
-            state.setValue(new State(ViewCall.SHOW_REQUESTING_DIALOG,
-                    user.getUserId()));
-        } else if (user.isBlocked()) {
+        if (user.isBlocked()) {
             state.setValue(new State(ViewCall.SHOW_BLOCKED_DIALOG,
                     user.getUserId()));
-        } else {
+        } else if (user.isFriend()) {
             state.setValue(new State(ViewCall.DISPLAY_FRIEND_DETAILS,
                     user.getUserId()));
         }
