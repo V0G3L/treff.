@@ -14,9 +14,8 @@ import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
 public class ResetPasswordCommand extends AbstractCommand {
 
 
-    public ResetPasswordCommand(SessionFactory sessionFactory,
-                                ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public ResetPasswordCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
 		throw new UnsupportedOperationException();
     }
 

@@ -17,9 +17,8 @@ import java.util.Date;
  */
 public class RemovePollOptionCommand extends PollOptionCommand {
 
-    public RemovePollOptionCommand(SessionFactory sessionFactory,
-                                   ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public RemovePollOptionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

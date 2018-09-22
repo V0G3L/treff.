@@ -19,9 +19,8 @@ import java.util.Date;
 public class EditEventCommand extends EventCommand {
 
 
-    public EditEventCommand(SessionFactory sessionFactory,
-                            ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditEventCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

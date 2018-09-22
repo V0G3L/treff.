@@ -89,4 +89,8 @@ public class Server {
         return requestHandler;
     }
 
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
 }

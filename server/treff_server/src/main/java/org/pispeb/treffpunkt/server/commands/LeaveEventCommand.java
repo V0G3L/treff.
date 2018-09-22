@@ -16,9 +16,8 @@ import java.util.Date;
  */
 public class LeaveEventCommand extends EventCommand {
 
-    public LeaveEventCommand(SessionFactory sessionFactory,
-                             ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public LeaveEventCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

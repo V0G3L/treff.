@@ -28,9 +28,8 @@ import java.util.TreeSet;
 public class CreateGroupCommand extends AbstractCommand {
 
 
-    public CreateGroupCommand(SessionFactory sessionFactory,
-                              ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public CreateGroupCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

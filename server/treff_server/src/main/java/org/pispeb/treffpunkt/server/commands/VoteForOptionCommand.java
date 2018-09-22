@@ -18,9 +18,8 @@ import java.util.Date;
 public class VoteForOptionCommand extends PollOptionCommand {
 
 
-    public VoteForOptionCommand(SessionFactory sessionFactory,
-                                ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public VoteForOptionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

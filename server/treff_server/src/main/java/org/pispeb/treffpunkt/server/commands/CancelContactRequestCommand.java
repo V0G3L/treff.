@@ -24,9 +24,8 @@ import java.util.Date;
 public class CancelContactRequestCommand extends AbstractCommand {
 
 
-    public CancelContactRequestCommand(SessionFactory sessionFactory,
-                                       ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public CancelContactRequestCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

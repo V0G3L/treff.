@@ -17,9 +17,8 @@ import java.util.Date;
 public class WithdrawVoteForOptionCommand extends PollOptionCommand {
 
 
-    public WithdrawVoteForOptionCommand(SessionFactory sessionFactory,
-                                        ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public WithdrawVoteForOptionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

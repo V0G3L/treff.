@@ -63,14 +63,10 @@ public class CreateEventCommand extends GroupCommand {
 
     public static class Input extends GroupInput {
 
-        final int groupId;
         final EventCreateDescription event;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("event") EventCreateDescription event,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, EventCreateDescription event, String token) {
             super(token, groupId);
-            this.groupId = groupId;
             this.event = event;
         }
 

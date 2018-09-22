@@ -19,9 +19,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class EditEmailCommand extends AbstractCommand {
 
 
-    public EditEmailCommand(SessionFactory sessionFactory,
-                            ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditEmailCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

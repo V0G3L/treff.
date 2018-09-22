@@ -18,8 +18,8 @@ import java.util.Date;
  */
 public class EditPollCommand extends PollCommand {
 
-    public EditPollCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditPollCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

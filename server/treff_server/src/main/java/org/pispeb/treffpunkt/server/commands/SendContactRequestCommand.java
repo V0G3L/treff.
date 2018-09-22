@@ -24,9 +24,8 @@ import java.util.Date;
 public class SendContactRequestCommand extends AbstractCommand {
 
 
-    public SendContactRequestCommand(SessionFactory sessionFactory,
-                                     ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public SendContactRequestCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

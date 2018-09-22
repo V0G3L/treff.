@@ -1,5 +1,6 @@
 package org.pispeb.treffpunkt.server.commands.io;
 
+import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 
@@ -16,12 +17,13 @@ public abstract class CommandInputLoginRequired extends CommandInput {
         this.token = token;
     }
 
-    public boolean checkToken(AccountManager accountManager) {
+    public void setAccountManager(AccountManager accountManager) {
         if (!tokenChecked) {
             actingAccount = accountManager.getAccountByLoginToken(token);
             tokenChecked = true;
         }
-        return actingAccount != null;
+        throw new ProgrammingException("CommandInputLoginRequired got an invalid login token" +
+                "that was accepted by the AuthenticationFilter.");
     }
 
     public Account getActingAccount() {

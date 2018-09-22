@@ -17,9 +17,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class GetUserIdCommand extends AbstractCommand {
 
 
-    public GetUserIdCommand(SessionFactory sessionFactory,
-                            ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public GetUserIdCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

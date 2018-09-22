@@ -23,9 +23,8 @@ import java.util.Date;
 public class RemoveContactCommand extends AbstractCommand {
 
 
-    public RemoveContactCommand(SessionFactory sessionFactory,
-                                ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public RemoveContactCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

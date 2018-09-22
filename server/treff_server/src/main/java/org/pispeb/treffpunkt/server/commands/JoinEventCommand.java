@@ -17,9 +17,8 @@ import java.util.Date;
 public class JoinEventCommand extends EventCommand {
 
 
-    public JoinEventCommand(SessionFactory sessionFactory,
-                            ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public JoinEventCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

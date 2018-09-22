@@ -19,9 +19,8 @@ import java.util.Date;
 public class RemovePollCommand extends PollCommand {
 
 
-    public RemovePollCommand(SessionFactory sessionFactory,
-                             ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public RemovePollCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

@@ -59,7 +59,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.stream.JsonParsingException;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -70,6 +69,7 @@ import java.util.logging.Logger;
 public class RequestHandler {
 
     private static final ObjectMapper mapper = new ObjectMapper();
+
     static {
         // Do not fail on unknown properties. Important because cmd is extracted
         // seperately.
@@ -129,18 +129,8 @@ public class RequestHandler {
             if (commandClass == null)
                 return toErrorResponse(ErrorCode.UNKNOWN_COMMAND);
 
-            // instantiate command
-            AbstractCommand command = null;
-            try {
-                command = commandClass
-                        .getConstructor(SessionFactory.class, ObjectMapper.class)
-                        .newInstance(sessionFactory, mapper);
-            } catch (InstantiationException | IllegalAccessException
-                    | NoSuchMethodException | InvocationTargetException e) {
-                // This should only happen when a command class uses a
-                // non-standard constructor
-                throw new ProgrammingException();
-            }
+            AbstractCommand command
+                    = AbstractCommand.instantiate(commandClass, sessionFactory, mapper);
 
             String outputString = command.execute(requestString);
             return new Response(outputString);
@@ -230,8 +220,8 @@ public class RequestHandler {
     }
 
     private void registerCommand(String stringIdentifier,
-                                       Class<? extends AbstractCommand>
-                                               command) {
+                                 Class<? extends AbstractCommand>
+                                         command) {
         if (availableCommands.containsKey(stringIdentifier))
             throw new DuplicateCommandIdentifier(stringIdentifier);
         else

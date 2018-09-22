@@ -15,9 +15,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
  */
 public abstract class ManageBlockCommand extends AbstractCommand {
 
-    protected ManageBlockCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    protected ManageBlockCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     /**

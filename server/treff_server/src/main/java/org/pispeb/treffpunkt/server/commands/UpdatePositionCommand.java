@@ -24,9 +24,8 @@ import java.util.*;
 public class UpdatePositionCommand extends AbstractCommand {
 
 
-    public UpdatePositionCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public UpdatePositionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

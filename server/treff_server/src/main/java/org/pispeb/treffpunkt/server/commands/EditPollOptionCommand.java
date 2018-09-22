@@ -19,9 +19,7 @@ import java.util.Date;
 public class EditPollOptionCommand extends PollOptionCommand {
 
 
-    public EditPollOptionCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditPollOptionCommand(SessionFactory sessionFactory)[s]*{[s]*super(sessionFactory);
     }
 
     @Override

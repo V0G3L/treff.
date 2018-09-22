@@ -17,9 +17,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class GetContactListCommand extends AbstractCommand {
 
 
-    public GetContactListCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public GetContactListCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

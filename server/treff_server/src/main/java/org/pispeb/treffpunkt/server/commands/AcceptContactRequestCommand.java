@@ -4,8 +4,6 @@ import org.hibernate.SessionFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
@@ -19,15 +17,15 @@ import java.util.Date;
 /**
  * a command to accept a received contact request
  */
-public class AcceptContactRequestCommand extends AbstractCommand {
+public class AcceptContactRequestCommand extends AbstractCommand
+        <AcceptContactRequestCommand.Input, AcceptContactRequestCommand.Output> {
 
-    public AcceptContactRequestCommand(SessionFactory sessionFactory,
-                                       ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public AcceptContactRequestCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected Output executeInternal(Input commandInput) {
         Input input = (Input) commandInput;
         Account actingAccount = input.getActingAccount();
         Account newContact = accountManager.getAccount(input.id);

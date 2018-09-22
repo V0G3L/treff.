@@ -23,9 +23,8 @@ import java.util.*;
 public class DeleteAccountCommand extends AbstractCommand {
 
 
-    public DeleteAccountCommand(SessionFactory sessionFactory,
-                                ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public DeleteAccountCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

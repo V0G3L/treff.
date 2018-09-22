@@ -22,9 +22,8 @@ import java.util.Date;
 public class RejectContactRequestCommand extends AbstractCommand {
 
 
-    public RejectContactRequestCommand(SessionFactory sessionFactory,
-                                       ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public RejectContactRequestCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

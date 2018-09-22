@@ -23,9 +23,8 @@ import java.util.Set;
  */
 public class ListGroupsCommand extends AbstractCommand {
 
-    public ListGroupsCommand(SessionFactory sessionFactory,
-                             ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public ListGroupsCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

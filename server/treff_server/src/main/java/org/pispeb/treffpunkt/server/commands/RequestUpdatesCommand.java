@@ -22,9 +22,8 @@ import java.util.SortedSet;
 public class RequestUpdatesCommand extends AbstractCommand {
 
 
-    public RequestUpdatesCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public RequestUpdatesCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

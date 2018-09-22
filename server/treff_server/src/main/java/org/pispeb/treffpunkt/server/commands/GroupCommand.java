@@ -83,7 +83,7 @@ public abstract class GroupCommand extends AbstractCommand {
 
     public abstract static class GroupInput extends CommandInputLoginRequired {
 
-        final int groupID;
+        protected final int groupID;
 
         /**
          * Constructs a new GroupInput for commands that don't affect

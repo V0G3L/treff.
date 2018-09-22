@@ -1,6 +1,8 @@
 package org.pispeb.treffpunkt.server.networking;
 
 
+import javax.ws.rs.WebApplicationException;
+
 public enum ErrorCode {
 
     /**
@@ -219,5 +221,9 @@ public enum ErrorCode {
 
     public int getCode() {
         return code;
+    }
+
+    public WebApplicationException toWebException() {
+        return new WebApplicationException(String.format("{\"error\":%d}", getCode()), 400);
     }
 }

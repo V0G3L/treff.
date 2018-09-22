@@ -1,10 +1,15 @@
 plugins {
     id 'war'
     id 'org.akhikhl.gretty' version '2.0.0'
+    id "com.webcohesion.enunciate" version "2.11.1"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.9'
 }
 
 group 'org.pispeb'
-version '1.0'
+version '1.1'
 
 sourceCompatibility = 1.8
 
@@ -26,6 +31,9 @@ dependencies {
     implementation "commons-validator:commons-validator:1.6"
     implementation "com.fasterxml.jackson.module:jackson-modules-java8:2.9.4"
     implementation "org.apache.logging.log4j:log4j-core:2.11.0"
+    implementation "org.jboss.resteasy:resteasy-jaxrs:3.6.1.Final"
+    implementation 'org.jboss.resteasy:resteasy-servlet-initializer:3.6.1.Final'
+    implementation 'org.jboss.resteasy:resteasy-jackson-provider:3.6.1.Final'
     testImplementation "junit:junit:4.12"
     testImplementation "com.jcabi:jcabi-matchers:1.3"
     testImplementation "ch.vorburger.mariaDB4j:mariaDB4j:2.2.3"

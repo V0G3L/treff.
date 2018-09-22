@@ -14,9 +14,8 @@ import org.pispeb.treffpunkt.server.hibernate.Poll;
  */
 public class GetPollDetailsCommand extends PollCommand {
 
-    public GetPollDetailsCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public GetPollDetailsCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

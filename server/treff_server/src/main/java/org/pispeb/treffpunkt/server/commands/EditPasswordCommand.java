@@ -17,9 +17,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class EditPasswordCommand extends AbstractCommand {
 
 
-    public EditPasswordCommand(SessionFactory sessionFactory,
-                               ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditPasswordCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

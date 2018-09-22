@@ -26,9 +26,8 @@ import java.util.TreeSet;
 public class EditUsernameCommand extends AbstractCommand {
 
 
-    public EditUsernameCommand(SessionFactory sessionFactory,
-                               ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public EditUsernameCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

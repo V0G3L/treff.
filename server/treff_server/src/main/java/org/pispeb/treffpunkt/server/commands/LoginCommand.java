@@ -17,8 +17,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 public class LoginCommand extends AbstractCommand {
 
 
-    public LoginCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper);
+    public LoginCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
@@ -43,8 +43,7 @@ public class LoginCommand extends AbstractCommand {
         final String username;
         final String password;
 
-        public Input(@JsonProperty("user") String username,
-                     @JsonProperty("pass") String password) {
+        public Input(String username, String password) {
             this.username = username;
             this.password = password;
         }

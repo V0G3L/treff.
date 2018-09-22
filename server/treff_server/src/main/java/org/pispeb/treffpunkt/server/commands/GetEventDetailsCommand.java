@@ -15,9 +15,8 @@ import org.pispeb.treffpunkt.server.hibernate.Event;
 public class GetEventDetailsCommand extends EventCommand {
 
 
-    public GetEventDetailsCommand(SessionFactory sessionFactory,
-                                  ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper);
+    public GetEventDetailsCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override

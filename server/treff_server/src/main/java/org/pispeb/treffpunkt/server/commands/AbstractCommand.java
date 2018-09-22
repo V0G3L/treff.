@@ -3,9 +3,7 @@ package org.pispeb.treffpunkt.server.commands;
 import org.hibernate.SessionFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
@@ -18,22 +16,16 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 import javax.json.JsonObject;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
-import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.function.Function;
 
 /**
- * An api-command that can be sent by a client.
+ * An service-command that can be sent by a client.
  * The command is received by a server and is executing it if possible.
  */
-public abstract class AbstractCommand {
+public abstract class AbstractCommand<I extends CommandInput, O extends CommandOutput> {
 
     private final SessionFactory sessionFactory;
-    private final Class<? extends CommandInput> expectedInput;
-    protected final ObjectMapper mapper;
     protected AccountManager accountManager;
     protected Session session;
 
@@ -54,12 +46,8 @@ public abstract class AbstractCommand {
      * @param expectedInput
      * @param mapper
      */
-    protected AbstractCommand(SessionFactory sessionFactory,
-                              Class<? extends CommandInput> expectedInput,
-                              ObjectMapper mapper) {
+    protected AbstractCommand(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
-        this.expectedInput = expectedInput;
-        this.mapper = mapper;
     }
 
     /**
@@ -71,76 +59,52 @@ public abstract class AbstractCommand {
      * @return A {@link } object representing the outcome of the
      * command execution
      */
-    public String execute(String input) {
-
-        // try to construct input object
-        // if that fails, return a syntax error message
-        CommandInput commandInput;
-        try {
-            commandInput = mapper.readValue(input, expectedInput);
-        } catch (IOException e) {
-            return errorToString(ErrorCode.SYNTAXINVALID);
-        }
+    public O execute(I commandInput) {
 
         // run additional syntax checks
         if (!commandInput.syntaxCheck())
-            return errorToString(ErrorCode.SYNTAXINVALID);
+            throw ErrorCode.SYNTAXINVALID.toWebException();
 
         // start session and transaction and create AccountManager
         session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
         try { // always close session
-            accountManager = new AccountManager(session);
 
-            // for commands that require login, check token
-            if (commandInput instanceof CommandInputLoginRequired) {
-                CommandInputLoginRequired cmdInputLoginReq
-                        = (CommandInputLoginRequired) commandInput;
+            // retry transaction until it commits successfully
+            while (true) {
+                Transaction tx = session.beginTransaction();
+                accountManager = new AccountManager(session);
 
-                if (!cmdInputLoginReq.checkToken(accountManager)) {
-                    return errorToString(ErrorCode.TOKENINVALID);
+                if (commandInput instanceof CommandInputLoginRequired) {
+                    CommandInputLoginRequired commandInputLoginRequired
+                            = (CommandInputLoginRequired) commandInput;
+                    commandInputLoginRequired.setAccountManager(accountManager);
                 }
-            }
 
-            try {
-                CommandOutput output = executeInternal(commandInput);
-                // need to serialize output before closing session
-                String outputString = mapper.writeValueAsString(output);
+                    O output = executeInternal(commandInput);
 
-                // commit changes
-                try {
-                    tx.commit();
-                    return outputString;
-                } catch (RollbackException e) {
-                    // try rollback
+                    // commit changes
                     try {
-                        tx.rollback();
-                    } catch (PersistenceException eP) {
-                        throw new ProgrammingException(String.format(
-                                "Rollback failed!\n" +
-                                        "Commit exception:\n%s\nRollback exception:\n%s\n",
-                                e.getMessage(),
-                                eP.getMessage()));
+                        tx.commit();
+                        return output;
+                    } catch (RollbackException e) {
+                        // try rollback
+                        try {
+                            tx.rollback();
+                        } catch (PersistenceException eP) {
+                            throw new ProgrammingException(String.format(
+                                    "Rollback failed!\n" +
+                                            "Commit exception:\n%s\nRollback exception:\n%s\n",
+                                    e.getMessage(),
+                                    eP.getMessage()));
+                        }
                     }
-                    throw new ProgrammingException(e);
-                }
-            } catch (JsonProcessingException e) {
-                throw new ProgrammingException(e);
             }
         } finally {
             session.close();
         }
     }
 
-    protected abstract CommandOutput executeInternal(CommandInput commandInput);
-
-    private String errorToString(ErrorCode errorCode) {
-        try {
-            return mapper.writeValueAsString(new ErrorOutput(errorCode));
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
-        }
-    }
+    protected abstract O executeInternal(I commandInput);
 
     /**
      * compares a given time to the system time with a tolerance
@@ -159,6 +123,5 @@ public abstract class AbstractCommand {
         else if (plusTolerance.before(time)) return 1;
         return 0;
     }
-
 }
 
