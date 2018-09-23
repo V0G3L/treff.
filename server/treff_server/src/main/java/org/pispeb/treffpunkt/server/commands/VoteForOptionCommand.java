@@ -1,11 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
 import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -16,7 +12,6 @@ import java.util.Date;
  * a command to vote for a poll option
  */
 public class VoteForOptionCommand extends PollOptionCommand {
-
 
     public VoteForOptionCommand(SessionFactory sessionFactory) {
         super(sessionFactory);
@@ -29,14 +24,14 @@ public class VoteForOptionCommand extends PollOptionCommand {
         // check votes
         if (pollOption.getVoters().containsKey(input
                 .getActingAccount().getID())) {
-            return new ErrorOutput(ErrorCode.ALREADYVOTINGFOROPTION);
+            throw ErrorCode.ALREADYVOTINGFOROPTION.toWebException();
         }
 
         if (!poll.isMultiChoice()) {
             for (PollOption currentOption : poll.getPollOptions().values()) {
                 if (currentOption.getVoters().containsKey(input
                         .getActingAccount().getID())) {
-                    return new ErrorOutput(ErrorCode.POLLNOTMULTICHOICE);
+                    throw ErrorCode.POLLNOTMULTICHOICE.toWebException();
                 }
             }
         }
@@ -59,10 +54,7 @@ public class VoteForOptionCommand extends PollOptionCommand {
 
     public static class Input extends PollOptionInput {
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("poll-id") int pollId,
-                     @JsonProperty("id") int optionId,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, int pollId, int optionId, String token) {
             super(token, groupId, pollId, optionId);
         }
     }

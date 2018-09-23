@@ -1,9 +1,6 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
@@ -11,7 +8,8 @@ import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
 /**
  * TODO
  */
-public class ResetPasswordConfirmCommand extends AbstractCommand {
+public class ResetPasswordConfirmCommand extends AbstractCommand
+        <ResetPasswordConfirmCommand.Input,ResetPasswordConfirmCommand.Output> {
 
 
     public ResetPasswordConfirmCommand(SessionFactory sessionFactory) {
@@ -20,7 +18,7 @@ public class ResetPasswordConfirmCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
+    protected Output executeInternal(Input input) throws
             DatabaseException {
         return null; //TODO
     }
@@ -32,4 +30,6 @@ public class ResetPasswordConfirmCommand extends AbstractCommand {
             super(token);
         }
     }
+
+    public static class Output extends CommandOutput { }
 }

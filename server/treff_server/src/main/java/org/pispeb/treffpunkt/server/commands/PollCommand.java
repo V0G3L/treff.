@@ -1,32 +1,27 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
-public abstract class PollCommand extends GroupCommand {
+public abstract class PollCommand<I extends PollCommand.PollInput, O extends CommandOutput>
+        extends GroupCommand<I, O> {
     protected Poll poll;
 
-    protected PollCommand(SessionFactory sessionFactory,
-                          Class<? extends PollInput> expectedInput,
-                          ObjectMapper mapper) {
-        super(sessionFactory, expectedInput, mapper,
-                null, null); // polls need special permission checking
+    protected PollCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        PollInput input = (PollInput) groupInput;
+    protected O executeOnGroup(I input) {
         poll = usergroup.getAllPolls().get(input.pollID);
         if (poll == null)
-            return new ErrorOutput(ErrorCode.POLLIDINVALID);
+            throw ErrorCode.POLLIDINVALID.toWebException();
 
         return executeOnPoll(input);
     }
 
-    protected abstract CommandOutput executeOnPoll(PollInput pollInput);
+    protected abstract O executeOnPoll(I pollInput);
 
     public abstract static class PollInput extends GroupInput {
 

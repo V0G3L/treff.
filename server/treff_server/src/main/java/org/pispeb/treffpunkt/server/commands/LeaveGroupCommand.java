@@ -1,9 +1,6 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
 
@@ -12,17 +9,16 @@ import java.util.Date;
 /**
  * a command to remove accounts from a user group
  */
-public class LeaveGroupCommand extends GroupCommand {
+public class LeaveGroupCommand extends
+        GroupCommand<LeaveGroupCommand.Input, LeaveGroupCommand.Output> {
 
 
-    public LeaveGroupCommand(SessionFactory sessionFactory,
-                             ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper,
-                null, null); // leaving a group requires no special permission
+    public LeaveGroupCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
+    protected Output executeOnGroup(Input input) {
         usergroup.removeMember(actingAccount, session);
 
         // create update for all members except the acting account
@@ -37,10 +33,9 @@ public class LeaveGroupCommand extends GroupCommand {
         return new Output();
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("token") String token) {
+        public Input(int id, String token) {
             super(token, id);
         }
     }

@@ -1,10 +1,10 @@
 package org.pispeb.treffpunkt.server.commands.io;
 
 import org.apache.commons.validator.routines.EmailValidator;
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Pattern;
 
@@ -32,10 +32,11 @@ public abstract class CommandInput {
     }
 
     protected static boolean validatePosition(Position position) {
-        return (-90.0 <= position.latitude
-                && +90.0 >= position.latitude
-                && -180.0 <= position.longitude
-                && +180.0 >= position.longitude);
+        return (-90.0 <= position.getLatitude()
+                && +90.0 >= position.getLatitude()
+                && -180.0 <= position.getLongitude()
+                && +180.0 >= position.getLongitude()
+                && validateDate(new Date(position.getTimeMeasured())));
     }
 
     protected static boolean validateDate(Date date) {
@@ -45,6 +46,10 @@ public abstract class CommandInput {
                 23, 59, 59).getTime();
         return (!date.before(epoch)
                 && !date.after(maxDate));
+    }
+
+    protected static boolean validateDate(long date) {
+        return validateDate(new Date(date));
     }
 
     protected static boolean validateUsername(String username) {

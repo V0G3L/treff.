@@ -3,9 +3,9 @@ package org.pispeb.treffpunkt.server.commands.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.Event;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ public class EventCompleteSerializer extends JsonSerializer<Event> {
         gen.writeNumberField("time-start", event.getTimeStart().getTime());
         gen.writeNumberField("time-end", event.getTimeEnd().getTime());
         Position position = event.getPosition();
-        gen.writeNumberField("latitude", position.latitude);
-        gen.writeNumberField("longitude", position.longitude);
+        gen.writeNumberField("latitude", position.getLatitude());
+        gen.writeNumberField("longitude", position.getLongitude());
 
         SerializerUtil.writeIDArray(event.getAllParticipants().keySet(),
                 "participants", gen);

@@ -1,5 +1,6 @@
 package org.pispeb.treffpunkt.server.service.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Usergroup {
@@ -8,6 +9,15 @@ public class Usergroup {
     private String name;
     private List<Integer> memberIDs;
     private List<Integer> eventIDs;
+
+    public Usergroup() { }
+
+    public Usergroup(org.pispeb.treffpunkt.server.hibernate.Usergroup hibUsergroup) {
+        this.id = hibUsergroup.getID();
+        this.name = hibUsergroup.getName();
+        this.memberIDs = new ArrayList<>(hibUsergroup.getAllMembers().keySet());
+        this.eventIDs = new ArrayList<>(hibUsergroup.getAllEvents().keySet());
+    }
 
     public int getId() {
         return id;

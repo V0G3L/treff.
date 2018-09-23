@@ -1,7 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.updates;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 /**
@@ -9,9 +7,7 @@ import java.util.Date;
  */
 public class EventDeletionUpdate extends UpdateToSerialize {
 
-    @JsonProperty("group-id")
     public final int groupID;
-    @JsonProperty("id")
     public final int eventID;
 
     public EventDeletionUpdate(Date date, int creator, int groupID,

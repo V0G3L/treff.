@@ -1,11 +1,16 @@
 package org.pispeb.treffpunkt.server.networking;
 
+import org.pispeb.treffpunkt.server.service.auth.AuthenticationFilter;
+import org.pispeb.treffpunkt.server.service.impl.AccountImpl;
 import org.pispeb.treffpunkt.server.service.impl.AuthImpl;
+import org.pispeb.treffpunkt.server.service.impl.ContactsImpl;
 import org.pispeb.treffpunkt.server.service.impl.ServiceImpl;
+import org.pispeb.treffpunkt.server.service.impl.UpdateImpl;
 import org.pispeb.treffpunkt.server.service.impl.UsergroupImpl;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -17,12 +22,15 @@ public class RestApplication extends Application {
 
     public RestApplication() {
         ServiceImpl[] serviceImpls = {
+                new AccountImpl(),
                 new AuthImpl(),
+                new ContactsImpl(),
+                new UpdateImpl(),
                 new UsergroupImpl()
         };
-        for (ServiceImpl impl : serviceImpls) {
-            singletons.add(impl);
-        }
+        singletons.addAll(Arrays.asList(serviceImpls));
+
+        singletons.add(new AuthenticationFilter());
     }
 
     @Override

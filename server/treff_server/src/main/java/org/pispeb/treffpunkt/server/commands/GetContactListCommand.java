@@ -1,20 +1,16 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Account;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
+import org.pispeb.treffpunkt.server.service.domain.ContactList;
 
 /**
  * a command to get a list of all contacts of the executing account
  */
-public class GetContactListCommand extends AbstractCommand {
+public class GetContactListCommand extends AbstractCommand
+        <GetContactListCommand.Input,GetContactListCommand.Output> {
 
 
     public GetContactListCommand(SessionFactory sessionFactory) {
@@ -22,8 +18,7 @@ public class GetContactListCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         // check if account still exists
         Account actingAccount = input.getActingAccount();
@@ -48,27 +43,17 @@ public class GetContactListCommand extends AbstractCommand {
 
     public static class Input extends CommandInputLoginRequired {
 
-        public Input(@JsonProperty("token") String token) {
+        public Input(String token) {
             super(token);
         }
     }
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("contacts")
-        final int[] contacts;
-        @JsonProperty("incoming-requests")
-        final int[] incoming;
-        @JsonProperty("outgoing-requests")
-        final int[] outgoing;
-        @JsonProperty("blocks")
-        final int[] blocks;
+        public ContactList contactList;
 
         Output(int[] contacts, int[] incoming, int[] outgoing, int[] blocks) {
-            this.contacts = contacts;
-            this.incoming = incoming;
-            this.outgoing = outgoing;
-            this.blocks = blocks;
+            this.contactList = new ContactList(contacts, incoming, outgoing, blocks);
         }
     }
 

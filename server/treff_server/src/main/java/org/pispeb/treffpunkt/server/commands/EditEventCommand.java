@@ -1,22 +1,20 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.EventEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.EventChangeUpdate;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
+import org.pispeb.treffpunkt.server.service.domain.Event;
 
 import java.util.Date;
 
 /**
  * a command to edit an event of a user group
  */
-public class EditEventCommand extends EventCommand {
+public class EditEventCommand
+        extends EventCommand<EditEventCommand.Input, EditEventCommand.Output> {
 
 
     public EditEventCommand(SessionFactory sessionFactory) {
@@ -24,25 +22,24 @@ public class EditEventCommand extends EventCommand {
     }
 
     @Override
-    protected CommandOutput executeOnEvent(EventInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeOnEvent(Input input) {
 
         // check whether actingAccount is event creator or has edit permission
         if (!(event.getCreator().getID() == actingAccount.getID())
                 && !usergroup.checkPermissionOfMember(
                         actingAccount, Permission.EDIT_ANY_EVENT)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYEVENT);
+            throw ErrorCode.NOPERMISSIONEDITANYEVENT.toWebException();
         }
 
         // check times
         if (input.inputEvent.timeEnd.before(input.inputEvent
                 .timeStart)) {
-            return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
+            throw ErrorCode.TIMEENDSTARTCONFLICT.toWebException();
         }
 
         // TODO: rename checkTime, there are two checks to be made for time
         if (checkTime(input.inputEvent.timeEnd) < 0) {
-            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+            throw ErrorCode.TIMEENDINPAST.toWebException();
         }
 
         //edit event
@@ -63,15 +60,13 @@ public class EditEventCommand extends EventCommand {
         return new Output();
     }
 
-    public static class Input extends EventInput {
+    public static class Input extends EventCommand.EventInput {
 
         final EventEditDescription inputEvent;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("event") EventEditDescription inputEvent,
-                     @JsonProperty("token") String token) {
-            super(token, groupId, inputEvent.id);
-            this.inputEvent = inputEvent;
+        public Input(int groupId, Event event, String token) {
+            super(token, groupId, event.getId());
+            this.inputEvent = new EventEditDescription(event);
         }
 
         @Override

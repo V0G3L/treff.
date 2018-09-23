@@ -1,17 +1,10 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -21,7 +14,8 @@ import java.util.Date;
  * a command to cancel a contact request that was sent to another user/account
  * and is still pending
  */
-public class CancelContactRequestCommand extends AbstractCommand {
+public class CancelContactRequestCommand extends AbstractCommand
+        <CancelContactRequestCommand.Input, CancelContactRequestCommand.Output> {
 
 
     public CancelContactRequestCommand(SessionFactory sessionFactory) {
@@ -29,18 +23,17 @@ public class CancelContactRequestCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
         Account newContact = accountManager.getAccount(input.id);
         if (newContact == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            throw ErrorCode.USERIDINVALID.toWebException();
         }
 
         // check if request exist
         if (!actingAccount.getAllOutgoingContactRequests().containsKey(input.id)) {
-            return new ErrorOutput(ErrorCode.NOCONTACTREQUEST);
+            throw ErrorCode.NOCONTACTREQUEST.toWebException();
         }
 
         // cancel request
@@ -51,12 +44,7 @@ public class CancelContactRequestCommand extends AbstractCommand {
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
                         UpdateType.CANCEL_CONTACT_REQUEST);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    newContact);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
-        }
+        accountManager.createUpdate(update, newContact);
 
         return new Output();
     }
@@ -65,8 +53,7 @@ public class CancelContactRequestCommand extends AbstractCommand {
 
         final int id;
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("token") String token) {
+        public Input(int id, String token) {
             super(token);
             this.id = id;
         }

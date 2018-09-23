@@ -4,12 +4,12 @@ import org.apache.commons.codec.binary.Base64;
 import org.hibernate.Session;
 import org.pispeb.treffpunkt.server.ConfigKeys;
 import org.pispeb.treffpunkt.server.PasswordHash;
-import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.exceptions.ContactRequestAlreadySentException;
 import org.pispeb.treffpunkt.server.exceptions.ContactRequestNonexistantException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateEmailException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
 import org.pispeb.treffpunkt.server.interfaces.AccountUpdateListener;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,8 +20,6 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -54,7 +52,7 @@ public class Account extends DataObject {
     @Column
     private double longitude;
     @Column
-    private Date timeMeasured;
+    private long timeMeasured;
 
     @ManyToMany
     @OrderBy("id ASC")
@@ -378,7 +376,7 @@ public class Account extends DataObject {
      * there is no stored position.
      */
     public Position getLastPosition() {
-        return new Position(latitude, longitude);
+        return new Position(latitude, longitude, timeMeasured);
     }
 
     /**
@@ -390,7 +388,7 @@ public class Account extends DataObject {
      * @return The time at which the last position stored for this
      * {@code Account} was measured or null if there is no stored position.
      */
-    public Date getLastPositionTime() {
+    public long getLastPositionTime() {
         return timeMeasured;
     }
 
@@ -400,13 +398,11 @@ public class Account extends DataObject {
      * Requires a {@code WriteLock}.
      *
      * @param position     The position to update to
-     * @param timeMeasured The time at which the specified position was
-     *                     measured
      */
-    public void updatePosition(Position position, Date timeMeasured) {
-        this.latitude = position.latitude;
-        this.longitude = position.longitude;
-        this.timeMeasured = timeMeasured;
+    public void updatePosition(Position position) {
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
+        this.timeMeasured = position.getTimeMeasured();
     }
 
     /**

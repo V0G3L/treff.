@@ -1,26 +1,20 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
-import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * a command to delete an account
  */
-public class DeleteAccountCommand extends AbstractCommand {
+public class DeleteAccountCommand extends AbstractCommand
+        <DeleteAccountCommand.Input,DeleteAccountCommand.Output> {
 
 
     public DeleteAccountCommand(SessionFactory sessionFactory) {
@@ -28,23 +22,22 @@ public class DeleteAccountCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
+    protected Output executeInternal(Input input) {
         // TODO: fix or remove DeleteAccount
         // problem: unlocking actingAccount to lock group's members can result
         // in set of groups becoming out-of-date, causing unacceptable
         // signal loss
         if (true)
             throw new UnsupportedOperationException();
-        Input input = (Input) commandInput;
 
         // check if account still exists
         Account actingAccount = input.getActingAccount();
         if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.TOKENINVALID);
+            throw ErrorCode.TOKENINVALID.toWebException();
 
         // check if password is correct
         if(!actingAccount.checkPassword(input.pass))
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
 
         // collect all contacts + contact request senders/receivers
         Collection<? extends Account> contacts
@@ -84,7 +77,7 @@ public class DeleteAccountCommand extends AbstractCommand {
 //            if (a.getID() == actingAccount.getID()) {
 //                a = getSafeForWriting(a);
 //                if (a == null)
-//                    return new ErrorOutput(ErrorCode.TOKENINVALID);
+//                    throw ErrorCode.TOKENINVALID.toWebException();
 //            } else {
 //                a = getSafeForReading(a);
 //            }
@@ -124,8 +117,7 @@ public class DeleteAccountCommand extends AbstractCommand {
 
         final String pass;
 
-        public Input(@JsonProperty("pass") String pass,
-                     @JsonProperty("token") String token) {
+        public Input(String pass, String token) {
             super(token);
             this.pass = pass;
         }

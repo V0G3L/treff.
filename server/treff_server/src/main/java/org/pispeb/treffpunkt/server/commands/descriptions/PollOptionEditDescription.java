@@ -1,7 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 /**
@@ -14,11 +12,7 @@ public class PollOptionEditDescription extends PollOptionCreateDescription {
 
     public final int id;
 
-    public PollOptionEditDescription(@JsonProperty("latitude") long latitude,
-                                     @JsonProperty("longitude") long longitude,
-                                     @JsonProperty("time-start") Date timeStart,
-                                     @JsonProperty("time-end") Date timeEnd,
-                                     @JsonProperty("id") int id) {
+    public PollOptionEditDescription(long latitude, long longitude, Date timeStart, Date timeEnd, int id) {
         super(latitude, longitude, timeStart, timeEnd);
         this.id = id;
     }

@@ -1,6 +1,6 @@
 package org.pispeb.treffpunkt.server.hibernate;
 
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,8 +35,8 @@ public class PollOption extends DataObject {
     }
 
     PollOption(Position position, Date timeStart, Date timeEnd) {
-        this.latitude = position.latitude;
-        this.longitude = position.longitude;
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
     }
@@ -49,8 +49,8 @@ public class PollOption extends DataObject {
      * @param position New position
      */
     public void setPosition(Position position) {
-        this.latitude = position.latitude;
-        this.longitude = position.longitude;
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
     }
 
     /**
@@ -61,7 +61,7 @@ public class PollOption extends DataObject {
      * @return The position of this {@code PollOption}
      */
     public Position getPosition() {
-        return new Position(latitude, longitude);
+        return new Position(latitude, longitude, -1);
     }
 
     /**

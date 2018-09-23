@@ -1,18 +1,11 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -21,7 +14,8 @@ import java.util.Date;
 /**
  * a command to send a contact request to another user/account
  */
-public class SendContactRequestCommand extends AbstractCommand {
+public class SendContactRequestCommand extends AbstractCommand
+        <SendContactRequestCommand.Input,SendContactRequestCommand.Output> {
 
 
     public SendContactRequestCommand(SessionFactory sessionFactory) {
@@ -29,35 +23,34 @@ public class SendContactRequestCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
 
         // get receiver account
         Account newContact = accountManager.getAccount(input.id);
         if (newContact == null) {
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            throw ErrorCode.USERIDINVALID.toWebException();
         }
 
         // check that both accounts are not currently contacts
         if (actingAccount.getAllContacts().containsKey(input.id))
-            return new ErrorOutput(ErrorCode.ALREADYINCONTACT);
+            throw ErrorCode.ALREADYINCONTACT.toWebException();
 
         // check blocks
         if (actingAccount.getAllBlocks().containsKey(input.id)) {
-            return new ErrorOutput(ErrorCode.BLOCKINGALREADY);
+            throw ErrorCode.BLOCKINGALREADY.toWebException();
         }
 
         if (newContact.getAllBlocks()
                 .containsKey(input.getActingAccount().getID())) {
-            return new ErrorOutput(ErrorCode.BEINGBLOCKED);
+            throw ErrorCode.BEINGBLOCKED.toWebException();
         }
 
         // check if request was already sent
         if (actingAccount.getAllOutgoingContactRequests()
                 .containsKey(input.id)) {
-            return new ErrorOutput(ErrorCode.CONTACTREQUESTPENDING);
+            throw ErrorCode.CONTACTREQUESTPENDING.toWebException();
         }
 
         // check symmetric add
@@ -68,14 +61,8 @@ public class SendContactRequestCommand extends AbstractCommand {
                     new ContactRequestAnswerUpdate(new Date(), newContact.getID(), true);
             ContactRequestAnswerUpdate updateForNew =
                     new ContactRequestAnswerUpdate(new Date(), actingAccount.getID(), true);
-            try {
-                accountManager.createUpdate(
-                        mapper.writeValueAsString(updateForActing), actingAccount);
-                accountManager.createUpdate(
-                        mapper.writeValueAsString(updateForNew), newContact);
-            } catch (JsonProcessingException e) {
-                throw new ProgrammingException(e);
-            }
+            accountManager.createUpdate(updateForActing, actingAccount);
+            accountManager.createUpdate(updateForNew, newContact);
             return new Output();
         }
 
@@ -87,12 +74,7 @@ public class SendContactRequestCommand extends AbstractCommand {
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
                         UpdateType.CONTACT_REQUEST);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    newContact);
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+        accountManager.createUpdate(update, newContact);
 
         return new Output();
     }
@@ -101,8 +83,7 @@ public class SendContactRequestCommand extends AbstractCommand {
 
         final int id;
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("token") String token) {
+        public Input(int id, String token) {
             super(token);
             this.id = id;
         }

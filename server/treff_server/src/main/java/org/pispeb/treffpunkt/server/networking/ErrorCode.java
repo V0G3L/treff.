@@ -2,6 +2,7 @@ package org.pispeb.treffpunkt.server.networking;
 
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 public enum ErrorCode {
 
@@ -224,6 +225,7 @@ public enum ErrorCode {
     }
 
     public WebApplicationException toWebException() {
-        return new WebApplicationException(String.format("{\"error\":%d}", getCode()), 400);
+        return new WebApplicationException(
+                Response.status(400).entity(String.format("{\"error\":%d}", getCode())).build());
     }
 }

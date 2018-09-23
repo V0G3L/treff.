@@ -2,8 +2,8 @@ package org.pispeb.treffpunkt.server.hibernate;
 
 import org.hibernate.Session;
 import org.pispeb.treffpunkt.server.Permission;
-import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.exceptions.AccountNotInGroupException;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

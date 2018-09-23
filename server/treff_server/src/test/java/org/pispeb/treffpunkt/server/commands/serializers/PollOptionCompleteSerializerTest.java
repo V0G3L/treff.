@@ -3,7 +3,7 @@ package org.pispeb.treffpunkt.server.commands.serializers;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.Test;
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.PollOption;
 
@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;

@@ -1,29 +1,23 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.AccountChangeUpdate;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * a command to edit the username of an account
  */
-public class EditUsernameCommand extends AbstractCommand {
+public class EditUsernameCommand extends AbstractCommand
+        <EditUsernameCommand.Input,EditUsernameCommand.Output> {
 
 
     public EditUsernameCommand(SessionFactory sessionFactory) {
@@ -31,13 +25,12 @@ public class EditUsernameCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
 
         if (!actingAccount.checkPassword(input.pass)) {
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
         }
 
         // edit username
@@ -45,7 +38,7 @@ public class EditUsernameCommand extends AbstractCommand {
         try {
             actingAccount.setUsername(input.username, accountManager);
         } catch (DuplicateUsernameException e) {
-            return new ErrorOutput(ErrorCode.USERNAMEALREADYINUSE);
+            throw ErrorCode.USERNAMEALREADYINUSE.toWebException();
         }
 
         // TODO Incoming blocks
@@ -61,12 +54,7 @@ public class EditUsernameCommand extends AbstractCommand {
 
         AccountChangeUpdate update = new AccountChangeUpdate(new Date(),
                 actingAccount.getID(), actingAccount);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    affected);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
-        }
+        accountManager.createUpdate(update, affected);
 
         return new Output();
     }
@@ -76,9 +64,7 @@ public class EditUsernameCommand extends AbstractCommand {
         final String username;
         final String pass;
 
-        public Input(@JsonProperty("user") String username,
-                     @JsonProperty("pass") String pass,
-                     @JsonProperty("token") String token) {
+        public Input(String username, String pass, String token) {
             super(token);
             this.username = username;
             this.pass = pass;

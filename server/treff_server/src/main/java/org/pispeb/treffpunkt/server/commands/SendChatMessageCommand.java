@@ -1,9 +1,6 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.ChatUpdate;
 
@@ -12,18 +9,16 @@ import java.util.Date;
 /**
  * a command to send a chat message to a user group
  */
-public class SendChatMessageCommand extends GroupCommand {
+public class SendChatMessageCommand extends
+        GroupCommand<SendChatMessageCommand.Input, SendChatMessageCommand.Output> {
 
 
-    public SendChatMessageCommand(SessionFactory sessionFactory,
-                                  ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                null, null); // chatting requires no permission
+    public SendChatMessageCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        Input input = (Input) groupInput;
+    protected Output executeOnGroup(Input input) {
 
         ChatUpdate update =
                 new ChatUpdate(new Date(), actingAccount.getID(),
@@ -33,13 +28,11 @@ public class SendChatMessageCommand extends GroupCommand {
         return new Output();
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final String message;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("message") String message,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, String message, String token) {
             super(token, groupId);
             this.message = message;
         }

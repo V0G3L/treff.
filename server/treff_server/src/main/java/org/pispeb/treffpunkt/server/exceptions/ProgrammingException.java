@@ -3,10 +3,13 @@ package org.pispeb.treffpunkt.server.exceptions;
 // TODO: catch on top-level
 // return internal server error message
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
 /**
  * @author tim
  */
-public class ProgrammingException extends RuntimeException {
+public class ProgrammingException extends WebApplicationException {
 
     private static final String standardText =
             "A severe error occurred that was caused by a programming " +
@@ -35,5 +38,10 @@ public class ProgrammingException extends RuntimeException {
     @Override
     public String getMessage() {
         return message;
+    }
+
+    @Override
+    public Response getResponse() {
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }
 }

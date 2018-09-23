@@ -1,7 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 /**
@@ -15,11 +13,8 @@ public class PollEditDescription extends PollCreateDescription {
 
     public final int id;
 
-    public PollEditDescription(@JsonProperty("question") String question,
-                               @JsonProperty("multi-choice")
-                                         boolean isMultiChoice,
-                               @JsonProperty("time-close") Date timeVoteClose,
-                               @JsonProperty("id") int id) {
+    public PollEditDescription(String question,
+                                         boolean isMultiChoice, Date timeVoteClose, int id) {
         super(question, isMultiChoice, timeVoteClose);
         this.id = id;
     }

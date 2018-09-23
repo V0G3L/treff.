@@ -1,0 +1,28 @@
+<enunciate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.0.0-M.4.xsd">
+
+    <title>Treffpunkt Server API</title>
+    <description package="org.pispeb.treffpunkt.server"/>
+    <copyright>TESTCOPYRIGHT</copyright>
+
+    <application root="http://www.ifyouwannabecool.com/api"/>
+
+    <namespaces>
+        <namespace id="api" uri="http://api.ifyouwannabecool.com/"/>
+        <namespace id="link" uri="http://api.ifyouwannabecool.com/link"/>
+        <namespace id="persona" uri="http://api.ifyouwannabecool.com/persona"/>
+    </namespaces>
+
+    <modules>
+        <docs>
+            <download file="LICENSE" name="Apache II" description="The license governing this API" showLink="true"/>
+        </docs>
+        <java-xml-client>
+            <package-conversions>
+                <convert from="org.pispeb.treffpunkt.server" to="org.pispeb.treffpunkt.client"/>
+            </package-conversions>
+        </java-xml-client>
+        <jackson1 disabled="true"/>
+    </modules>
+
+</enunciate>

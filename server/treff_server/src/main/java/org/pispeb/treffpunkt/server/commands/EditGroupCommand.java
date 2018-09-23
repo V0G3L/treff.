@@ -1,34 +1,27 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.UsergroupEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
+import org.pispeb.treffpunkt.server.service.domain.Usergroup;
 
 import java.util.Date;
 
 /**
  * a command to edit the name of a user group
  */
-public class EditGroupCommand extends GroupCommand {
+public class EditGroupCommand
+        extends GroupCommand<EditGroupCommand.Input, EditGroupCommand.Output> {
 
 
-    public EditGroupCommand(SessionFactory sessionFactory,
-                            ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                Permission.EDIT_GROUP,
-                ErrorCode.NOPERMISSIONEDITGROUP);
+    public EditGroupCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput commandInput) {
+    protected Output executeOnGroup(Input input) {
         // edit name
-        Input input = (Input) commandInput;
         usergroup.setName(input.group.name);
 
         // create update
@@ -42,14 +35,13 @@ public class EditGroupCommand extends GroupCommand {
         return new Output();
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final UsergroupEditDescription group;
 
-        public Input(@JsonProperty("group") UsergroupEditDescription group,
-                     @JsonProperty("token") String token) {
-            super(token, group.id);
-            this.group = group;
+        public Input(Usergroup group, String token) {
+            super(token, group.getId());
+            this.group = new UsergroupEditDescription(group);
         }
 
         @Override

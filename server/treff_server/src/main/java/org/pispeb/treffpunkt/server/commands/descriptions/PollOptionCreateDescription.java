@@ -2,7 +2,7 @@ package org.pispeb.treffpunkt.server.commands.descriptions;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import java.util.Date;
 
@@ -22,13 +22,10 @@ public class PollOptionCreateDescription {
 
     public PollOptionCreateDescription(@JsonProperty("latitude")
                                                long latitude,
-                                       @JsonProperty("longitude")
                                                long longitude,
-                                       @JsonProperty("time-start")
                                                Date timeStart,
-                                       @JsonProperty("time-end")
                                                Date timeEnd) {
-        this.position = new Position(latitude, longitude);
+        this.position = new Position(latitude, longitude, -1);
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
     }

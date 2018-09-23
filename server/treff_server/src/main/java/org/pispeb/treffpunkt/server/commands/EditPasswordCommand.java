@@ -1,20 +1,16 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
  * a command to edit the password of an Account
  */
-public class EditPasswordCommand extends AbstractCommand {
+public class EditPasswordCommand extends AbstractCommand
+        <EditPasswordCommand.Input,EditPasswordCommand.Output> {
 
 
     public EditPasswordCommand(SessionFactory sessionFactory) {
@@ -22,14 +18,13 @@ public class EditPasswordCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.pass)) {
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
         }
 
         // edit password
@@ -43,9 +38,7 @@ public class EditPasswordCommand extends AbstractCommand {
         final String pass;
         final String newPass;
 
-        public Input(@JsonProperty("pass") String pass,
-                     @JsonProperty("new-pass") String newPass,
-                     @JsonProperty("token") String token) {
+        public Input(String pass, String newPass, String token) {
             super(token);
             this.pass = pass;
             this.newPass = newPass;

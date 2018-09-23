@@ -1,32 +1,25 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.PollCreateDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollChangeUpdate;
 import org.pispeb.treffpunkt.server.hibernate.Poll;
-import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
 
 /**
  * a command to create a poll in a user group
  */
-public class CreatePollCommand extends GroupCommand {
+public class CreatePollCommand extends
+        GroupCommand<CreatePollCommand.Input, CreatePollCommand.Output> {
 
-    public CreatePollCommand(SessionFactory sessionFactory,
-                             ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                Permission.CREATE_POLL, ErrorCode.NOPERMISSIONCREATEPOLL);
+    public CreatePollCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        Input input = (Input) groupInput;
+    protected Output executeOnGroup(Input input) {
 
         // create poll
         Poll poll = usergroup.createPoll(input.poll.question,
@@ -45,14 +38,12 @@ public class CreatePollCommand extends GroupCommand {
         return new Output(poll.getID());
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final PollCreateDescription poll;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("poll")
-                             PollCreateDescription poll,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId,
+                             PollCreateDescription poll, String token) {
             super(token, groupId);
             this.poll = poll;
         }
@@ -66,7 +57,6 @@ public class CreatePollCommand extends GroupCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("id")
         final int pollId;
 
         Output(int pollId) {

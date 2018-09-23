@@ -1,16 +1,9 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
-import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.ContactRequestAnswerUpdate;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 
 import java.util.Date;
@@ -20,17 +13,14 @@ import java.util.Date;
  */
 public class BlockAccountCommand extends ManageBlockCommand {
 
-    public BlockAccountCommand(SessionFactory sessionFactory,
-                               ObjectMapper mapper) {
-        super(sessionFactory, mapper);
+    public BlockAccountCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
-        ErrorOutput checkResponse = checkParameters(input, true);
-        if (checkResponse != null) return checkResponse;
+        checkParameters(input, true);
 
         Account actingAccount = input.getActingAccount();
         Account blockedAccount = accountManager.getAccount(input.accountId);
@@ -51,12 +41,7 @@ public class BlockAccountCommand extends ManageBlockCommand {
                     new UpdatesWithoutSpecialParameters(new Date(),
                             actingAccount.getID(),
                             UpdateType.REMOVE_CONTACT);
-            try {
-                accountManager.createUpdate(mapper.writeValueAsString(update),
-                        blockedAccount);
-            } catch (JsonProcessingException e) {
-                throw new ProgrammingException(e);
-            }
+            accountManager.createUpdate(update, blockedAccount);
         }
 
         // if there's an active contact request, reject/cancel it first
@@ -67,16 +52,16 @@ public class BlockAccountCommand extends ManageBlockCommand {
                     new ContactRequestAnswerUpdate(new Date(),
                             actingAccount.getID(),
                             false);
-            try {
-                accountManager.createUpdate(mapper.writeValueAsString(update),
-                        blockedAccount);
-            } catch (JsonProcessingException e) {
-                throw new ProgrammingException();
-            }
+            accountManager.createUpdate(update, blockedAccount);
         }
         else if (activeOutoingRequest) {
             blockedAccount.rejectContactRequest(actingAccount);
-            // no need to create an update for the acting account
+            // tell recipient that contact request was cancelled
+            UpdatesWithoutSpecialParameters update =
+                    new UpdatesWithoutSpecialParameters(new Date(),
+                            actingAccount.getID(),
+                            UpdateType.CANCEL_CONTACT_REQUEST);
+            accountManager.createUpdate(update, blockedAccount);
         }
         actingAccount.addBlock(blockedAccount);
 

@@ -1,15 +1,9 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.Permission;
-import org.pispeb.treffpunkt.server.commands.descriptions
-        .PollOptionCreateDescription;
+import org.pispeb.treffpunkt.server.commands.descriptions.PollOptionCreateDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
 import org.pispeb.treffpunkt.server.hibernate.PollOption;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -19,7 +13,8 @@ import java.util.Date;
 /**
  * a command to add an poll option to a poll
  */
-public class AddPollOptionCommand extends PollCommand {
+public class AddPollOptionCommand
+        extends PollCommand<AddPollOptionCommand.Input, AddPollOptionCommand.Output> {
 
 
     public AddPollOptionCommand(SessionFactory sessionFactory) {
@@ -27,24 +22,23 @@ public class AddPollOptionCommand extends PollCommand {
     }
 
     @Override
-    protected CommandOutput executeOnPoll(PollInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeOnPoll(Input input) {
 
         // check times
         if (input.pollOption.timeEnd
                 .before(input.pollOption.timeStart)) {
-            return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
+            throw ErrorCode.TIMEENDSTARTCONFLICT.toWebException();
         }
 
         if (checkTime(input.pollOption.timeEnd) < 0) {
-            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+            throw ErrorCode.TIMEENDINPAST.toWebException();
         }
 
         // check permission
         if (poll.getCreator().getID() != actingAccount.getID() &&
                 !usergroup.checkPermissionOfMember(actingAccount,
                         Permission.EDIT_ANY_POLL)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
+            throw ErrorCode.NOPERMISSIONEDITANYPOLL.toWebException();
         }
 
         // add poll option
@@ -64,15 +58,12 @@ public class AddPollOptionCommand extends PollCommand {
         return new Output(pO.getID());
     }
 
-    public static class Input extends PollInput {
+    public static class Input extends PollCommand.PollInput{
 
         final PollOptionCreateDescription pollOption;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("poll-id") int pollId,
-                     @JsonProperty("poll-option")
-                             PollOptionCreateDescription pollOption,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, int pollId,
+                             PollOptionCreateDescription pollOption, String token) {
             super(token, groupId, pollId);
             this.pollOption = pollOption;
         }
@@ -86,7 +77,6 @@ public class AddPollOptionCommand extends PollCommand {
     }
 
     public static class Output extends CommandOutput {
-        @JsonProperty("id")
         final int pollId;
 
         Output(int pollId) {

@@ -1,6 +1,8 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.pispeb.treffpunkt.server.service.domain.Usergroup;
+
+import java.util.List;
 
 /**
  * Immutable complete description of a user group as specified in the
@@ -13,12 +15,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UsergroupCreateDescription {
 
     public final String name;
-    public final int[] memberIDs;
+    public final List<Integer> memberIDs;
 
-    public UsergroupCreateDescription(@JsonProperty("name") String name,
-                                      @JsonProperty("members")
-                                              int[] memberIDs) {
-        this.name = name;
-        this.memberIDs = memberIDs;
+    public UsergroupCreateDescription(Usergroup usergroup) {
+        this.name = usergroup.getName();
+        this.memberIDs = usergroup.getMemberIDs();
     }
 }

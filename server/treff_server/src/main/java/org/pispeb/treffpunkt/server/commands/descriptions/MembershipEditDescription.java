@@ -1,6 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treffpunkt.server.Permission;
 
 import java.io.IOException;
@@ -19,9 +18,7 @@ public class MembershipEditDescription {
     public final int accountID;
 
 
-    public MembershipEditDescription(@JsonProperty("group-id") int groupID,
-                                     @JsonProperty("account-id") int accountID,
-                                     @JsonProperty("permissions")
+    public MembershipEditDescription(int groupID, int accountID,
                                              Map<String, Boolean>
                                              permissionStringMap)
             throws IOException {

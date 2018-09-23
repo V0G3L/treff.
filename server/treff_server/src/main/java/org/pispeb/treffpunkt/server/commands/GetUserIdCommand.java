@@ -1,20 +1,16 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
  * a command to get the ID of an account by its name
  */
-public class GetUserIdCommand extends AbstractCommand {
+public class GetUserIdCommand extends AbstractCommand
+        <GetUserIdCommand.Input,GetUserIdCommand.Output> {
 
 
     public GetUserIdCommand(SessionFactory sessionFactory) {
@@ -22,13 +18,12 @@ public class GetUserIdCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         // get account
         Account account = accountManager.getAccountByUsername(input.username);
         if (account == null)
-            return new ErrorOutput(ErrorCode.USERNAMEINVALID);
+            throw ErrorCode.USERNAMEINVALID.toWebException();
 
         return new Output(account.getID());
     }
@@ -37,8 +32,7 @@ public class GetUserIdCommand extends AbstractCommand {
 
         final String username;
 
-        public Input(@JsonProperty("user") String username,
-                     @JsonProperty("token") String token) {
+        public Input(String username, String token) {
             super(token);
             this.username = username;
         }

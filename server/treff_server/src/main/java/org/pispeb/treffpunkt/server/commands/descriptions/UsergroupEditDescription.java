@@ -1,6 +1,6 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.pispeb.treffpunkt.server.service.domain.Usergroup;
 
 /**
  * Immutable complete description of a user group as specified in the
@@ -14,9 +14,8 @@ public class UsergroupEditDescription {
     public final int id;
     public final String name;
 
-    public UsergroupEditDescription(@JsonProperty("id") int id,
-                                    @JsonProperty("name") String name) {
-        this.id = id;
-        this.name = name;
+    public UsergroupEditDescription(Usergroup usergroup) {
+        this.id = usergroup.getId();
+        this.name = usergroup.getName();
     }
 }

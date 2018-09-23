@@ -1,12 +1,8 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -15,24 +11,22 @@ import java.util.Date;
 /**
  * a command to get the group membership of an account to a specific user group
  */
-public class GetMembershipDetailsCommand extends GroupCommand {
+public class GetMembershipDetailsCommand extends
+        GroupCommand<GetMembershipDetailsCommand.Input, GetMembershipDetailsCommand.Output> {
 
 
-    public GetMembershipDetailsCommand(SessionFactory sessionFactory,
-                                       ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper,
-                null, null);
+    public GetMembershipDetailsCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeOnGroup(Input input) {
 
         Account account = accountManager.getAccount(input.id);
         if (account == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            throw ErrorCode.USERIDINVALID.toWebException();
         if (!usergroup.getAllMembers().containsKey(account.getID()))
-            return new ErrorOutput(ErrorCode.USERNOTINGROUP);
+            throw ErrorCode.USERNOTINGROUP.toWebException();
 
         // assemble output
         Date d = usergroup.getLocationSharingTimeEndOfMember(account);
@@ -45,14 +39,12 @@ public class GetMembershipDetailsCommand extends GroupCommand {
         return new Output(mB);
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final int id;
         final int groupId;
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("group-id") int groupId,
-                     @JsonProperty("token") String token) {
+        public Input(int id, int groupId, String token) {
             super(token, groupId);
             this.id = id;
             this.groupId = groupId;
@@ -61,7 +53,6 @@ public class GetMembershipDetailsCommand extends GroupCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("membership")
         public final MembershipDescription membershipDescription;
 
         Output(MembershipDescription membershipDescription) {

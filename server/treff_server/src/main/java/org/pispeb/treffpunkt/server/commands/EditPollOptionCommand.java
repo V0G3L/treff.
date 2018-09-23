@@ -1,13 +1,9 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.PollOptionEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollOptionChangeUpdate;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -16,31 +12,31 @@ import java.util.Date;
 /**
  * a command to edit an option of a poll
  */
-public class EditPollOptionCommand extends PollOptionCommand {
+public class EditPollOptionCommand
+        extends PollOptionCommand<EditPollOptionCommand.Input, EditPollOptionCommand.Output> {
 
-
-    public EditPollOptionCommand(SessionFactory sessionFactory)[s]*{[s]*super(sessionFactory);
+    public EditPollOptionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnPollOption(PollOptionInput pollOptionInput) {
-        Input input = (Input) pollOptionInput;
+    protected Output executeOnPollOption(Input input) {
 
         // check times
         if (input.inputOption.timeEnd
                 .before(input.inputOption.timeStart)) {
-            return new ErrorOutput(ErrorCode.TIMEENDSTARTCONFLICT);
+            throw ErrorCode.TIMEENDSTARTCONFLICT.toWebException();
         }
 
         if (checkTime(input.inputOption.timeEnd) < 0) {
-            return new ErrorOutput(ErrorCode.TIMEENDINPAST);
+            throw ErrorCode.TIMEENDINPAST.toWebException();
         }
 
         // check permission
         if (poll.getCreator().getID() != actingAccount.getID() &&
                 !usergroup.checkPermissionOfMember(actingAccount,
                         Permission.EDIT_ANY_POLL)) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
+            throw ErrorCode.NOPERMISSIONEDITANYPOLL.toWebException();
         }
 
         // edit poll option
@@ -61,15 +57,12 @@ public class EditPollOptionCommand extends PollOptionCommand {
         return new Output();
     }
 
-    public static class Input extends PollOptionInput {
+    public static class Input extends PollOptionCommand.PollOptionInput {
 
         final PollOptionEditDescription inputOption;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("poll-id") int pollId,
-                     @JsonProperty("poll-option")
-                             PollOptionEditDescription inputOption,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, int pollId,
+                             PollOptionEditDescription inputOption, String token) {
             super(token, groupId, pollId, inputOption.id);
             this.inputOption = inputOption;
         }

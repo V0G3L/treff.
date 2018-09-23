@@ -1,17 +1,10 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.UsergroupCreateDescription;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -19,13 +12,12 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * a command to create a user group
  */
-public class CreateGroupCommand extends AbstractCommand {
+public class CreateGroupCommand extends AbstractCommand
+        <CreateGroupCommand.Input,CreateGroupCommand.Output> {
 
 
     public CreateGroupCommand(SessionFactory sessionFactory) {
@@ -33,16 +25,15 @@ public class CreateGroupCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
-        Account actingAccount = input.getActingAccount();
+    protected Output executeInternal(Input input) {
+                Account actingAccount = input.getActingAccount();
 
         // check that all IDs are valid and remove duplicates
         Set<Account> members = new HashSet<>();
         for (int memberId : input.group.memberIDs) {
             Account currentAccount = accountManager.getAccount(memberId);
             if (currentAccount == null) {
-                return new ErrorOutput(ErrorCode.USERIDINVALID);
+                throw ErrorCode.USERIDINVALID.toWebException();
             }
             members.add(currentAccount);
         }
@@ -57,15 +48,10 @@ public class CreateGroupCommand extends AbstractCommand {
                 new UsergroupChangeUpdate(new Date(),
                         actingAccount.getID(),
                         usergroup);
-        try {
-            HashSet<Account> affected =
-                    new HashSet<>(usergroup.getAllMembers().values());
-            affected.remove(input.getActingAccount());
-            accountManager.createUpdate(mapper.writeValueAsString(update),
-                    affected);
-        } catch (JsonProcessingException e) {
-            throw new ProgrammingException(e);
-        }
+        HashSet<Account> affected =
+                new HashSet<>(usergroup.getAllMembers().values());
+        affected.remove(input.getActingAccount());
+        accountManager.createUpdate(update, affected);
 
         // respond
         return new Output(usergroup.getID());
@@ -75,10 +61,9 @@ public class CreateGroupCommand extends AbstractCommand {
 
         final UsergroupCreateDescription group;
 
-        public Input(@JsonProperty("group") UsergroupCreateDescription group,
-                     @JsonProperty("token") String token) {
+        public Input(org.pispeb.treffpunkt.server.service.domain.Usergroup group, String token) {
             super(token);
-            this.group = group;
+            this.group = new UsergroupCreateDescription(group);
         }
 
         @Override
@@ -89,8 +74,7 @@ public class CreateGroupCommand extends AbstractCommand {
 
     public static class Output extends CommandOutput {
 
-        @JsonProperty("id")
-        final int groupId;
+        public final int groupId;
 
         Output(int groupId) {
             this.groupId = groupId;

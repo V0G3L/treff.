@@ -1,5 +1,8 @@
 package org.pispeb.treffpunkt.server.service.domain;
 
+/**
+ * Hard credentials supplied by a user upon trying to log in or register.
+ */
 public class Credentials {
 
     private String username;

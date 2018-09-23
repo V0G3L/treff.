@@ -1,7 +1,11 @@
 package org.pispeb.treffpunkt.server.hibernate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.hibernate.Session;
+import org.pispeb.treffpunkt.server.Server;
+import org.pispeb.treffpunkt.server.commands.updates.UpdateToSerialize;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateUsernameException;
+import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -119,7 +123,14 @@ public class AccountManager {
      * @param affectedAccounts The set of {@code Account} that are affected by
      *                         this {@code Update}
      */
-    public void createUpdate(String updateContent, Set<? extends Account> affectedAccounts) {
+    public void createUpdate(UpdateToSerialize updateToSerialize,
+                             Set<? extends Account> affectedAccounts) {
+        String updateContent;
+        try {
+            updateContent = Server.getMapper().writeValueAsString(updateToSerialize);
+        } catch (JsonProcessingException e) {
+            throw new ProgrammingException(e);
+        }
         Update update = new Update();
         update.setContent(updateContent);
         affectedAccounts.forEach(a -> a.addUpdate(update));
@@ -139,9 +150,9 @@ public class AccountManager {
      *                        {@code Update}
      * @see #createUpdate(String, Set)
      */
-    public void createUpdate(String updateContent, Account affectedAccount) {
+    public void createUpdate(UpdateToSerialize updateToSerialize, Account affectedAccount) {
         Set<Account> set = new HashSet<>();
         set.add(affectedAccount);
-        createUpdate(updateContent, set);
+        createUpdate(updateToSerialize, set);
     }
 }

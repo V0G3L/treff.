@@ -1,6 +1,6 @@
 package org.pispeb.treffpunkt.server.hibernate;
 
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,8 +43,8 @@ public class Event extends DataObject {
 
     Event(String title, Position position, Date timeStart, Date timeEnd, Account creator) {
         this.title = title;
-        this.latitude = position.latitude;
-        this.longitude = position.longitude;
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.creator = creator;
@@ -80,8 +80,8 @@ public class Event extends DataObject {
      * @param position New position
      */
     public void setPosition(Position position) {
-        this.latitude = position.latitude;
-        this.longitude = position.longitude;
+        this.latitude = position.getLatitude();
+        this.longitude = position.getLongitude();
     }
 
     /**
@@ -92,7 +92,7 @@ public class Event extends DataObject {
      * @return The position of this {@code Event}
      */
     public Position getPosition() {
-        return new Position(latitude, longitude);
+        return new Position(latitude, longitude, -1);
     }
 
     /**

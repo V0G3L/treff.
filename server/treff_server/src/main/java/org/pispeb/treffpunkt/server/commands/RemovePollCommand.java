@@ -1,14 +1,9 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollDeletionUpdate;
-import org.pispeb.treffpunkt.server.hibernate.Poll;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
@@ -16,7 +11,8 @@ import java.util.Date;
 /**
  * a command to delete a poll of a user group
  */
-public class RemovePollCommand extends PollCommand {
+public class RemovePollCommand extends
+        PollCommand<RemovePollCommand.Input, RemovePollCommand.Output> {
 
 
     public RemovePollCommand(SessionFactory sessionFactory) {
@@ -24,14 +20,13 @@ public class RemovePollCommand extends PollCommand {
     }
 
     @Override
-    protected CommandOutput executeOnPoll(PollInput pollInput) {
-        Input input = (Input) pollInput;
+    protected Output executeOnPoll(Input input) {
 
         // check that actingAccount is creator or has edit permissions
         if (!usergroup.checkPermissionOfMember(actingAccount, Permission
                 .EDIT_ANY_POLL)
                 && !(poll.getCreator().getID() == actingAccount.getID())) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
+            throw ErrorCode.NOPERMISSIONEDITANYPOLL.toWebException();
         }
 
         // create update
@@ -49,11 +44,9 @@ public class RemovePollCommand extends PollCommand {
         return new Output();
     }
 
-    public static class Input extends PollInput {
+    public static class Input extends PollCommand.PollInput {
 
-        public Input(@JsonProperty("id") int pollId,
-                     @JsonProperty("group-id") int groupId,
-                     @JsonProperty("token") String token) {
+        public Input(int pollId, int groupId, String token) {
             super(token, groupId, pollId);
         }
     }

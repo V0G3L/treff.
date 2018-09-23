@@ -22,7 +22,8 @@ public abstract class CommandInputLoginRequired extends CommandInput {
             actingAccount = accountManager.getAccountByLoginToken(token);
             tokenChecked = true;
         }
-        throw new ProgrammingException("CommandInputLoginRequired got an invalid login token" +
+        if (actingAccount == null)
+            throw new ProgrammingException("CommandInputLoginRequired got an invalid login token " +
                 "that was accepted by the AuthenticationFilter.");
     }
 

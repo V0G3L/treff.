@@ -1,7 +1,5 @@
 package org.pispeb.treffpunkt.server;
 
-import org.apache.commons.codec.binary.Hex;
-
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

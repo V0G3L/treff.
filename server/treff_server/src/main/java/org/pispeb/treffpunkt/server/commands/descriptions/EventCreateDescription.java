@@ -1,7 +1,7 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.pispeb.treffpunkt.server.Position;
+import org.pispeb.treffpunkt.server.service.domain.Event;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import java.util.Date;
 
@@ -27,15 +27,12 @@ public class EventCreateDescription {
      * @param latitude The latitude at which the event takes place
      * @param longitude The longitude at which the event takes place
      */
-    public EventCreateDescription(@JsonProperty("title") String title,
-                                  @JsonProperty("time-start") Date timeStart,
-                                  @JsonProperty("time-end") Date timeEnd,
-                                  @JsonProperty("latitude") double latitude,
-                                  @JsonProperty("longitude") double longitude) {
-        this.title = title;
-        this.timeStart = timeStart;
-        this.timeEnd = timeEnd;
-        this.position = new Position(latitude, longitude);
+    public EventCreateDescription(Event event) {
+        this.title = event.getTitle();
+        this.timeStart = new Date(event.getTimeStart());
+        this.timeEnd = new Date(event.getTimeEnd());
+        this.position = event.getPosition();
+        this.position.setTimeMeasured(-1);
     }
 
 }

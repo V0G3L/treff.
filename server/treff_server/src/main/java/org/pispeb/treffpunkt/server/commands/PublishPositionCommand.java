@@ -1,9 +1,6 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
 import org.pispeb.treffpunkt.server.commands.updates.GroupMembershipChangeUpdate;
@@ -14,17 +11,15 @@ import java.util.Date;
  * a command to share the position of the executing account with a specific
  * group during a specific time
  */
-public class PublishPositionCommand extends GroupCommand {
+public class PublishPositionCommand extends
+        GroupCommand<PublishPositionCommand.Input, PublishPositionCommand.Output> {
 
-    public PublishPositionCommand(SessionFactory sessionFactory,
-                                 ObjectMapper mapper) {
-        super(sessionFactory,Input.class, mapper,
-                null, null); // position publishing requires no permission
+    public PublishPositionCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        Input input = (Input) groupInput;
+    protected Output executeOnGroup(Input input) {
 
         // publish position
         usergroup.setLocationSharingTimeEndOfMember(
@@ -45,13 +40,11 @@ public class PublishPositionCommand extends GroupCommand {
         return new Output();
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final Date timeEnd;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("time-end") long timeEnd,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, long timeEnd, String token) {
             super(token, groupId);
             this.timeEnd = new Date(timeEnd);
         }

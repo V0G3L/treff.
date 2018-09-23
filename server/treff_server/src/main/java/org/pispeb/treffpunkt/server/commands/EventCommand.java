@@ -1,32 +1,27 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Event;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
-public abstract class EventCommand extends GroupCommand {
+public abstract class EventCommand<I extends EventCommand.EventInput, O extends CommandOutput>
+        extends GroupCommand<I, O> {
     protected Event event;
 
-    protected EventCommand(SessionFactory sessionFactory,
-                           Class<? extends EventInput> expectedInput,
-                           ObjectMapper mapper) {
-        super(sessionFactory, expectedInput, mapper,
-                null, null); // events need special permission checking
+    protected EventCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        EventInput input = (EventInput) groupInput;
+    protected O executeOnGroup(I input) {
         event = usergroup.getAllEvents().get(input.eventID);
         if (event == null)
-            return new ErrorOutput(ErrorCode.EVENTIDINVALID);
+            throw ErrorCode.EVENTIDINVALID.toWebException();
 
         return executeOnEvent(input);
     }
 
-    protected abstract CommandOutput executeOnEvent(EventInput eventInput);
+    protected abstract O executeOnEvent(I eventInput);
 
     public abstract static class EventInput extends GroupInput {
 

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  */
 @ServerEndpoint("/ws")
 public class WebSocketEndpoint {
+    // TODO: persistent connection
     private HashSet<Session> persistentConnections = new HashSet<>();
     private Server server;
     private final Logger logger = Logger.getLogger("WS Endpoint");
@@ -38,28 +39,7 @@ public class WebSocketEndpoint {
 
     @OnMessage
     public String onMessage(String message, Session session) {
-        logger.info(String.format("RECEIVED on %s: %s", session.getId(),
-                message));
-        // Clients shouldn't to send messages on persistent Connections
-        // so they don't get any answer
-        if (persistentConnections.contains(session))
-            return null;
-
-        // Handle the request
-        Response response = server.getRequestHandler().handleRequest(message);
-
-        // send back the answer
-        if (response.requestedPersistentConnection) {
-            persistentConnections.add(session);
-            // TODO: implement
-//            new PersistentConnection(session,
-//                    , response.accountID);
-            return "{}";
-        } else {
-            logger.info(String.format("SENDING on %s: %s", session.getId(),
-                    response.responseString));
-            return response.responseString;
-        }
+        return "Not implemented.";
     }
 
     @OnOpen

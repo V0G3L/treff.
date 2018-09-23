@@ -1,15 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
-import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
-import org.pispeb.treffpunkt.server.commands.serializers.UsergroupCompleteSerializer;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -17,45 +9,40 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 /**
  * a command to get a detailed description of a user group
  */
-public class GetGroupDetailsCommand extends GroupCommand {
+public class GetGroupDetailsCommand extends
+        GroupCommand<GetGroupDetailsCommand.Input, GetGroupDetailsCommand.Output> {
 
 
-    public GetGroupDetailsCommand(SessionFactory sessionFactory,
-                                  ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper,
-                null, null); // getting details requires no permission
+    public GetGroupDetailsCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput groupInput) {
-        Input input = (Input) groupInput;
+    protected Output executeOnGroup(Input input) {
 
         Account actingAccount = input.getActingAccount();
 
         // get group
         Usergroup group = actingAccount.getAllGroups().get(input.groupID);
         if (group == null)
-            return new ErrorOutput(ErrorCode.GROUPIDINVALID);
+            throw ErrorCode.GROUPIDINVALID.toWebException();
 
         return new Output(group);
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
-        public Input(@JsonProperty("id") int groupId,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, String token) {
             super(token, groupId);
         }
     }
 
     public static class Output extends CommandOutput {
 
-        @JsonSerialize(using = UsergroupCompleteSerializer.class)
-        @JsonProperty("group")
-        final Usergroup usergroup;
+        public final org.pispeb.treffpunkt.server.service.domain.Usergroup usergroup;
 
         Output(Usergroup usergroup) {
-            this.usergroup = usergroup;
+            this.usergroup = new org.pispeb.treffpunkt.server.service.domain.Usergroup(usergroup);
         }
     }
 

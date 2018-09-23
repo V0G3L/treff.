@@ -3,8 +3,8 @@ package org.pispeb.treffpunkt.server.commands.serializers;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.pispeb.treffpunkt.server.Position;
 import org.pispeb.treffpunkt.server.hibernate.PollOption;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import java.io.IOException;
 
@@ -22,8 +22,8 @@ public class PollOptionCompleteSerializer extends JsonSerializer<PollOption> {
         Position position = pollOption.getPosition();
         gen.writeStringField("type", "polloption");
         gen.writeNumberField("id", pollOption.getID());
-        gen.writeNumberField("latitude", position.latitude);
-        gen.writeNumberField("longitude", position.longitude);
+        gen.writeNumberField("latitude", position.getLatitude());
+        gen.writeNumberField("longitude", position.getLatitude());
         gen.writeNumberField("time-start",
                 pollOption.getTimeStart().getTime());
         gen.writeNumberField("time-end",

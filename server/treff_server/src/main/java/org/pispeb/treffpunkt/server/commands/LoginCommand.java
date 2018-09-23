@@ -1,20 +1,16 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.SessionFactory;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 /**
  * a command to login
  */
-public class LoginCommand extends AbstractCommand {
+public class LoginCommand extends AbstractCommand
+        <LoginCommand.Input,LoginCommand.Output> {
 
 
     public LoginCommand(SessionFactory sessionFactory) {
@@ -22,17 +18,16 @@ public class LoginCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         // check if account exists
         Account actingAccount = accountManager.getAccountByUsername(input.username);
         if (actingAccount == null)
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.password))
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
 
         String token = actingAccount.generateNewLoginToken();
         return new Output(token, actingAccount.getID());

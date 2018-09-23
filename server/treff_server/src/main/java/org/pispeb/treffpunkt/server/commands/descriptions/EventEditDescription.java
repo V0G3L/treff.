@@ -1,8 +1,6 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.Date;
+import org.pispeb.treffpunkt.server.service.domain.Event;
 
 /**
  * Immutable complete description of an event as specified in the
@@ -24,14 +22,9 @@ public class EventEditDescription extends EventCreateDescription {
      * @param longitude The longitude at which the event takes place
      * @param id        The ID of the event
      */
-    public EventEditDescription(@JsonProperty("title") String title,
-                                @JsonProperty("time-start") Date timeStart,
-                                @JsonProperty("time-end") Date timeEnd,
-                                @JsonProperty("latitude") double latitude,
-                                @JsonProperty("longitude") double longitude,
-                                @JsonProperty("id") int id) {
-        super(title, timeStart, timeEnd, latitude, longitude);
-        this.id = id;
+    public EventEditDescription(Event event) {
+        super(event);
+        this.id = event.getId();
     }
 
 }

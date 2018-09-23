@@ -1,11 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.SessionFactory;
-import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UsergroupChangeUpdate;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -14,25 +10,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class ChangeGroupMembersCommand extends GroupCommand {
+public abstract class ChangeGroupMembersCommand
+        extends GroupCommand<ChangeGroupMembersCommand.Input, ChangeGroupMembersCommand.Output> {
 
-    public ChangeGroupMembersCommand(SessionFactory sessionFactory,
-                                     ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper,
-                Permission.MANAGE_MEMBERS,
-                ErrorCode.NOPERMISSIONMANAGEMEMBERS);
+    public ChangeGroupMembersCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
-    protected CommandOutput changeGroupMembers(GroupInput groupInput,
+    protected Output changeGroupMembers(Input input,
                                                boolean addMembers) {
-        Input input = (Input) groupInput;
 
         // check that all accounts exist
         Set<Account> changedAccs = new HashSet<>();
         for (int newMemberID : input.memberIDs) {
             Account curAcc = accountManager.getAccount(newMemberID);
             if (curAcc == null)
-                return new ErrorOutput(ErrorCode.USERIDINVALID);
+                throw ErrorCode.USERIDINVALID.toWebException();
             changedAccs.add(curAcc);
         }
 
@@ -40,9 +33,9 @@ public abstract class ChangeGroupMembersCommand extends GroupCommand {
         for (Account curAcc : changedAccs) {
             boolean isInGroup = usergroup.getAllMembers().containsKey(curAcc.getID());
             if (addMembers && isInGroup)
-                return new ErrorOutput(ErrorCode.USERALREADYINGROUP);
+                throw ErrorCode.USERALREADYINGROUP.toWebException();
             if (!addMembers && !isInGroup)
-                return new ErrorOutput(ErrorCode.USERNOTINGROUP);
+                throw ErrorCode.USERNOTINGROUP.toWebException();
         }
 
         // if removing members, also add Update to removed members
@@ -58,9 +51,7 @@ public abstract class ChangeGroupMembersCommand extends GroupCommand {
 
         // create update
         UsergroupChangeUpdate update =
-                new UsergroupChangeUpdate(new Date(),
-                        actingAccount.getID(),
-                        usergroup);
+                new UsergroupChangeUpdate(new Date(), actingAccount.getID(), usergroup);
 
         if (addMembers)
             addUpdateToAllOtherMembers(update);
@@ -76,9 +67,7 @@ public abstract class ChangeGroupMembersCommand extends GroupCommand {
 
         private final int[] memberIDs;
 
-        public Input(@JsonProperty("id") int groupId,
-                     @JsonProperty("members") int[] memberIDs,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, int[] memberIDs, String token) {
             super(token, groupId);
             this.memberIDs = memberIDs;
         }

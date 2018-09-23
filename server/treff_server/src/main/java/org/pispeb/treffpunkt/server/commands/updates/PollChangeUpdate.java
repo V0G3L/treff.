@@ -1,6 +1,5 @@
 package org.pispeb.treffpunkt.server.commands.updates;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.pispeb.treffpunkt.server.commands.serializers.PollCompleteSerializer;
 import org.pispeb.treffpunkt.server.hibernate.Poll;
@@ -9,9 +8,7 @@ import java.util.Date;
 
 public class PollChangeUpdate extends UpdateToSerialize {
 
-    @JsonProperty("group-id")
     public final int groupID;
-    @JsonProperty("poll")
     @JsonSerialize(using = PollCompleteSerializer.class)
     public final Poll poll;
 

@@ -1,7 +1,6 @@
 package org.pispeb.treffpunkt.server.commands.descriptions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.pispeb.treffpunkt.server.Permission;
 
 import java.util.Collections;
@@ -16,13 +15,9 @@ import java.util.stream.Collectors;
 public class MembershipDescription {
     @JsonIgnore
     public final Map<Permission, Boolean> permissionMap;
-    @JsonProperty("type")
     public final String type = "membership";
-    @JsonProperty("group-id")
     public final int groupID;
-    @JsonProperty("account-id")
     public final int accountID;
-    @JsonProperty("sharing-until")
     public Date sharingUntil;
 
     public MembershipDescription(int groupID, int accountID,
@@ -34,7 +29,6 @@ public class MembershipDescription {
         this.permissionMap = permissionMap;
     }
 
-    @JsonProperty("permissions")
     public Map<String, Boolean> getPermissionStringMap() {
         // translate to mutable map, then only save an immutable view of it
         Map<String, Boolean> mutablePermissionMap

@@ -10,7 +10,9 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
+import java.security.Principal;
 
 /*
  * Taken from
@@ -46,6 +48,31 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         // Validate the token
         if (!validateToken(token))
             abortWithUnauthorized(requestContext);
+
+        // Save user ID in the SecurityContext
+        final SecurityContext currentSecurityContext = requestContext.getSecurityContext();
+        requestContext.setSecurityContext(new SecurityContext() {
+
+            @Override
+            public Principal getUserPrincipal() {
+                return () -> token;
+            }
+
+            @Override
+            public boolean isUserInRole(String role) {
+                return true;
+            }
+
+            @Override
+            public boolean isSecure() {
+                return currentSecurityContext.isSecure();
+            }
+
+            @Override
+            public String getAuthenticationScheme() {
+                return AUTHENTICATION_SCHEME;
+            }
+        });
     }
 
     private boolean isTokenBasedAuthentication(String authorizationHeader) {

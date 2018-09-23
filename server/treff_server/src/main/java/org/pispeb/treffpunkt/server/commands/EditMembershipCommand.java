@@ -1,14 +1,10 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipDescription;
 import org.pispeb.treffpunkt.server.commands.descriptions.MembershipEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.GroupMembershipChangeUpdate;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -18,24 +14,22 @@ import java.util.Date;
 /**
  * a command to edit the permissions of an account
  */
-public class EditMembershipCommand extends GroupCommand {
+public class EditMembershipCommand
+        extends GroupCommand<EditMembershipCommand.Input, EditMembershipCommand.Output> {
 
 
-    public EditMembershipCommand(SessionFactory sessionFactory, ObjectMapper mapper) {
-        super(sessionFactory, Input.class, mapper,
-                Permission.CHANGE_PERMISSIONS,
-                ErrorCode.NOPERMISSIONEDITPERMISSION);
+    public EditMembershipCommand(SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnGroup(GroupInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeOnGroup(Input input) {
 
         Account otherAccount = accountManager.getAccount(input.membershipEditDescription.accountID);
         if (otherAccount == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            throw ErrorCode.USERIDINVALID.toWebException();
         if (!usergroup.getAllMembers().containsKey(otherAccount.getID()))
-            return new ErrorOutput(ErrorCode.USERNOTINGROUP);
+            throw ErrorCode.USERNOTINGROUP.toWebException();
 
         // edit permissions
         for (Permission p
@@ -61,13 +55,11 @@ public class EditMembershipCommand extends GroupCommand {
         return new Output();
     }
 
-    public static class Input extends GroupInput {
+    public static class Input extends GroupCommand.GroupInput {
 
         final MembershipEditDescription membershipEditDescription;
 
-        public Input(@JsonProperty("membership")
-                             MembershipEditDescription mB,
-                     @JsonProperty("token") String token) {
+        public Input(MembershipEditDescription mB, String token) {
             super(token, mB.groupID);
             this.membershipEditDescription = mB;
         }

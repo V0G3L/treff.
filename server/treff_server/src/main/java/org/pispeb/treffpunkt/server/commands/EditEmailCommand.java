@@ -1,13 +1,8 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.DatabaseException;
 import org.pispeb.treffpunkt.server.exceptions.DuplicateEmailException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
@@ -16,7 +11,8 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 /**
  * a command to edit the email of the executing account
  */
-public class EditEmailCommand extends AbstractCommand {
+public class EditEmailCommand extends AbstractCommand
+        <EditEmailCommand.Input,EditEmailCommand.Output> {
 
 
     public EditEmailCommand(SessionFactory sessionFactory) {
@@ -24,14 +20,13 @@ public class EditEmailCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) throws
+    protected Output executeInternal(Input input) throws
             DatabaseException {
-        Input input = (Input) commandInput;
-        Account actingAccount = input.getActingAccount();
+                Account actingAccount = input.getActingAccount();
 
         // check if password is correct
         if (!actingAccount.checkPassword(input.pass)) {
-            return new ErrorOutput(ErrorCode.CREDWRONG);
+            throw ErrorCode.CREDWRONG.toWebException();
         }
 
         // edit email
@@ -39,7 +34,7 @@ public class EditEmailCommand extends AbstractCommand {
         try {
             actingAccount.setEmail(input.email, accountManager);
         } catch (DuplicateEmailException e) {
-            return new ErrorOutput(ErrorCode.EMAILINVALID);
+            throw ErrorCode.EMAILINVALID.toWebException();
         }
         return new Output();
     }
@@ -49,9 +44,7 @@ public class EditEmailCommand extends AbstractCommand {
         final String pass;
         final String email;
 
-        public Input(@JsonProperty("pass") String pass,
-                     @JsonProperty("email") String email,
-                     @JsonProperty("token") String token) {
+        public Input(String pass, String email, String token) {
             super(token);
             this.pass = pass;
             this.email = email;

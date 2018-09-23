@@ -1,13 +1,9 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.Permission;
 import org.pispeb.treffpunkt.server.commands.descriptions.PollEditDescription;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PollChangeUpdate;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -16,21 +12,20 @@ import java.util.Date;
 /**
  * a command to edit a poll of a user group
  */
-public class EditPollCommand extends PollCommand {
+public class EditPollCommand extends PollCommand<EditPollCommand.Input, EditPollCommand.Output> {
 
     public EditPollCommand(SessionFactory sessionFactory) {
         super(sessionFactory);
     }
 
     @Override
-    protected CommandOutput executeOnPoll(PollInput pollInput) {
-        Input input = (Input) pollInput;
+    protected Output executeOnPoll(Input input) {
 
         // check permission
         if (!usergroup.checkPermissionOfMember(actingAccount,
                 Permission.EDIT_ANY_POLL) &&
                 !(poll.getCreator().getID() == actingAccount.getID())) {
-            return new ErrorOutput(ErrorCode.NOPERMISSIONEDITANYPOLL);
+            throw ErrorCode.NOPERMISSIONEDITANYPOLL.toWebException();
         }
 
         // edit poll
@@ -49,14 +44,12 @@ public class EditPollCommand extends PollCommand {
         return new Output();
     }
 
-    public static class Input extends PollInput {
+    public static class Input extends PollCommand.PollInput {
 
         final PollEditDescription poll;
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("poll")
-                             PollEditDescription poll,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId,
+                             PollEditDescription poll, String token) {
             super(token, groupId, poll.id);
             this.poll = poll;
         }

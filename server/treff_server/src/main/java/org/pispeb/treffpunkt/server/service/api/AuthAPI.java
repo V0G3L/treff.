@@ -1,5 +1,6 @@
 package org.pispeb.treffpunkt.server.service.api;
 
+import org.pispeb.treffpunkt.server.service.domain.AuthDetails;
 import org.pispeb.treffpunkt.server.service.domain.Credentials;
 
 import javax.ws.rs.Consumes;
@@ -14,9 +15,9 @@ public interface AuthAPI {
 
     @POST
     @Path("/register")
-    String register(Credentials creds);
+    AuthDetails register(Credentials creds);
 
     @POST
     @Path("/login")
-    String login(Credentials creds);
+    AuthDetails login(Credentials creds);
 }

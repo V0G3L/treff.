@@ -1,14 +1,11 @@
 package org.pispeb.treffpunkt.server.commands;
 
-import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.AccountManager;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
@@ -16,7 +13,6 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 import javax.json.JsonObject;
 import javax.persistence.PersistenceException;
 import javax.persistence.RollbackException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 /**
@@ -122,6 +118,10 @@ public abstract class AbstractCommand<I extends CommandInput, O extends CommandO
         if (time.before(minusTolerance)) return -1;
         else if (plusTolerance.before(time)) return 1;
         return 0;
+    }
+
+    protected static int checkTime(long time) {
+        return checkTime(new Date(time));
     }
 }
 

@@ -1,11 +1,7 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.EventChangeUpdate;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -14,7 +10,8 @@ import java.util.Date;
 /**
  * a command to add the executing account to an event of a user group
  */
-public class JoinEventCommand extends EventCommand {
+public class JoinEventCommand extends
+        EventCommand<JoinEventCommand.Input, JoinEventCommand.Output> {
 
 
     public JoinEventCommand(SessionFactory sessionFactory) {
@@ -22,13 +19,12 @@ public class JoinEventCommand extends EventCommand {
     }
 
     @Override
-    protected CommandOutput executeOnEvent(EventInput eventInput) {
-        Input input = (Input) eventInput;
+    protected Output executeOnEvent(Input input) {
 
         // check if already participating
         if (event.getAllParticipants()
                 .containsKey(input.getActingAccount().getID())) {
-            return new ErrorOutput(ErrorCode.ALREADYPARTICIPATINGEVENT);
+            throw ErrorCode.ALREADYPARTICIPATINGEVENT.toWebException();
         }
 
         // join
@@ -45,11 +41,9 @@ public class JoinEventCommand extends EventCommand {
         return new Output();
     }
 
-    public static class Input extends EventInput {
+    public static class Input extends EventCommand.EventInput {
 
-        public Input(@JsonProperty("group-id") int groupId,
-                     @JsonProperty("id") int eventId,
-                     @JsonProperty("token") String token) {
+        public Input(int groupId, int eventId, String token) {
             super(token, groupId, eventId);
         }
     }

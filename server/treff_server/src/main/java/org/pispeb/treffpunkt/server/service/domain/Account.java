@@ -6,6 +6,14 @@ public class Account {
     private String username;
     private String email;
 
+    public Account() { }
+
+    public Account(org.pispeb.treffpunkt.server.hibernate.Account hibAccount) {
+        this.id = hibAccount.getID();
+        this.username = hibAccount.getUsername();
+        this.email = hibAccount.getEmail();
+    }
+
     public int getId() {
         return id;
     }

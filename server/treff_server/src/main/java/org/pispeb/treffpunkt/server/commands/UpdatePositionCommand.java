@@ -1,27 +1,23 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.Position;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.PositionChangeUpdate;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.hibernate.Usergroup;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
+import org.pispeb.treffpunkt.server.service.domain.Position;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * a command to update the position of the executing account in the database
  */
-public class UpdatePositionCommand extends AbstractCommand {
+public class UpdatePositionCommand extends AbstractCommand
+        <UpdatePositionCommand.Input,UpdatePositionCommand.Output> {
 
 
     public UpdatePositionCommand(SessionFactory sessionFactory) {
@@ -29,13 +25,13 @@ public class UpdatePositionCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
+        Position position = input.position;
 
-        if (checkTime(input.timeMeasured) > 0) {
-            return new ErrorOutput(ErrorCode.TIMEMEASUREDFUTURE);
+        if (checkTime(position.getTimeMeasured()) > 0) {
+            throw ErrorCode.TIMEMEASUREDFUTURE.toWebException();
         }
 
         Set<Account> affectedAccounts = new HashSet<>();
@@ -48,19 +44,14 @@ public class UpdatePositionCommand extends AbstractCommand {
         }
 
         // update position and respond
-        actingAccount.updatePosition(input.position, input.timeMeasured);
+        actingAccount.updatePosition(input.position);
 
         // create update
         PositionChangeUpdate update =
                 new PositionChangeUpdate(new Date(),
                         actingAccount.getID(),
-                        input.position,
-                        input.timeMeasured);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update), affectedAccounts);
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+                        position);
+        accountManager.createUpdate(update, affectedAccounts);
 
         return new Output();
     }
@@ -68,21 +59,15 @@ public class UpdatePositionCommand extends AbstractCommand {
     public static class Input extends CommandInputLoginRequired {
 
         final Position position;
-        final Date timeMeasured;
 
-        public Input(@JsonProperty("latitude") double latitude,
-                     @JsonProperty("longitude") double longitude,
-                     @JsonProperty("time-measured") long timeMeasured,
-                     @JsonProperty("token") String token) {
+        public Input(Position position, String token) {
             super(token);
-            this.position = new Position(latitude, longitude);
-            this.timeMeasured = new Date(timeMeasured);
+            this.position = position;
         }
 
         @Override
         public boolean syntaxCheck() {
-            return validatePosition(position)
-                    && validateDate(timeMeasured);
+            return validatePosition(position);
         }
     }
 

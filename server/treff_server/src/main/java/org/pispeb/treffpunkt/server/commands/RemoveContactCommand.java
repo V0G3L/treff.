@@ -1,17 +1,10 @@
 package org.pispeb.treffpunkt.server.commands;
 
 import org.hibernate.SessionFactory;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.pispeb.treffpunkt.server.commands.io.CommandInput;
 import org.pispeb.treffpunkt.server.commands.io.CommandInputLoginRequired;
 import org.pispeb.treffpunkt.server.commands.io.CommandOutput;
-import org.pispeb.treffpunkt.server.commands.io.ErrorOutput;
 import org.pispeb.treffpunkt.server.commands.updates.UpdateType;
 import org.pispeb.treffpunkt.server.commands.updates.UpdatesWithoutSpecialParameters;
-import org.pispeb.treffpunkt.server.exceptions.ProgrammingException;
 import org.pispeb.treffpunkt.server.hibernate.Account;
 import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
@@ -20,7 +13,8 @@ import java.util.Date;
 /**
  * a command to remove an account from the contact-list of another account
  */
-public class RemoveContactCommand extends AbstractCommand {
+public class RemoveContactCommand extends AbstractCommand
+        <RemoveContactCommand.Input,RemoveContactCommand.Output> {
 
 
     public RemoveContactCommand(SessionFactory sessionFactory) {
@@ -28,17 +22,16 @@ public class RemoveContactCommand extends AbstractCommand {
     }
 
     @Override
-    protected CommandOutput executeInternal(CommandInput commandInput) {
-        Input input = (Input) commandInput;
+    protected Output executeInternal(Input input) {
 
         Account actingAccount = input.getActingAccount();
         Account otherAccount = accountManager.getAccount(input.id);
         if (otherAccount == null)
-            return new ErrorOutput(ErrorCode.USERIDINVALID);
+            throw ErrorCode.USERIDINVALID.toWebException();
 
         // check if the accounts are contacts
         if (!actingAccount.getAllContacts().containsKey(otherAccount.getID()))
-            return new ErrorOutput(ErrorCode.NOTINCONTACT);
+            throw ErrorCode.NOTINCONTACT.toWebException();
 
         actingAccount.removeContact(otherAccount);
 
@@ -47,11 +40,7 @@ public class RemoveContactCommand extends AbstractCommand {
                 new UpdatesWithoutSpecialParameters(new Date(),
                         actingAccount.getID(),
                         UpdateType.REMOVE_CONTACT);
-        try {
-            accountManager.createUpdate(mapper.writeValueAsString(update), otherAccount);
-        } catch (JsonProcessingException e) {
-             throw new ProgrammingException(e);
-        }
+        accountManager.createUpdate(update, otherAccount);
 
         return new Output();
     }
@@ -60,8 +49,7 @@ public class RemoveContactCommand extends AbstractCommand {
 
         final int id;
 
-        public Input(@JsonProperty("id") int id,
-                     @JsonProperty("token") String token) {
+        public Input(int id, String token) {
             super(token);
             this.id = id;
         }
