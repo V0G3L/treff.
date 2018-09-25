@@ -8,6 +8,7 @@ import org.pispeb.treffpunkt.server.networking.ErrorCode;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class ChangeGroupMembersCommand
@@ -65,9 +66,9 @@ public abstract class ChangeGroupMembersCommand
 
     public static class Input extends GroupCommand.GroupInput {
 
-        private final int[] memberIDs;
+        private final List<Integer> memberIDs;
 
-        public Input(int groupId, int[] memberIDs, String token) {
+        public Input(int groupId, List<Integer> memberIDs, String token) {
             super(token, groupId);
             this.memberIDs = memberIDs;
         }

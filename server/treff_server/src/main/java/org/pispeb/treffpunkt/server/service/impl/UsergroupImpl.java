@@ -21,12 +21,10 @@ import org.pispeb.treffpunkt.server.service.domain.Event;
 import org.pispeb.treffpunkt.server.service.domain.Usergroup;
 
 import javax.jws.WebService;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 @WebService(endpointInterface = "org.pispeb.treffpunkt.server.service.api.UsergroupAPI")
-@Path("/groups")
 public class UsergroupImpl extends ServiceImpl implements UsergroupAPI {
 
     @Override
@@ -56,13 +54,13 @@ public class UsergroupImpl extends ServiceImpl implements UsergroupAPI {
     }
 
     @Override
-    public void addMembers(int gid, int[] memberIds, SecurityContext context) {
+    public void addMembers(int gid, List<Integer> memberIds, SecurityContext context) {
         new AddGroupMembersCommand(sessionFactory)
                 .execute(new AddGroupMembersCommand.Input(gid, memberIds, token(context)));
     }
 
     @Override
-    public void removeMembers(int gid, int[] memberIds, SecurityContext context) {
+    public void removeMembers(int gid, List<Integer> memberIds, SecurityContext context) {
         new RemoveGroupMembersCommand(sessionFactory)
                 .execute(new RemoveGroupMembersCommand.Input(gid, memberIds, token(context)));
     }

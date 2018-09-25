@@ -7,10 +7,8 @@ import org.pispeb.treffpunkt.server.service.domain.AuthDetails;
 import org.pispeb.treffpunkt.server.service.domain.Credentials;
 
 import javax.jws.WebService;
-import javax.ws.rs.Path;
 
 @WebService(endpointInterface = "org.pispeb.treffpunkt.server.service.api.AuthAPI")
-@Path("/auth")
 public class AuthImpl extends ServiceImpl implements AuthAPI {
 
     @Override

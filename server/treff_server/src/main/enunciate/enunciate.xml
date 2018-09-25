@@ -5,17 +5,15 @@
     <description package="org.pispeb.treffpunkt.server"/>
     <copyright>TESTCOPYRIGHT</copyright>
 
-    <application root="http://www.ifyouwannabecool.com/api"/>
+    <application root="https://treffpunkt.nsupdate.info/"/>
 
     <namespaces>
-        <namespace id="api" uri="http://api.ifyouwannabecool.com/"/>
-        <namespace id="link" uri="http://api.ifyouwannabecool.com/link"/>
-        <namespace id="persona" uri="http://api.ifyouwannabecool.com/persona"/>
+        <namespace id="rest" uri="https://treffpunkt.nsupdate.info/rest"/>
     </namespaces>
 
     <modules>
         <docs>
-            <download file="LICENSE" name="Apache II" description="The license governing this API" showLink="true"/>
+            <download file="LICENSE" name="AGPL-3.0" description="The license governing this API" showLink="true"/>
         </docs>
         <java-xml-client>
             <package-conversions>

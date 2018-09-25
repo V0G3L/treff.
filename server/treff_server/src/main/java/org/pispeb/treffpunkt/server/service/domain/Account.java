@@ -1,5 +1,9 @@
 package org.pispeb.treffpunkt.server.service.domain;
 
+/**
+ * An object representing an account with an associated username, email address,
+ * and password.
+ */
 public class Account {
 
     private int id;

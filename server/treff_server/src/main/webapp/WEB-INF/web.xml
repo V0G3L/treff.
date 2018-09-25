@@ -10,51 +10,6 @@
         <param-value>/rest</param-value>
     </context-param>
 
-    <listener>
-        <listener-class>
-            com.sun.xml.ws.transport.http.servlet.WSServletContextListener
-        </listener-class>
-    </listener>
-
-    <!--<filter>
-        <filter-name>jaxrs</filter-name>
-        <filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>org.pispeb.treffpunkt.server.networking.RestApplication</param-value>
-        </init-param>
-    </filter>
-
-    <filter>
-        <filter-name>idl-filter</filter-name>
-        <filter-class>com.webcohesion.enunciate.</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>jaxrs</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>idl-filter</filter-name>
-        <url-pattern>*.wsdl</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>idl-filter</filter-name>
-        <url-pattern>*.wadl</url-pattern>
-    </filter-mapping>-->
-
-    <servlet>
-        <servlet-name>jaxws</servlet-name>
-        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>jaxws</servlet-name>
-        <url-pattern>/accounts-service</url-pattern>
-    </servlet-mapping>
-
     <mime-mapping>
         <extension>wsdl</extension>
         <mime-type>text/xml</mime-type>

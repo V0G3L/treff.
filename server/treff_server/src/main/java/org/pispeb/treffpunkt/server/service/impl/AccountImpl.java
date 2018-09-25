@@ -11,11 +11,9 @@ import org.pispeb.treffpunkt.server.service.domain.Account;
 import org.pispeb.treffpunkt.server.service.domain.Position;
 
 import javax.jws.WebService;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.SecurityContext;
 
 @WebService(endpointInterface = "org.pispeb.treffpunkt.server.service.api.AccountAPI")
-@Path("/accounts")
 public class AccountImpl extends ServiceImpl implements AccountAPI {
 
     @Override

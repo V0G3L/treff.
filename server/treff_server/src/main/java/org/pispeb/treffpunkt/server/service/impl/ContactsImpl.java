@@ -12,11 +12,9 @@ import org.pispeb.treffpunkt.server.service.api.ContactsAPI;
 import org.pispeb.treffpunkt.server.service.domain.ContactList;
 
 import javax.jws.WebService;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.SecurityContext;
 
 @WebService(endpointInterface = "org.pispeb.treffpunkt.server.service.api.ContactsAPI")
-@Path("/contacts")
 public class ContactsImpl extends ServiceImpl implements ContactsAPI {
 
     @Override
@@ -26,7 +24,7 @@ public class ContactsImpl extends ServiceImpl implements ContactsAPI {
     }
 
     @Override
-    public void addContact(int aid, SecurityContext context) {
+    public void sendRequest(int aid, SecurityContext context) {
         new SendContactRequestCommand(sessionFactory)
                 .execute(new SendContactRequestCommand.Input(aid, token(context)));
     }
@@ -44,7 +42,7 @@ public class ContactsImpl extends ServiceImpl implements ContactsAPI {
     }
 
     @Override
-    public void denyRequest(int aid, SecurityContext context) {
+    public void rejectRequest(int aid, SecurityContext context) {
         new RejectContactRequestCommand(sessionFactory)
                 .execute(new RejectContactRequestCommand.Input(aid, token(context)));
     }

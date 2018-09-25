@@ -4,10 +4,8 @@ import org.pispeb.treffpunkt.server.service.auth.Secured;
 import org.pispeb.treffpunkt.server.service.domain.Account;
 import org.pispeb.treffpunkt.server.service.domain.Position;
 
-import javax.jws.WebService;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,9 +14,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 
-@WebService
-@Consumes({MediaType.APPLICATION_JSON})
-@Produces({MediaType.APPLICATION_JSON})
+@Path("/accounts")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public interface AccountAPI {
 
     /**
@@ -49,7 +47,7 @@ public interface AccountAPI {
      * @param password Current password
      * @param context
      */
-    @POST
+    @PUT
     @Path("/username")
     @Secured
     void setUsername(String username, String password, @Context SecurityContext context);
@@ -60,7 +58,7 @@ public interface AccountAPI {
      * @param password Current password
      * @param context
      */
-    @POST
+    @PUT
     @Path("/email")
     @Secured
     void setEmail(String email, String password, @Context SecurityContext context);
@@ -71,7 +69,7 @@ public interface AccountAPI {
      * @param newPassword New password
      * @param context
      */
-    @POST
+    @PUT
     @Path("/password")
     @Secured
     void setPassword(String oldPassword, String newPassword, @Context SecurityContext context);

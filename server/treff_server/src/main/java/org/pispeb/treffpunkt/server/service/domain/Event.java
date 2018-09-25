@@ -1,5 +1,8 @@
 package org.pispeb.treffpunkt.server.service.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Event {
 
     private int id;
@@ -7,6 +10,7 @@ public class Event {
     private long timeStart;
     private long timeEnd;
     private Position position;
+    private List<Integer> participants;
 
     public Event() { }
 
@@ -16,6 +20,7 @@ public class Event {
         this.timeStart = hibEvent.getTimeStart().toInstant().getEpochSecond();
         this.timeEnd = hibEvent.getTimeEnd().toInstant().getEpochSecond();
         this.position = hibEvent.getPosition();
+        this.participants = new ArrayList<>(hibEvent.getAllParticipants().keySet());
     }
 
     public String getTitle() {
@@ -56,5 +61,13 @@ public class Event {
 
     public void setPosition(Position position) {
         this.position = position;
+    }
+
+    public List<Integer> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Integer> participants) {
+        this.participants = participants;
     }
 }
