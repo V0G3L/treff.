@@ -67,6 +67,13 @@ dependencies {
 
     implementation 'commons-validator:commons-validator:1.6'
 
+    // generated API client files
+    implementation files('libs/api-json-client.jar', 'libs/api-json-client-json-sources.jar')
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.4.0'
+
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
     // Optional -- Mockito framework

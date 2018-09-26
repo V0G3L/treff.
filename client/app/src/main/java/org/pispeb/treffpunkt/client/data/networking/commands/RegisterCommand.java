@@ -35,21 +35,6 @@ public class RegisterCommand extends AbstractCommand{
 
     @Override
     public void onResponse(AbstractResponse abstractResponse) {
-        Response response = (Response) abstractResponse;
-        Context ctx = TreffPunkt.getAppContext();
-        SharedPreferences pref = PreferenceManager
-                .getDefaultSharedPreferences(ctx);
-        //in this context commit is better than apply
-        pref.edit()
-                .putString(ctx.getString(R.string.key_token), response.token)
-                .putInt(ctx.getString(R.string.key_userId), response.id)
-                .commit();
-
-        if (!email.equals("")){
-            RequestEncoder encoder = ViewModelFactory.getInstance(ctx).getEncoder();
-            encoder.editEmail(email, pass);
-
-        }
     }
 
     public static class Request extends AbstractRequest {

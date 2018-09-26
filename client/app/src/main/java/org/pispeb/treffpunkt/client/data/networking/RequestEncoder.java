@@ -1,5 +1,6 @@
 package org.pispeb.treffpunkt.client.data.networking;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.pispeb.treffpunkt.client.R;
+import org.pispeb.treffpunkt.client.data.networking.api.AccountAPI;
+import org.pispeb.treffpunkt.client.data.networking.api.AuthAPI;
+import org.pispeb.treffpunkt.client.data.networking.api.ContactsAPI;
+import org.pispeb.treffpunkt.client.data.networking.api.UpdateAPI;
+import org.pispeb.treffpunkt.client.data.networking.api.UsergroupAPI;
 import org.pispeb.treffpunkt.client.data.networking.commands.*;
 import org.pispeb.treffpunkt.client.data.repositories.ChatRepository;
 import org.pispeb.treffpunkt.client.data.repositories.EventRepository;
@@ -25,23 +31,28 @@ import org.pispeb.treffpunkt.client.data.repositories.UserGroupRepository;
 import org.pispeb.treffpunkt.client.data.repositories.UserRepository;
 import org.pispeb.treffpunkt.client.view.login.LoginActivity;
 import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
+import org.pispeb.treffpunkt.server.service.domain.AuthDetails;
+import org.pispeb.treffpunkt.server.service.domain.Credentials;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.websocket.DeploymentException;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
  * This class provides methods to perform the known server requests.
  */
 
-public class RequestEncoder implements ConnectionHandler.ResponseListener,
-        CommandFailHandler {
+public class RequestEncoder implements CommandFailHandler {
 
     private static final int DISPLAY_ERROR_TOAST = 1;
     private static final int UPDATE_INTERVAL_MS = 10000;
@@ -49,21 +60,25 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     // mapper to convert from Pojos to Strings and vice versa
     private final ObjectMapper mapper;
 
-    private ConnectionHandler connectionHandler;
-    private boolean idle;
-
     private Handler bgHandler;
     private Handler uiHandler;
 
     private RepositorySet repositorySet;
 
-    // Queue of commands waiting to be sent to Server
-    private Queue<CommandJob> commands;
+    // Queue of jobQueue waiting to be sent to Server
+    private BlockingQueue<CommandJob> jobQueue = new LinkedBlockingQueue<>();
+    private boolean stopQueue = false;
 
     private static RequestEncoder INSTANCE;
 
     private boolean updating;
     private Timer updateTimer;
+
+    private AccountAPI accountAPI;
+    private AuthAPI authAPI;
+    private ContactsAPI contactsAPI;
+    private UpdateAPI updateAPI;
+    private UsergroupAPI usergroupAPI;
 
     public static RequestEncoder getInstance() {
         if (INSTANCE == null) {
@@ -74,28 +89,80 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     }
 
     protected RequestEncoder() {
-        commands = new LinkedList<>();
-        idle = true;
-
         mapper = new ObjectMapper();
         mapper.enable(DeserializationFeature
                 .FAIL_ON_MISSING_CREATOR_PROPERTIES);
         mapper.disable(DeserializationFeature
                 .FAIL_ON_UNKNOWN_PROPERTIES);
 
-        try {
-            connectionHandler
-                    = new ConnectionHandler(getServerAddress(), this);
-        } catch (URISyntaxException | IOException | DeploymentException e) {
-            e.printStackTrace(); // TODO: TODONT
-        }
+        // Create API objects
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addInterceptor(chain -> {
+
+                    // Interceptor to handle errors
+
+                    okhttp3.Response response = chain.proceed(chain.request());
+
+                    switch (response.code()) {
+                        case 200:
+                            return response;
+                        // 400 is a custom error
+                        case 400:
+                            String body = response.body().string();
+                            try {
+                                ErrorResponse errorResponse
+                                        = mapper.readValue(body, ErrorResponse.class);
+                                Error error = Error.getValue(errorResponse.error);
+                                throw new APIException(error);
+                            } catch (IOException e) {
+                                // This shouldn't happen as long as the server responds correctly
+                                throw new APIException(Error.API_MISMATCH);
+                            }
+                        case 401:
+                            throw new APIException(Error.TOKEN_INV);
+                        case 404:
+                            throw new APIException(Error.API_MISMATCH);
+                        case 500:
+                            throw new APIException(Error.SERVER_ERROR);
+                        default:
+                            throw new APIException(Error.API_MISMATCH);
+                    }
+                })
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(getServerAddress())
+                .addConverterFactory(JacksonConverterFactory.create(mapper))
+                .client(client)
+                .build();
+
+        accountAPI      = retrofit.create(AccountAPI.class);
+        authAPI         = retrofit.create(AuthAPI.class);
+        contactsAPI     = retrofit.create(ContactsAPI.class);
+        updateAPI       = retrofit.create(UpdateAPI.class);
+        usergroupAPI    = retrofit.create(UsergroupAPI.class);
 
         // Background Thread to execute network interaction on
-        HandlerThread thread = new HandlerThread("bgt",
+        HandlerThread thread = new HandlerThread("networkThread",
                 HandlerThread.MIN_PRIORITY);
         thread.start();
         bgHandler = new Handler(thread.getLooper());
 
+        bgHandler.post(() -> {
+            if (!stopQueue) {
+                try {
+                    CommandJob curJob = jobQueue.take();
+                    // try running command, forward any errors to the failHandler
+                    try {
+                        curJob.task.run();
+                    } catch (APIException e) {
+                        curJob.failHandler.onFail(e.getError());
+                    }
+                } catch (InterruptedException ignored) { }
+            }
+        });
+
+        // Update timer to regularly poll for updates
         updateTimer = new Timer();
         updating = false;
 
@@ -109,8 +176,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
                 }
             }
         };
-
-        nextCommand();
     }
 
     // must be called right after creating the encoder
@@ -123,13 +188,12 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     }
 
     public void startRequestUpdates() {
-        RequestEncoder thisEnc = this;
         this.updateTimer = new Timer();
         // request Updates periodically
         updateTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (thisEnc.idle) {
+                if (jobQueue.isEmpty()) {
                     requestUpdates();
                 }
             }
@@ -140,71 +204,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     public void stopRequestUpdates() {
         updateTimer.cancel();
         updating = false;
-    }
-
-    /**
-     * Add a command to the queue
-     * If the RequestEncoder is not currently expecting any response (i.e.
-     * all former commands are dealt with) send the oldest request to the server
-     *
-     * @param command Command to be executed as soon as all pending commands
-     *                receive a response
-     */
-    private synchronized void executeCommand(AbstractCommand command) {
-        commands.add(new CommandJob(command, this, false));
-        Log.i("Encoder", "Command queue size: " + commands.size());
-        if (idle)
-            nextCommand();
-    }
-
-    private synchronized void executeCommand(AbstractCommand command,
-                                             CommandFailHandler failHandler,
-                                             boolean abortOnCantConnect) {
-        commands.add(new CommandJob(command, failHandler, abortOnCantConnect));
-        Log.i("Encoder", "Command queue size: " + commands.size());
-        if (idle)
-            nextCommand();
-    }
-
-    /**
-     * Convert a Request into a String using the json mapper
-     * and asynchronously passes it to the {@link ConnectionHandler}.
-     *
-     * @param request Json-object of the next command's request
-     */
-    private synchronized void sendRequest(AbstractRequest request,
-                                          boolean abortOnCantConnect) {
-        String message;
-        try {
-            message = mapper.writeValueAsString(request);
-            sendToCH(message, abortOnCantConnect);
-        } catch (JsonProcessingException e) {
-            // This would mean, that the internal request encoding is messed
-            // up, which would be very bad indeed!
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Asynchronously pass a message to the {@link ConnectionHandler} to send
-     * it to the server
-     *
-     * @param message content of that message (in correct command format)
-     */
-    protected synchronized void sendToCH(String message,
-                                         boolean abortOnCantConnect) {
-        bgHandler.post(() -> {
-            // if disconnected before, reconnect
-            if (connectionHandler == null)
-                try {
-                    connectionHandler
-                            = new ConnectionHandler(getServerAddress(), this);
-                } catch (URISyntaxException | IOException
-                        | DeploymentException e) {
-                    e.printStackTrace();
-                }
-            connectionHandler.sendMessage(message, abortOnCantConnect);
-        });
     }
 
     private String getToken() {
@@ -234,69 +233,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
         else
             return pref.getString(ctx.getString(R.string.key_server_address),
                     "");
-    }
-
-    /**
-     * Asynchronously executes the next command
-     */
-    private void nextCommand() {
-        if (!commands.isEmpty()) {
-            idle = false;
-            sendRequest(commands.peek().command.getRequest(),
-                    commands.peek().abortOnCantConnect);
-        } else {
-            idle = true;
-        }
-    }
-
-    @Override
-    public void onResponse(String responseString) {
-        // no commands waiting for response
-        if (commands.isEmpty()) {
-            //should never happen as long as server is working correctly
-            return;
-        }
-        CommandJob job = commands.poll();
-        AbstractCommand c = job.command;
-        CommandFailHandler failHandler = job.failHandler;
-        try {
-            ErrorResponse errorResponse = mapper
-                    .readValue(responseString, ErrorResponse.class);
-            Log.i("RequestEncoder", "Error");
-            Error error = Error.getValue(errorResponse.error);
-            failHandler.onFail(error);
-        } catch (IOException e) {
-            // it is no Error
-            try {
-                AbstractResponse response = mapper.readValue(responseString,
-                        c.getResponseClass());
-                c.onResponse(response);
-                if (!updating) {
-                    startRequestUpdates();
-                }
-            } catch (IOException ex) {
-                // This would mean, that the internal request encoding is messed
-                // up, which would be very bad indeed!
-                ex.printStackTrace();
-            }
-        }
-
-        nextCommand();
-    }
-
-    @Override
-    public void onTimeout() {
-        // discard command on top of the queue and execute next one
-        commands.poll();
-        nextCommand();
-    }
-
-    @Override
-    public void onCantConnect() {
-        // discard current command and display error message
-        CommandFailHandler failHandler = commands.poll().failHandler;
-        nextCommand();
-        failHandler.onFail(Error.CANT_CONNECT);
     }
 
     /**
@@ -343,32 +279,55 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     }
 
     /**
-     * When exiting the App, clean up any network connections
-     */
-    public void closeConnection() {
-        // TODO check for Service still running
-        // stop update timer
-        bgHandler.post(() -> {
-            if (connectionHandler != null) {
-                stopRequestUpdates();
-                connectionHandler.disconnect();
-                connectionHandler = null;
-            }
-        });
-    }
-
-    /**
      * Method to perform a register request
      *
      * @param username .
      * @param password .
      * @param email
      */
+    @SuppressLint("ApplySharedPref")
     public synchronized void register(String username, String password,
                                       String email,
                                       CommandFailHandler failHandler) {
-        executeCommand(new RegisterCommand(username, password, email),
-                failHandler, true);
+        jobQueue.add(new CommandJob(() -> {
+            Credentials cred = new Credentials();
+            cred.setUsername(username);
+            cred.setPassword(password);
+            AuthDetails authDetails = null;
+            try {
+                // TODO: make this look nice
+                authDetails = authAPI.register(cred).execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Context ctx = TreffPunkt.getAppContext();
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(ctx);
+
+            //in this context commit is better than apply
+            pref.edit()
+                    .putString(ctx.getString(R.string.key_token), authDetails.getToken())
+                    .putInt(ctx.getString(R.string.key_userId), authDetails.getId())
+                    .commit();
+
+            if (!email.equals("")){
+                editEmail(email, password);
+            }
+
+        }, failHandler));
+    }
+
+    @Deprecated
+    private void executeCommand(AbstractCommand cmd) {
+        // TODO: remove
+        //throw new UnsupportedOperationException();
+    }
+
+    @Deprecated
+    private void executeCommand(AbstractCommand cmd, CommandFailHandler failHandler, boolean bla) {
+        // TODO: remove
+        //throw new UnsupportedOperationException();
     }
 
     /**
@@ -432,15 +391,6 @@ public class RequestEncoder implements ConnectionHandler.ResponseListener,
     public synchronized void resetPasswordConfirm(String code,
                                                   String password) {
         executeCommand(new ResetPasswordConfirmCommand(code, password));
-    }
-
-    /**
-     * Delete the Account of the user that is currently logged in
-     *
-     * @param password the password of the user
-     */
-    public synchronized void deleteAccount(String password) {
-        executeCommand(new DeleteAccountCommand(password, getToken()));
     }
 
     /**

@@ -1,11 +1,11 @@
-buildscript {
+/*buildscript {
     repositories {
         jcenter()
     }
     dependencies {
         classpath 'de.bitdroid.jaxrs2retrofit:plugin:0.4.1'
     }
-}
+}*/
 
 plugins {
     id 'war'
@@ -13,7 +13,7 @@ plugins {
     id "com.webcohesion.enunciate" version "2.11.1"
 }
 
-apply plugin: 'de.bitdroid.jaxrs2retrofit'
+//apply plugin: 'de.bitdroid.jaxrs2retrofit'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '4.9'
@@ -56,11 +56,12 @@ dependencies {
     testImplementation "org.mockito:mockito-all:1.10.19"
 }
 
-jaxRs2Retrofit {
+/*jaxRs2Retrofit {
     inputDir = file(rootProject.projectDir.toString() + '/src/main/java')
     outputDir = file('build/rsclient/')
     generateSynchronousMethods = true
     generateCallbackMethods = false
     generateRxJavaMethods = false
     packageName = 'org.pispeb.treffpunkt.client.data.networking.api'
-}
+}*/
+

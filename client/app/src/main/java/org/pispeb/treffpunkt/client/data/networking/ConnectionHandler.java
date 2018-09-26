@@ -22,6 +22,7 @@ import javax.websocket.Session;
  * Class to handle the Connection to the server
  */
 @ClientEndpoint
+@Deprecated
 public class ConnectionHandler {
 
     private final static int TIMEOUT_MS = 15000;

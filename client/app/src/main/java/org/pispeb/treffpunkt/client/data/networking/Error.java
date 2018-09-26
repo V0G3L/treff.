@@ -10,6 +10,10 @@ import org.pispeb.treffpunkt.client.view.util.TreffPunkt;
 public enum Error {
     //TODO add translations
 
+    SERVER_ERROR
+            (-500, getString(R.string.error_server_error), true),
+    API_MISMATCH
+            (-404, getString(R.string.error_api_mismatch), true),
     CANT_CONNECT
             (-3, getString(R.string.error_cant_connect), true),
     INTERNAL_ERROR

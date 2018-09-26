@@ -177,5 +177,7 @@
     <string name="flist_accept">Accept</string>
     <string name="flist_decline">Decline</string>
     <string name="flist_cancel_request">Cancel</string>
+    <string name="error_api_mismatch">API Mismatch, wrong version?</string>
+    <string name="error_server_error">Unknown server error</string>
 
 </resources>
